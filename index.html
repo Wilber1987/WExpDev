@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="Scripts/WExpDev.js"></script>
+    <script>
+        var List = [];
+        function AddItem() {
+            Item = {
+                no: txt1.value,
+                name: txt2.value
+            }
+            List.push(Item);
+            Config = {
+                Name: 'IdTable',
+                Options: true,
+                Del: true,
+                Select: true,
+                Edit: true
+            }
+            DrawTable(List,Config);           
+        }
+    </script>
+</head>
+<body>
+    <input type="text" id="txt1">
+    <input type="text" id="txt2">
+    <input type="button" name="" value="Add" onclick="AddItem()" id="">
+    <table id="IdTable">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+</body>
+</html>
