@@ -1,37 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <script src="Scripts/WExpDev.js"></script>
+    <link rel="stylesheet" href="Styles/WStyleForm.css" />
     <script>
-        var List = [];
-        function AddItem() {
-            Item = {
-                no: txt1.value,
-                name: txt2.value
-            }
-            List.push(Item);
-            Config = {
-                Name: 'IdTable',
-                Options: true,
-                Del: true,
-                Select: true,
-                Edit: true
-            }
-            DrawTable(List,Config);           
-        }
+      var List = [];
+     
+      function AddItem() {
+        Item = {
+          no: txt1.value,
+          name: txt2.value
+        };
+        var Config = {
+          Name: "IdTable",
+          Options: true,
+          Del: true,
+          Select: true,
+          Edit: true,
+          FormName: ModalData.id
+        };
+        List.push(Item);        
+        DrawTable(List, Config);
+      }
     </script>
-</head>
-<body>
-    <input type="text" id="txt1">
-    <input type="text" id="txt2">
-    <input type="button" name="" value="Add" onclick="AddItem()" id="">
-    <table id="IdTable">
-        <thead></thead>
-        <tbody></tbody>
+  </head>
+  <body>
+    <input type="text" id="txt1" />
+    <input type="text" id="txt2" />
+    <input type="button" name="" value="Add" onclick="AddItem()" id="" />
+    <table class="TBLForm" id="IdTable">
+      <thead></thead>
+      <tbody></tbody>
     </table>
-</body>
+    <div class="ModalContent"
+      id="ModalData" style="">
+      <div class="Container">
+        <div>
+            <h2>Formulario</h2>
+        </div>
+        <div class="GrupForm">
+          <div><label>no</label>
+            <input id="no" class="FormControl" /></div>
+          <div><label>name</label>
+            <input id="name" class="FormControl" /></div>
+        </div>
+        <div class="GrupForm">
+          <input class="BtnUpdate" type="button" value="Guardar"
+            onclick='UpdateElement();'/>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

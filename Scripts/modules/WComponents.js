@@ -1,3 +1,4 @@
+//TABLAS -------------------------------------->
 function GetObj(id) {
     var Obj = document.getElementById(id)
     return Obj;
@@ -22,15 +23,6 @@ function CreateInput(Data) {
     InputForRT.index = Data.value;
     return InputForRT;
 }
-
-// var InputForRT = CreateInput({type:'button',value:'Del'}); 
-// var DelData = {
-//     Index:i,
-//     Config:Config
-// }
-// InputForRT.setAttribute("onclick","DeleteElement("+JSON.stringify(DelData) +")");                              
-// tdForInput.appendChild(InputForRT);  
-
 function DrawTable(List, Config) {
     ArrayList = List;
     var Config = new ConfigTable(Config);
@@ -40,7 +32,6 @@ function DrawTable(List, Config) {
         var row = tbody.insertRow(i);
         for (var Propiedad in ArrayList[i]) {
           if (Propiedad.includes("id_")) {
-            //
           } else {
             var TdForRow = document.createElement("td");
             TdForRow.innerHTML = ArrayList[i][Propiedad];
@@ -66,7 +57,7 @@ function DrawTable(List, Config) {
                     DataElement:ArrayList[i]
                 }
                 InputForRT.setAttribute("onclick","EditElement("+JSON.stringify(EditData) +")");
-                tdForInput.appendChild(InputForRT);               
+                tdForInput.appendChild(InputForRT);                           
             }
             if (Config.Select) {
                 var InputForRT = CreateInput({type:'button',value:'Select'});
@@ -80,9 +71,7 @@ function DrawTable(List, Config) {
     }
 }
 function DeleteElement(Data) {
-    console.log(Data.Index);
-    ArrayList.splice(Data.Index, 1);
-    //SaveList(StoreList, StoreList, storeControlId);
+    ArrayList.splice(Data.Index, 1);  
     DrawTable(ArrayList, Config);
 }
 
@@ -90,17 +79,28 @@ function EditElement(Data) {
     var Form;
     if (Data.Config.FormName) {
         Form = document.getElementById(Data.Config.FormName).querySelectorAll(".FormControl"); 
+        if(Data.Config.FormName){
+            var UpdateData = {
+                Index:Data.Index,
+                Config:Data.Config,
+                DataElement:Data.DataElement
+            }           
+            var control = GetObj(Data.Config.FormName).querySelector(".BtnUpdate");
+            control.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+        }   
         var index = 0;
         for (var Propiedad in Data.DataElement) {
-            if (Form[index].tagName == "input") {      
+            
+            if (Form[index].tagName == "INPUT" || Form[index].tagName == "input") {
+                console.log(Form[index].tagName)      
                 if (Form[index].type != "button") {
                     Form[index].value = Data.DataElement[Propiedad];
                 }
             } 
-            if (Form[index].tagName == "textarea") { 
+            if (Form[index].tagName == "TEXTAREA" || Form[index].tagName == "textarea") { 
                 Form[index].innerText = Data.DataElement[Propiedad];                
             } 
-            if (Form[index].tagName == "select") { 
+            if (Form[index].tagName == "SELECT" || Form[index].tagName == "select") { 
                 var aTags = Form[index].getElementsByTagName("option");
                 var searchText = Data.DataElement[index];
                 var found;
@@ -113,12 +113,13 @@ function EditElement(Data) {
                   }
             } 
             index++;
-        }       
+        } 
+        modalFunction(Data.Config.FormName)      
     }else{
-        CreateForm(Data.DataElement);
+        CreateForm(Data);
     }      
 }
-function CreateForm(DataElement) {
+function CreateForm(Data) {
     if (GetObj('TempForm')) {
         return;
     }
@@ -130,20 +131,61 @@ function CreateForm(DataElement) {
     var Header = document.createElement('div');
     var ControlContainer = document.createElement('div');
     ControlContainer.className = 'GrupForm';   
-    for (var Propiedad in DataElement) {
+    for (var Prop in Data.DataElement) {
         var DivContainer = document.createElement('div');
         var ControlLabel = document.createElement('label');
-        ControlLabel.innerText = Propiedad;
+        ControlLabel.innerText = Prop;
         var ControlInput = document.createElement('input');
-        ControlInput.value = DataElement[Propiedad];
+        ControlInput.id = Prop;
+        ControlInput.value = Data.DataElement[Prop];
         ControlInput.className = 'FormControl';
-        if (Propiedad.includes("id_")) {
+        if (Prop.includes("id_")) {
             DivContainer.hidden = true;
         }
         DivContainer.append(ControlLabel,ControlInput);
         ControlContainer.append(DivContainer);
     }
-    Form.append(Header,ControlContainer);
+    var ActionsContainer = document.createElement('div');
+    ActionsContainer.className = 'GrupForm';
+    var InputSave = CreateInput({type:'button',value:'Guardar'});
+    var UpdateData = {
+        Index:Data.Index,
+        Config:Data.Config,
+        DataElement:Data.DataElement
+    }
+    InputSave.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+    ActionsContainer.appendChild(InputSave);
+    Form.append(Header,ControlContainer,ActionsContainer);
     FormContainer.append(Form);
     document.body.append(FormContainer);
+    setTimeout(function(){ modalFunction('TempForm');},100);    
 }
+
+function UpdateElement(Data) {   
+    for (let index = 0; index < Object.keys(Data.DataElement).length; index++) {
+      prop = Object.keys(Data.DataElement)[index];
+      ArrayList[Data.Index][prop] = GetObj(prop).value;
+    }    
+    DrawTable(ArrayList,Data.Config);
+    if (Data.Config.FormName) {
+        modalFunction(Data.Config.FormName)
+    } else{
+        modalFunction("TempForm")
+        setTimeout(function(){ 
+            document.body.removeChild(GetObj("TempForm"));
+        }, 1000);        
+    }  
+}
+//MODALES-------------------------------->
+function modalFunction(DivModal) {    
+    var ventanaM = document.getElementById(DivModal);     
+    if (ventanaM.style.opacity == 0) {
+      ventanaM.style.transition = "all ease 1s";
+      ventanaM.style.opacity = 1;
+      ventanaM.style.pointerEvents = "all";
+    } else {
+      ventanaM.style.transition = "all ease 1s";
+      ventanaM.style.opacity = 0;
+      ventanaM.style.pointerEvents = "none";
+    }
+  }

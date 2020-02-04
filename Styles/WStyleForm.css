@@ -1,0 +1,972 @@
+/*  ESTILOS DE CONTROLES DE FORMULARIOS */
+
+.Section {
+    min-height: 250px;
+    display: block;
+    width: 95%;
+    background-color: #fff;
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    border-radius: 20px;
+    padding: 10px;
+}
+.BannerForm{
+    width:100%; height:200px; object-fit: cover; border-radius: 20px; 
+}
+.LabelBanner{
+    font-size: 40px;
+    font-weight: bold;
+    color: #fff;
+    position: relative;
+    top: -60px;
+    left: +10px;
+}
+.GrupBannerForm{   
+        width: 98%;
+        height: 200px;
+        margin: 1%;
+        overflow: hidden;
+}
+
+.GrupNav {
+    margin: 1%;
+    overflow: hidden;
+    width: 98%;
+}
+.GrupNav input[type=radio]{
+    display: none;
+}
+
+.GrupNav div {
+    float: left;
+    margin: 1px 1%;
+}
+
+.GrupForm {
+    width: 98%;
+    margin: 1%;
+    overflow: hidden;
+    text-align: justify;
+    
+}
+.GrupForm2 {
+    width: 98%;
+    margin: 1%;
+    overflow: hidden;
+    text-align: justify;
+    
+}
+
+
+.GrupForm h3 {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+}
+
+.GrupForm div {
+    float: left;
+    width: 48%;
+    margin: 1px 1%;
+}
+.GrupForm2 div {
+    float: left;
+    width: 23%;
+    margin: 1px 1%;
+}
+
+.TxtForm {
+    border: none;
+    background: none;
+    border-bottom: 2px solid #6b6b70;
+    width: 100%;
+    line-height: 20px;
+    transition: all 0.5s;
+}
+
+.TxtForm:hover {
+    padding-left: 15px;
+}
+
+
+/* BOTONES */
+
+.BTNForm {
+    padding: 5px;
+    color: #fff;
+    background-color: #6b6b70;
+    border-radius: 10%;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    transition: all 1s;
+}
+
+.BTNFormTable {
+    padding: 5px;
+    color: #fff;
+    background-color: #6b6b70;
+    border-radius: 10%;
+    font-size: 15px;
+    border: none;
+    transition: all 1s;
+}
+
+.colorFormV {
+    background-color: #008800;
+}
+
+.colorFormR {
+    background-color: #ff0000ad;
+}
+
+.colorFormA {
+    background-color: #0099ff;
+}
+
+.colorFormV:hover {
+    background-color: #004100;
+}
+
+.colorFormR:hover {
+    background-color: #7c0000ad;
+}
+
+.colorFormA:hover {
+    background-color: #005c99;
+}
+
+
+/* TABLAS */
+
+.TBLForm {
+    width: 100%;
+    border: 1px solid #999;
+    text-align: left;
+    border-collapse: collapse;
+    margin: 0 0 1em 0;
+    caption-side: top;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.TBLForm thead {
+    color: #fff;
+    background: #374050;
+}
+
+.TBLForm th,
+td {
+    border-bottom: 1px solid #999;
+    padding: 0.3em;
+}
+
+
+/*estilos de modal*/
+
+.ModalContent {
+    opacity: 0;
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    width: 100%;
+    position: fixed !important;
+    top: 0px !important;
+    left: 0px !important;
+    bottom: 0px !important;
+    transition: all linear 1s;
+    box-shadow: 0 0px 1px 0px #000;
+    z-index: 200 !important;
+    overflow-y: auto;
+    padding-bottom: 50px;   
+}
+
+.Container, .ContenedorPregs {
+    display: block;
+    overflow: hidden;
+    margin: auto;
+    margin-top: 50px;
+    background-color: #fff;
+    width: 70%;
+    max-height: 800px;
+    overflow-y: auto;
+    padding: 20px;
+    min-height: 200px;
+    border-radius: 5px;
+}
+
+
+.ContenedorPregs h3,.ContenedorPregs h4, .ContenedorPregs h5, .ContenedorPregs h2, .ContenedorPregs h1
+{
+    color: var(--main-color);
+    text-align: center;
+
+}
+.ContenedorPregs{
+   border-radius: 1cm;
+   border:2px var(--main-color) solid;
+}
+.ContenedorPregs::-webkit-scrollbar {
+    width: 8px;     /* Tamaño del scroll en vertical */
+    height: 8px;    /* Tamaño del scroll en horizontal */
+   
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.ContenedorPregs::-webkit-scrollbar-thumb {
+    background: rgb(179, 175, 175);
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+.ContenedorPregs::-webkit-scrollbar-thumb:hover {
+    background: #3d1f1f;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambiamos el fondo cuando esté en active */
+.ContenedorPregs::-webkit-scrollbar-thumb:active {
+    background-color: #4b1010;
+}
+.ContenedorPregs::-webkit-scrollbar-track {
+    background: #e1e1e1;
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo cuando esté en active o hover */
+.ContenedorPregs::-webkit-scrollbar-track:hover,
+.ContenedorPregs::-webkit-scrollbar-track:active {
+  background: #d4d4d4;
+}
+
+.Contenedor::-webkit-scrollbar {
+    width: 8px;     /* Tamaño del scroll en vertical */
+    height: 8px;    /* Tamaño del scroll en horizontal */
+   
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.Contenedor::-webkit-scrollbar-thumb {
+    background: rgb(179, 175, 175);
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+.Contenedor::-webkit-scrollbar-thumb:hover {
+    background: #3d1f1f;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambiamos el fondo cuando esté en active */
+.Contenedor::-webkit-scrollbar-thumb:active {
+    background-color: #4b1010;
+}
+.Contenedor::-webkit-scrollbar-track {
+    background: #e1e1e1;
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo cuando esté en active o hover */
+.Contenedor::-webkit-scrollbar-track:hover,
+.Contenedor::-webkit-scrollbar-track:active {
+  background: #d4d4d4;
+}
+
+.alertFormSuccess {
+    display: none;
+    color: rgb(6, 114, 38);
+    background: rgba(202, 235, 175, 0.993);
+    width: 99%;
+    transition: all 0.5s;
+    padding: 10PX 15px;
+    border-radius: 10PX;
+}
+.alertForm {
+    display: none;
+    color: brown;
+    background: rgba(255, 187, 187, 0.993);
+    width: 99%;
+    transition: all 0.5s;
+    padding: 10PX 15px;
+    border-radius: 10PX;
+}
+
+.dataTables_wrapper {
+    width: 100%!important;
+}
+
+
+/*  TABLA EN FORMATO SELECT  */
+
+.SelectTable {
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgb(199, 196, 196);
+    font-size: 0.8em;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 10px;
+}
+
+.SelectTable thead {
+    width: 100%;
+    margin: 5px;
+    display: inline-block;
+    color: #003380;
+}
+
+.SelectTable tbody {
+    width: 100%;
+    display: inline-block;
+    padding: 5px;
+}
+
+.SelectTable tbody tr {
+    display: inline-block;
+    color: #003380;
+    border-radius: 5%;
+    padding: 0px;
+    margin: 5px;
+    background: #e6f0ff;
+    border: none;
+    box-shadow: none;
+}
+
+.SelectTable tbody tr td {
+    border: none;
+    box-shadow: none;
+    padding: none;
+}
+
+.SelectTable tbody tr:hover {
+    background: #c2d7f5
+}
+
+.SelectTable tbody td input {
+    border-radius: 5%;
+    background: none;
+    border: none;
+    padding: 5px;
+    font-weight: bold;
+    color: #003380;
+    transition: all 0.4s;
+    margin: 0px;
+}
+
+.SelectTable tbody td input:hover {
+    background: #99bef5;
+
+    color: #003380;
+}
+
+.contentMensage {
+    padding: 10px;
+    justify-content: center;
+    text-align: justify;
+}
+/****************TEST STYLE**********************/
+
+.GrupFormTEST {
+    width: 98%;
+    margin: 1%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.GrupFormTEST div {
+    margin: 1px;
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+.GrupFormTable {
+   overflow-x: scroll;
+   padding: 20px;
+}
+.GrupFormTable::-webkit-scrollbar {
+    width: 8px;     /* Tamaño del scroll en vertical */
+    height: 8px;    /* Tamaño del scroll en horizontal */
+   
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.GrupFormTable::-webkit-scrollbar-thumb {
+    background: rgb(179, 175, 175);
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+.GrupFormTable::-webkit-scrollbar-thumb:hover {
+    background: #3d1f1f;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambiamos el fondo cuando esté en active */
+.GrupFormTable::-webkit-scrollbar-thumb:active {
+    background-color: #4b1010;
+}
+.GrupFormTable::-webkit-scrollbar-track {
+    background: #e1e1e1;
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo cuando esté en active o hover */
+.GrupFormTable::-webkit-scrollbar-track:hover,
+.GrupFormTable::-webkit-scrollbar-track:active {
+  background: #d4d4d4;
+}
+
+/* .GrupFormTable{
+    padding-bottom:20px ;
+    overflow: auto;
+    overflow-x: scroll;
+}  */
+/* .GrupFormTable::-webkit-scrollbar-thumb {
+    background: rgb(153, 3, 3);
+    border-radius: 4px;
+} */
+
+.MaxHeight{
+ max-height: 400px;
+ overflow-y: auto;
+}
+@media (max-width: 1400px) {   
+    .GrupForm2 div {
+        width: 31%;
+        margin: 1px 1%;
+    }
+}
+
+@media (max-width: 600px) {
+    .GrupFormTEST {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+    }
+    .ContenedorPregs{
+        width: 98%;
+    }
+    .ContenedorPregs img{
+        width: 40px;
+        height: 40px;
+    }
+    .ContenedorPregs h3,  .ContenedorPregs h4,  .ContenedorPregs h5{
+        font-size: 1.2rem;
+    }
+    .GrupForm div, .GrupForm2 div {
+        width: 98%;
+        margin: 1px 1%;
+    }
+    .Contenedor {
+        margin-top: 5px;
+        width: 95%;
+    }
+    .GrupForm div {
+        float: left;
+        width: 98%;
+        margin: 1px 1%;
+    }
+    .GrupFormTable{
+        padding-bottom:20px ;
+        overflow: auto;
+        overflow-x: scroll;
+    }
+    .GrupFormTEST div {
+        margin: 1px;
+        flex: auto;
+        text-align: left;
+    }
+     /* .GrupFormTable::-webkit-scrollbar-thumb {
+    background: rgb(153, 3, 3);
+    border-radius: 4px;
+    }  */
+}
+
+
+.GrupFormTEST div label:before {
+    content: "";
+    background: transparent;
+    border: 2px solid var(--main-color) !important;;   
+    border-radius: 50%;
+     display: inline-block; 
+    height: 30px;
+    line-height: 25px;
+    margin-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 30px; 
+    position: relative;
+    
+}
+.Wbtn_form {   
+    justify-content: center;
+    align-items: center;    
+    display:inline-block; 
+    height:auto;  
+    background-color: var(--main-color);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    outline: none !important;
+    padding: 5px 10px;
+    text-decoration: none;
+    margin: 10px;
+    cursor: pointer;
+    min-width: 100px;
+}
+.Wbtn_M {   
+    justify-content: center;
+    align-items: center;    
+    display:inline-block; 
+    height:auto; 
+    text-align: center; 
+    background-color:#fff;
+    color:  var(--main-color);;
+    font-weight: bold;
+    border:  var(--main-color) solid 2px;
+    border-radius: 10px;
+    outline: none !important;
+    padding: 5px 10px;
+    text-decoration: none;    
+    cursor: pointer;    
+}
+.Wbtn_M:hover {
+       
+    text-decoration: none;
+    color:var(--main-color);
+}
+.Wbtn,.Wbtn:hover  {   
+    justify-content: center;
+    align-items: center;    
+    display:inline-block; 
+    height:auto; 
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    outline: none !important;
+    padding: 5px 10px;
+    text-decoration: none;
+    margin: 10px;
+    cursor: pointer;
+    min-width: 100px;
+    text-align: center;
+}
+@media(max-width: 450px){
+    .Wbtn,.Wbtn:hover  {           
+        display:inline-block; 
+        height:auto; 
+        color: white;
+        font-weight: bold;        
+        border-radius: 10px;
+        outline: none !important;
+        padding: 5px 5px;
+        text-decoration: none;
+        margin: 5px;
+        cursor: pointer;
+        min-width: 50px;
+        text-align: center;
+    }
+}
+
+.Wbtn_{
+    cursor: pointer;
+}
+.Wbtn_form:hover { 
+    background-color: var(--main-color);   
+    text-decoration: none;
+    color: #fff;
+}
+.GrupFormTEST input[type=radio] {
+    display: none;
+}
+
+.GrupFormTEST input[type=radio]+label {
+    cursor: pointer;
+}
+
+.radioForm {
+    border: #003380 3px solid;
+}
+
+.GrupFormTEST input[type=radio]:checked+label:before {
+    content: '';
+    font-size: 20px;
+    color: var(--main-color);
+    background-color: var(--main-color);    
+    /* box-shadow: inset 0 0 0 3px rgb(255, 255, 255); */
+    transition: all ease 0.5s;
+
+}
+
+.GrupFormTEST input[type=radio]:checked+.NotifCount:before {
+    content: '';
+    font-size: 14px;
+    color:var(--main-color);
+    
+}
+
+
+/****ACORDEON****/
+.GrupFormAcordeon {
+    width: 98%;
+    height: 0px;
+    margin: 0px 1%;
+    overflow: auto;
+    transition: all;
+}
+.GrupFormAcordeon::-webkit-scrollbar {
+    width: 8px;     /* Tamaño del scroll en vertical */
+    height: 8px;    /* Tamaño del scroll en horizontal */
+   
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.GrupFormAcordeon::-webkit-scrollbar-thumb {
+    background: rgb(179, 175, 175);
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+.GrupFormAcordeon::-webkit-scrollbar-thumb:hover {
+    background: #3d1f1f;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambiamos el fondo cuando esté en active */
+.GrupFormAcordeon::-webkit-scrollbar-thumb:active {
+    background-color: #4b1010;
+}
+.GrupFormAcordeon::-webkit-scrollbar-track {
+    background: #e1e1e1;
+    border-radius: 4px;
+}
+
+/* Cambiamos el fondo cuando esté en active o hover */
+.GrupFormAcordeon::-webkit-scrollbar-track:hover,
+.GrupFormAcordeon::-webkit-scrollbar-track:active {
+  background: #d4d4d4;
+}
+
+/* .Gru
+
+.GrupFormAcordeon h3 {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+}
+
+.GrupFormAcordeon div {
+    /* float: left;    
+    margin: 1px 1%; */
+
+
+.TestCard {
+    display: inline-block;
+    height: 250px;
+    width: 250px !important;
+    margin: auto;
+    padding: 10px;
+    border: solid 1px #6b6b70;
+    border-radius: 2ch;
+    margin: 10px;
+    text-align: center;
+  
+}
+.TestCard article{
+    width: 70%;    
+    height: 100px;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: auto;
+    white-space: normal;
+    display: block; 
+   overflow: hidden;
+   text-overflow: ellipsis; 
+   align-items: center;
+}
+
+
+/*icons*/
+
+.btnNoStyle {
+    margin: 0px;
+    padding: 0px;
+    min-height: 0px;
+    min-width: 0px;
+    border: none;
+    background-color: unset;
+}
+
+.ICON {
+    height: 15px;
+    width: 15px;
+    size: 100%;
+    border: none;
+    box-shadow: none;
+}
+
+.ICON16x32 {
+    height: 16px;
+    width: 32px;
+    size: 100%;
+}
+
+.NotifCount {
+    font-size: 14px;
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background: var(--main-color);;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+.iconNotif { 
+    height: 30px;
+    width: 25px;
+    size: 100%;   
+}
+
+.NotifCountP{
+    font-size: 12px;
+    width: 18px;
+    height: 18px;  
+    border-radius: 50%;
+    background: var(--main-color);;
+    color: #fff;
+    text-align: center;
+    line-height: 18px;
+    cursor: pointer;
+    position: absolute;
+    right: -5px;    
+}
+.containerNotif
+{
+    position: relative;
+}
+
+.notifContainer {
+    width: 50px;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+/*        ALERT STYLE         */
+
+.AlertContent {
+    opacity: 1;
+    pointer-events: all;
+    background-color: rgba(0, 0, 0, 0) !important;
+    width: 280PX;
+    min-height: 0px;
+    position: fixed !important;
+    /* top: 0px !important; */
+    right: 10px !important;
+    bottom: 0px !important;
+    transition: all 1s;
+    display: flex;
+    align-items: flex-end;
+}
+
+.AlertNotif {
+    overflow: hidden;
+    background-color: rgba(248, 248, 248, 0.8);
+    width: 280px;
+    padding: 10px;
+    min-height: 250px;
+    border-radius: 5px;
+    font-size: 12px;
+    transform: translateY(100%);
+    transition: all ease 1s;
+    border: solid #808080 2px;
+    box-shadow: 0 5px 5px 0 #000;
+}
+
+.AlertNotif div {
+    width: 100%;
+}
+
+.AlertNotif div a {
+    float: right;
+}
+
+.AlertNotif p {
+    float: left;
+    width: 100%;
+    border-top: 1px solid #808080;
+    height: 150px;
+    padding: 5px;
+    text-align: justify;
+}
+
+
+/*MAIL STYLE***********************************************/
+
+.GrupFormMail {
+    width: 96%;
+    margin: auto;
+    margin-top: 0px;
+    overflow: hidden;
+  
+    padding: 5px;
+}
+.GrupFormMail div {
+    float: left;
+}
+
+
+.Historymail {    
+    height: 600px;
+    width: 96%;    
+    margin: auto;
+    margin-bottom: 0px;
+    overflow: auto;
+   
+    border-bottom: solid 1px #b4b2b2;
+}
+.MailTextbox{
+    background-color: #e9ebee;
+    border: none !important;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    position: relative;     
+    margin-bottom: 0;
+}
+
+.recivedMail div,
+.sendMail div {
+    font-size: 11px;
+    width: 100%;   
+}
+
+.sendMail div {
+    text-align: right;
+}
+
+.recivedMail,
+.sendMail {
+    min-height: 50px;
+    width: 80%;
+    padding: 5px;
+    float: left;   
+    margin: 5px;   
+}
+
+.recivedMail article,
+.sendMail article{    
+    padding: 10px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 1.5cm;
+    font-size: 10pt;
+    margin-bottom: 5px;
+    min-width: 100px;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+   
+
+.sendMail article{    
+    background: var(--main-color);
+    color: white;
+}
+
+.sendMail {
+    float: right;  
+    text-align: right; 
+}
+
+
+.recivedMail {
+    float: left;
+    background: #ffffff;
+    color: #000;
+}
+
+.Historymail::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+
+.Historymail::-webkit-scrollbar-thumb:hover {
+    background: #b3b3b3;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Cambiamos el fondo cuando esté en active */
+
+.Historymail::-webkit-scrollbar-thumb:active {
+    background-color: #999999;
+}
+
+.Historymail::-webkit-scrollbar {
+    width: 8px;
+    /* Tamaño del scroll en vertical */
+    height: 8px;
+    /* Tamaño del scroll en horizontal */
+    /* Ocultar scroll */
+}
+
+.Historymail::-webkit-scrollbar-track {
+    background: #e1e1e1;
+    border-radius: 4px;
+}
+
+
+/* Cambiamos el fondo cuando esté en active o hover */
+
+.Historymail::-webkit-scrollbar-track:hover,
+.Historymail::-webkit-scrollbar-track:active {
+    background: #d4d4d4;
+}
+
+.MainControls {
+    width: 95%;
+    margin: auto;
+    height: 60px;
+    overflow: hidden;
+}
+
+
+/*TABAAAAAAAAAAAAAAAAAAAAAAA*/
+/* 
+.nav-link {
+ 
+    border-radius: 0.1cm !important;
+}
+
+.nav-item {
+    width: 30% !important;
+    flex: 1 !important;
+    display: inline-block;
+    margin: 10px !important;
+    border-radius: 0.1cm !important;
+    box-shadow: 0px 0px 5px -1px #6b6b70;
+}
+@media(max-width: 450px){
+    .nav-item {
+        width: 100% !important;
+        flex: none!important;
+        display: inline-block;
+        margin: 10px !important;
+        border-radius: 0.1cm !important;
+        box-shadow: 0px 0px 5px -1px #6b6b70;
+    }
+}
+
+.nav-tabs {
+    width: 100% !important;
+    display: flex;
+    flex: auto;
+} */
+
+
+/*BLURRRR*/
