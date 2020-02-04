@@ -87,8 +87,63 @@ function DeleteElement(Data) {
 }
 
 function EditElement(Data) {  
-    var Form = document.getElementById(Data.Config.FormName).querySelectorAll(".FormControl");
-    for (let index = 0; index < tr.getElementsByTagName("td").length; index++) { 
-
-    }   
-  }
+    var Form;
+    if (Data.Config.FormName) {
+        Form = document.getElementById(Data.Config.FormName).querySelectorAll(".FormControl"); 
+        var index = 0;
+        for (var Propiedad in Data.DataElement) {
+            if (Form[index].tagName == "input") {      
+                if (Form[index].type != "button") {
+                    Form[index].value = Data.DataElement[Propiedad];
+                }
+            } 
+            if (Form[index].tagName == "textarea") { 
+                Form[index].innerText = Data.DataElement[Propiedad];                
+            } 
+            if (Form[index].tagName == "select") { 
+                var aTags = Form[index].getElementsByTagName("option");
+                var searchText = Data.DataElement[index];
+                var found;
+                for (var i = 0; i < aTags.length; i++) {
+                    if (aTags[i].textContent == searchText) {
+                      found = aTags[i].value;
+                      Form[index].value = found;
+                      break;
+                    }
+                  }
+            } 
+            index++;
+        }       
+    }else{
+        CreateForm(Data.DataElement);
+    }      
+}
+function CreateForm(DataElement) {
+    if (GetObj('TempForm')) {
+        return;
+    }
+    var FormContainer = document.createElement('div');
+    FormContainer.className = 'ModalContent';
+    FormContainer.id = "TempForm";
+    var Form = document.createElement('div');
+    Form.className = 'Container';
+    var Header = document.createElement('div');
+    var ControlContainer = document.createElement('div');
+    ControlContainer.className = 'GrupForm';   
+    for (var Propiedad in DataElement) {
+        var DivContainer = document.createElement('div');
+        var ControlLabel = document.createElement('label');
+        ControlLabel.innerText = Propiedad;
+        var ControlInput = document.createElement('input');
+        ControlInput.value = DataElement[Propiedad];
+        ControlInput.className = 'FormControl';
+        if (Propiedad.includes("id_")) {
+            DivContainer.hidden = true;
+        }
+        DivContainer.append(ControlLabel,ControlInput);
+        ControlContainer.append(DivContainer);
+    }
+    Form.append(Header,ControlContainer);
+    FormContainer.append(Form);
+    document.body.append(FormContainer);
+}
