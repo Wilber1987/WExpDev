@@ -28,6 +28,11 @@ function DrawTable(List, Config) {
     var Config = new ConfigTable(Config);
     tbody = document.querySelector("#" + Config.Name + " tbody");
     tbody.innerHTML = "";
+    var TableContainer = tbody.parentNode.parentNode;
+    if (!GetObj('Show_' + Config.Name)) {
+        TableContainer.insertBefore(InicializeShowTable(Config),
+            TableContainer.querySelector('#'+Config.Name));
+    }    
     for (var i = 0; i < ArrayList.length; i++) {
         var row = tbody.insertRow(i);
         for (var Propiedad in ArrayList[i]) {
@@ -69,6 +74,47 @@ function DrawTable(List, Config) {
            row.appendChild(tdForInput);
         }
     }
+    if (!GetObj('ShowPag_'+ Config.Name)) {
+        TableContainer.insertBefore(InicializePaginateTable(Config),
+            TableContainer.querySelector('#'+Config.Name).nextSibling);
+    }else{
+        InicializePaginateTable(Config);
+    }    
+}
+
+function InicializePaginateTable(Config) { 
+    var PaginateContainer = document.createElement('div');
+    PaginateContainer.className = 'ShowPaginate';
+    PaginateContainer.id = 'ShowPag_'+ Config.Name;   
+    if (GetObj('ShowPag_'+ Config.Name)) {
+        PaginateContainer = GetObj('ShowPag_'+ Config.Name);
+        PaginateContainer.innerHTML = "";
+    }    
+    var Cont  = Math.round(ArrayList.length / GetObj('Show_' + Config.Name).value);
+    for (let index = 0; index < Cont; index++) {
+        var Link = document.createElement('a');
+        Link.innerText = index + 1;
+        Link.href = '#Show_' + Config.Name;
+        Link.className = "ShowPaginate";
+        PaginateContainer.append(Link);                       
+    }
+    
+    return PaginateContainer;
+}
+
+function InicializeShowTable(Config) {
+    var sel = document.createElement('select');
+    sel.id = 'Show_' + Config.Name ;
+    sel.className = 'ShowTable'
+    var i = 10;
+    for (let index = 0; index < 10; index++) {
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.innerText = i;
+        i = i + 10;
+        sel.appendChild(opt);
+    }
+    return sel;
 }
 function DeleteElement(Data) {
     ArrayList.splice(Data.Index, 1);  

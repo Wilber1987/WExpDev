@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="Styles/WStyleForm.css" />
     <script>
       var List = [];
+      var Config = {
+          Name: "IdTable",
+          Options: true,
+          Del: true,
+          Select: true,
+          Edit: true,
+         // FormName: ModalData.id
+        };
      
       function AddItem() {
         Item = {
@@ -32,10 +40,13 @@
     <input type="text" id="txt1" />
     <input type="text" id="txt2" />
     <input type="button" name="" value="Add" onclick="AddItem()" id="" />
-    <table class="TBLForm" id="IdTable">
+    <div>
+      <table class="TBLForm" id="IdTable">
       <thead></thead>
       <tbody></tbody>
-    </table>
+      </table>
+    </div>
+    
     <div class="ModalContent"
       id="ModalData" style="">
       <div class="Container">
