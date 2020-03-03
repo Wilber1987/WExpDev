@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="Scripts/WExpDev.js"></script>
+    <link rel="stylesheet" href="Styles/WStyleForm.css" />
+    <script>
+        var Arry = [
+              {cantidad: 99, estado_psicoemocional: "Fresa", time: 2018, categ: "Bajo"},
+                {cantidad: 115, estado_psicoemocional: "Naranja", time: 2018, categ: "Bajo"},
+                {cantidad: 118, estado_psicoemocional: "Verde", time: 2018, categ: "Bajo"},
+                {cantidad: 116, estado_psicoemocional: "Fresa", time: 2019, categ: "Bajo"},
+                {cantidad: 116, estado_psicoemocional: "Naranja", time: 2019, categ: "Bajo"},
+                {cantidad: 112, estado_psicoemocional: "Verde", time: 2019, categ: "Bajo"},
+                {cantidad: 95, estado_psicoemocional: "Fresa", time: 2020, categ: "Bajo"},
+                {cantidad: 97, estado_psicoemocional: "Naranja", time: 2020, categ: "Bajo"},
+                {cantidad: 118, estado_psicoemocional: "Verde", time: 2020, categ: "Bajo"},
+                {cantidad: 126, estado_psicoemocional: "Fresa", time: 2018, categ: "Moderado"},
+                {cantidad: 108, estado_psicoemocional: "Naranja", time: 2018, categ: "Moderado"},
+                {cantidad: 111, estado_psicoemocional: "Verde", time: 2018, categ: "Moderado"},
+                {cantidad: 117, estado_psicoemocional: "Fresa", time: 2019, categ: "Moderado"},
+                {cantidad: 115, estado_psicoemocional: "Naranja", time: 2019, categ: "Moderado"},
+                {cantidad: 102, estado_psicoemocional: "Verde", time: 2019, categ: "Moderado"},
+                {cantidad: 105, estado_psicoemocional: "Fresa", time: 2020, categ: "Moderado"},
+                {cantidad: 107, estado_psicoemocional: "Naranja", time: 2020, categ: "Moderado"},
+                {cantidad: 126, estado_psicoemocional: "Verde", time: 2020, categ: "Moderado"},
+                {cantidad: 109, estado_psicoemocional: "Fresa", time: 2018, categ: "Severo"},
+                {cantidad: 112, estado_psicoemocional: "Naranja", time: 2018, categ: "Severo"},
+                {cantidad: 92, estado_psicoemocional: "Verde", time: 2018, categ: "Severo"},
+                {cantidad: 107, estado_psicoemocional: "Fresa", time: 2019, categ: "Severo"},
+                {cantidad: 104, estado_psicoemocional: "Naranja", time: 2019, categ: "Severo"},
+                {cantidad: 101, estado_psicoemocional: "Verde", time: 2019, categ: "Severo"},
+                {cantidad: 116, estado_psicoemocional: "Fresa", time: 2020, categ: "Severo"},
+                {cantidad: 113, estado_psicoemocional: "Naranja", time: 2020, categ: "Severo"},
+                {cantidad: 113, estado_psicoemocional: "Verde", time: 2020, categ: "Severo"},
+              ];
+        var labels = [
+          {time: 2018},
+          {time: 2019},
+          {time: 2020},
+        ]
+            var Config = { 
+                ContainerName : "MyChart",
+                Title : "MyChart",
+                GroupLabelsData: labels
+            }
+
+            window.onload = OnLoad;
+            function OnLoad() {                 
+                DrawDoubleGroupChart(Config);
+            }   
+    </script>
+  </head>
+  <body>
+    <div id="MyChart"></div>
+   
+  </body>
+</html>
