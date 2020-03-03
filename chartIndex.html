@@ -7,6 +7,7 @@
     <title>Document</title>
     <script src="Scripts/WExpDev.js"></script>
     <link rel="stylesheet" href="Styles/WStyleForm.css" />
+    <link rel="stylesheet" href="Styles/WchartStyle.css" />
     <script>
         var Arry = [
               {cantidad: 99, estado_psicoemocional: "Fresa", time: 2018, categ: "Bajo"},
@@ -45,7 +46,9 @@
             var Config = { 
                 ContainerName : "MyChart",
                 Title : "MyChart",
-                GroupLabelsData: labels
+                GroupLabelsData: labels,
+                GroupDataset:labels,
+                Datasets:Arry
             }
 
             window.onload = OnLoad;

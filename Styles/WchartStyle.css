@@ -1,0 +1,44 @@
+.WChartContainer{
+    padding-left: 30px;
+}
+.SectionTitle{
+    height:30px;
+}
+.SectionLabels{
+    height:30px
+}
+.SectionBars{
+    display: flex;
+    align-items:  flex-end;
+    height:80%;
+    margin: 10px;
+    border-left:1px rgb(141, 141, 141) solid ;
+    border-bottom:1px rgb(141, 141, 141) solid ;
+    padding-left: 30px;
+}
+
+.SectionLabelGroup{
+    display: flex;
+    height: 30px;
+    margin: 10px;   
+    padding-left: 30px;    
+}
+.SectionBars .groupBars, .SectionLabelGroup .groupLabels{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    width: 30%;
+    display: flex;
+    align-items:  flex-end;   
+}
+.SectionLabelGroup .groupLabels{
+    justify-content: center;
+}
+.groupBars .Bars{
+    width: 100%;
+    min-width: 30px;
+    margin-top: 5px;
+    margin-left: 5px;
+    border: solid 1px #888888;  
+    display: block;     
+}
