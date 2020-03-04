@@ -17,21 +17,24 @@
     padding-left: 30px;
 }
 
-.SectionLabelGroup{
+.SectionLabelGroup, .SectionLabelSecondGroup{
     display: flex;
-    height: 30px;
+    height: 20px;
     margin: 10px;   
     padding-left: 30px;    
 }
-.SectionBars .groupBars, .SectionLabelGroup .groupLabels{
+.SectionBars .groupBars,
+ .SectionLabelGroup .groupLabels,
+ .SectionLabelSecondGroup .groupLabels{
     margin-left: 10px;
     margin-right: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 0px;    
     width: 30%;
     display: flex;
     align-items:  flex-end;   
 }
-.SectionLabelGroup .groupLabels{
+.SectionLabelGroup .groupLabels, 
+.SectionLabelSecondGroup .groupLabels{
     justify-content: center;
 }
 .groupBars .Bars{
@@ -41,4 +44,44 @@
     margin-left: 5px;
     border: solid 1px #888888;  
     display: block;     
+    background: #888888;
 }
+.SectionLabels{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.SectionLabels label{
+   padding: 5px;
+   display: inline-flex; 
+   height: 20px;
+   justify-content: center;
+    align-items: center;
+}
+.SectionLabels label span{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: inline-flex;    
+    margin: 5px;
+ }
+ .ContainerBars{
+     width: 100%;
+     margin-left: 5px;
+     margin-right: 5px;
+     display: flex;
+     flex-direction: column;
+     align-items: flex-end;
+     height: 100%;
+ }
+ .SectionLabelSecondGroup label {
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+ }
+ .ContainerBars .Bars{
+    margin-top: 0px;
+}
+
