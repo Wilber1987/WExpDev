@@ -51,7 +51,7 @@ function DrawDoubleGroupChart(Config){
         SectionLabelGroup.append(CreateStringNode(`       
             <label class="groupLabels">
                 ${elementGroup.time}
-            </labe>`) 
+            </labe>`)
         )                  
     })   
     ChartContainer.append(SectionTitle,SectionLabels,SectionBars,SectionLabelGroup);
