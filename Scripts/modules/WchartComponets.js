@@ -27,6 +27,9 @@ function DrawGroupChart(Config){
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName);  
     ChartContainer.className = "WChartContainer";  
+    ChartContainer.innerHTML = "";  
+
+    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -75,6 +78,9 @@ function DrawOneGroupChart(Config){
     var ChartContainer = GetObj(Config.ContainerName);  
     
     ChartContainer.className = "WChartContainer";  
+    ChartContainer.innerHTML = "";  
+
+    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -159,6 +165,9 @@ function DrawDoubleGroupChart(Config){
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName);  
     ChartContainer.className = "WChartContainer";  
+    ChartContainer.innerHTML = "";  
+
+    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -267,6 +276,9 @@ function DrawThreeGroupChart(Config){
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName); 
     ChartContainer.className = "WChartContainer";  
+    ChartContainer.innerHTML = "";  
+
+    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
