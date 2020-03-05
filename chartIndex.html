@@ -71,46 +71,62 @@
          {cantidad: 287, categ: "Moderado", categ2: "G2", time: 2019},
          {cantidad: 387, categ: "Moderado", categ2: "G2", time: 2018},
         ]
-        var Estados = ['Fresa', 'Naranja', 'Verde']
+        var Estados =
+            [{"id_":"Fresa","Descripcion":"Severa"},
+            {"id_":"Naranja","Descripcion":"Moderada"},
+            {"id_":"Verde","Descripcion":"Sin sintomas"}]
+
         var Colors = [ '#ff6699', '#ffbb99', '#adebad']
-            var Config = { 
-                ContainerName : "MyChart3",
+        var Config = { 
+                ContainerName : "MyChart",
                 Title : "MyChart3",
-                GroupLabelsData: Estados,
-                GroupDataset:labels,
+                GroupLabelsData: Estados,//series                
                 Datasets:Arry,
+                AttNameEval : "estado",
                 Colors:Colors,
-                SecondGroupDataset:SecondGroupDataset,
+                GroupDataset:labels,
+                AttNameG1 : "time",
+                SecondGroupDataset:SecondGroupDataset,                
+                AttNameG2 : "categ",
                 ThreeGroupDataset:ThreeGroupDataset,
+                AttNameG3 : "categ2",                
+                GroupDataTotals:Totals,
+                ContainerSize: 500,
+                ColumnLabelDisplay: 2
+        }
+
+            var Config2 = { 
+              ContainerName : "MyChart2",
+                Title : "MyChart3",
+                GroupLabelsData: Estados,//series                
+                Datasets:Arry,
+                AttNameEval : "estado",
+                Colors:Colors,
+                GroupDataset:labels,
+                AttNameG1 : "time",
+                SecondGroupDataset:SecondGroupDataset,                
+                AttNameG2 : "categ",
+                ThreeGroupDataset:ThreeGroupDataset,
+                AttNameG3 : "categ2",                
                 GroupDataTotals:Totals,
                 ContainerSize: 500,
                 ColumnLabelDisplay: 2
             }
 
+
             var Config3 = { 
-                ContainerName : "MyChart",
-                Title : "MyChart",
-                GroupLabelsData: Estados,
-                GroupDataset:labels,
+              ContainerName : "MyChart3",
+                Title : "MyChart3",
+                GroupLabelsData: Estados,//series                
                 Datasets:Arry,
+                AttNameEval : "estado",
                 Colors:Colors,
-                SecondGroupDataset:SecondGroupDataset,
-                ThreeGroupDataset:ThreeGroupDataset,
-                GroupDataTotals:Totals,
-                ContainerSize: 500,
-                ColumnLabelDisplay: 0
-            }
-
-
-            var Config2 = { 
-                ContainerName : "MyChart2",
-                Title : "MyChart2",
-                GroupLabelsData: Estados,
                 GroupDataset:labels,
-                Datasets:Arry,
-                Colors:Colors,
-                SecondGroupDataset:SecondGroupDataset,
+                AttNameG1 : "time",
+                SecondGroupDataset:SecondGroupDataset,                
+                AttNameG2 : "categ",
                 ThreeGroupDataset:ThreeGroupDataset,
+                AttNameG3 : "categ2",                
                 GroupDataTotals:Totals,
                 ContainerSize: 500,
                 ColumnLabelDisplay: 2
@@ -132,7 +148,7 @@
     <div id="MyChart2">
     </div>
         <div id="MyChart3">
-        </div>
+      </div>
    
   </body>
 </html>

@@ -8,10 +8,14 @@ class ChartConfig{
         this.ContainerName = Config.ContainerName;
         this.Title = Config.Title;
         this.GroupDataset = Config.GroupDataset;//primera agrupacion
+        this.AttNameG1 = Config.AttNameG1;
         this.SecondGroupDataset = Config.SecondGroupDataset;//segunda agrupacion
+        this.AttNameG2 = Config.AttNameG2;
         this.ThreeGroupDataset = Config.ThreeGroupDataset;//triple agrupacion
+        this.AttNameG3 = Config.AttNameG3;
         this.GroupLabelsData = Config.GroupLabelsData;//series
         this.Datasets = Config.Datasets; //datos
+        this.AttNameEval = Config.AttNameEval;
         this.Colors = Config.Colors;  
         this.GroupDataTotals = Config.GroupDataTotals;
         this.ContainerSize = Config.ContainerSize;
@@ -32,7 +36,7 @@ function DrawGroupChart(Config){
     var index = 0
     Config.GroupLabelsData.forEach(element => { 
             SectionLabels.appendChild(CreateStringNode(
-                `<label><span style="background:${Config.Colors[index]}"></span>${element}</label>`
+                `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
             ));
             index ++;
     })  
@@ -44,7 +48,7 @@ function DrawGroupChart(Config){
         var index = 0;        
         Config.GroupLabelsData.forEach(elementLabelData => {           
             Config.Datasets.forEach(element => {
-                if (element.time == elementGroup.time && element.estado == elementLabelData) {                               
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] && element[Config.AttNameEval] == elementLabelData.id_) {                               
                     var Bars = CreateStringNode(`
                     <Bars class="Bars" style="height:${element.cantidad}px;background:${Config.Colors[index]}">
                         <label>
@@ -59,7 +63,7 @@ function DrawGroupChart(Config){
         SectionBars.append(groupBars);
         SectionLabelGroup.append(CreateStringNode(`       
             <label class="groupLabels">
-                ${elementGroup.time}
+                ${elementGroup[Config.AttNameG1]}
             </labe>`) 
         )                  
     })   
@@ -81,7 +85,7 @@ function DrawOneGroupChart(Config){
     var index = 0
     Config.GroupLabelsData.forEach(element => { 
             SectionLabels.appendChild(CreateStringNode(
-                `<label><span style="background:${Config.Colors[index]}"></span>${element}</label>`
+                `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
             ));
             index ++;
     })  
@@ -90,7 +94,7 @@ function DrawOneGroupChart(Config){
     var MaxVal = MaxValue(Config.GroupDataTotals);
     SectionBars.append(DrawBackgroundChart(MaxVal)); 
 
-        Config.GroupDataset.forEach(elementGroup => {
+    Config.GroupDataset.forEach(elementGroup => {
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
 
@@ -102,7 +106,8 @@ function DrawOneGroupChart(Config){
         var contador = 0;  
         Config.GroupLabelsData.forEach(elementLabelData => {           
             Config.Datasets.forEach(element => {
-                if (element.time == elementGroup.time && element.estado == elementLabelData) {
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] 
+                    && element[Config.AttNameEval] == elementLabelData.id_) {
                    //CalcularTotal
                    var Size = Config.ContainerSize * 0.8;                         
                    //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
@@ -111,29 +116,22 @@ function DrawOneGroupChart(Config){
                    if (Config.ColumnLabelDisplay == 1) {
                        //dibujar el valor en porcentaje
                        console.log(Config.GroupDataTotals)
-                       var total = FindTotal(element, Config.GroupDataTotals);
-
-                       //console.log("totyal: "+total.cantidad)
+                       var total = FindInTotal(element, Config.GroupDataTotals,Config);
                        labelCol = Math.round((labelCol / total.cantidad) * 100)+'%';                                
                    }
                    if (Config.ColumnLabelDisplay == 2) {
                        if (contador == 0) {
                            //pasado = element.cantidad;
                        }else{                                  
-                           //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element.time + " categ "+ element.categ+ " categ2 "+ element.categ2)                                       
-                           var pasado = FindPasado(element,Config.Datasets)
-
+                           var pasado = FindPasado(element,Config.Datasets, Config)
                            if (pasado == 0) {
                                var divisor = 1;
                              } else {
                                var divisor = pasado;
                              }
-//                                    labelCol =  labelCol+' ('+ Math.round(((element.cantidad - pasado) / divisor) * 100) + "%)";
                            labelCol =  labelCol+' ('+ Math.round(( (((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100  + "%)";
                        }
-
-                   }
-                                              
+                   }                                              
                    var Bars = CreateStringNode(`
                    <Bars class="Bars" style="height:${Size * BarSize}px;background:${Config.Colors[index]}">
                        <label>
@@ -150,7 +148,7 @@ function DrawOneGroupChart(Config){
         SectionBars.append(groupBars);
         SectionLabelGroup.append(CreateStringNode(`       
             <label class="groupLabels">
-                ${elementGroup.time}
+                ${elementGroup[Config.AttNameG1]}
             </labe>`)
         )                  
     })   
@@ -172,11 +170,10 @@ function DrawDoubleGroupChart(Config){
     var index = 0
     Config.GroupLabelsData.forEach(element => { 
             SectionLabels.appendChild(CreateStringNode(
-                `<label><span style="background:${Config.Colors[index]}"></span>${element}</label>`
+                `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
             ));
             index ++;
-    })  
-
+    }) 
     
     var SectionBars = document.createElement('section');
     SectionBars.className="SectionBars";
@@ -191,17 +188,17 @@ function DrawDoubleGroupChart(Config){
         var groupLabels = document.createElement("groupLabels");
         groupLabels.className = "groupLabels";
 
-        Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION
-            
+        Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION 
+            console.log(Config.AttNameG2)           
             var ContainerBars = document.createElement("ContainerBar");
             ContainerBars.className = "ContainerBars";
             var index = 0; 
             Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS         
                 Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-                    
-                    if (element.time == elementGroup.time
-                        && element.estado == elementLabelData 
-                        && element.categ == elementSecondGroup.categ) {       
+                   
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                        && element[Config.AttNameEval] == elementLabelData.id_ 
+                        && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {       
                         //CalcularTotal
                         var Size = Config.ContainerSize * 0.8;                         
                         //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
@@ -209,9 +206,7 @@ function DrawDoubleGroupChart(Config){
                         var labelCol = element.cantidad;
                         if (Config.ColumnLabelDisplay == 1) {
                             //dibujar el valor en porcentaje
-                            console.log(Config.GroupDataTotals)
-                            var total = FindTotal(element, Config.GroupDataTotals);
-
+                            var total = FindInTotal(element, Config.GroupDataTotals,Config);
                             //console.log("totyal: "+total.cantidad)
                             labelCol = Math.round((labelCol / total.cantidad) * 100)+'%';                                
                         }
@@ -219,15 +214,13 @@ function DrawDoubleGroupChart(Config){
                             if (contador == 0) {
                                 //pasado = element.cantidad;
                             }else{                                  
-                                //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element.time + " categ "+ element.categ+ " categ2 "+ element.categ2)                                       
-                                var pasado = FindPasado(element,Config.Datasets)
-
+                                //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element[Config.AttNameG1] + " categ "+ element[Config.AttNameG2]+ " categ2 "+ element[Config.AttNameG3])                                       
+                                var pasado = FindPasado(element,Config.Datasets, Config)
                                 if (pasado == 0) {
                                     var divisor = 1;
                                   } else {
                                     var divisor = pasado;
                                   }
-//                                    labelCol =  labelCol+' ('+ Math.round(((element.cantidad - pasado) / divisor) * 100) + "%)";
                                 labelCol =  labelCol+' ('+ Math.round(( (((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100  + "%)";
                             }
 
@@ -249,7 +242,7 @@ function DrawDoubleGroupChart(Config){
             
             groupLabels.append(CreateStringNode(`       
                 <label class="groupLabels">
-                    ${elementSecondGroup.categ}
+                    ${elementSecondGroup[Config.AttNameG2]}
                 </labe>`) 
             )  
         }); //fin segunda agrupacion
@@ -257,7 +250,7 @@ function DrawDoubleGroupChart(Config){
         SectionLabelSecondGroup.append(groupLabels);
         SectionLabelGroup.append(CreateStringNode(`       
             <label class="groupLabels">
-                ${elementGroup.time}
+                ${elementGroup[Config.AttNameG1]}
             </labe>`) 
         )    
         contador++;              
@@ -282,12 +275,11 @@ function DrawThreeGroupChart(Config){
     var SectionLabelSecondGroup = document.createElement('section');
     SectionLabelSecondGroup.className = "SectionLabelSecondGroup";
     var SectionLabelThreeGroup = document.createElement('section');
-    SectionLabelThreeGroup.className = "SectionLabelThreeGroup";
-      
+    SectionLabelThreeGroup.className = "SectionLabelThreeGroup";      
     var index = 0
     Config.GroupLabelsData.forEach(element => { 
             SectionLabels.appendChild(CreateStringNode(
-                `<label><span style="background:${Config.Colors[index]}"></span>${element}</label>`
+                `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
             ));
             index ++;
     })  
@@ -321,10 +313,10 @@ function DrawThreeGroupChart(Config){
                     
                     Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
                         
-                        if (element.time == elementGroup.time
-                            && element.estado == elementLabelData 
-                            && element.categ == elementSecondGroup.categ
-                            && element.categ2 == elementThreeGroup.categ2) { 
+                        if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                            && element[Config.AttNameEval] == elementLabelData.id_ 
+                            && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]
+                            && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) { 
                             //CalcularTotal
                             var Size = Config.ContainerSize * 0.8;                         
                             //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
@@ -332,9 +324,7 @@ function DrawThreeGroupChart(Config){
                             var labelCol = element.cantidad;
                             if (Config.ColumnLabelDisplay == 1) {
                                 //dibujar el valor en porcentaje
-                                console.log(Config.GroupDataTotals)
-                                var total = FindTotal(element, Config.GroupDataTotals);
-
+                                var total = FindInTotal(element, Config.GroupDataTotals,Config);
                                 //console.log("totyal: "+total.cantidad)
                                 labelCol = Math.round((labelCol / total.cantidad) * 100)+'%';                                
                             }
@@ -342,8 +332,8 @@ function DrawThreeGroupChart(Config){
                                 if (contador == 0) {
                                     //pasado = element.cantidad;
                                 }else{                                  
-                                    //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element.time + " categ "+ element.categ+ " categ2 "+ element.categ2)                                       
-                                    var pasado = FindPasado(element,Config.Datasets)
+                                    //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element[Config.AttNameG1] + " categ "+ element[Config.AttNameG2]+ " categ2 "+ element[Config.AttNameG3])                                       
+                                    var pasado = FindPasado(element,Config.Datasets, Config)
 
                                     if (pasado == 0) {
                                         var divisor = 1;
@@ -372,14 +362,14 @@ function DrawThreeGroupChart(Config){
                 });//FIN STAKS
                 groupLabelsThree.append(CreateStringNode(`       
                     <label class="groupLabels">
-                        ${elementThreeGroup.categ2}
+                        ${elementThreeGroup[Config.AttNameG3]}
                     </labe>`) 
                     )  
             }); //fin tercera agrupacion            
             //groupLabelsThree.append(groupLabelT);
             groupLabels.append(CreateStringNode(`       
             <label class="groupLabels">
-                ${elementSecondGroup.categ}
+                ${elementSecondGroup[Config.AttNameG2]}
             </labe>`) 
             )           
             
@@ -389,7 +379,7 @@ function DrawThreeGroupChart(Config){
         SectionLabelThreeGroup.append(groupLabelsThree);
         SectionLabelGroup.append(CreateStringNode(`       
             <label class="groupLabels">
-                ${elementGroup.time}
+                ${elementGroup[Config.AttNameG1]}
             </labe>`) 
         )   
         //console.log("contador: "+contador)
@@ -444,20 +434,20 @@ function MaxValue(DataArry){
     return Maxvalue;
 }
 
-function FindTotal(Elemento, list) {
+function FindInTotal(Elemento, list, Config) {
     var FindElement = false;  
         for (let index = 0; index < list.length; index++) {
-            if (list[index]['categ2']) {
+            if (list[index][Config.AttNameG3]) {
                 
-                if (list[index]['time'] == Elemento.time && list[index]['categ'] == Elemento.categ && list[index]['categ2'] == Elemento.categ2) {                    
+                if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] && list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] && list[index][Config.AttNameG3] == Elemento[Config.AttNameG3]) {                    
                     FindElement = list[index];
                 }  
-            }else if (list[index]['categ']) {
-                if (list[index]['time'] == Elemento.time && list[index]['categ'] == Elemento.categ) {
+            }else if (list[index][Config.AttNameG2]) {
+                if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] && list[index][Config.AttNameG2] == Elemento[Config.AttNameG2]) {
                     FindElement = list[index];                                
                 }  
             }else{
-                if (list[index]['time'] == Elemento.time) {
+                if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1]) {
                     FindElement = list[index];                                
                 }
             }                          
@@ -465,39 +455,23 @@ function FindTotal(Elemento, list) {
     return FindElement;
 } 
 
-function FindPasado(Elemento, list) {
-    var FindElement = {cantidad: 0};  
-
-
+function FindPasado(Elemento, list, Config) {
+    var FindElement = {cantidad: 0}; 
         for (let index = 0; index < list.length; index++) {
-            if (list[index]['categ2']) {                
-
-                if (list[index]['time'] < Elemento.time && list[index]['categ'] == Elemento.categ && list[index]['categ2'] == Elemento.categ2 && list[index]['estado'] == Elemento.estado) {                    
-
-                    if (list[index]['categ2'] == 'G2') {
-                        
-                    
-                    /*console.log(list[index]['time'] +" ? "+  Elemento.time)
-                    console.log(list[index]['categ'] +" ? "+  Elemento.categ)
-                    console.log(list[index]['categ2'] +" ? "+  Elemento.categ2)
-                    console.log(list[index]['estado'] +" ? "+  Elemento.estado)
-                    console.log(list[index].cantidad + ' ? ' +Elemento.cantidad  )
-                    
-                    console.log(' ')*/
-                    }
+            if (list[index][Config.AttNameG3]) {  
+                if (list[index][Config.AttNameG1] < Elemento[Config.AttNameG1] && list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] && list[index][Config.AttNameG3] == Elemento[Config.AttNameG3] && list[index][Config.AttNameEval] == Elemento[Config.AttNameEval]) {                    
 
                     FindElement = list[index];
                 }  
-            }else if (list[index]['categ']) {
-                if (list[index]['time'] < Elemento.time && list[index]['categ'] == Elemento.categ && list[index]['estado'] == Elemento.estado) {
+            }else if (list[index][Config.AttNameG2]) {
+                if (list[index][Config.AttNameG1] < Elemento[Config.AttNameG1] && list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] && list[index][Config.AttNameEval] == Elemento[Config.AttNameEval]) {
                     FindElement = list[index];                                
                 }  
             }else{
-                if (list[index]['time'] < Elemento.time && list[index]['estado'] == Elemento.estado) {
+                if (list[index][Config.AttNameG1] < Elemento[Config.AttNameG1] && list[index][Config.AttNameEval] == Elemento[Config.AttNameEval]) {
                     FindElement = list[index];                                
                 }
             }                          
         }
-    console.log(FindElement.cantidad)    
     return FindElement.cantidad;
 }
