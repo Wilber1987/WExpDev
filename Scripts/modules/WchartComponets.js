@@ -498,6 +498,6 @@ function FindPasado(Elemento, list) {
                 }
             }                          
         }
-    console.log(FindElement.cantidad)    
+    
     return FindElement.cantidad;
 }
