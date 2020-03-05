@@ -40,14 +40,31 @@
  .SectionLabelGroup .groupLabels,
  .SectionLabelSecondGroup .groupLabels,
  .SectionLabelThreeGroup .groupLabels, .ContainerBars
- {
-    padding-left: 5px;
-    padding-right: 5px;
+ {    
     padding-bottom: 0px;    
     width: 100%;
     display: flex;
-    align-items:  flex-end;   
+    align-items:  flex-end; 
+    margin: 0px;
+    height: 100%;     
 }
+
+.SectionLabelGroup  label,
+.SectionLabelSecondGroup  label,
+.SectionLabelThreeGroup  label
+{
+   padding-left: 5px;
+   margin: 0px;
+   height: 100%;
+   padding-right: 5px;
+   padding-bottom: 0px;    
+   width: 100%;
+   display: flex;
+   align-items:  center !important;  
+   border: solid 1px #888888; 
+}
+
+
 .SectionLabelGroup .groupLabels, 
 .SectionLabelSecondGroup .groupLabels,
 .SectionLabelThreeGroup .groupLabels{
@@ -56,16 +73,20 @@
 .groupBars .Bars{
     width: 100%;
     min-width: 30px;
-    margin-top: 5px;
-    margin-left: 5px;    
-    display: block;     
-    background: #888888;
+    margin-top: auto;
+    margin-left: auto; 
+    background: #c7c7c7;
+    max-width:150px ;
+}
+.groupBars {
+    border-right: 1px solid #c3c3c3;
+    height: 100%;
 }
 .groupBars .Bars label{
    width: 100%;
    text-align: center;
    display: block;
-   font-size: 12px;
+   font-size: 11px;
    margin-top : 10px;
    font-weight: bold;
 }
@@ -90,13 +111,16 @@
  }
  .ContainerBars{
      width: 100%;
+     padding: 0px 10px;
      /* margin-left: 5px;
      margin-right: 5px; */
      display: flex;
      flex-direction: column;
      align-items: flex-end;
      height: 100%;
+     justify-content: center;
  }
+
  .SectionLabelSecondGroup label {
     margin-left: 5px;
     margin-right: 5px;
@@ -105,7 +129,10 @@
     width: 100%;
  }
  .ContainerBars .Bars{
+     display: block;
+     margin: 0 auto;
     margin-top: 0px;
+    z-index: 2;
 }
 
 
@@ -122,8 +149,7 @@
     position: relative;
     border-top: rgb(190, 190, 190) solid 1px;
     height: 100%;
-    display: block;   
-    z-index: -5;
+    display: block;       
     align-items: flex-start;
     display: flex;
     padding-left: 5PX;
