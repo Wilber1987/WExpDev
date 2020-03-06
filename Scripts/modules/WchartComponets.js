@@ -479,5 +479,6 @@ function FindPasado(Elemento, list, Config) {
                 }
             }                          
         }
+
     return FindElement.cantidad;
 }
