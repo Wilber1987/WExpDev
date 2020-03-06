@@ -6,6 +6,7 @@ function importarScript(nombre, callback) {
 window.onload = OnLoad;
 importarScript("scripts/modules/WComponents.js");
 importarScript("scripts/modules/WchartComponets.js");
+importarScript("scripts/modules/WtableComponents.js");
 
 
 function OnLoad() { 
