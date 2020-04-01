@@ -55,7 +55,7 @@
  .groupBars
 {  
     width: 100%; 
-    height: 400px;
+    height: 300px;
     display: flex;
     border: solid 1px #d4d4d4;
 }
@@ -65,6 +65,7 @@
     border: solid 1px #d4d4d4;
     align-items: stretch;
     background-color: #fff;
+    height: 30px;
 }
 .groupLabels label{
     padding: 5px;
@@ -111,7 +112,7 @@
     height: 100%;
     left: 0px;
     top: 0px;   
-    height: 400px;
+    height: 300px;
     right: 0px; 
 }
 .CharLineX{
@@ -142,8 +143,8 @@
    border:  2px solid #fff;
    content: "";
    position: absolute;
-   left: -45px;
-   padding: 5px;
+   left: -35px;
+ 
 }
 .ElementG2::before{
     height: 30px;
@@ -153,8 +154,8 @@
     content: "";
     z-index: -1;
     position: absolute;
-    left: -45px;
-    padding: 5px;
+    left: -35px;
+  
  }
  .ElementG3::before{
     height: 30px;
@@ -164,8 +165,8 @@
     content: "";
     z-index: -1;
     position: absolute;
-    left: -45px;
-    padding: 5px;
+    left: -35px;
+    
  }
 
 

@@ -341,8 +341,9 @@ function DrawThreeGroupChart(Config){
 
         var groupLabelsThree = document.createElement("groupLabelsThree");
         groupLabelsThree.className = "groupLabels ElementG3";
+
         
-        GroupSection.append(groupBars,groupLabels,groupLabelsTwo,groupLabelsThree);
+        GroupSection.append(groupBars,groupLabelsThree,groupLabelsTwo,groupLabels);
         
 
         Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION
