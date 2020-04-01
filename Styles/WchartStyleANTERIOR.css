@@ -1,0 +1,161 @@
+.WChartContainer{
+    padding-left: 30px;
+    font-size: 12px;
+    border: #d4d4d4 solid 4px;
+    padding: 20px;
+    border-radius: .4cm;
+    overflow-x: scroll;
+}
+.WChartContainer h3{
+    height:30px;
+    text-align: center;
+    display: block;
+    font-size: 20px;
+    
+}
+.SectionLabels{
+    height:30px    
+}
+.SectionBars{
+    display: flex;
+    align-items:  flex-end;
+    height:80%;   
+    /* border-left:3px rgb(155, 155, 155) solid ;*/
+    border-bottom:3px rgb(155, 155, 155) solid ;  
+    padding-left: 30px;
+    position: relative;
+}
+
+.SectionLabelGroup, .SectionLabelSecondGroup, .SectionLabelThreeGroup{
+    display: flex;
+    align-items:  center;
+    height: 28px;       
+    padding-left: 30px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #888888 ;
+    border-left: 1px solid #888888 ;
+    border-right: 1px solid #888888 ;
+
+}
+.SectionBars .groupBars,
+ .SectionLabelGroup .groupLabels,
+ .SectionLabelSecondGroup .groupLabels,
+ .SectionLabelThreeGroup .groupLabels, .ContainerBars
+ {    
+    padding-bottom: 0px;    
+    width: 100%;
+    display: flex;
+    align-items:  flex-end; 
+    margin: 0px;
+    height: 100%;     
+}
+
+.SectionLabelGroup  label,
+.SectionLabelSecondGroup  label,
+.SectionLabelThreeGroup  label
+{
+   padding-left: 5px;
+   margin: 0px;
+   height: 100%;
+   padding-right: 5px;
+   padding-bottom: 0px;    
+   width: 100%;
+   display: flex;
+   align-items:  center !important;  
+   border: solid 1px #888888; 
+}
+.groupLabels .groupLabels{
+    width: 100% !important;
+}
+
+
+.SectionLabelGroup .groupLabels, 
+.SectionLabelSecondGroup .groupLabels,
+.SectionLabelThreeGroup .groupLabels{
+    justify-content: center;
+}
+.groupBars .Bars{
+    width: 100%;
+    min-width: 30px;
+    margin-top: auto;
+    margin-left: auto; 
+    background: #c7c7c7;
+    max-width:150px ;
+}
+.groupBars {
+    border-right: 1px solid #c3c3c3;
+    height: 100%;
+}
+.groupBars .Bars label{
+   width: 100%;
+   text-align: center;
+   display: block;
+   font-size: 11px;
+   margin-top : 10px;
+   font-weight: bold;
+}
+.SectionLabels{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.SectionLabels label{
+   padding: 5px;
+   display: inline-flex; 
+   height: 20px;
+   justify-content: center;
+    align-items: center;
+}
+.SectionLabels label span{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: inline-flex;    
+    margin: 5px;
+ }
+ .ContainerBars{
+     width: 100%;
+     padding: 0px 10px;
+     /* margin-left: 5px;
+     margin-right: 5px; */
+     display: flex;
+     flex-direction: column;
+     align-items: flex-end;
+     height: 100%;
+     justify-content: flex-end;
+ }
+
+ .SectionLabelSecondGroup label {
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+ }
+ .ContainerBars .Bars{
+     display: block;
+     margin: 0 auto;
+    margin-top: 0px;
+    z-index: 1;
+}
+
+
+.BackGrounLineX{
+    display: flex;
+    position: absolute;
+    flex-direction: column-reverse;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;    
+}
+.CharLineX{
+    position: relative;
+    border-top: rgb(190, 190, 190) solid 1px;
+    height: 100%;
+    display: block;       
+    align-items: flex-start;
+    display: flex;
+    padding-left: 5PX;
+    
+}

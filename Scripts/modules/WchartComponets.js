@@ -26,10 +26,8 @@ class ChartConfig{
 function DrawGroupChart(Config){
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName);  
-    ChartContainer.className = "WChartContainer";  
+    ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";  
-
-    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -48,6 +46,7 @@ function DrawGroupChart(Config){
         Config.GroupDataset.forEach(elementGroup => {
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
+        groupBars.style.height =  Config.ContainerSize + "px !important";
         var index = 0;        
         Config.GroupLabelsData.forEach(elementLabelData => {           
             Config.Datasets.forEach(element => {
@@ -77,10 +76,8 @@ function DrawOneGroupChart(Config){
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName);  
     
-    ChartContainer.className = "WChartContainer";  
+    ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";  
-
-    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -97,12 +94,14 @@ function DrawOneGroupChart(Config){
     })  
     var SectionBars = document.createElement('section');
     SectionBars.className="SectionBars";
+    SectionBars.style.height = Config.ContainerSize + "px";
     var MaxVal = MaxValue(Config.GroupDataTotals);
     SectionBars.append(DrawBackgroundChart(MaxVal)); 
 
     Config.GroupDataset.forEach(elementGroup => {
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
+        groupBars.style.height =  Config.ContainerSize + "px !important";
 
         var ContainerBars = document.createElement("ContainerBar");
         ContainerBars.className = "ContainerBars";
@@ -115,13 +114,13 @@ function DrawOneGroupChart(Config){
                 if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] 
                     && element[Config.AttNameEval] == elementLabelData.id_) {
                    //CalcularTotal
-                   var Size = Config.ContainerSize * 0.8;                         
+                   var Size = Config.ContainerSize ;                         
                    //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
                    var BarSize = (element.cantidad/MaxVal); //% de tamaño
                    var labelCol = element.cantidad;
                    if (Config.ColumnLabelDisplay == 1) {
                        //dibujar el valor en porcentaje
-                       console.log(Config.GroupDataTotals)
+                       //console.log(Config.GroupDataTotals)
                        var total = FindInTotal(element, Config.GroupDataTotals,Config);
                        labelCol = Math.round((labelCol / total.cantidad) * 100)+'%';                                
                    }
@@ -137,7 +136,9 @@ function DrawOneGroupChart(Config){
                              }
                            labelCol =  labelCol+' ('+ Math.round(( (((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100  + "%)";
                        }
-                   }                                              
+                   }        
+                   console.log(Size);
+                   console.log(BarSize);                                    
                    var Bars = CreateStringNode(`
                    <Bars class="Bars" style="height:${Size * BarSize}px;background:${Config.Colors[index]}">
                        <label>
@@ -162,12 +163,10 @@ function DrawOneGroupChart(Config){
 }
 
 function DrawDoubleGroupChart(Config){
-    var Config = new ChartConfig(Config);
+   //var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName);  
-    ChartContainer.className = "WChartContainer";  
+    ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";  
-
-    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -188,28 +187,38 @@ function DrawDoubleGroupChart(Config){
     SectionBars.className="SectionBars";
     var MaxVal = MaxValue(Config.GroupDataTotals);
     SectionBars.append(DrawBackgroundChart(MaxVal)); 
-    
+    SectionBars.style.height = Config.ContainerSize + "px";
     var pasado = null;
     var contador = 0;
     Config.GroupDataset.forEach(elementGroup => {//RECORREMOS EL TIEMPO PRIMERA AGRUPACION
-        var groupBars = document.createElement("groupBar");
-        groupBars.className = "groupBars";
+       // console.log(elementGroup)
+        var groupBars = document.createElement("groupBar"); 
+         groupBars.className = "groupBars";
+         groupBars.style.height =  Config.ContainerSize + "px !important";
+        //groupBars.style.height =  Config.ContainerSize + "px !important";
+      
         var groupLabels = document.createElement("groupLabels");
         groupLabels.className = "groupLabels";
 
         Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION 
-            console.log(Config.AttNameG2)           
+            //console.log(Config.AttNameG2) 
+            //console.log(elementSecondGroup)
+                          
             var ContainerBars = document.createElement("ContainerBar");
             ContainerBars.className = "ContainerBars";
             var index = 0; 
-            Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS         
+            Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS    
+                //console.log(elementLabelData)     
                 Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-                   
+                    //console.log("elemento -"+element[Config.AttNameG1]+ " - "+element[Config.AttNameG2]+" - "+ element[Config.AttNameEval])
+                    //console.log("filtros - " +elementGroup[Config.AttNameG1] + " - " + elementSecondGroup[Config.AttNameG2] + " - " + elementLabelData.id_) 
+
                     if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
                         && element[Config.AttNameEval] == elementLabelData.id_ 
-                        && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {       
+                        && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {  
+                        //console.log(element)     
                         //CalcularTotal
-                        var Size = Config.ContainerSize * 0.8;                         
+                        var Size = Config.ContainerSize;                         
                         //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
                         var BarSize = (element.cantidad/MaxVal); //% de tamaño
                         var labelCol = element.cantidad;
@@ -275,19 +284,21 @@ function DrawDoubleGroupChart(Config){
 function DrawThreeGroupChart(Config){
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName); 
-    ChartContainer.className = "WChartContainer";  
+    ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";  
-
-    
     var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
-    var SectionLabelGroup = document.createElement('section');
-    SectionLabelGroup.className = "SectionLabelGroup";    
-    var SectionLabelSecondGroup = document.createElement('section');
-    SectionLabelSecondGroup.className = "SectionLabelSecondGroup";
-    var SectionLabelThreeGroup = document.createElement('section');
-    SectionLabelThreeGroup.className = "SectionLabelThreeGroup";      
+    
+    // var SectionLabelGroup = document.createElement('section');
+    // SectionLabelGroup.className = "SectionLabelGroup";    
+    
+    // var SectionLabelSecondGroup = document.createElement('section');
+    // SectionLabelSecondGroup.className = "SectionLabelSecondGroup";
+    
+    // var SectionLabelThreeGroup = document.createElement('section');
+    // SectionLabelThreeGroup.className = "SectionLabelThreeGroup";     
+
     var index = 0
     Config.GroupLabelsData.forEach(element => { 
             SectionLabels.appendChild(CreateStringNode(
@@ -297,22 +308,46 @@ function DrawThreeGroupChart(Config){
     })  
     var SectionBars = document.createElement('section');
     SectionBars.className="SectionBars";
+    SectionBars.style.minHeight = Config.ContainerSize + "px";
     //tomar maxvalue
     var MaxVal = MaxValue(Config.GroupDataTotals);
+
     SectionBars.append(DrawBackgroundChart(MaxVal)); 
 
     var pasado = null;
     var contador = 0;
-    Config.GroupDataset.forEach(elementGroup => {//RECORREMOS EL TIEMPO PRIMERA AGRUPACION
+    Config.GroupDataset.forEach(elementGroup => {//RECORREMOS EL TIEMPO PRIMERA AGRUPACION        
+        var GroupSection = document.createElement("GroupSection");        
+        GroupSection.className = "GroupSection";
+
         var groupBars = document.createElement("groupBar");
+
         groupBars.className = "groupBars";
-        var groupLabels = document.createElement("groupLabels");
-        groupLabels.className = "groupLabels";
+        groupBars.append(DrawBackgroundLine(MaxVal)); 
+
+        //cajon barras
+        //cajoin de lkabels 1
+        //cajon de labels 2
+        //cajon de labels 3
+
+        //groupBars.style.height =  Config.ContainerSize + "px !important";
+        
+        
+        var groupLabels = document.createElement("groupLabels");        
+        groupLabels.className = "groupLabels ElementG1";
+
+        var groupLabelsTwo = document.createElement("groupLabelsTwo");
+        groupLabelsTwo.className = "groupLabels ElementG2"; 
+
         var groupLabelsThree = document.createElement("groupLabelsThree");
-        groupLabelsThree.className = "groupLabels";       
+        groupLabelsThree.className = "groupLabels ElementG3";
+        
+        GroupSection.append(groupBars,groupLabels,groupLabelsTwo,groupLabelsThree);
+        
+
         Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION
-            // var groupLabelT = document.createElement("groupLabelT");
-            // groupLabelT.className = "groupLabels";
+            //var groupLabelT = document.createElement("groupLabelT");
+            //groupLabelT.className = "groupLabels";
             Config.ThreeGroupDataset.forEach(elementThreeGroup => {//RECORREMOS la categoria tercera AGRUPACION
                 
                 var ContainerBars = document.createElement("ContainerBar");
@@ -326,7 +361,7 @@ function DrawThreeGroupChart(Config){
                             && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]
                             && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) { 
                             //CalcularTotal
-                            var Size = Config.ContainerSize * 0.8;                         
+                            var Size = Config.ContainerSize;                         
                             var BarSize = (element.cantidad/MaxVal); //% de tamaño
                             var labelCol = element.cantidad;
                             if (Config.ColumnLabelDisplay == 1) {
@@ -360,37 +395,42 @@ function DrawThreeGroupChart(Config){
                     groupBars.append(ContainerBars); 
                         
                 });//FIN STAKS
-                groupLabelsThree.append(CreateStringNode(`       
-                    <label class="groupLabels">
-                        ${elementThreeGroup[Config.AttNameG3]}
-                    </labe>`) 
+                 groupLabelsThree.append(CreateStringNode(`       
+                     <label class="">
+                         ${elementThreeGroup[Config.AttNameG3]}
+                   </label>`) 
                     )  
             }); //fin tercera agrupacion            
-            //groupLabelsThree.append(groupLabelT);
-            groupLabels.append(CreateStringNode(`       
-            <label class="groupLabels">
-                ${elementSecondGroup[Config.AttNameG2]}
-            </labe>`) 
-            )           
+            groupLabelsTwo.append(CreateStringNode(`       
+            <label class="">
+               ${elementSecondGroup[Config.AttNameG2]}
+            </label>`) 
+            )               
             
         }); //fin segunda agrupacion
-        SectionBars.append(groupBars);
-        SectionLabelSecondGroup.append(groupLabels);  
-        SectionLabelThreeGroup.append(groupLabelsThree);
-        SectionLabelGroup.append(CreateStringNode(`       
-            <label class="groupLabels">
-                ${elementGroup[Config.AttNameG1]}
-            </labe>`) 
+        groupLabels.append(CreateStringNode(`       
+        <label class="">
+           ${elementGroup[Config.AttNameG1]}
+        </labe>`) 
         )   
+        //groupBars.append(groupLabels);   
+        SectionBars.append(GroupSection);
+        // SectionLabelSecondGroup.append(groupLabels);  
+        // SectionLabelThreeGroup.append(groupLabelsThree);
+        // SectionLabelGroup.append(CreateStringNode(`       
+        //     <label class="groupLabels">
+        //         ${elementGroup[Config.AttNameG1]}
+        //     </labe>`) 
+        // )   
         //console.log("contador: "+contador)
         contador++;
     })   
     ChartContainer.append(SectionTitle,
             SectionLabels,
-            SectionBars,
-            SectionLabelThreeGroup,
+            SectionBars
+            /*SectionLabelThreeGroup,
             SectionLabelSecondGroup,
-            SectionLabelGroup
+            SectionLabelGroup*/
         );
 }
 
@@ -418,11 +458,41 @@ function DrawBackgroundChart(value, size = 600){
     for (let index = 0; index < countLine; index++) {
         valueLabel = valueLabel + val;
         ContainerLine.appendChild(CreateStringNode(
-            `<path class="CharLineX"><label>${valueLabel}</label></path>`
+            `<path class="CharLineXNumber"><label>${valueLabel}</label></path>`
         ));        
     }
     return ContainerLine;
 }
+function DrawBackgroundLine(value, size = 600){
+    //console.log(value)
+    var countLine = 0;
+    var val = 0;
+    if (value > 1000) {
+        var countLine = parseInt(value / 1000)
+        var value = parseInt(value / 1000) * 1000 + 1000;
+        val = 1000;
+    }else if (value > 100) {
+        var countLine = parseInt(value / 100)
+        var value = parseInt(value / 100) * 100 + 100 ;
+        val = 100;    
+    }else if (value > 0) {
+        var countLine = parseInt(value / 10)
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 10;        
+    }
+    var ContainerLine = document.createElement('section');
+    ContainerLine.className = "BackGrounLineX";
+    var valueLabel = 0;
+    
+    for (let index = 0; index < countLine; index++) {
+        valueLabel = valueLabel + val;
+        ContainerLine.appendChild(CreateStringNode(
+            `<path class="CharLineX"></path>`
+        ));        
+    }
+    return ContainerLine;
+}
+
 
 function MaxValue(DataArry){
     var Maxvalue = 0;   
@@ -479,6 +549,5 @@ function FindPasado(Elemento, list, Config) {
                 }
             }                          
         }
-
     return FindElement.cantidad;
 }
