@@ -237,7 +237,39 @@
           {"cantidad":34,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
           {"cantidad":21,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"parmalat"}]}
        
+
+      result2 = {"datos":[{"cantidad":251,"estado":"Fresa","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":255,"estado":"Naranja","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":234,"estado":"Verde","time":2018,"fecha":"2018-12-01 00:00:00"},{"cantidad":258,"estado":"Fresa","time":2019,"fecha":"2019-12-01 00:00:00"},{"cantidad":256,"estado":"Naranja","time":2019,"fecha":"2019-12-01 00:00:00"},{"cantidad":226,"estado":"Verde","time":2019,"fecha":"2019-12-01 00:00:00"},{"cantidad":230,"estado":"Fresa","time":2020,"fecha":"2020-03-01 00:00:00"},{"cantidad":240,"estado":"Naranja","time":2020,"fecha":"2020-03-01 00:00:00"},{"cantidad":270,"estado":"Verde","time":2020,"fecha":"2020-03-01 00:00:00"}],"Labels":[{"time":2020},{"time":2018},{"time":2019}],"Labels2":[],"Labels3":[],"totales":[{"cantidad":740,"estado":"Verde","time":2018,"fecha":"2018-12-01 00:00:00"},{"cantidad":740,"estado":"Verde","time":2019,"fecha":"2019-12-01 00:00:00"},{"cantidad":740,"estado":"Naranja","time":2020,"fecha":"2020-03-01 00:00:00"}],"Data":[]}
       
+      result3 = {"datos":[{"cantidad":140,"categ":"Comerciante","estado":"Fresa","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":149,"categ":"Comerciante","estado":"Naranja","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":149,"categ":"Comerciante","estado":"Verde","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":111,"categ":"Salud","estado":"Fresa","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":106,"categ":"Salud","estado":"Naranja","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":85,"categ":"Salud","estado":"Verde","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":159,"categ":"Comerciante","estado":"Fresa","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":135,"categ":"Comerciante","estado":"Naranja","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":144,"categ":"Comerciante","estado":"Verde","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":99,"categ":"Salud","estado":"Fresa","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":121,"categ":"Salud","estado":"Naranja","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":82,"categ":"Salud","estado":"Verde","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":133,"categ":"Comerciante","estado":"Fresa","time":2020,"fecha":"2020-03-01 00:00:00"},
+      {"cantidad":139,"categ":"Comerciante","estado":"Naranja","time":2020,"fecha":"2020-03-01 00:00:00"},
+      {"cantidad":166,"categ":"Comerciante","estado":"Verde","time":2020,"fecha":"2020-03-01 00:00:00"},
+      {"cantidad":97,"categ":"Salud","estado":"Fresa","time":2020,"fecha":"2020-03-01 00:00:00"},
+      {"cantidad":101,"categ":"Salud","estado":"Naranja","time":2020,"fecha":"2020-03-01 00:00:00"},
+      {"cantidad":104,"categ":"Salud","estado":"Verde","time":2020,"fecha":"2020-03-01 00:00:00"}],
+      "Labels":[{"time":2020},
+      {"time":2018},
+      {"time":2019}],
+      "Labels2":[{"categ":"Salud"},
+      {"categ":"Comerciante"}],"Labels3":[],"totales":[{"cantidad":438,"categ":"Comerciante","estado":"Fresa","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":302,"categ":"Salud","estado":"Fresa","time":2018,"fecha":"2018-12-01 00:00:00"},
+      {"cantidad":438,"categ":"Comerciante","estado":"Fresa","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":302,"categ":"Salud","estado":"Naranja","time":2019,"fecha":"2019-12-01 00:00:00"},
+      {"cantidad":438,"categ":"Comerciante","estado":"Naranja","time":2020,"fecha":"2020-03-01 00:00:00"},
+      {"cantidad":302,"categ":"Salud","estado":"Verde","time":2020,"fecha":"2020-03-01 00:00:00"}],"Data":[]}
       var estadoColores = [
         { id_: "Fresa", Descripcion: "Severa" },
         { id_: "Naranja", Descripcion: "Moderada" },
@@ -263,6 +295,45 @@
         AttNameG2: "",
         AttNameG3: ""
       };
+      var Config2 = {
+        //configuracion del grafico
+        ContainerName: "MyChart3",
+        Title: "MyChart",
+        GroupLabelsData: estadoColores,
+        GroupDataset: result2.Labels,
+        Datasets: result2.datos,
+        Colors: backgroud,
+        SecondGroupDataset: null,
+        ThreeGroupDataset: null,
+        GroupDataTotals: result2.totales,
+        ContainerSize: 400,
+        ColumnLabelDisplay: 0,
+        AttNameEval: "estado",
+        AttNameG1: "time",
+        AttNameG2: "",
+        AttNameG3: ""
+      };
+      var Config = {
+        //configuracion del grafico
+        ContainerName: "MyChart2",
+        Title: "MyChart",
+        GroupLabelsData: estadoColores,
+        GroupDataset: result3.Labels,
+        Datasets: result3.datos,
+        Colors: backgroud,
+        SecondGroupDataset: result3.Labels2,
+        ThreeGroupDataset: null,
+        GroupDataTotals: result3.totales,
+        ContainerSize: 400,
+        ColumnLabelDisplay: 0,
+        AttNameEval: "estado",
+        AttNameG1: "time",
+        AttNameG2: "categ",
+        AttNameG3: ""
+      };
+
+
+      
       Config3.SecondGroupDataset = result.Labels2;
       Config3.AttNameG2 = "categ2";
       Config3.ThreeGroupDataset = result.Labels3;
@@ -272,8 +343,12 @@
       function OnLoad() {
         //DrawGroupChart(Config);
         //DrawOneGroupChart(Config);
-        //DrawDoubleGroupChart(Config2);
+        
         DrawThreeGroupChart(Config3);
+        Config3.ContainerName =  "MyChart2"
+        DrawDoubleGroupChart(Config);
+        Config3.ContainerName =  "MyChart3"
+        DrawOneGroupChart(Config2);
         //DrawThreeGroupChart(Config);
       }
     </script>
