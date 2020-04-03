@@ -53,7 +53,7 @@ function DrawGroupChart(Config) {
             Config.Datasets.forEach(element => {
                 if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] && element[Config.AttNameEval] == elementLabelData.id_) {
                     var Bars = CreateStringNode(`
-                    <Bars class="Bars" style="height:${element.cantidad}px;background:${Config.Colors[index]}">
+                    <Bars class="Bars" style="${styleP}height:${element.cantidad}px;background:${Config.Colors[index]}">
                         <label>
                             ${element.cantidad}
                         </labe>
@@ -101,7 +101,7 @@ function DrawOneGroupChart(Config) {
     SectionBars.className = "SectionBars";
     //SectionBars.style.height = Config.ContainerSize + "px";
     var MaxVal = MaxValue(Config.GroupDataTotals);
-    SectionBars.append(DrawBackgroundChart(MaxVal));
+    SectionBars.append(DrawBackgroundChart(MaxVal, null, Config.ColumnLabelDisplay));
 
     Config.GroupDataset.forEach(elementGroup => {
         var GroupSection = document.createElement("GroupSection");
@@ -109,7 +109,7 @@ function DrawOneGroupChart(Config) {
        
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
-        groupBars.append(DrawBackgroundLine(MaxVal));
+        groupBars.append(DrawBackgroundLine(MaxVal,null, Config.ColumnLabelDisplay));
      //   groupBars.style.minHeight = Config.ContainerSize + "px !important";
 
         var groupLabels = document.createElement("groupLabels");
@@ -129,32 +129,35 @@ function DrawOneGroupChart(Config) {
                     && element[Config.AttNameEval] == elementLabelData.id_) {
                     //CalcularTotal
                     var Size = Config.ContainerSize;
+                    var Size = 300;
                     //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
                     var BarSize = (element.cantidad / MaxVal); //% de tamaño
                     var labelCol = element.cantidad;
+                    var styleP="";
                     if (Config.ColumnLabelDisplay == 1) {
                         //dibujar el valor en porcentaje
+                        styleP = ";flex-grow: 1;"
                         //console.log(Config.GroupDataTotals)
                         var total = FindInTotal(element, Config.GroupDataTotals, Config);
                         labelCol = Math.round((labelCol / total.cantidad) * 100) + '%';
                     }
-                    if (Config.ColumnLabelDisplay == 2) {
-                        if (contador == 0) {
-                            //pasado = element.cantidad;
-                        } else {
-                            var pasado = FindPasado(element, Config.Datasets, Config)
-                            if (pasado == 0) {
-                                var divisor = 1;
-                            } else {
-                                var divisor = pasado;
-                            }
-                            labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
-                        }
-                    }
+                    // if (Config.ColumnLabelDisplay == 2) {
+                    //     if (contador == 0) {
+                    //         //pasado = element.cantidad;
+                    //     } else {
+                    //         var pasado = FindPasado(element, Config.Datasets, Config)
+                    //         if (pasado == 0) {
+                    //             var divisor = 1;
+                    //         } else {
+                    //             var divisor = pasado;
+                    //         }
+                    //         labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
+                    //     }
+                    // }
                     console.log(Size);
                     console.log(BarSize);
                     var Bars = CreateStringNode(`
-                   <Bars class="Bars" style="height:${Size * BarSize}px;background:${Config.Colors[index]}">
+                   <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
                        <label>
                            ${labelCol}
                        </labe>
@@ -210,7 +213,7 @@ function DrawDoubleGroupChart(Config) {
     var SectionBars = document.createElement('section');
     SectionBars.className = "SectionBars";
     var MaxVal = MaxValue(Config.GroupDataTotals);
-    SectionBars.append(DrawBackgroundChart(MaxVal));
+    SectionBars.append(DrawBackgroundChart(MaxVal, null, Config.ColumnLabelDisplay));
     SectionBars.style.minHeight = Config.ContainerSize + "px";
     var pasado = null;
     var contador = 0;
@@ -222,7 +225,7 @@ function DrawDoubleGroupChart(Config) {
 
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
-        groupBars.append(DrawBackgroundLine(MaxVal));
+        groupBars.append(DrawBackgroundLine(MaxVal,null, Config.ColumnLabelDisplay));
         //groupBars.style.height =  Config.ContainerSize + "px !important";
         //groupBars.style.height =  Config.ContainerSize + "px !important";
 
@@ -253,33 +256,36 @@ function DrawDoubleGroupChart(Config) {
                         //console.log(element)     
                         //CalcularTotal
                         var Size = Config.ContainerSize;
+                        var Size = 300;
                         //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
                         var BarSize = (element.cantidad / MaxVal); //% de tamaño
                         var labelCol = element.cantidad;
+                        var styleP="";
                         if (Config.ColumnLabelDisplay == 1) {
                             //dibujar el valor en porcentaje
+                            styleP = ";flex-grow: 1;"
                             var total = FindInTotal(element, Config.GroupDataTotals, Config);
                             //console.log("totyal: "+total.cantidad)
                             labelCol = Math.round((labelCol / total.cantidad) * 100) + '%';
                         }
-                        if (Config.ColumnLabelDisplay == 2) {
-                            if (contador == 0) {
-                                //pasado = element.cantidad;
-                            } else {
-                                //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element[Config.AttNameG1] + " categ "+ element[Config.AttNameG2]+ " categ2 "+ element[Config.AttNameG3])                                       
-                                var pasado = FindPasado(element, Config.Datasets, Config)
-                                if (pasado == 0) {
-                                    var divisor = 1;
-                                } else {
-                                    var divisor = pasado;
-                                }
-                                labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
-                            }
+                        // if (Config.ColumnLabelDisplay == 2) {
+                        //     if (contador == 0) {
+                        //         //pasado = element.cantidad;
+                        //     } else {
+                        //         //console.log("pasado: "+ pasado + " actual:  "+element.cantidad + " año: "+ element[Config.AttNameG1] + " categ "+ element[Config.AttNameG2]+ " categ2 "+ element[Config.AttNameG3])                                       
+                        //         var pasado = FindPasado(element, Config.Datasets, Config)
+                        //         if (pasado == 0) {
+                        //             var divisor = 1;
+                        //         } else {
+                        //             var divisor = pasado;
+                        //         }
+                        //         labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
+                        //     }
 
-                        }
+                        // }
 
                         var Bars = CreateStringNode(`
-                        <Bars class="Bars" style="height:${Size * BarSize}px;background:${Config.Colors[index]}">
+                        <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
                             <label>
                                 ${labelCol}
                             </labe>
@@ -365,7 +371,7 @@ function DrawThreeGroupChart(Config) {
     //tomar maxvalue
     var MaxVal = MaxValue(Config.GroupDataTotals);
 
-    SectionBars.append(DrawBackgroundChart(MaxVal));
+    SectionBars.append(DrawBackgroundChart(MaxVal, null, Config.ColumnLabelDisplay));
 
     var pasado = null;
     var contador = 0;
@@ -375,7 +381,7 @@ function DrawThreeGroupChart(Config) {
 
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
-        groupBars.append(DrawBackgroundLine(MaxVal));
+        groupBars.append(DrawBackgroundLine(MaxVal,null, Config.ColumnLabelDisplay));
 
         //groupBars.style.height =  Config.ContainerSize + "px !important";
 
@@ -410,27 +416,30 @@ function DrawThreeGroupChart(Config) {
                             && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
                             //CalcularTotal
                             var Size = Config.ContainerSize;
+                            var Size = 300;
                             var BarSize = (element.cantidad / MaxVal); //% de tamaño
                             var labelCol = element.cantidad;
+                            var styleP="";
                             if (Config.ColumnLabelDisplay == 1) {
                                 //dibujar el valor en porcentaje
+                                styleP = ";flex-grow: 1;"
                                 var total = FindInTotal(element, Config.GroupDataTotals, Config);
                                 labelCol = Math.round((labelCol / total.cantidad) * 100) + '%';
                             }
-                            if (Config.ColumnLabelDisplay == 2) {
-                                if (contador == 0) {
-                                } else {
-                                    var pasado = FindPasado(element, Config.Datasets, Config)
-                                    if (pasado == 0) {
-                                        var divisor = 1;
-                                    } else {
-                                        var divisor = pasado;
-                                    }
-                                    labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
-                                }
-                            }
+                            // if (Config.ColumnLabelDisplay == 2) {
+                            //     if (contador == 0) {
+                            //     } else {
+                            //         var pasado = FindPasado(element, Config.Datasets, Config)
+                            //         if (pasado == 0) {
+                            //             var divisor = 1;
+                            //         } else {
+                            //             var divisor = pasado;
+                            //         }
+                            //         labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
+                            //     }
+                            // }
                             var Bars = CreateStringNode(`
-                            <Bars class="Bars" style="height:${Size * BarSize}px;background:${Config.Colors[index]}">
+                            <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
                                 <label>
                                     ${labelCol}
                                 </labe>
@@ -498,21 +507,56 @@ function DrawThreeGroupChart(Config) {
     );
 }
 
-function DrawBackgroundChart(value, size = 600) {
+function DrawBackgroundChart(value, size = 600, ValP) {
     //console.log(value)
     var countLine = 0;
     var val = 0;
-    if (value > 1000) {
-        var countLine = parseInt(value / 1000)
+    if (value > 5000) {
+        var countLine = parseInt(value / 1000)+1
         var value = parseInt(value / 1000) * 1000 + 1000;
         val = 1000;
-    } else if (value > 100) {
-        var countLine = parseInt(value / 100)
+    }else if (value > 2500) {
+        var countLine = parseInt(value / 300)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 300;
+    }else if (value > 2000) {
+        var countLine = parseInt(value / 250)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 250;
+    }else if (value > 1500) {
+        var countLine = parseInt(value / 200)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 200;
+    }else if (value > 1000) {
+        var countLine = parseInt(value / 150)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 150;
+    }else if (value > 500) {
+        var countLine = parseInt(value / 100)+1
         var value = parseInt(value / 100) * 100 + 100;
         val = 100;
-    } else if (value > 0) {
-        var countLine = parseInt(value / 10)
+    }
+    else if (value > 200) {
+        var countLine = parseInt(value / 50)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 50;
+    } else if (value > 100) {
+        var countLine = parseInt(value / 20)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 20;
+    } else if (value > 70) {
+        var countLine = parseInt(value / 10)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 10;
+    }
+    else if (value > 0) {
+        var countLine = parseInt(value / 5)+1
         var value = parseInt(value / 10) * 10 + 10;
+        val = 5;
+    }
+    if(ValP == 1){
+        countLine =10
+        //var value = parseInt(value / 10) * 10 + 10;
         val = 10;
     }
     var ContainerLine = document.createElement('section');
@@ -520,28 +564,72 @@ function DrawBackgroundChart(value, size = 600) {
     var valueLabel = 0;
 
     for (let index = 0; index < countLine; index++) {
-        valueLabel = valueLabel + val;
-        ContainerLine.appendChild(CreateStringNode(
-            `<path class="CharLineXNumber"><label>${valueLabel}</label></path>`
-        ));
+        if(ValP == 1){
+            valueLabel = valueLabel + val;
+            ContainerLine.appendChild(CreateStringNode(
+                `<path class="CharLineXNumber"><label>${valueLabel}%</label></path>`
+            ));
+        }
+        else{
+            valueLabel = valueLabel + val;
+            ContainerLine.appendChild(CreateStringNode(
+                `<path class="CharLineXNumber"><label>${valueLabel}</label></path>`
+            ));
+        }
+        
     }
     return ContainerLine;
 }
-function DrawBackgroundLine(value, size = 600) {
+function DrawBackgroundLine(value, size = 600,ValP) {
     //console.log(value)
     var countLine = 0;
     var val = 0;
-    if (value > 1000) {
-        var countLine = parseInt(value / 1000)
+    if (value > 5000) {
+        var countLine = parseInt(value / 1000)+1
         var value = parseInt(value / 1000) * 1000 + 1000;
         val = 1000;
-    } else if (value > 100) {
-        var countLine = parseInt(value / 100)
+    }else if (value > 2500) {
+        var countLine = parseInt(value / 300)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 300;
+    }else if (value > 2000) {
+        var countLine = parseInt(value / 250)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 250;
+    }else if (value > 1500) {
+        var countLine = parseInt(value / 200)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 200;
+    }else if (value > 1000) {
+        var countLine = parseInt(value / 150)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 150;
+    }else if (value > 500) {
+        var countLine = parseInt(value / 100)+1
         var value = parseInt(value / 100) * 100 + 100;
         val = 100;
-    } else if (value > 0) {
-        var countLine = parseInt(value / 10)
+    }
+    else if (value > 200) {
+        var countLine = parseInt(value / 50)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 50;
+    } else if (value > 100) {
+        var countLine = parseInt(value / 20)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 20;
+    } else if (value > 70) {
+        var countLine = parseInt(value / 10)+1
+        var value = parseInt(value / 100) * 100 + 100;
+        val = 10;
+    }
+    else if (value > 0) {
+        var countLine = parseInt(value / 5)+1
         var value = parseInt(value / 10) * 10 + 10;
+        val = 5;
+    }
+    if(ValP == 1){
+        countLine =10
+        //var value = parseInt(value / 10) * 10 + 10;
         val = 10;
     }
     var ContainerLine = document.createElement('section');
@@ -549,10 +637,18 @@ function DrawBackgroundLine(value, size = 600) {
     var valueLabel = 0;
 
     for (let index = 0; index < countLine; index++) {
-        valueLabel = valueLabel + val;
-        ContainerLine.appendChild(CreateStringNode(
-            `<path class="CharLineX"></path>`
-        ));
+        if(ValP == 1){
+            valueLabel = valueLabel + val;
+            ContainerLine.appendChild(CreateStringNode(
+                `<path class="CharLineX"></path>`
+            ));
+        }
+        else{
+            valueLabel = valueLabel + val;
+            ContainerLine.appendChild(CreateStringNode(
+                `<path class="CharLineX"></path>`
+            ));
+        }
     }
     return ContainerLine;
 }
