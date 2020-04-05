@@ -89,6 +89,7 @@ function DrawOneGroupChart(Config) {
     var SectionLabelGroup = document.createElement('section');
     SectionLabelGroup.className = "SectionLabelGroup";
 
+    Config.GroupDataset =  orderByDate(Config.GroupDataset, sessionStorage.getItem('type'));
 
     var index = 0
     Config.GroupLabelsData.forEach(element => {
@@ -103,6 +104,7 @@ function DrawOneGroupChart(Config) {
     var MaxVal = MaxValue(Config.GroupDataTotals);
     SectionBars.append(DrawBackgroundChart(MaxVal, null, Config.ColumnLabelDisplay));
 
+    var count = 0;
     Config.GroupDataset.forEach(elementGroup => {
         var GroupSection = document.createElement("GroupSection");
         GroupSection.className = "GroupSection";
@@ -112,8 +114,15 @@ function DrawOneGroupChart(Config) {
         groupBars.append(DrawBackgroundLine(MaxVal,null, Config.ColumnLabelDisplay));
      //   groupBars.style.minHeight = Config.ContainerSize + "px !important";
 
-        var groupLabels = document.createElement("groupLabels");
-        groupLabels.className = "groupLabels ElementG1";
+        if (count == 0) {
+            var groupLabels = document.createElement("groupLabels");
+            groupLabels.className = "groupLabels ElementG1";
+        }else{
+             var groupLabels = document.createElement("groupLabels");
+             groupLabels.className = "groupLabels";
+        }
+
+       
 
         GroupSection.append(groupBars, groupLabels);
 
@@ -154,8 +163,8 @@ function DrawOneGroupChart(Config) {
                     //         labelCol = labelCol + ' (' + Math.round(((((element.cantidad - pasado) / divisor) * 100) + Number.EPSILON) * 100) / 100 + "%)";
                     //     }
                     // }
-                    console.log(Size);
-                    console.log(BarSize);
+                    //console.log(Size);
+                    //console.log(BarSize);
                     var Bars = CreateStringNode(`
                    <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
                        <label>
@@ -175,6 +184,7 @@ function DrawOneGroupChart(Config) {
            ${elementGroup[Config.AttNameG1]}
         </labe>`)
         )
+        count++;
     })
    
     var color1= " #70ad47";
@@ -201,6 +211,8 @@ function DrawDoubleGroupChart(Config) {
     SectionLabelGroup.className = "SectionLabelGroup";    
     // var SectionLabelSecondGroup = document.createElement('section');
     // SectionLabelSecondGroup.className = "SectionLabelSecondGroup";
+
+    Config.GroupDataset =  orderByDate(Config.GroupDataset, sessionStorage.getItem('type'));
 
     var index = 0
     Config.GroupLabelsData.forEach(element => {
@@ -229,12 +241,19 @@ function DrawDoubleGroupChart(Config) {
         //groupBars.style.height =  Config.ContainerSize + "px !important";
         //groupBars.style.height =  Config.ContainerSize + "px !important";
 
-        var groupLabels = document.createElement("groupLabels");
-        groupLabels.className = "groupLabels ElementG1";
+        if (contador == 0) {
+            var groupLabels = document.createElement("groupLabels");
+            groupLabels.className = "groupLabels ElementG1";
 
-        var groupLabelsTwo = document.createElement("groupLabelsTwo");
-        groupLabelsTwo.className = "groupLabels ElementG2";
+            var groupLabelsTwo = document.createElement("groupLabelsTwo");
+            groupLabelsTwo.className = "groupLabels ElementG2";
+        }else{
+            var groupLabels = document.createElement("groupLabels");
+            groupLabels.className = "groupLabels";
 
+            var groupLabelsTwo = document.createElement("groupLabelsTwo");
+            groupLabelsTwo.className = "groupLabels";
+        }
         GroupSection.append(groupBars, groupLabelsTwo, groupLabels);
 
         Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION 
@@ -265,8 +284,10 @@ function DrawDoubleGroupChart(Config) {
                             //dibujar el valor en porcentaje
                             styleP = ";flex-grow: 1;"
                             var total = FindInTotal(element, Config.GroupDataTotals, Config);
-                            //console.log("totyal: "+total.cantidad)
-                            labelCol = Math.round((labelCol / total.cantidad) * 100) + '%';
+                            var multiplier = Math.pow(10, 1 || 0);
+                            var number = labelCol / total.cantidad * 100
+                            number = Math.round(number * multiplier) / multiplier
+                            labelCol = number + '%';
                         }
                         // if (Config.ColumnLabelDisplay == 2) {
                         //     if (contador == 0) {
@@ -341,7 +362,7 @@ function DrawThreeGroupChart(Config) {
     ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";
     var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador') ; 
-    var TitleAnalisis = sessionStorage.getItem('AttNameG2') ;     
+    var TitleAnalisis = sessionStorage.getItem('AnalisisEspecifico') ;     
     var SectionTitle = CreateStringNode(`<h3 style="font-size:24px; margin:0px">${Title}</h3>
                                         <h3 style="font-size:18px; margin:0px">${TitleAnalisis}</h3>`);
 
@@ -350,13 +371,9 @@ function DrawThreeGroupChart(Config) {
     SectionLabels.className = "SectionLabels"
 
     var SectionLabelGroup = document.createElement('section');
-    SectionLabelGroup.className = "SectionLabelGroup";    
+    SectionLabelGroup.className = "SectionLabelGroup";
 
-    // var SectionLabelSecondGroup = document.createElement('section');
-    // SectionLabelSecondGroup.className = "SectionLabelSecondGroup";
-
-    // var SectionLabelThreeGroup = document.createElement('section');
-    // SectionLabelThreeGroup.className = "SectionLabelThreeGroup";     
+    Config.GroupDataset =  orderByDate(Config.GroupDataset, sessionStorage.getItem('type')); 
 
     var index = 0
     Config.GroupLabelsData.forEach(element => {
@@ -385,15 +402,28 @@ function DrawThreeGroupChart(Config) {
 
         //groupBars.style.height =  Config.ContainerSize + "px !important";
 
+        if (contador == 0) {
+            var groupLabels = document.createElement("groupLabels");
+            groupLabels.className = "groupLabels ElementG1";
+    
+            var groupLabelsTwo = document.createElement("groupLabelsTwo");
+            groupLabelsTwo.className = "groupLabels ElementG2";
+    
+            var groupLabelsThree = document.createElement("groupLabelsThree");
+            groupLabelsThree.className = "groupLabels ElementG3";
+        }else{
+            var groupLabels = document.createElement("groupLabels");
+            groupLabels.className = "groupLabels";
+    
+            var groupLabelsTwo = document.createElement("groupLabelsTwo");
+            groupLabelsTwo.className = "groupLabels";
+    
+            var groupLabelsThree = document.createElement("groupLabelsThree");
+            groupLabelsThree.className = "groupLabels";
+        }
 
-        var groupLabels = document.createElement("groupLabels");
-        groupLabels.className = "groupLabels ElementG1";
 
-        var groupLabelsTwo = document.createElement("groupLabelsTwo");
-        groupLabelsTwo.className = "groupLabels ElementG2";
-
-        var groupLabelsThree = document.createElement("groupLabelsThree");
-        groupLabelsThree.className = "groupLabels ElementG3";
+       
 
 
         GroupSection.append(groupBars, groupLabelsThree, groupLabelsTwo, groupLabels);
@@ -424,7 +454,10 @@ function DrawThreeGroupChart(Config) {
                                 //dibujar el valor en porcentaje
                                 styleP = ";flex-grow: 1;"
                                 var total = FindInTotal(element, Config.GroupDataTotals, Config);
-                                labelCol = Math.round((labelCol / total.cantidad) * 100) + '%';
+                                var multiplier = Math.pow(10, 1 || 0);
+                                var number = labelCol / total.cantidad * 100
+                                number = Math.round(number * multiplier) / multiplier
+                                labelCol = number + '%';
                             }
                             // if (Config.ColumnLabelDisplay == 2) {
                             //     if (contador == 0) {
@@ -500,12 +533,40 @@ function DrawThreeGroupChart(Config) {
     ChartContainer.append(SectionTitle,
         SectionLabels,
         SectionBars,
-        SectionLabelGroup
-        /*SectionLabelThreeGroup,
-        SectionLabelSecondGroup,
-        SectionLabelGroup*/
+        SectionLabelGroup        
     );
 }
+
+function orderByDate(Arry, type){ 
+    console.log(type)  
+    if (type == 1) {
+        Arry.sort((a, b) => a.time - b.time);        
+    }else if(type == 2){    
+        Arry.forEach(element => {
+            if(element.time.includes("diciembre")){         
+                var Year = new Date(Date.parse(element.time)).getFullYear();
+                element.time = Date.parse(Year + " December");               
+            }
+            else element.time = Date.parse(element.time);  
+        }); 
+        Arry.sort((a, b) => a.time - b.time);
+    
+        Arry.forEach(element => {        
+            var fecha = new Date(element.time);       
+            element.time = meses[fecha.getMonth()] + " " + fecha.getFullYear();
+        });   
+       
+    }else{        
+
+    }
+    return Arry;
+}
+var meses = [
+    "enero", "febrero", "marzo",
+    "abril", "mayo", "junio", "julio",
+    "agosto", "septiembre", "octubre",
+    "noviembre", "diciembre"
+  ]
 
 function DrawBackgroundChart(value, size = 600, ValP) {
     //console.log(value)
