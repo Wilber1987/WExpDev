@@ -538,7 +538,7 @@ function DrawThreeGroupChart(Config) {
 }
 
 function orderByDate(Arry, type){ 
-    console.log(type)  
+   // console.log(type)  
     if (type == 1) {
         Arry.sort((a, b) => a.time - b.time);        
     }else if(type == 2){    
@@ -556,8 +556,25 @@ function orderByDate(Arry, type){
             element.time = meses[fecha.getMonth()] + " " + fecha.getFullYear();
         });   
        
-    }else{        
-
+    }else{     
+        var Array2 = [];
+        Arry.forEach(element => {
+           var object={
+               cuarter: null,
+               year:null
+           };
+           object.cuarter = element.time.substring( 1, 0 );     
+           object.year = element.time.substring( element.time.length, 14 );          
+           Array2.push(object);
+        })
+        Array2.sort((a, b) => a.year - b.year);        
+        var Array3 = [];
+        Array2.forEach(element => {
+            var object = Arry.find(x => x.time.substring( 1, 0 ).includes(element.cuarter) 
+                        && x.time.includes(element.year));
+            Array3.push(object);
+        });       
+        Arry = Array3;
     }
     return Arry;
 }
