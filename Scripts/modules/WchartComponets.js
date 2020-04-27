@@ -33,7 +33,6 @@ function DrawGroupChart(Config) {
     SectionLabels.className = "SectionLabels"
     //var SectionLabelGroup = document.createElement('section');
     //SectionLabelGroup.className = "SectionLabelGroup";
-
     var index = 0
     Config.GroupLabelsData.forEach(element => {
         SectionLabels.appendChild(CreateStringNode(
@@ -74,15 +73,18 @@ function DrawGroupChart(Config) {
 }
 
 function DrawOneGroupChart(Config) {
-
     var Config = new ChartConfig(Config);
     var ChartContainer = GetObj(Config.ContainerName);
 
     ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";
 
-    var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador') ;   
-    var SectionTitle = CreateStringNode(`<h3>${Title}</h3>`);
+    if (!ChartContainer.name) {
+        ChartContainer.name = "";
+    }
+
+    var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador')  +ChartContainer.name;   
+    var SectionTitle = CreateStringNode(`<h3 style="font-size:18px; margin:0px">${Title}</h3>`);
      //var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -92,14 +94,19 @@ function DrawOneGroupChart(Config) {
     Config.GroupDataset =  orderByDate(Config.GroupDataset, sessionStorage.getItem('type'));
 
     var index = 0
+    var style = "";
+    if (Config.GroupLabelsData.length > 7) {
+        style = "font-size:8px;"
+    }
     Config.GroupLabelsData.forEach(element => {
         SectionLabels.appendChild(CreateStringNode(
-            `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
+            `<label style="${style}"><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
         ));
         index++;
     })
     var SectionBars = document.createElement('section');
     SectionBars.className = "SectionBars";
+   // SectionBars.style.minHeight = Config.ContainerSize + "px";
     //SectionBars.style.height = Config.ContainerSize + "px";
     var MaxVal = MaxValue(Config.GroupDataTotals);
     SectionBars.append(DrawBackgroundChart(MaxVal, null, Config.ColumnLabelDisplay));
@@ -112,6 +119,7 @@ function DrawOneGroupChart(Config) {
         var groupBars = document.createElement("groupBar");
         groupBars.className = "groupBars";
         groupBars.append(DrawBackgroundLine(MaxVal,null, Config.ColumnLabelDisplay));
+        
      //   groupBars.style.minHeight = Config.ContainerSize + "px !important";
 
         if (count == 0) {
@@ -121,9 +129,6 @@ function DrawOneGroupChart(Config) {
              var groupLabels = document.createElement("groupLabels");
              groupLabels.className = "groupLabels";
         }
-
-       
-
         GroupSection.append(groupBars, groupLabels);
 
         var ContainerBars = document.createElement("ContainerBar");
@@ -138,7 +143,7 @@ function DrawOneGroupChart(Config) {
                     && element[Config.AttNameEval] == elementLabelData.id_) {
                     //CalcularTotal
                     var Size = Config.ContainerSize;
-                    var Size = 300;
+                    var Size = 220;
                     //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
                     var BarSize = (element.cantidad / MaxVal); //% de tamaño
                     var labelCol = element.cantidad;
@@ -146,9 +151,11 @@ function DrawOneGroupChart(Config) {
                     if (Config.ColumnLabelDisplay == 1) {
                         //dibujar el valor en porcentaje
                         styleP = ";flex-grow: 1;"
-                        //console.log(Config.GroupDataTotals)
                         var total = FindInTotal(element, Config.GroupDataTotals, Config);
-                        labelCol = Math.round((labelCol / total.cantidad) * 100) + '%';
+                        var multiplier = Math.pow(10, 1 || 0);
+                        var number = labelCol / total.cantidad * 100
+                        number = Math.round(number * multiplier) / multiplier
+                        labelCol = number + '%';
                     }
                     // if (Config.ColumnLabelDisplay == 2) {
                     //     if (contador == 0) {
@@ -201,8 +208,11 @@ function DrawDoubleGroupChart(Config) {
     var ChartContainer = GetObj(Config.ContainerName);
     ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";
-    var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador') ;   
-    var SectionTitle = CreateStringNode(`<h3>${Title}</h3>`);
+    if (!ChartContainer.name) {
+        ChartContainer.name = "";
+    }
+    var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador')  +ChartContainer.name;   
+    var SectionTitle = CreateStringNode(`<h3  style="font-size:18px; margin:0px">${Title}</h3>`);
    // var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
     var SectionLabels = document.createElement('section');
     SectionLabels.className = "SectionLabels"
@@ -215,9 +225,13 @@ function DrawDoubleGroupChart(Config) {
     Config.GroupDataset =  orderByDate(Config.GroupDataset, sessionStorage.getItem('type'));
 
     var index = 0
+    var style = "";
+    if (Config.GroupLabelsData.length > 7) {
+        style = "font-size:8px;"
+    }
     Config.GroupLabelsData.forEach(element => {
         SectionLabels.appendChild(CreateStringNode(
-            `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
+            `<label style="${style}"><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
         ));
         index++;
     })
@@ -226,7 +240,7 @@ function DrawDoubleGroupChart(Config) {
     SectionBars.className = "SectionBars";
     var MaxVal = MaxValue(Config.GroupDataTotals);
     SectionBars.append(DrawBackgroundChart(MaxVal, null, Config.ColumnLabelDisplay));
-    SectionBars.style.minHeight = Config.ContainerSize + "px";
+    //SectionBars.style.minHeight = Config.ContainerSize + "px";
     var pasado = null;
     var contador = 0;
 
@@ -275,7 +289,7 @@ function DrawDoubleGroupChart(Config) {
                         //console.log(element)     
                         //CalcularTotal
                         var Size = Config.ContainerSize;
-                        var Size = 300;
+                        var Size = 220;
                         //var Maxcantidad = getTotal(element, Config.GroupDataTotals);                            
                         var BarSize = (element.cantidad / MaxVal); //% de tamaño
                         var labelCol = element.cantidad;
@@ -361,9 +375,14 @@ function DrawThreeGroupChart(Config) {
     var ChartContainer = GetObj(Config.ContainerName);
     ChartContainer.className = "WChartContainer";
     ChartContainer.innerHTML = "";
-    var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador') ; 
+
+    if (!ChartContainer.name) {
+        ChartContainer.name = "";
+    }
+
+    var Title = sessionStorage.getItem('Title') + ' - ' +sessionStorage.getItem('Indicador')  +ChartContainer.name ; 
     var TitleAnalisis = sessionStorage.getItem('AnalisisEspecifico') ;     
-    var SectionTitle = CreateStringNode(`<h3 style="font-size:24px; margin:0px">${Title}</h3>
+    var SectionTitle = CreateStringNode(`<h3 style="font-size:18px; margin:0px">${Title}</h3>
                                         <h3 style="font-size:18px; margin:0px">${TitleAnalisis}</h3>`);
 
     //var SectionTitle = CreateStringNode(`<h3>${Config.Title}</h3>`);
@@ -376,15 +395,19 @@ function DrawThreeGroupChart(Config) {
     Config.GroupDataset =  orderByDate(Config.GroupDataset, sessionStorage.getItem('type')); 
 
     var index = 0
+    var style = "";
+    if (Config.GroupLabelsData.length > 7) {
+        style = "font-size:8px;"
+    }
     Config.GroupLabelsData.forEach(element => {
         SectionLabels.appendChild(CreateStringNode(
-            `<label><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
+            `<label style="${style}"><span style="background:${Config.Colors[index]}"></span>${element.Descripcion}</label>`
         ));
         index++;
     })
     var SectionBars = document.createElement('section');
     SectionBars.className = "SectionBars";
-    SectionBars.style.minHeight = Config.ContainerSize + "px";
+    //SectionBars.style.minHeight = Config.ContainerSize + "px";
     //tomar maxvalue
     var MaxVal = MaxValue(Config.GroupDataTotals);
 
@@ -421,13 +444,7 @@ function DrawThreeGroupChart(Config) {
             var groupLabelsThree = document.createElement("groupLabelsThree");
             groupLabelsThree.className = "groupLabels";
         }
-
-
-       
-
-
         GroupSection.append(groupBars, groupLabelsThree, groupLabelsTwo, groupLabels);
-
 
         Config.SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION
             //var groupLabelT = document.createElement("groupLabelT");
@@ -446,7 +463,7 @@ function DrawThreeGroupChart(Config) {
                             && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
                             //CalcularTotal
                             var Size = Config.ContainerSize;
-                            var Size = 300;
+                            var Size = 220;
                             var BarSize = (element.cantidad / MaxVal); //% de tamaño
                             var labelCol = element.cantidad;
                             var styleP="";
@@ -538,7 +555,7 @@ function DrawThreeGroupChart(Config) {
 }
 
 function orderByDate(Arry, type){ 
-   // console.log(type)  
+    //console.log(type)  
     if (type == 1) {
         Arry.sort((a, b) => a.time - b.time);        
     }else if(type == 2){    
@@ -556,7 +573,7 @@ function orderByDate(Arry, type){
             element.time = meses[fecha.getMonth()] + " " + fecha.getFullYear();
         });   
        
-    }else{     
+    }else{   
         var Array2 = [];
         Arry.forEach(element => {
            var object={
@@ -574,7 +591,7 @@ function orderByDate(Arry, type){
                         && x.time.includes(element.year));
             Array3.push(object);
         });       
-        Arry = Array3;
+        Arry = Array3; 
     }
     return Arry;
 }
@@ -587,50 +604,66 @@ var meses = [
 
 function DrawBackgroundChart(value, size = 600, ValP) {
     //console.log(value)
+    
     var countLine = 0;
     var val = 0;
     if (value > 5000) {
-        var countLine = parseInt(value / 1000)+1
+        var countLine = parseInt(value / 1000) +1
         var value = parseInt(value / 1000) * 1000 + 1000;
         val = 1000;
     }else if (value > 2500) {
-        var countLine = parseInt(value / 300)+1
+        var countLine = parseInt(value / 300) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 300;
     }else if (value > 2000) {
-        var countLine = parseInt(value / 250)+1
+        var countLine = parseInt(value / 250) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 250;
     }else if (value > 1500) {
-        var countLine = parseInt(value / 200)+1
+        var countLine = parseInt(value / 200) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 200;
     }else if (value > 1000) {
-        var countLine = parseInt(value / 150)+1
+        var countLine = parseInt(value / 150) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 150;
     }else if (value > 500) {
-        var countLine = parseInt(value / 100)+1
+        var countLine = parseInt(value / 100) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 100;
     }
     else if (value > 200) {
-        var countLine = parseInt(value / 50)+1
+        var countLine = parseInt(value / 50) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 50;
     } else if (value > 100) {
-        var countLine = parseInt(value / 20)+1
+        var countLine = parseInt(value / 20) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 20;
     } else if (value > 70) {
-        var countLine = parseInt(value / 10)+1
+        var countLine = parseInt(value / 10) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 10;
-    }
-    else if (value > 0) {
-        var countLine = parseInt(value / 5)+1
+    } else if (value > 20) {
+        var countLine = parseInt(value / 5) +1
         var value = parseInt(value / 10) * 10 + 10;
         val = 5;
+    }else if (value > 10) {
+        var countLine = parseInt(value / 2) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 2;
+    }else if (value > 5) {
+        var countLine = parseInt(value / 1) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 1;
+    }else if (value > 1) {
+        var countLine = parseInt(value / 0.5) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 0.5;
+    }else if (value > 0) {
+        var countLine = parseInt(value / 0.1) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 0.1;
     }
     if(ValP == 1){
         countLine =10
@@ -651,7 +684,7 @@ function DrawBackgroundChart(value, size = 600, ValP) {
         else{
             valueLabel = valueLabel + val;
             ContainerLine.appendChild(CreateStringNode(
-                `<path class="CharLineXNumber"><label>${valueLabel}</label></path>`
+                `<path class="CharLineXNumber"><label>${valueLabel.toFixed(1)}</label></path>`
             ));
         }
         
@@ -663,48 +696,64 @@ function DrawBackgroundLine(value, size = 600,ValP) {
     var countLine = 0;
     var val = 0;
     if (value > 5000) {
-        var countLine = parseInt(value / 1000)+1
+        var countLine = parseInt(value / 1000) +1
         var value = parseInt(value / 1000) * 1000 + 1000;
         val = 1000;
     }else if (value > 2500) {
-        var countLine = parseInt(value / 300)+1
+        var countLine = parseInt(value / 300) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 300;
     }else if (value > 2000) {
-        var countLine = parseInt(value / 250)+1
+        var countLine = parseInt(value / 250) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 250;
     }else if (value > 1500) {
-        var countLine = parseInt(value / 200)+1
+        var countLine = parseInt(value / 200) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 200;
     }else if (value > 1000) {
-        var countLine = parseInt(value / 150)+1
+        var countLine = parseInt(value / 150) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 150;
     }else if (value > 500) {
-        var countLine = parseInt(value / 100)+1
+        var countLine = parseInt(value / 100) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 100;
     }
     else if (value > 200) {
-        var countLine = parseInt(value / 50)+1
+        var countLine = parseInt(value / 50) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 50;
     } else if (value > 100) {
-        var countLine = parseInt(value / 20)+1
+        var countLine = parseInt(value / 20) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 20;
     } else if (value > 70) {
-        var countLine = parseInt(value / 10)+1
+        var countLine = parseInt(value / 10) +1
         var value = parseInt(value / 100) * 100 + 100;
         val = 10;
-    }
-    else if (value > 0) {
-        var countLine = parseInt(value / 5)+1
+    } else if (value > 20) {
+        var countLine = parseInt(value / 5) +1
         var value = parseInt(value / 10) * 10 + 10;
         val = 5;
+    }else if (value > 10) {
+        var countLine = parseInt(value / 2) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 2;
+    }else if (value > 5) {
+        var countLine = parseInt(value / 1) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 1;
+    }else if (value > 1) {
+        var countLine = parseInt(value / 0.5) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 0.5;
+    }else if (value > 0) {
+        var countLine = parseInt(value / 0.1) +1
+        var value = parseInt(value / 10) * 10 + 10;
+        val = 0.1;
     }
+    //%
     if(ValP == 1){
         countLine =10
         //var value = parseInt(value / 10) * 10 + 10;
