@@ -17,6 +17,29 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
+function createElement(node) {
+    if (typeof node === 'string') {
+      return document.createTextNode(node)
+    }
+    const element = document.createElement(node.type)
+    if (node.props) {
+        for (const prop in node.props) {   
+            if (typeof  node.props[prop] === "function") {
+                element[prop] = node.props[prop];
+            } else{
+                element.setAttribute(prop, node.props[prop]);
+            }        
+            
+         }
+    }  
+    if (node.children) {
+        node.children
+            .map(createElement)
+            .forEach(child => element.appendChild(child))
+    }  
+    return element;
+}
+
 function CreateInput(Data) {
     var InputForRT = document.createElement("input");
     InputForRT.className = Data.className;

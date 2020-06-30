@@ -25,14 +25,43 @@ importarScript("Scripts/Modules/WComponentsTools.js", Url_Path);
 importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
 //APP CONFIG
 importarScript("databaseScripts/Modules.js", Url_Path);
+importarScript("MasterDomClass.js", Url_Path);
 importarStyle("Styles/AppStyles.css", Url_Path);
 var modules = null;
 
+
+// const BodyComponents = {
+//     type: 'form',
+//     props: { class: 'section', id: 'FormContainer' },
+//     children: [
+//         { type: 'header',
+//          children: [{ type: 'button', props: {id:"ViewMenu"},children: ['Nav']}]
+//         }, 
+//         { type: 'nav', props: {id:"NavContainer", class: "Menu"} },
+//         { type: 'main', children: [{ type: 'section', props: {id:"Container"}}] },
+//         { type: 'footer'}, 
+//     ]    
+// }
+
+// const x = {
+//     type: 'ul',
+//     props: { class: 'list' },
+//     children: [{
+//       type: 'li',
+//       children: [ 'list item 1' ]
+//     }, {
+//       type: 'li',
+//       children: [ 'list item 2' ]
+//     }]
+// }
+
+
 function OnLoad() {
-    modules = new Modules();  
+    modules = new Modules(); 
+    const BodyComponents = new MasterDomClass();
+    root.appendChild(createElement(BodyComponents)); 
     StarDOM();
-    StartModuleList(); 
-      
+    StartModuleList();       
 }
 function StartModuleList(){
     var Table = CreateTable({TableId:"TableData", className : "CardStyleComponent"});
@@ -79,5 +108,14 @@ function StarDOM(){
     }
     const Nav = DrawNav(MenuNavList, 
         {Path: Path, className:"MyNav", CallBTN: "ViewMenu", Animation: "SlideLeft"});
+
     NavContainer.appendChild(Nav);
 }
+
+
+
+
+// console.log(h('ul', x.props, x.children))
+  
+
+
