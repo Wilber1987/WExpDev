@@ -6,11 +6,13 @@ function DrawNav(List, Config) {
     NavContainer.style.opacity = 0;
     const ul = document.createElement("ul");   
     for (const Prop in List) {
-        const li = document.createElement("li");
-        li.append(CreateStringNode(
-            `<a href="${Config.Path + List[Prop]}">${Prop}</a>`
-        ));  
-        ul.append(li);             
+        if (typeof List[Prop] === "string") {
+            const li = document.createElement("li");
+            li.append(CreateStringNode(
+                `<a href="${Config.Path + List[Prop]}">${Prop}</a>`
+            ));  
+            ul.append(li);  
+        }                  
     }
     if (Config.Animation) {
         if (Config.Animation == "SlideLeft") {

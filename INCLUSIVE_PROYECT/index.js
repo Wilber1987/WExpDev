@@ -101,7 +101,8 @@ function StartModuleList(){
 }
 function StarDOM(){
     const Path= Url_Path;  
-    var MenuNavList = {      
+    var MenuNavList = {
+             
         Home: "index.html",
         Perfil: "Modules/Config/Perfil.html", 
         Settings: "Modules/Config/Settings.html"        

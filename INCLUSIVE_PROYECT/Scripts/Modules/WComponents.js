@@ -28,8 +28,7 @@ function createElement(node) {
                 element[prop] = node.props[prop];
             } else{
                 element.setAttribute(prop, node.props[prop]);
-            }        
-            
+            }  
          }
     }  
     if (node.children) {
