@@ -26,6 +26,7 @@ importarScript("Scripts/Modules/WComponentsTools.js", Url_Path);
 importarScript("Scripts/Modules/WChartJSComponent.js", Url_Path);
 //estilos
 importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
+importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
 
 //APP CONFIG
 importarScript("databaseScripts/Modules.js", Url_Path);
@@ -37,11 +38,12 @@ importarStyle("Styles/AppStyles.css", Url_Path);
 function OnLoad() {
     var modules = new Modules(); 
     const BodyComponents = new MasterDomClass();
-    root.appendChild(createElement(BodyComponents)); 
-    root.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
-    root.appendChild(createElement({type: 'colum-chart',  props : { data: ["CharConfig"] }})); 
+    root.appendChild(createElement(BodyComponents));   
+   // root.appendChild(createElement({type: 'colum-chart',  props : { data: ["CharConfig"] }})); 
     StarDOM();
-    StartModuleList(modules);       
+    Container.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
+    //StartModuleList(modules); 
+
 }
 function StartModuleList(modules){
     var Table = CreateTable({TableId:"TableData", className : "CardStyleComponent"});
@@ -344,7 +346,7 @@ var CharConfig = {
     ColumnLabelDisplay: 0,
     AttNameEval: "estado",
     AttNameG1: "time",
-    AttNameG2: "",
-    AttNameG3: ""
+    AttNameG2: "categ2",
+    AttNameG3: "categ"
   };
 
