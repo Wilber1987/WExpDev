@@ -19,51 +19,31 @@ function getAbsolutePath() {
 window.onload = OnLoad;
 
 var Url_Path = getAbsolutePath();
+//scripts
 importarScript("Scripts/Modules/WComponents.js", Url_Path);
 importarScript("Scripts/Modules/WNavComponents.js", Url_Path);
 importarScript("Scripts/Modules/WComponentsTools.js", Url_Path);
+importarScript("Scripts/Modules/WChartJSComponent.js", Url_Path);
+//estilos
 importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
+
 //APP CONFIG
 importarScript("databaseScripts/Modules.js", Url_Path);
 importarScript("MasterDomClass.js", Url_Path);
 importarStyle("Styles/AppStyles.css", Url_Path);
-var modules = null;
-
-
-// const BodyComponents = {
-//     type: 'form',
-//     props: { class: 'section', id: 'FormContainer' },
-//     children: [
-//         { type: 'header',
-//          children: [{ type: 'button', props: {id:"ViewMenu"},children: ['Nav']}]
-//         }, 
-//         { type: 'nav', props: {id:"NavContainer", class: "Menu"} },
-//         { type: 'main', children: [{ type: 'section', props: {id:"Container"}}] },
-//         { type: 'footer'}, 
-//     ]    
-// }
-
-// const x = {
-//     type: 'ul',
-//     props: { class: 'list' },
-//     children: [{
-//       type: 'li',
-//       children: [ 'list item 1' ]
-//     }, {
-//       type: 'li',
-//       children: [ 'list item 2' ]
-//     }]
-// }
+//var modules = null;
 
 
 function OnLoad() {
-    modules = new Modules(); 
+    var modules = new Modules(); 
     const BodyComponents = new MasterDomClass();
     root.appendChild(createElement(BodyComponents)); 
+    root.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
+    root.appendChild(createElement({type: 'colum-chart',  props : { data: ["CharConfig"] }})); 
     StarDOM();
-    StartModuleList();       
+    StartModuleList(modules);       
 }
-function StartModuleList(){
+function StartModuleList(modules){
     var Table = CreateTable({TableId:"TableData", className : "CardStyleComponent"});
     let ApiUrlUpdate =  "http://localhost/INCLUSIVE_PROYECT/PhpApi/ApiSWGetModules.php";
     let ApiUrlCreate =  "http://localhost/INCLUSIVE_PROYECT/PhpApi/ApiSWGetModules.php";
@@ -113,10 +93,258 @@ function StarDOM(){
     NavContainer.appendChild(Nav);
 }
 
+result =
+    {"datos":[{"cantidad":21,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":2,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":14,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":17,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":36,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":13,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":16,"estado":"Verde","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":15,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":31,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":24,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":14,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":22,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":34,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":13,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":23,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":2,"estado":"Verde","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":2,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Psicovitalem"},
+    {"cantidad":18,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":1,"estado":"Naranja","time":"noviembre 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":22,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":34,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":14,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":23,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":2,"estado":"Verde","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":13,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":2,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Psicovitalem"},
+    {"cantidad":18,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":21,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":2,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":14,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":17,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":36,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":13,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":16,"estado":"Verde","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":15,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":31,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":24,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":40,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":25,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":15,"estado":"Verde","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":15,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":8,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":34,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":21,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":21,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":45,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":26,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":18,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":6,"estado":"Verde","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":12,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic"},
+    {"cantidad":22,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":25,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":18,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":21,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":45,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":26,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":18,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":6,"estado":"Verde","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":12,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic"},
+    {"cantidad":22,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":25,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":18,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":40,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":25,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":15,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":15,"estado":"Verde","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":8,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":34,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":21,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"parmalat"}],"Labels":[{"time":"marzo 2020"},
+    {"time":"enero 2018"},
+    {"time":"marzo 2018"},
+    {"time":"mayo 2018"},
+    {"time":"julio 2018"},
+    {"time":"septiembre 2018"},
+    {"time":"noviembre 2018"},
+    {"time":"diciembre 2018"},
+    {"time":"enero 2019"},
+    {"time":"marzo 2019"},
+    {"time":"mayo 2019"},
+    {"time":"julio 2019"},
+    {"time":"septiembre 2019"},
+    {"time":"noviembre 2019"},
+    {"time":"diciembre 2019"},
+    {"time":"enero 2020"}],"Labels2":[{"categ2":"Bajo"},
+    {"categ2":"Moderado"},
+    {"categ2":"Severo"}],"Labels3":[{"categ":"Ekisde"},
+    {"categ":"Nic"},
+    {"categ":"Galaxia"},
+    {"categ":"Nic2"},
+    {"categ":"Canal2"},
+    {"categ":"Nic3"},
+    {"categ":"La Castellana"},
+    {"categ":"parmalat"},
+    {"categ":"Canal3"},
+    {"categ":"Psicovitalem"}],
+    "totales":[{"cantidad":28,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":27,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":45,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":2,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Psicovitalem"},
+    {"cantidad":39,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":66,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":67,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":3,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":36,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":40,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":1,"estado":"Naranja","time":"noviembre 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":39,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":66,"estado":"Verde","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":67,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":3,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":36,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":40,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":28,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":27,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":45,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":2,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Psicovitalem"},
+    {"cantidad":39,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":34,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":73,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":85,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":1,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic"},
+    {"cantidad":44,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":41,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":23,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":47,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":34,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":73,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":85,"estado":"Verde","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":1,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic"},
+    {"cantidad":44,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":41,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":23,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":47,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":39,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Canal3"}],"Data":[{"cantidad":21,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":2,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":14,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":17,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":36,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":13,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":16,"estado":"Verde","time":"julio 2019","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":15,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":31,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":24,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":14,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":22,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":34,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":13,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":23,"estado":"Naranja","time":"julio 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":2,"estado":"Verde","time":"julio 2019","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":2,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Psicovitalem"},
+    {"cantidad":18,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"julio 2019","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":1,"estado":"Naranja","time":"noviembre 2019","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":22,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":34,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":14,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":23,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Canal3"},
+    {"cantidad":2,"estado":"Verde","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":13,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"parmalat"},
+    {"cantidad":2,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Psicovitalem"},
+    {"cantidad":18,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":21,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Ekisde"},
+    {"cantidad":2,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic"},
+    {"cantidad":14,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":17,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":36,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic2"},
+    {"cantidad":13,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":16,"estado":"Verde","time":"enero 2020","categ2":"Moderado","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":15,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Canal2"},
+    {"cantidad":31,"estado":"Fresa","time":"enero 2020","categ2":"Moderado","categ":"La Castellana"},
+    {"cantidad":24,"estado":"Naranja","time":"enero 2020","categ2":"Moderado","categ":"Nic3"},
+    {"cantidad":40,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":25,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":15,"estado":"Verde","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":15,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":8,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":34,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":21,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":21,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":45,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":26,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":18,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":6,"estado":"Verde","time":"julio 2019","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":12,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic"},
+    {"cantidad":22,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":25,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":18,"estado":"Fresa","time":"julio 2019","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"julio 2019","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":21,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":45,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":26,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"parmalat"},
+    {"cantidad":18,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Canal3"},
+    {"cantidad":6,"estado":"Verde","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":12,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":1,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic"},
+    {"cantidad":22,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Ekisde"},
+    {"cantidad":25,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":18,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":19,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Nic2"},
+    {"cantidad":40,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":25,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":15,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":15,"estado":"Verde","time":"enero 2020","categ2":"Severo","categ":"Galaxia"},
+    {"cantidad":16,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Nic3"},
+    {"cantidad":8,"estado":"Naranja","time":"enero 2020","categ2":"Severo","categ":"Canal2"},
+    {"cantidad":34,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
+    {"cantidad":21,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"parmalat"}]};
 
 
 
-// console.log(h('ul', x.props, x.children))
-  
-
+var backgroud = ["#ff6699", "#ffbb99", "#adebad"];
+var estadoColores = [
+    { id_: "Fresa", Descripcion: "Severa" },
+    { id_: "Naranja", Descripcion: "Moderada" },
+    { id_: "Verde", Descripcion: "Sin sintomas" }
+  ];
+var CharConfig = {
+    //configuracion del grafico
+    ContainerName: "MyChart",
+    Title: "MyChart",
+    GroupLabelsData: estadoColores,
+    GroupDataset: result.Labels,
+    Datasets: result.datos,
+    Colors: backgroud,
+    SecondGroupDataset: null,
+    ThreeGroupDataset: null,
+    GroupDataTotals: result.totales,
+    ContainerSize: 400,
+    ColumnLabelDisplay: 0,
+    AttNameEval: "estado",
+    AttNameG1: "time",
+    AttNameG2: "",
+    AttNameG3: ""
+  };
 

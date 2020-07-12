@@ -23,10 +23,12 @@ function createElement(node) {
     }
     const element = document.createElement(node.type)
     if (node.props) {
-        for (const prop in node.props) {   
+        for (const prop in node.props) {             
             if (typeof  node.props[prop] === "function") {
                 element[prop] = node.props[prop];
-            } else{
+            }else if (typeof  node.props[prop] === 'object') {                
+                element[prop] = node.props[prop];
+            }else{
                 element.setAttribute(prop, node.props[prop]);
             }  
          }
