@@ -32,7 +32,8 @@ class ColumChart extends HTMLElement{
     DrawChart(){
         this.ChartInstance = new ChartConfig(this.data);
         // this.ChartInstance.GroupDataset =  orderByDate(this.ChartInstance.GroupDataset,
-        //                                                  sessionStorage.getItem('type'));        
+        //                                                  sessionStorage.getItem('type'));     
+        this.MaxVal = MaxValue(this.ChartInstance);   
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
         ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
@@ -43,27 +44,10 @@ class ColumChart extends HTMLElement{
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG2),
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
         ];
-        let GroupsNames = [
-            this.ChartInstance.AttNameEval,
-            this.ChartInstance.AttNameG1,
-            this.ChartInstance.AttNameG2,
-            this.ChartInstance.AttNameG3
-        ];
-
-       
-
-        //ChartFragment.append(this._AddSectionBars(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
-       
-       
-        if (typeof this.ChartInstance.AttNameG3 !== "undefined") {
-            console.log("Drawing data... att3");   
-        }else if(typeof this.ChartInstance.AttNameG2 !== "undefined"){
-            console.log("Drawing data... att2"); 
-        }else if(typeof this.ChartInstance.AttNameG1 !== "undefined"){
-            console.log("Drawing data... att1");             
-        }else{
-            console.log("Drawing data... is imposible!!"); 
-        }
+        console.log(GroupsData);
+        this.MaxVal = MaxValue(this.ChartInstance, GroupsData);   
+        
+        ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
         this.append(ChartFragment);
     }   
     _AddSectionTitle(Title){       
@@ -91,62 +75,151 @@ class ColumChart extends HTMLElement{
         })
         return SectionLabels;
     }
-    _AddSectionBars(Groups, GroupsNames, Data){  
-        const GroupDataset = Groups[0];
-        const SecondGroupDataset  = Groups[0];
-        const ThreeGroupDataset  = Groups[0];        
+    _AddSectionBars(Groups, Config){
+        //console.log(Config)  
+        const DataSet = Groups[0];
+        const GroupDataset = Groups[1];
+        const SecondGroupDataset  = Groups[2];
+        const ThreeGroupDataset  = Groups[3];     
+        let SectionBars = document.createElement('section');
+        SectionBars.className = "SectionBars";
+        var count = 0;        
         GroupDataset.forEach(elementGroup => {
             var GroupSection = document.createElement("GroupSection");
                 GroupSection.className = "GroupSection";            
             var groupBars = document.createElement("groupBar");
-                groupBars.className = "groupBars";
-            if (SecondGroupDataset != null) {                
-                groupBars.append(DrawBackgroundLine(MaxVal,null, ColumnLabelDisplay)); 
-                if (ThreeGroupDataset != null) {
-                
+                groupBars.className = "groupBars";           
+
+            var groupLabels = document.createElement("span"); 
+            var groupLabelsTwo = document.createElement("span"); 
+            var groupLabelsThree = document.createElement("span");
+            if (count == 0) {
+                groupLabels = document.createElement("groupLabels");
+                groupLabels.className = "groupLabels ElementG1";
+            }else{
+                groupLabels = document.createElement("groupLabels");
+                groupLabels.className = "groupLabels";
+            }             
+            if (SecondGroupDataset != null) {
+                if (count == 0) {                  
+                    groupLabelsTwo = document.createElement("groupLabelsTwo");
+                    groupLabelsTwo.className = "groupLabels ElementG2";
+                }else{     
+                    groupLabelsTwo = document.createElement("groupLabelsTwo");
+                    groupLabelsTwo.className = "groupLabels";
                 }
-                else{
-                    
-                }                
+            }  
+            if (ThreeGroupDataset != null) {   
+                if (count == 0) {  
+                    groupLabelsThree = document.createElement("groupLabelsThree");
+                    groupLabelsThree.className = "groupLabels ElementG3";
+                }else{                                                
+                    groupLabelsThree = document.createElement("groupLabelsThree");
+                    groupLabelsThree.className = "groupLabels";
+                }  
+            }  
+            //CONSTRUCCCION DE DATOS   
+            if (SecondGroupDataset != null) {  
+                SecondGroupDataset.forEach(elementSecondGroup => {//RECORREMOS la categoria SEGUNDA AGRUPACION                     
+                    if (ThreeGroupDataset != null) { 
+                        ThreeGroupDataset.forEach(elementThreeGroup => {//RECORREMOS la categoria tercera AGRUPACION
+                            var ContainerBars = document.createElement("ContainerBar");
+                            ContainerBars.className = "ContainerBars";
+                            this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup, elementThreeGroup);                        
+                            groupBars.append(ContainerBars);
+                            groupLabelsThree.append(CreateStringNode(`       
+                                <label class="">
+                                    ${elementThreeGroup[Config.AttNameG3]}
+                                </label>`)
+                            );
+                        });      
+                                                          
+                    }
+                    else{
+                        var ContainerBars = document.createElement("ContainerBar");
+                        ContainerBars.className = "ContainerBars";
+                        this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup);                        
+                        groupBars.append(ContainerBars);
+                    } 
+                    groupLabelsTwo.append(CreateStringNode(`       
+                            <label class="">
+                                ${elementSecondGroup[Config.AttNameG2]}
+                            </label>`)
+                    );
+                })     
             }
             else{
-                
-            }    
+                var ContainerBars = document.createElement("ContainerBar");
+                ContainerBars.className = "ContainerBars";
+                this._DrawGroupChart(Config, ContainerBars, elementGroup); 
+                groupBars.append(ContainerBars);               
+            } 
+            groupLabels.append(CreateStringNode(`       
+                <label class="">
+                    ${elementGroup[Config.AttNameG1]}
+                </labe>`)
+            );
+            count++;
+            GroupSection.append(groupBars,groupLabelsThree, groupLabelsTwo, groupLabels);  
+            SectionBars.append(GroupSection);
         })
-    }
-    
-    DrawGroupChart(Config, ContainerBars, elementLabelData){
+        return SectionBars;
+    }    
+    _DrawGroupChart(Config, ContainerBars,  elementGroup = null, elementSecondGroup = null, elementThreeGroup = null ){
+        //console.log(Config)
+        let index = 0;
         Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS 
             Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
-                    && element[Config.AttNameEval] == elementLabelData.id_
-                    && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]
-                    && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
-                    //CalcularTotal
-                    var Size = Config.ContainerSize;
-                    var Size = 220;
-                    var BarSize = (element.cantidad / MaxVal); //% de tamaño
-                    var labelCol = element.cantidad;
-                    var styleP="";
-                    if (Config.ColumnLabelDisplay == 1) {
-                        //dibujar el valor en porcentaje
-                        styleP = ";flex-grow: 1;"
-                        var total = FindInTotal(element, Config.GroupDataTotals, Config);
-                        var multiplier = Math.pow(10, 1 || 0);
-                        var number = labelCol / total.cantidad * 100
-                        number = Math.round(number * multiplier) / multiplier
-                        labelCol = number + '%';
-                    }               
-                    var Bars = CreateStringNode(`
-                    <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
-                        <label>
-                            ${labelCol}
-                        </labe>
-                    </Bars>`)
-                    ContainerBars.appendChild(Bars);
-                }
+                let bar = null;               
+                if (elementThreeGroup != null) {                  
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                        && element[Config.AttNameEval] == elementLabelData.id_
+                        && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]
+                        && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
+                        bar =  this._DrawBar(element, Config, index);
+                    }                    
+                } else  if (elementSecondGroup != null) {               
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                        && element[Config.AttNameEval] == elementLabelData.id_
+                        && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {
+                        bar =  this._DrawBar(element, Config, index);
+                    }
+                } else  if (elementGroup != null) {                 
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                        && element[Config.AttNameEval] == elementLabelData.id_) {
+                        bar =  this._DrawBar(element, Config, index);
+                    }
+                }       
+                if (bar != null) {
+                    ContainerBars.appendChild(bar);                    
+                }  
             }) //FIN DATA
+            index ++;
+           
         });
+    }
+    _DrawBar(element, Config, index){       
+        var Size = Config.ContainerSize;
+        var Size = 220;
+        var BarSize = (element.cantidad / this.MaxVal); //% de tamaño
+        var labelCol = element.cantidad;
+        var styleP="";
+        if (Config.ColumnLabelDisplay == 1) {
+            //dibujar el valor en porcentaje
+            styleP = ";flex-grow: 1;"
+            var total = FindInTotal(element, Config.GroupDataTotals, Config);
+            var multiplier = Math.pow(10, 1 || 0);
+            var number = labelCol / total.cantidad * 100
+            number = Math.round(number * multiplier) / multiplier
+            labelCol = number + '%';
+        }               
+        var Bars = CreateStringNode(`
+            <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
+                <label>
+                    ${labelCol}
+                </labe>
+            </Bars>`);
+        return Bars;                   
     }
 }
 
@@ -200,7 +273,7 @@ function ArryUnique(DataArray, param){
                 === JSON.stringify(ActalValue[param])) === ActualIndex
             }
         );
-        console.log(DataArraySR)
+        //console.log(DataArraySR)
         return DataArraySR;
     }
     return null;    
@@ -211,5 +284,54 @@ var meses = [
     "agosto", "septiembre", "octubre",
     "noviembre", "diciembre"
   ]
+function MaxValue(Config, DataArry) {
+    var Maxvalue = 0;
+    for (let index = 0; index < DataArry.length; index++) {        
+        if (parseInt(DataArry[index]['cantidad']) > Maxvalue) {
+            Maxvalue = DataArry[index]['cantidad'];
+        }
+    }
+    //return Maxvalue;
+    if (typeof Config.AttNameG3 !== 'undefined' && Config.AttNameG3 != null && Config.AttNameG3 != ""){        
+
+    }else if (typeof Config.AttNameG2 !== 'undefined' && Config.AttNameG2 != null && Config.AttNameG2 != ""){  
+
+    }else if (typeof Config.AttNameG1 !== 'undefined' && Config.AttNameG1 != null && Config.AttNameG1 != ""){  
+
+    }
+
+    
+
+
+    Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS 
+        Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
+            let bar = null;               
+            if (elementThreeGroup != null) {                  
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                    && element[Config.AttNameEval] == elementLabelData.id_
+                    && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]
+                    && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
+                    bar =  this._DrawBar(element, Config, index);
+                }                    
+            } else  if (elementSecondGroup != null) {               
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                    && element[Config.AttNameEval] == elementLabelData.id_
+                    && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {
+                    bar =  this._DrawBar(element, Config, index);
+                }
+            } else  if (elementGroup != null) {                 
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
+                    && element[Config.AttNameEval] == elementLabelData.id_) {
+                    bar =  this._DrawBar(element, Config, index);
+                }
+            }       
+            if (bar != null) {
+                ContainerBars.appendChild(bar);                    
+            }  
+        }) //FIN DATA
+        index ++;
+       
+    });
+}
 
 customElements.define("colum-chart", ColumChart);
