@@ -347,6 +347,7 @@ var CharConfig = {
     AttNameEval: "estado",
     AttNameG1: "time",
     AttNameG2: "categ2",
-    AttNameG3: "categ"
+    AttNameG3: "categ",
+    EvalValue: "cantidad"
   };
 

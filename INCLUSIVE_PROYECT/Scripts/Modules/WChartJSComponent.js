@@ -2,6 +2,7 @@ class ChartConfig {
     constructor(Config) {
         this.ContainerName = Config.ContainerName;
         this.Title = Config.Title;
+        this.EvalValue = Config.EvalValue;
         this.GroupDataset = Config.GroupDataset;//primera agrupacion
         this.AttNameG1 = Config.AttNameG1;
         this.SecondGroupDataset = Config.SecondGroupDataset;//segunda agrupacion
@@ -32,8 +33,12 @@ class ColumChart extends HTMLElement{
     DrawChart(){
         this.ChartInstance = new ChartConfig(this.data);
         // this.ChartInstance.GroupDataset =  orderByDate(this.ChartInstance.GroupDataset,
-        //                                                  sessionStorage.getItem('type'));     
-        this.MaxVal = MaxValue(this.ChartInstance);   
+        //                                                  sessionStorage.getItem('type'));
+        
+        this.Totals = DataTotals(this.ChartInstance);
+        console.log(this.Totals)  
+        this.MaxVal = MaxValue(this.Totals); 
+        console.log(this.MaxVal)  
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
         ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
@@ -44,9 +49,6 @@ class ColumChart extends HTMLElement{
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG2),
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
         ];
-        console.log(GroupsData);
-        this.MaxVal = MaxValue(this.ChartInstance, GroupsData);   
-        
         ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
         this.append(ChartFragment);
     }   
@@ -265,15 +267,44 @@ function orderByDate(Arry, type){
     }
     return Arry;
 }
-function ArryUnique(DataArray, param){
-    if (typeof param !== 'undefined' && param != null && param != "") {        
+function ArryUnique(DataArray, param, param2 = null, param3 = null){
+    
+    if (typeof param3 !== 'undefined' && param3 != null && param3 != "") {        
+        let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) =>
+            {
+                return Array.findIndex(ArryValue => 
+                    (JSON.stringify(ArryValue[param3])
+                    === JSON.stringify(ActalValue[param3]))
+                    &&
+                    (JSON.stringify(ArryValue[param2])
+                    === JSON.stringify(ActalValue[param2]))
+                    &&
+                    (JSON.stringify(ArryValue[param])
+                    === JSON.stringify(ActalValue[param]))
+                ) === ActualIndex
+            }
+        );        
+        return DataArraySR;
+    } else if (typeof param2 !== 'undefined' && param2 != null && param2 != "") {        
+        let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) =>
+            {
+                return Array.findIndex(ArryValue =>                    
+                    (JSON.stringify(ArryValue[param2])
+                    === JSON.stringify(ActalValue[param2]))
+                    &&
+                    (JSON.stringify(ArryValue[param])
+                    === JSON.stringify(ActalValue[param]))
+                ) === ActualIndex
+            }
+        );
+        return DataArraySR;
+    }else if (typeof param !== 'undefined' && param != null && param != "") {        
         let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) =>
             {
                 return Array.findIndex(ArryValue => JSON.stringify(ArryValue[param])
                 === JSON.stringify(ActalValue[param])) === ActualIndex
             }
         );
-        //console.log(DataArraySR)
         return DataArraySR;
     }
     return null;    
@@ -284,54 +315,68 @@ var meses = [
     "agosto", "septiembre", "octubre",
     "noviembre", "diciembre"
   ]
-function MaxValue(Config, DataArry) {
+function DataTotals(Config) {
+    let UniqueTotals = ArryUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);    
+    let Totals = [];
+    if (typeof Config.AttNameG3 !== 'undefined' && Config.AttNameG3 != null && Config.AttNameG3 != ""){    
+        UniqueTotals.forEach(element => {
+            let suma = 0;
+            Config.Datasets.forEach(elementGroup => {
+                
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]                  
+                   && element[Config.AttNameG2] == elementGroup[Config.AttNameG2]
+                   && element[Config.AttNameG3] == elementGroup[Config.AttNameG3]) {                   
+                    suma = suma + parseFloat(elementGroup[Config.EvalValue]);                    
+                }   
+            });
+            let NewObj = {};
+            NewObj[Config.AttNameG1] = element[Config.AttNameG1];
+            NewObj[Config.AttNameG2] = element[Config.AttNameG2];
+            NewObj[Config.AttNameG3] = element[Config.AttNameG3];
+            NewObj[Config.EvalValue] = suma;
+            Totals.push(NewObj);
+        });
+    }else if (typeof Config.AttNameG2 !== 'undefined' && Config.AttNameG2 != null && Config.AttNameG2 != ""){  
+        UniqueTotals.forEach(element => {
+            let suma = 0;
+            Config.Datasets.forEach(elementGroup => {
+                
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]                  
+                   && element[Config.AttNameG2] == elementGroup[Config.AttNameG2]) {                   
+                    suma = suma + parseFloat(elementGroup[Config.EvalValue]);                    
+                }   
+            });
+            let NewObj = {};
+            NewObj[Config.AttNameG1] = element[Config.AttNameG1];
+            NewObj[Config.AttNameG2] = element[Config.AttNameG2];
+            NewObj[Config.EvalValue] = suma;
+            Totals.push(NewObj);
+        });
+    }else if (typeof Config.AttNameG1 !== 'undefined' && Config.AttNameG1 != null && Config.AttNameG1 != ""){  
+        UniqueTotals.forEach(element => {
+            let suma = 0;
+            Config.Datasets.forEach(elementGroup => {
+                
+                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]) {                   
+                    suma = suma + parseFloat(elementGroup[Config.EvalValue]);                    
+                }   
+            });
+            let NewObj = {};
+            NewObj[Config.AttNameG1] = element[Config.AttNameG1];
+            NewObj[Config.EvalValue] = suma;
+            Totals.push(NewObj);
+        });
+    }  
+    return Totals;
+}
+function MaxValue(DataArry) {
     var Maxvalue = 0;
     for (let index = 0; index < DataArry.length; index++) {        
         if (parseInt(DataArry[index]['cantidad']) > Maxvalue) {
             Maxvalue = DataArry[index]['cantidad'];
         }
-    }
-    //return Maxvalue;
-    if (typeof Config.AttNameG3 !== 'undefined' && Config.AttNameG3 != null && Config.AttNameG3 != ""){        
-
-    }else if (typeof Config.AttNameG2 !== 'undefined' && Config.AttNameG2 != null && Config.AttNameG2 != ""){  
-
-    }else if (typeof Config.AttNameG1 !== 'undefined' && Config.AttNameG1 != null && Config.AttNameG1 != ""){  
-
-    }
-
-    
-
-
-    Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS 
-        Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-            let bar = null;               
-            if (elementThreeGroup != null) {                  
-                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
-                    && element[Config.AttNameEval] == elementLabelData.id_
-                    && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]
-                    && element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
-                    bar =  this._DrawBar(element, Config, index);
-                }                    
-            } else  if (elementSecondGroup != null) {               
-                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
-                    && element[Config.AttNameEval] == elementLabelData.id_
-                    && element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {
-                    bar =  this._DrawBar(element, Config, index);
-                }
-            } else  if (elementGroup != null) {                 
-                if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
-                    && element[Config.AttNameEval] == elementLabelData.id_) {
-                    bar =  this._DrawBar(element, Config, index);
-                }
-            }       
-            if (bar != null) {
-                ContainerBars.appendChild(bar);                    
-            }  
-        }) //FIN DATA
-        index ++;
-       
-    });
+    }    
+    return Maxvalue;  
 }
 
 customElements.define("colum-chart", ColumChart);
