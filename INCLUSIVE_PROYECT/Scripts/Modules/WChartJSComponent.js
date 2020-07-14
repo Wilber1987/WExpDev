@@ -1,3 +1,7 @@
+function CreateStringNode(string) {
+    let node = document.createRange().createContextualFragment(string);
+    return node;
+}
 class ChartConfig {
     constructor(Config) {
         this.ContainerName = Config.ContainerName;
@@ -33,16 +37,14 @@ class ColumChart extends HTMLElement{
     DrawChart(){
         this.ChartInstance = new ChartConfig(this.data);
         // this.ChartInstance.GroupDataset =  orderByDate(this.ChartInstance.GroupDataset,
-        //                                                  sessionStorage.getItem('type'));
-        
-        this.Totals = DataTotals(this.ChartInstance);
-        console.log(this.Totals)  
-        this.MaxVal = MaxValue(this.Totals); 
-        console.log(this.MaxVal)  
+        //  sessionStorage.getItem('type'));        
+        this.Totals = DataTotals(this.ChartInstance);         
+        this.MaxVal = MaxValue(this.Totals);      
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
         ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
         ChartFragment.append(this._AddSectionlabels(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
+        
         let GroupsData = [
             this.ChartInstance.Datasets,
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG1),
@@ -50,6 +52,7 @@ class ColumChart extends HTMLElement{
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
         ];
         ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
+        ChartFragment.append(this._AddSectionLabelsGroups());
         this.append(ChartFragment);
     }   
     _AddSectionTitle(Title){       
@@ -129,6 +132,7 @@ class ColumChart extends HTMLElement{
                             ContainerBars.className = "ContainerBars";
                             this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup, elementThreeGroup);                        
                             groupBars.append(ContainerBars);
+                            groupBars.append(this._DrawBackgroundLine(this.MaxVal,null, Config.ColumnLabelDisplay));          
                             groupLabelsThree.append(CreateStringNode(`       
                                 <label class="">
                                     ${elementThreeGroup[Config.AttNameG3]}
@@ -142,6 +146,7 @@ class ColumChart extends HTMLElement{
                         ContainerBars.className = "ContainerBars";
                         this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup);                        
                         groupBars.append(ContainerBars);
+                        groupBars.append(this._DrawBackgroundLine(this.MaxVal,null, Config.ColumnLabelDisplay));
                     } 
                     groupLabelsTwo.append(CreateStringNode(`       
                             <label class="">
@@ -154,7 +159,8 @@ class ColumChart extends HTMLElement{
                 var ContainerBars = document.createElement("ContainerBar");
                 ContainerBars.className = "ContainerBars";
                 this._DrawGroupChart(Config, ContainerBars, elementGroup); 
-                groupBars.append(ContainerBars);               
+                groupBars.append(ContainerBars);   
+                groupBars.append(this._DrawBackgroundLine(this.MaxVal,null, Config.ColumnLabelDisplay));            
             } 
             groupLabels.append(CreateStringNode(`       
                 <label class="">
@@ -163,8 +169,10 @@ class ColumChart extends HTMLElement{
             );
             count++;
             GroupSection.append(groupBars,groupLabelsThree, groupLabelsTwo, groupLabels);  
+            
             SectionBars.append(GroupSection);
         })
+        SectionBars.append(this._DrawBackgroundChart(this.MaxVal, null, Config.ColumnLabelDisplay));
         return SectionBars;
     }    
     _DrawGroupChart(Config, ContainerBars,  elementGroup = null, elementSecondGroup = null, elementThreeGroup = null ){
@@ -172,7 +180,7 @@ class ColumChart extends HTMLElement{
         let index = 0;
         Config.GroupLabelsData.forEach(elementLabelData => {  //RECORREMOS LOS STAKS 
             Config.Datasets.forEach(element => {//RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-                let bar = null;               
+                let bar = null;    
                 if (elementThreeGroup != null) {                  
                     if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]
                         && element[Config.AttNameEval] == elementLabelData.id_
@@ -200,6 +208,181 @@ class ColumChart extends HTMLElement{
            
         });
     }
+    _DrawBackgroundChart(value, size = 600,ValP){
+        var countLine = 0;
+        var val = 0;
+        if (value > 5000) {
+            var countLine = parseInt(value / 1000) +1
+            var value = parseInt(value / 1000) * 1000 + 1000;
+            val = 1000;
+        }else if (value > 2500) {
+            var countLine = parseInt(value / 300) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 300;
+        }else if (value > 2000) {
+            var countLine = parseInt(value / 250) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 250;
+        }else if (value > 1500) {
+            var countLine = parseInt(value / 200) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 200;
+        }else if (value > 1000) {
+            var countLine = parseInt(value / 150) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 150;
+        }else if (value > 500) {
+            var countLine = parseInt(value / 100) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 100;
+        }
+        else if (value > 200) {
+            var countLine = parseInt(value / 50) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 50;
+        } else if (value > 100) {
+            var countLine = parseInt(value / 20) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 20;
+        } else if (value > 70) {
+            var countLine = parseInt(value / 10) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 10;
+        } else if (value > 20) {
+            var countLine = parseInt(value / 5) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 5;
+        }else if (value > 10) {
+            var countLine = parseInt(value / 2) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 2;
+        }else if (value > 5) {
+            var countLine = parseInt(value / 1) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 1;
+        }else if (value > 1) {
+            var countLine = parseInt(value / 0.5) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 0.5;
+        }else if (value > 0) {
+            var countLine = parseInt(value / 0.1) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 0.1;
+        }
+        if(ValP == 1){
+            countLine =10
+            //var value = parseInt(value / 10) * 10 + 10;
+            val = 10;
+        }
+        var ContainerLine = document.createElement('section');
+        ContainerLine.className = "BackGrounLineX";
+        var valueLabel = 0;
+
+        for (let index = 0; index < countLine; index++) {
+            if(ValP == 1){
+                valueLabel = valueLabel + val;
+                ContainerLine.appendChild(CreateStringNode(
+                    `<path class="CharLineXNumber"><label>${valueLabel}%</label></path>`
+                ));
+            }
+            else{
+                valueLabel = valueLabel + val;
+                ContainerLine.appendChild(CreateStringNode(
+                    `<path class="CharLineXNumber"><label>${valueLabel.toFixed(1)}</label></path>`
+                ));
+            }
+            
+        }
+        return ContainerLine;
+    }
+    _DrawBackgroundLine(value, size = 600,ValP) {
+        //console.log(value)
+        var countLine = 0;
+        var val = 0;
+        if (value > 5000) {
+            var countLine = parseInt(value / 1000) +1
+            var value = parseInt(value / 1000) * 1000 + 1000;
+            val = 1000;
+        }else if (value > 2500) {
+            var countLine = parseInt(value / 300) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 300;
+        }else if (value > 2000) {
+            var countLine = parseInt(value / 250) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 250;
+        }else if (value > 1500) {
+            var countLine = parseInt(value / 200) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 200;
+        }else if (value > 1000) {
+            var countLine = parseInt(value / 150) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 150;
+        }else if (value > 500) {
+            var countLine = parseInt(value / 100) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 100;
+        }
+        else if (value > 200) {
+            var countLine = parseInt(value / 50) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 50;
+        } else if (value > 100) {
+            var countLine = parseInt(value / 20) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 20;
+        } else if (value > 70) {
+            var countLine = parseInt(value / 10) +1
+            var value = parseInt(value / 100) * 100 + 100;
+            val = 10;
+        } else if (value > 20) {
+            var countLine = parseInt(value / 5) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 5;
+        }else if (value > 10) {
+            var countLine = parseInt(value / 2) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 2;
+        }else if (value > 5) {
+            var countLine = parseInt(value / 1) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 1;
+        }else if (value > 1) {
+            var countLine = parseInt(value / 0.5) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 0.5;
+        }else if (value > 0) {
+            var countLine = parseInt(value / 0.1) +1
+            var value = parseInt(value / 10) * 10 + 10;
+            val = 0.1;
+        }
+        //%
+        if(ValP == 1){
+            countLine =10
+            //var value = parseInt(value / 10) * 10 + 10;
+            val = 10;
+        }
+        var ContainerLine = document.createElement('section');
+        ContainerLine.className = "BackGrounLineX";
+        var valueLabel = 0;
+    
+        for (let index = 0; index < countLine; index++) {
+            if(ValP == 1){
+                valueLabel = valueLabel + val;
+                ContainerLine.appendChild(CreateStringNode(
+                    `<path class="CharLineX"></path>`
+                ));
+            }
+            else{
+                valueLabel = valueLabel + val;
+                ContainerLine.appendChild(CreateStringNode(
+                    `<path class="CharLineX"></path>`
+                ));
+            }
+        }
+        return ContainerLine;
+    }
     _DrawBar(element, Config, index){       
         var Size = Config.ContainerSize;
         var Size = 220;
@@ -223,11 +406,35 @@ class ColumChart extends HTMLElement{
             </Bars>`);
         return Bars;                   
     }
+    _AddSectionLabelsGroups(){
+        var SectionLabelGroup = document.createElement('section');
+        SectionLabelGroup.className = "SectionLabelGroup";
+        var color1= " #70ad47";
+        var AttNameG1 = sessionStorage.getItem('AttNameG1');
+        SectionLabelGroup.appendChild(CreateStringNode(
+                `<label><span style="background:${color1}"></span>${AttNameG1}</label>`
+            ));
+        var color1= " #5b9bd5";
+        var AttNameG1 = sessionStorage.getItem('AttNameG2');
+        SectionLabelGroup.appendChild(CreateStringNode(
+                `<label><span style="background:${color1}"></span>${AttNameG1}</label>`
+            ));
+        var color1= " #ffc000";
+        var AttNameG1 = sessionStorage.getItem('AttNameG3');
+        SectionLabelGroup.appendChild(CreateStringNode(
+                `<label><span style="background:${color1}"></span>${AttNameG1}</label>`
+            ));
+        return SectionLabelGroup;
+    }    
 }
 
-
 function orderByDate(Arry, type){ 
-    //console.log(type)  
+    var meses = [
+        "enero", "febrero", "marzo",
+        "abril", "mayo", "junio", "julio",
+        "agosto", "septiembre", "octubre",
+        "noviembre", "diciembre"
+      ];
     if (type == 1) {
         Arry.sort((a, b) => a.time - b.time);        
     }else if(type == 2){    
@@ -267,8 +474,7 @@ function orderByDate(Arry, type){
     }
     return Arry;
 }
-function ArryUnique(DataArray, param, param2 = null, param3 = null){
-    
+function ArryUnique(DataArray, param, param2 = null, param3 = null){  
     if (typeof param3 !== 'undefined' && param3 != null && param3 != "") {        
         let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) =>
             {
@@ -309,12 +515,7 @@ function ArryUnique(DataArray, param, param2 = null, param3 = null){
     }
     return null;    
 }
-var meses = [
-    "enero", "febrero", "marzo",
-    "abril", "mayo", "junio", "julio",
-    "agosto", "septiembre", "octubre",
-    "noviembre", "diciembre"
-  ]
+
 function DataTotals(Config) {
     let UniqueTotals = ArryUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);    
     let Totals = [];
@@ -378,5 +579,26 @@ function MaxValue(DataArry) {
     }    
     return Maxvalue;  
 }
-
+function FindInTotal(Elemento, list, Config) {
+    var FindElement = false;
+    for (let index = 0; index < list.length; index++) {
+        if (list[index][Config.AttNameG3]) {
+            if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
+                list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] &&
+                list[index][Config.AttNameG3] == Elemento[Config.AttNameG3]) {
+                FindElement = list[index];
+            }
+        } else if (list[index][Config.AttNameG2]) {
+            if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
+                list[index][Config.AttNameG2] == Elemento[Config.AttNameG2]) {
+                FindElement = list[index];
+            }
+        } else {
+            if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1]) {
+                FindElement = list[index];
+            }
+        }
+    }
+    return FindElement;
+}
 customElements.define("colum-chart", ColumChart);

@@ -4,6 +4,9 @@
     border: #d4d4d4 solid 4px;
     padding: 20px;
     border-radius: .4cm;
+    max-height: 500px !important;
+    min-height: 400px !important;  
+    overflow: hidden;  
    
 }
 .WChartContainer h3{
@@ -15,34 +18,54 @@
 }
 
 
-.SectionLabels{
+.SectionLabels, .SectionLabelGroup{
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-wrap:wrap;
+    
 }
-.SectionLabels label{
+.SectionLabels{
+    padding-left: 100px;
+    padding-right: 100px;
+}
+.SectionLabels label, .SectionLabelGroup label{
     padding: 5px;
-    display: inline-flex; 
+    display: flex; 
     height: 20px;
+    width: 120px;
     justify-content: center;
      align-items: center;
+    margin-bottom: 10px !important;   
+    font-size: 9px;     
  }
 
-.SectionLabels label span{
-    height: 20px;
+ 
+
+.SectionLabels label span, .SectionLabelGroup label span{
+    min-height: 20px;
     width: 20px;
+    content: "  ";
     border-radius: 50%;
     display: inline-flex;    
     margin: 5px;
+ }
+ .SectionLabelGroup label {
+    width: 150px !important;
  }
 
 .SectionBars{
     display: flex;
     align-items:  flex-end;
-    height:80%;     
+
+    /* height:80%;      */
+
     padding-left: 30px;
     position: relative;
     overflow-x: scroll;
+    min-height: 270px;
 }
 .GroupSection{
     display: flex;
@@ -51,12 +74,14 @@
     border-bottom:3px rgb(155, 155, 155) solid ; 
     position: relative;
     flex-direction: column;
+    flex-grow: 1;
 }
  .groupBars
 {  
     width: 100%; 
-    height: 300px;
+    height: 220px;
     display: flex;
+    flex-grow: 1;
     border: solid 1px #d4d4d4;
 }
 .groupLabels{
@@ -65,19 +90,27 @@
     border: solid 1px #d4d4d4;
     align-items: stretch;
     background-color: #fff;
-    height: 30px;
+    /* min-height: 30px; */
 }
 .groupLabels label{
     padding: 5px;
     flex-grow: 1;
-    width: 60px;
-    border: solid 1px #d4d4d4;
+    width: 80px;
+    border: solid 1px #d4d4d4;   
+    text-align: center;
+    margin-bottom: 0px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
 }
 .ContainerBars{  
     display: flex;
     width: 100%;   
     /* margin-left: 5px;
-    margin-right: 5px; */    
+    margin-right: 5px; */  
+    padding-left: 10px;
+    padding-right: 10px;  
     flex-direction: column;
     align-items: flex-end;   
     justify-content: flex-end;
@@ -89,7 +122,9 @@
    margin-top: 0px;
    z-index: 1;   
    width: 60px;
-   min-height: 15PX;
+   min-height: 20PX;
+   background: rgb(177,177,177);
+background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53%);
    /* flex-grow: 1; */
 }
 .Bars label{
@@ -102,8 +137,6 @@
     overflow: hidden;
  }
 
-
-
  .BackGrounLineX{
     display: flex;
     position: absolute;
@@ -112,7 +145,7 @@
     height: 100%;
     left: 0px;
     top: 0px;   
-    height: 300px;
+    height: 220px;
     right: 0px; 
 }
 .CharLineX{
@@ -129,21 +162,22 @@
     position: relative;
     border-top: rgba(190, 190, 190,0) solid 1px;
     height: 100%;
-    display: block;       
+    /* display: block;        */
     align-items: flex-start;
     display: flex;
-    padding-left: 5PX;
+    /* padding-left: 5PX; */
+    font-size: 9px;
     
 }
 .ElementG1::before{
-   height: 30px;
-   z-index: -1;
+   height: 30px;  
    width: 30px;
    background-color: #70ad47;
    border:  2px solid #fff;
    content: "";
    position: absolute;
    left: -35px;
+   
  
 }
 .ElementG2::before{
@@ -152,7 +186,7 @@
     background-color: #5b9bd5;
     border:  2px solid #fff;
     content: "";
-    z-index: -1;
+   
     position: absolute;
     left: -35px;
   
@@ -163,12 +197,66 @@
     background-color: #ffc000;
     border:  2px solid #fff;
     content: "";
-    z-index: -1;
+   
     position: absolute;
     left: -35px;
     
  }
 
+ .SectionBars::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+
+.SectionBars::-webkit-scrollbar-thumb:hover {
+    background: #b3b3b3;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Cambiamos el fondo cuando esté en active */
+
+.SectionBars::-webkit-scrollbar-thumb:active {
+    background-color: #999999;
+}
+
+.SectionBars::-webkit-scrollbar {
+    width: 8px;
+    /* Tamaño del scroll en vertical */
+    height: 15px;
+    margin: 10px;
+    /* Tamaño del scroll en horizontal */
+    /* Ocultar scroll */
+}
+
+.SectionBars::-webkit-scrollbar-track {
+    background: #e1e1e1;
+    border-radius: 4px;
+}
+
+
+/* Cambiamos el fondo cuando esté en active o hover */
+
+.SectionBars::-webkit-scrollbar-track:hover,
+.SectionBars::-webkit-scrollbar-track:active {
+    background: #d4d4d4;
+}
 
 
 
+.Contenedor, .ContenedorPregs {
+    display: block;
+    overflow: initial;
+    margin: auto;
+    margin-top: 50px;
+    background-color: #fff;
+    width: 70%;
+    max-height: 800px;
+    overflow-y: initial;
+    padding: 20px;
+    min-height: 200px;
+    border-radius: 5px;
+}
