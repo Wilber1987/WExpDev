@@ -24,6 +24,12 @@ class ColumChart extends HTMLElement{
     constructor(props){
         super();        
     }
+    /*
+        PARA CONVERTIRLO EN GRAFICO DE BARRAS NO STAKED
+        1. modificar el flex direccion de Conteinerbars
+        2. modificar ancho de containerbars y label(la agrupada), en base a la cantidad de series/staks usar anchos fijos
+        3. modificar el alto y ancho de la bar
+    */
     attributeChangedCallBack(){
         this.DrawChart();
     }

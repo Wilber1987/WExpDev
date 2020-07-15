@@ -24,6 +24,7 @@ importarScript("Scripts/Modules/WComponents.js", Url_Path);
 importarScript("Scripts/Modules/WNavComponents.js", Url_Path);
 importarScript("Scripts/Modules/WComponentsTools.js", Url_Path);
 importarScript("Scripts/Modules/WChartJSComponent.js", Url_Path);
+importarScript("Scripts/Modules/WChartRadial.js", Url_Path);
 //estilos
 importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
 importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
@@ -39,9 +40,9 @@ function OnLoad() {
     var modules = new Modules(); 
     const BodyComponents = new MasterDomClass();
     root.appendChild(createElement(BodyComponents));   
-   // root.appendChild(createElement({type: 'colum-chart',  props : { data: ["CharConfig"] }})); 
     StarDOM();
-    Container.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
+    //Container.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
+    Container.appendChild(createElement({type: 'radial-chart',  props : { data: CharConfig }})); 
     //StartModuleList(modules); 
 
 }
