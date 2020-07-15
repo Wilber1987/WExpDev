@@ -49,6 +49,9 @@ class RadialChart extends HTMLElement{
      _AddSectionData(Groups, Config){
         const DataSet = Groups[0];
         let Chart = document.createDocumentFragment();
+        Chart.append(CreateStringNode(`
+                <circle class="RadialData">100%</circle>
+            `));
         DataSet.forEach(element => {
             Chart.append(CreateStringNode(`
                 <circle>Value %</circle>
