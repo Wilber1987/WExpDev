@@ -47,14 +47,26 @@ class RadialChart extends HTMLElement{
          return SectionLabels;
      }
      _AddSectionData(Groups, Config){
-        const DataSet = Groups[0];
-        let Chart = document.createDocumentFragment();
+        //const DataSet = Groups[0];
+        const DataSet = [
+            {
+                cantidad: 20,
+                time: 2020
+            },
+            {
+                cantidad: 80,
+                time: 2020
+            }
+        ];
+        let Chart = document.createElement('section');
+        Chart.className = "SectionRadialChart";
+       // let Chart = document.createDocumentFragment();
         Chart.append(CreateStringNode(`
-                <circle class="RadialData">100%</circle>
-            `));
+                <circle class="RadialDataBackground">100%</circle>
+         `));
         DataSet.forEach(element => {
             Chart.append(CreateStringNode(`
-                <circle>Value %</circle>
+                <circle class="RadialData">Value %</circle>
             `));
         });       
         return Chart; 

@@ -37,6 +37,7 @@ importarStyle("Styles/AppStyles.css", Url_Path);
 
 
 function OnLoad() {
+    prueba()
     var modules = new Modules(); 
     const BodyComponents = new MasterDomClass();
     root.appendChild(createElement(BodyComponents));   
@@ -179,6 +180,59 @@ result =
     {"cantidad":34,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"La Castellana"},
     {"cantidad":21,"estado":"Fresa","time":"enero 2020","categ2":"Severo","categ":"parmalat"}],
   };
+
+
+  function prueba() {
+     var  url = "https://cuidardelosmios.psicovitalem.com/prebeta/DataChats";
+     var array  = [{"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:17:36","emisor_mensaje":"agente","mensaje":"¡Hola Nacho !, Soy tu psicólog@ en línea, ¿Cómo puedo ayudarte?","hora":"18:17:36"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:18:06","emisor_mensaje":"usuario","mensaje":"Hola, esta es otra prueba del chat","hora":"18:18:06"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:19:09","emisor_mensaje":"usuario","mensaje":"Se recibe?","hora":"18:19:09"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:19:46","emisor_mensaje":"agente","mensaje":"buenas tardes","hora":"18:19:46"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:19:49","emisor_mensaje":"agente","mensaje":"aki esta","hora":"18:19:49"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:20:05","emisor_mensaje":"usuario","mensaje":"Perfecto","hora":"18:20:05"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:20:13","emisor_mensaje":"agente","mensaje":"voy a cerrar","hora":"18:20:13"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:20:17","emisor_mensaje":"usuario","mensaje":"oK","hora":"18:20:17"},
+     {"id_conversacion":"7DE76D99-1371-86EE-DE61-171F7186C3BD","dni":"03251116C","agente":"psicologo1","fecha":"2020-07-16 18:20:17","emisor_mensaje":"agente","mensaje":"el chat","hora":"18:20:17"}];
+        //var url  = "{{URL::action('ApiCallcenterController@DataChats')}}";            
+            data ={
+                array :array,
+                token : 'fa2dfd20-340f-11ea-81e3-833b317c03bf'
+            }  
+
+
+
+    //var url =  url = Config.Options.EditOptions.ApiUrlUpdate;
+    var xhr = new XMLHttpRequest(); xhr.open("POST", url, true); 
+    //xhr.setRequestHeader("Content-Type",  'multipart/form-data');//application/json
+    //xhr.setRequestHeader("Content-Type",  'application/json');//application/json
+    //xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    xhr.onreadystatechange = function(data) { 
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) 
+        {        
+            var dataJson = JSON.parse(data.target.response); 
+            console.log(dataJson)
+            //DrawTable(ArrayList, Config, TableId);
+        } 
+    } 
+    xhr.send(JSON.stringify(data));
+            
+  
+
+    // let xhr
+    // if (window.XMLHttpRequest) xhr = new XMLHttpRequest()
+    // else xhr = new ActiveXObject("Microsoft.XMLHTTP")   
+    
+    // xhr.open('POST', url)
+    // //xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    // xhr.addEventListener('load', (data) => {
+    //    // const dataJSON = JSON.parse(data.target.response); 
+    //     console.log("exito");              
+    // })
+    // xhr.send() 
+
+
+
+}
 
 
 
