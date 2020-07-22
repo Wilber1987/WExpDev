@@ -279,8 +279,9 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     top:0;
     left: calc(50% - 100px);
     margin: auto;
-    background-color: crimson;
-
+}
+.RadialDataBackground:first-child {
+    margin-bottom: 20px;
 }
 .RadialData{
     height: 200px;
@@ -319,3 +320,32 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     margin: auto;
     background: linear-gradient( 180deg, rgb(12, 109, 148) 50% ,rgba(255,255,55,0) 50%);    
 }
+.circle{
+    transition: all 1s;
+    fill: none;
+}
+.circle:hover{
+    stroke:
+     aqua;
+}
+.progress__meter,
+.progress__value {
+    fill: none;
+}
+
+
+/* .RadialData{
+    height: 200px;
+    width: 200px;
+    display: block;
+    border-radius: 50%;
+    box-shadow: 1px 1px 1px 1px rgb(70, 70 ,70);    
+    margin: auto;
+ 
+
+    background-image: conic-gradient(#0140CA 40%,
+        #DD1812 12% 40%,
+        #16A6FE 6% 12%,
+        #6ab150 7%);
+
+} */

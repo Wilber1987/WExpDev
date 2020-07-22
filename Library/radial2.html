@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .demo {
+            flex-direction: column;
+        }
+        .demo:first-child {
+            margin-bottom: 20px;
+        }
+        .progress {
+            transform: rotate(-90deg);
+        }
+
+        .progress__meter,
+        .progress__value {
+            fill: none;
+        }
+        .progress__meter {
+            stroke: #e6e6e6;
+        }
+        .progress__value {
+            stroke: #f77a52;
+            stroke-linecap: round;
+        }
+        .progress__value2 {
+            stroke: #65f752;
+            stroke-linecap: round;
+        }
+        .circle{
+            transition: all 1s;
+        }
+        .circle:hover{
+            stroke: aqua;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="demo">
+        <svg class="progress" width="500" height="500" viewBox="0 0 120 120">
+            <circle class="progress__meter" cx="60" cy="60" r="54" stroke-width="12" />
+            <circle class="progress__value circle" cx="60" cy="60" r="54" stroke-width="12" />
+            <circle class="progress__value2 circle" cx="60" cy="60" r="54" stroke-width="12" />
+        </svg>
+        <input id="control" type="range" value="60" />
+    </div>
+    <script>
+        var control = document.getElementById('control');
+        var progressValue = document.querySelector('.progress__value');
+        var progressValue2 = document.querySelector('.progress__value2');
+
+        var RADIUS = 54;
+        var CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+        function progress(value) {
+            var progress = value / 100;
+            var dashoffset = CIRCUMFERENCE * (1 - progress);
+            
+            console.log('progress:', value + '%', '|', 'offset:', dashoffset)            
+            progressValue2.style.strokeDashoffset = dashoffset;
+        }
+        function progressInitial(value, circle) {
+            var progress = value / 100;
+            var dashoffset = CIRCUMFERENCE * (1 - progress);            
+            console.log('progress:', value + '%', '|', 'offset:', dashoffset)            
+            circle.style.strokeDashoffset = dashoffset;
+        }
+
+
+        control.addEventListener('input', function(event) {
+            progress(event.target.valueAsNumber);
+        });
+
+        progressValue.style.strokeDasharray = CIRCUMFERENCE;
+        progressValue2.style.strokeDasharray = CIRCUMFERENCE;
+        progress(60);
+        progressInitial(80,progressValue);
+    </script>
+</body>
+</html>
