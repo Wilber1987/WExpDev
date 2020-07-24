@@ -271,14 +271,15 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     height: 300px;
 }
 .RadialDataBackground{
-    height: 200px;
+    /* height: 200px;
     width: 200px;
     border-radius: 50%;
     display: block;
     position: absolute;
     top:0;
     left: calc(50% - 100px);
-    margin: auto;
+    margin: auto; */
+    transform: rotate(-90deg);
 }
 .RadialDataBackground:first-child {
     margin-bottom: 20px;
@@ -322,7 +323,9 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
 }
 .circle{
     transition: all 1s;
+    transform-origin: 50% 50%;
     fill: none;
+    
 }
 .circle:hover{
     stroke:
@@ -331,6 +334,9 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
 .progress__meter,
 .progress__value {
     fill: none;
+}
+.progress__meter {
+    stroke: #e6e6e6;
 }
 
 

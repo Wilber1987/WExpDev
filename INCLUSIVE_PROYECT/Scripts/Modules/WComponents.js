@@ -40,6 +40,30 @@ function createElement(node) {
     }  
     return element;
 }
+function createElementNS(node) {
+    if (typeof node === 'string') {
+      return document.createTextNode(node)
+    }
+    SVGN = "http:\/\/www.w3.org/2000/svg";
+    const element = document.createElementNS(SVGN,node.type)
+    if (node.props) {
+        for (const prop in node.props) {             
+            if (typeof  node.props[prop] === "function") {
+                element[prop] = node.props[prop];
+            }else if (typeof  node.props[prop] === 'object') {                
+                element[prop] = node.props[prop];
+            }else{
+                element.setAttributeNS(null, prop, node.props[prop]);
+            }  
+         }
+    }  
+    if (node.children) {
+        node.children
+            .map(createElementNS)
+            .forEach(child => element.appendChild(child))
+    }  
+    return element;
+}
 
 function CreateInput(Data) {
     var InputForRT = document.createElement("input");
