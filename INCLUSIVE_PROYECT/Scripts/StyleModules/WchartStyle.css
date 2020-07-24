@@ -124,7 +124,7 @@
    width: 60px;
    min-height: 20PX;
    background: rgb(177,177,177);
-background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53%);
+    background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53%);
    /* flex-grow: 1; */
 }
 .Bars label{
@@ -244,9 +244,6 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
 .SectionBars::-webkit-scrollbar-track:active {
     background: #d4d4d4;
 }
-
-
-
 .Contenedor, .ContenedorPregs {
     display: block;
     overflow: initial;
@@ -260,8 +257,6 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     min-height: 200px;
     border-radius: 5px;
 }
-
-
 /*RADIALLLLL*/
 .SectionRadialChart{
     position: relative;
@@ -322,36 +317,22 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     background: linear-gradient( 180deg, rgb(12, 109, 148) 50% ,rgba(255,255,55,0) 50%);    
 }
 .circle{
-    transition: all 1s;
+    transition: all 0.5s;
     transform-origin: 50% 50%;
-    fill: none;
-    
+    fill: none; 
+    cursor: pointer;   
+    clip-path: circle(50% at 50% 50%);
 }
-.circle:hover{
-    stroke:
-     aqua;
+.circle:hover {
+    background-color: #999999;
+    background-blend-mode: screen;
+    z-index: 5;   
+    clip-path: circle(52% at 50% 50%);
 }
 .progress__meter,
 .progress__value {
     fill: none;
 }
-.progress__meter {
+.progress__meter {   
     stroke: #e6e6e6;
 }
-
-
-/* .RadialData{
-    height: 200px;
-    width: 200px;
-    display: block;
-    border-radius: 50%;
-    box-shadow: 1px 1px 1px 1px rgb(70, 70 ,70);    
-    margin: auto;
- 
-
-    background-image: conic-gradient(#0140CA 40%,
-        #DD1812 12% 40%,
-        #16A6FE 6% 12%,
-        #6ab150 7%);
-
-} */

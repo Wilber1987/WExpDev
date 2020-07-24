@@ -53,7 +53,13 @@ function createElementNS(node) {
             }else if (typeof  node.props[prop] === 'object') {                
                 element[prop] = node.props[prop];
             }else{
-                element.setAttributeNS(null, prop, node.props[prop]);
+                try {
+                    element.setAttributeNS(null, prop, node.props[prop])
+                } catch (error) {
+                    console.log(prop, node.props[prop])
+                    console.log(error);
+                    element.setAttributeNS(SVGN, prop, node.props[prop]);
+                }  
             }  
          }
     }  
