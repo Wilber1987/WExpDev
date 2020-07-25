@@ -17,7 +17,7 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
-function createElement(node) {
+function createElement(node) {   
     if (typeof node === 'string') {
       return document.createTextNode(node)
     }
@@ -36,6 +36,37 @@ function createElement(node) {
     if (node.children) {
         node.children
             .map(createElement)
+            .forEach(child => element.appendChild(child))
+    }  
+    return element;
+}
+function createElementNS(node) {
+    //console.log(node);
+    if (typeof node === 'string') {
+      return document.createTextNode(node)
+    }
+    SVGN = "http:\/\/www.w3.org/2000/svg";
+    const element = document.createElementNS(SVGN,node.type)
+    if (node.props) {
+        for (const prop in node.props) {             
+            if (typeof  node.props[prop] === "function") {
+                element[prop] = node.props[prop];
+            }else if (typeof  node.props[prop] === 'object') {                
+                element[prop] = node.props[prop];
+            }else{
+                try {
+                    element.setAttributeNS(null, prop, node.props[prop])
+                } catch (error) {
+                    //console.log(prop, node.props[prop])
+                    //console.log(error);
+                    element.setAttributeNS(SVGN, prop, node.props[prop]);
+                }  
+            }  
+         }
+    }  
+    if (node.children) {
+        node.children
+            .map(createElementNS)
             .forEach(child => element.appendChild(child))
     }  
     return element;
@@ -653,4 +684,3 @@ function  UpdateArrayForApi(UpdateObject, Config, TableId){
     } 
     xhr.send(JSON.stringify(UpdateObject));
 }
-

@@ -214,69 +214,10 @@ class ColumChart extends HTMLElement{
     _DrawBackgroundChart(value, size = 600,ValP){
         var countLine = 0;
         var val = 0;
-        if (value > 5000) {
-            var countLine = parseInt(value / 1000) +1
-            var value = parseInt(value / 1000) * 1000 + 1000;
-            val = 1000;
-        }else if (value > 2500) {
-            var countLine = parseInt(value / 300) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 300;
-        }else if (value > 2000) {
-            var countLine = parseInt(value / 250) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 250;
-        }else if (value > 1500) {
-            var countLine = parseInt(value / 200) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 200;
-        }else if (value > 1000) {
-            var countLine = parseInt(value / 150) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 150;
-        }else if (value > 500) {
-            var countLine = parseInt(value / 100) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 100;
-        }
-        else if (value > 200) {
-            var countLine = parseInt(value / 50) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 50;
-        } else if (value > 100) {
-            var countLine = parseInt(value / 20) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 20;
-        } else if (value > 70) {
-            var countLine = parseInt(value / 10) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 10;
-        } else if (value > 20) {
-            var countLine = parseInt(value / 5) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 5;
-        }else if (value > 10) {
-            var countLine = parseInt(value / 2) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 2;
-        }else if (value > 5) {
-            var countLine = parseInt(value / 1) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 1;
-        }else if (value > 1) {
-            var countLine = parseInt(value / 0.5) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 0.5;
-        }else if (value > 0) {
-            var countLine = parseInt(value / 0.1) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 0.1;
-        }
-        if(ValP == 1){
-            countLine =10
-            //var value = parseInt(value / 10) * 10 + 10;
-            val = 10;
-        }
+        var countLine = 0;
+        var val = parseInt(value / 10);
+        //%
+        countLine =10
         var ContainerLine = document.createElement('section');
         ContainerLine.className = "BackGrounLineX";
         var valueLabel = 0;
@@ -301,66 +242,9 @@ class ColumChart extends HTMLElement{
     _DrawBackgroundLine(value, size = 600,ValP) {
         //console.log(value)
         var countLine = 0;
-        var val = 0;
-        if (value > 5000) {
-            var countLine = parseInt(value / 1000) +1
-            var value = parseInt(value / 1000) * 1000 + 1000;
-            val = 1000;
-        }else if (value > 2500) {
-            var countLine = parseInt(value / 300) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 300;
-        }else if (value > 2000) {
-            var countLine = parseInt(value / 250) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 250;
-        }else if (value > 1500) {
-            var countLine = parseInt(value / 200) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 200;
-        }else if (value > 1000) {
-            var countLine = parseInt(value / 150) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 150;
-        }else if (value > 500) {
-            var countLine = parseInt(value / 100) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 100;
-        }
-        else if (value > 200) {
-            var countLine = parseInt(value / 50) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 50;
-        } else if (value > 100) {
-            var countLine = parseInt(value / 20) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 20;
-        } else if (value > 70) {
-            var countLine = parseInt(value / 10) +1
-            var value = parseInt(value / 100) * 100 + 100;
-            val = 10;
-        } else if (value > 20) {
-            var countLine = parseInt(value / 5) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 5;
-        }else if (value > 10) {
-            var countLine = parseInt(value / 2) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 2;
-        }else if (value > 5) {
-            var countLine = parseInt(value / 1) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 1;
-        }else if (value > 1) {
-            var countLine = parseInt(value / 0.5) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 0.5;
-        }else if (value > 0) {
-            var countLine = parseInt(value / 0.1) +1
-            var value = parseInt(value / 10) * 10 + 10;
-            val = 0.1;
-        }
+        var val = parseInt(value / 10);
         //%
+        countLine =10
         if(ValP == 1){
             countLine =10
             //var value = parseInt(value / 10) * 10 + 10;
@@ -518,7 +402,6 @@ function ArryUnique(DataArray, param, param2 = null, param3 = null){
     }
     return null;    
 }
-
 function DataTotals(Config) {
     let UniqueTotals = ArryUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);    
     let Totals = [];

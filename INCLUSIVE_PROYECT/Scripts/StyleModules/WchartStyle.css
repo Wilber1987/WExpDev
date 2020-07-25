@@ -124,7 +124,7 @@
    width: 60px;
    min-height: 20PX;
    background: rgb(177,177,177);
-background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53%);
+    background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53%);
    /* flex-grow: 1; */
 }
 .Bars label{
@@ -244,9 +244,6 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
 .SectionBars::-webkit-scrollbar-track:active {
     background: #d4d4d4;
 }
-
-
-
 .Contenedor, .ContenedorPregs {
     display: block;
     overflow: initial;
@@ -260,8 +257,6 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     min-height: 200px;
     border-radius: 5px;
 }
-
-
 /*RADIALLLLL*/
 .SectionRadialChart{
     position: relative;
@@ -271,16 +266,18 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     height: 300px;
 }
 .RadialDataBackground{
-    height: 200px;
+    /* height: 200px;
     width: 200px;
     border-radius: 50%;
     display: block;
     position: absolute;
     top:0;
     left: calc(50% - 100px);
-    margin: auto;
-    background-color: crimson;
-
+    margin: auto; */
+    transform: rotate(-90deg);
+}
+.RadialDataBackground:first-child {
+    margin-bottom: 20px;
 }
 .RadialData{
     height: 200px;
@@ -318,4 +315,27 @@ background: linear-gradient(0deg, rgba(177,177,177,1) 0%, rgba(209,209,209,1) 53
     left: calc(50% - 100px);
     margin: auto;
     background: linear-gradient( 180deg, rgb(12, 109, 148) 50% ,rgba(255,255,55,0) 50%);    
+}
+.RadialChart{
+    height: 100%;
+}
+.circle{
+    transition: all 0.5s;
+    transform-origin: 50% 50%;
+    fill: none; 
+    cursor: pointer;   
+    clip-path: circle(50% at 50% 50%);
+}
+.circle:hover {
+    background-color: #999999;
+    background-blend-mode: screen;
+    z-index: 5;   
+    clip-path: circle(52% at 50% 50%);
+}
+.progress__meter,
+.progress__value {
+    fill: none;
+}
+.progress__meter {   
+    stroke: #e6e6e6;
 }
