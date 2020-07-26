@@ -326,6 +326,12 @@
     cursor: pointer;   
     clip-path: circle(50% at 50% 50%);
 }
+.circleText{
+    transition: all 0.5s;
+    height: 100%;
+    width: 100%;
+    transform-origin: 50% 50%;
+}
 .circle:hover {
     background-color: #999999;
     background-blend-mode: screen;

@@ -139,13 +139,25 @@ function CreateStringNode(string) {
                     //"stroke-linecap": "round"
                 },
             }); 
-            let Text = createElementNS({
+            let TextSVG = createElementNS({
                 type: "text",
-                props: { x: 60, y: 60},
+                class: "circleText",
+                props: { x: 60, y: 60, fill: "red",
+                 "transform-origin": "60px 60px",
+                 "dominant-baseline": "middle",
+                 "text-anchor": "middle"},
                 children:[]
             })
-            Text.append(document.createTextNode(element.cantidad));
-            Chart.append(Text)
+            TextSVG.append(document.createTextNode(element.cantidad));
+            let g = createElementNS({
+                type: "g",
+                props: { x: 60, y: 60,  "transform-origin": "60px 60px"}
+            });
+            g.style.transform = "rotate(" + (360 * porcentajeF) / 100 + "deg)";
+            g.append(TextSVG)            
+            
+            //Text.style.transform = "rotate(10deg)";
+           
             Circle.style.transform = "rotate(" + (360 * porcentajeF) / 100 + "deg)";
             porcentajeF = porcentajeF + porcentaje;
             if (index == DataSet.length - 1) {
@@ -154,6 +166,7 @@ function CreateStringNode(string) {
                 this.progressInitial(porcentaje, Circle);
             }            
             Chart.append(Circle);
+            Chart.append(g)
             index++;
         });
         SectionChart.append(Chart);
