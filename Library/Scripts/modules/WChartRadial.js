@@ -1,9 +1,9 @@
 function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
-  }
+}
   
-  class RadialChart extends HTMLElement {
+class RadialChart extends HTMLElement {
     constructor(props) {
       super();
     }
@@ -105,12 +105,7 @@ function CreateStringNode(string) {
       return SectionChart;
     }
     _AddSectionData(Config) {
-        //const DataSet = Config.Datasets;     
-        const DataSet = [
-            {cantidad: 20,time: 2020,},
-            {cantidad: 80,time: 2020, },
-            {cantidad: 90,time: 2020,}
-          ];        
+        const DataSet = Config.Datasets; 
         let SectionChart = document.createElement("section");
         SectionChart.className = "SectionRadialChart";
         var Chart = createElementNS({
@@ -155,8 +150,12 @@ function CreateStringNode(string) {
                  "font-size":"6",
                  transform:`translate(0,0),rotate(-${degs + (degs2)})`,
                 }
-            })
-            TextSVG.append(document.createTextNode(element.cantidad + "%"));            
+            })          
+            if (Config.ColumnLabelDisplay == 0) {
+              TextSVG.append(document.createTextNode(porcentaje + "%"));      
+            }else {
+              TextSVG.append(document.createTextNode(element.cantidad));
+            }                 
             let g = createElementNS({
                 type: "g",
                 props: {

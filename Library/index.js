@@ -43,14 +43,17 @@ function OnLoad() {
     var modules = new Modules();
     const BodyComponents = new MasterDomClass();
     root.appendChild(createElement(BodyComponents));
-    StarDOM();  
+    StarDOM();   
+    CharConfig.Datasets = DataSet;
     Container.appendChild(createElement({
         type: 'radial-chart',
         props: {
             data: CharConfig
         }
-    }));
+    }));   
+    CharConfig.Datasets = result.datos;
     Container.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
+    
     //StartModuleList(modules); 
 }
 
@@ -695,6 +698,12 @@ result = {
         }
     ],
 };
+
+const DataSet = [
+    {cantidad: 20,time: 2020,},
+    {cantidad: 80,time: 2020, },
+    {cantidad: 90,time: 2020,}
+  ];   
 
 
 var backgroud = ["#ff6699", "#ffbb99", "#adebad"];
