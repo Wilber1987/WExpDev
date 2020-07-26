@@ -1,3 +1,7 @@
+function CreateStringNode(string) {
+    let node = document.createRange().createContextualFragment(string);
+    return node;
+}
 
 class ChartConfig {
     constructor(Config) {

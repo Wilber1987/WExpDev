@@ -69,8 +69,6 @@
             console.log('progress:', value + '%', '|', 'offset:', dashoffset)            
             circle.style.strokeDashoffset = dashoffset;
         }
-
-
         control.addEventListener('input', function(event) {
             progress(event.target.valueAsNumber);
         });
