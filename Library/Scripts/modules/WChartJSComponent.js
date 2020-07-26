@@ -42,7 +42,7 @@ class ColumChart extends HTMLElement{
         // this.ChartInstance.GroupDataset =  orderByDate(this.ChartInstance.GroupDataset,
         //  sessionStorage.getItem('type'));        
         this.Totals = DataTotals(this.ChartInstance);         
-        this.MaxVal = MaxValue(this.Totals);      
+        this.MaxVal = MaxValue(this.Totals, this.ChartInstance);      
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
         ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
@@ -55,7 +55,7 @@ class ColumChart extends HTMLElement{
             ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
         ];
         ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
-        ChartFragment.append(this._AddSectionLabelsGroups());
+        ChartFragment.append(this._AddSectionLabelsGroups(this.ChartInstance));
         this.append(ChartFragment);
     }   
     _AddSectionTitle(Title){       
@@ -273,15 +273,15 @@ class ColumChart extends HTMLElement{
     _DrawBar(element, Config, index){       
         var Size = Config.ContainerSize;
         var Size = 220;
-        var BarSize = (element.cantidad / this.MaxVal); //% de tamaño
-        var labelCol = element.cantidad;
+        var BarSize = (element[Config.EvalValue] / this.MaxVal); //% de tamaño
+        var labelCol = element[Config.EvalValue];
         var styleP="";
         if (Config.ColumnLabelDisplay == 1) {
             //dibujar el valor en porcentaje
             styleP = ";flex-grow: 1;"
             var total = FindInTotal(element, Config.GroupDataTotals, Config);
             var multiplier = Math.pow(10, 1 || 0);
-            var number = labelCol / total.cantidad * 100
+            var number = labelCol / total[Config.EvalValue] * 100
             number = Math.round(number * multiplier) / multiplier
             labelCol = number + '%';
         }               
@@ -293,24 +293,30 @@ class ColumChart extends HTMLElement{
             </Bars>`);
         return Bars;                   
     }
-    _AddSectionLabelsGroups(){
+    _AddSectionLabelsGroups(Config){
         var SectionLabelGroup = document.createElement('section');
         SectionLabelGroup.className = "SectionLabelGroup";
         var color1= " #70ad47";
         var AttNameG1 = sessionStorage.getItem('AttNameG1');
         SectionLabelGroup.appendChild(CreateStringNode(
-                `<label><span style="background:${color1}"></span>${AttNameG1}</label>`
+                `<label><span style="background:${color1}"></span>${Config.AttNameG1}</label>`
+        ));
+        if (Config.AttNameG2) {
+            var color1= " #5b9bd5";
+            var AttNameG1 = sessionStorage.getItem('AttNameG2');
+            SectionLabelGroup.appendChild(CreateStringNode(
+                `<label><span style="background:${color1}"></span>${Config.AttNameG2}</label>`
             ));
-        var color1= " #5b9bd5";
-        var AttNameG1 = sessionStorage.getItem('AttNameG2');
-        SectionLabelGroup.appendChild(CreateStringNode(
-                `<label><span style="background:${color1}"></span>${AttNameG1}</label>`
-            ));
-        var color1= " #ffc000";
-        var AttNameG1 = sessionStorage.getItem('AttNameG3');
-        SectionLabelGroup.appendChild(CreateStringNode(
-                `<label><span style="background:${color1}"></span>${AttNameG1}</label>`
-            ));
+        }
+        if (Config.AttNameG3) {
+            var color1= " #ffc000";
+            var AttNameG1 = sessionStorage.getItem('AttNameG3');
+            SectionLabelGroup.appendChild(CreateStringNode(
+                `<label><span style="background:${color1}"></span>${Config.AttNameG3}</label>`
+            ));            
+        }
+       
+        
         return SectionLabelGroup;
     }    
 }
@@ -354,7 +360,7 @@ function orderByDate(Arry, type){
         var Array3 = [];
         Array2.forEach(element => {
             var object = Arry.find(x => x.time.substring( 1, 0 ).includes(element.cuarter) 
-                        && x.time.includes(element.year));
+                && x.time.includes(element.year));
             Array3.push(object);
         });       
         Arry = Array3; 
@@ -456,11 +462,11 @@ function DataTotals(Config) {
     }  
     return Totals;
 }
-function MaxValue(DataArry) {
+function MaxValue(DataArry, Config) {
     var Maxvalue = 0;
     for (let index = 0; index < DataArry.length; index++) {        
-        if (parseInt(DataArry[index]['cantidad']) > Maxvalue) {
-            Maxvalue = DataArry[index]['cantidad'];
+        if (parseInt(DataArry[index][Config.EvalValue]) > Maxvalue) {
+            Maxvalue = DataArry[index][Config.EvalValue];
         }
     }    
     return Maxvalue;  

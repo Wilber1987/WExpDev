@@ -45,65 +45,14 @@ class RadialChart extends HTMLElement {
         SectionLabels.appendChild(
           CreateStringNode(
             `<label style="${style}"><span style="background:${Colors[index]}">
-                   </span>${element.Descripcion}</label>`
+                   </span>${element.Descripcion}
+            </label>`
           )
         );
         index++;
       });
       return SectionLabels;
-    }
-    _AddSectionData2(Groups, Config) {
-      const DataSet = [
-        {
-          cantidad: 20,
-          time: 2020,
-        },
-        {
-          cantidad: 80,
-          time: 2020,
-        },
-      ];
-      var oGrafico = [
-        { nombre: "vitamina A", cantidad: "40", color: "#0140CA" },
-        { nombre: "vitamina B", cantidad: "12", color: "#DD1812" },
-        { nombre: "vitamina C", cantidad: "6", color: "#16A6FE" },
-        { nombre: "vitamina D", cantidad: "200", color: "#6ab150" },
-        { nombre: "vitamina E", cantidad: "35", color: "#000" },
-      ];
-      let SectionChart = document.createElement("section");
-      SectionChart.className = "SectionRadialChart";
-  
-      let Chart = document.createElement("Chart");
-      Chart.className = "RadialData";
-  
-      var total = SumValue(oGrafico);
-      console.log(total);
-      var index = 0;
-      let styleChart = "";
-      let porcentajeF = 0;
-      oGrafico.forEach((element) => {
-        var porcentaje = parseInt((element.cantidad / total) * 100);
-        var color = element.color;
-        if (index == 0) {
-          styleChart += `${color} ${porcentaje}%,`;
-          porcentajeF = porcentajeF + porcentaje;
-        } else if (index > 0 && index < oGrafico.length - 1) {
-          styleChart += `${color}  ${porcentajeF}% ${porcentaje + porcentajeF}%,`;
-          porcentajeF = porcentajeF + porcentaje;
-        } else if (index < oGrafico.length) {
-          styleChart += `${color} ${porcentajeF}%`;
-          //porcentajeF = porcentajeF + porcentaje;
-        }
-        console.log(styleChart);
-        index++;
-      });
-      Chart.setAttribute(
-        "style",
-        "background-image:conic-gradient(" + styleChart + ");"
-      );
-      SectionChart.append(Chart);
-      return SectionChart;
-    }
+    }   
     _AddSectionData(Config) {
         const DataSet = Config.Datasets; 
         let SectionChart = document.createElement("section");
@@ -115,11 +64,11 @@ class RadialChart extends HTMLElement {
             }
         });   
         Chart.setAttribute("class", "RadialChart");
-        var total = SumValue(DataSet);    
+        var total = SumValue(DataSet, Config);    
         var index = 0;
         var porcentajeF = 0;
         DataSet.forEach((element) => {
-            let porcentaje = parseInt((element.cantidad / total) * 100);
+            let porcentaje = parseInt((element[Config.EvalValue] / total) * 100);
             let color = element.color;
             if (Config.Colors) {              
                 color = Config.Colors[index]; 
@@ -154,7 +103,7 @@ class RadialChart extends HTMLElement {
             if (Config.ColumnLabelDisplay == 0) {
               TextSVG.append(document.createTextNode(porcentaje + "%"));      
             }else {
-              TextSVG.append(document.createTextNode(element.cantidad));
+              TextSVG.append(document.createTextNode(element[Config.EvalValue]));
             }                 
             let g = createElementNS({
                 type: "g",
@@ -191,10 +140,10 @@ class RadialChart extends HTMLElement {
     }
   }
   //reparar
-  function SumValue(DataArry) {
+  function SumValue(DataArry, Config) {
         var Maxvalue = 0;
         for (let index = 0; index < DataArry.length; index++) {
-        Maxvalue = Maxvalue + parseFloat(DataArry[index]["cantidad"]);
+        Maxvalue = Maxvalue + parseFloat(DataArry[index][Config.EvalValue]);
         }
         return Maxvalue;
   }
