@@ -139,25 +139,32 @@ function CreateStringNode(string) {
                     //"stroke-linecap": "round"
                 },
             }); 
+
+            //texto
+            let degs = (360 * porcentajeF) / 100;
+            let degs2 = (((360 * porcentaje) / 100) /2) - 12;
+            console.log(degs2)
             let TextSVG = createElementNS({
                 type: "text",
                 class: "circleText",
-                props: { x: 60, y: 60, fill: "red",
-                 "transform-origin": "60px 60px",
+                props: { 
+                  x: 0, y: 0, fill: "#fff",
+                 //"transform-origin": "60px 60px",
                  "dominant-baseline": "middle",
-                 "text-anchor": "middle"},
-                children:[]
+                 "text-anchor": "middle",
+                 "font-size":"6",
+                 transform:`translate(0,0),rotate(-${degs + (degs2)})`,
+                }
             })
-            TextSVG.append(document.createTextNode(element.cantidad));
+            TextSVG.append(document.createTextNode(element.cantidad + "%"));            
             let g = createElementNS({
                 type: "g",
-                props: { x: 60, y: 60,  "transform-origin": "60px 60px"}
-            });
-            g.style.transform = "rotate(" + (360 * porcentajeF) / 100 + "deg)";
-            g.append(TextSVG)            
-            
-            //Text.style.transform = "rotate(10deg)";
-           
+                props: {
+                    transform: `translate(100, 70), rotate(${degs + (degs2)})`,
+                    "transform-origin": "-40px -10px"
+                }
+            });          
+            g.append(TextSVG); 
             Circle.style.transform = "rotate(" + (360 * porcentajeF) / 100 + "deg)";
             porcentajeF = porcentajeF + porcentaje;
             if (index == DataSet.length - 1) {

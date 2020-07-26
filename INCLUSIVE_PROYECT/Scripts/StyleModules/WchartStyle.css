@@ -331,6 +331,7 @@
     height: 100%;
     width: 100%;
     transform-origin: 50% 50%;
+  
 }
 .circle:hover {
     background-color: #999999;
