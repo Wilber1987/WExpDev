@@ -19,7 +19,6 @@ class ChartConfig {
         this.ColumnLabelDisplay = Config.ColumnLabelDisplay;
     }
 }
-
 class ColumChart extends HTMLElement{
     constructor(props){
         super();        
@@ -493,4 +492,5 @@ function FindInTotal(Elemento, list, Config) {
     }
     return FindElement;
 }
-customElements.define("colum-chart", ColumChart);
+customElements.define("w-colum-chart", ColumChart);
+//export {MultiSelectConfig}

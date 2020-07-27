@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <script src="Scripts/WExpDev.js"></script>
+    <script src="WScriptPrueba.js"></script>
     <link rel="stylesheet" href="Styles/WStyleForm.css" />
     <script>
       var List = [];
@@ -45,9 +46,23 @@
       <thead></thead>
       <tbody></tbody>
       </table>
-    </div>    
-    
-    <div class="ModalContent"
+    </div> 
+       
+  <input id='usoServiciosAE_AnsiedadDatos'  name="Servicios" value='[
+    {"id_":"Áreas","Descripcion":"Áreas"},
+    {"id_":"Llamadas","Descripcion":"Llamadas"},
+    {"id_":"Chat","Descripcion":"Chat"},
+    {"id_":"Psicológo","Descripcion":"Psicológo"},
+    {"id_":"Talleres","Descripcion":"Talleres"},
+    {"id_":"Test","Descripcion":"Test"}  ,
+    {"id_":"Foro","Descripcion":"Foro"}                
+      ]' type="hidden"> 
+  <input id='usoServiciosAE_Ansiedad'  name="Servicios demandados" value='[]' type="hidden">  
+  <script>
+  //  DrawGroupMultiSelect(usoServiciosAE_Ansiedad.id);
+    DrawMultiSelect(usoServiciosAE_AnsiedadDatos.id, usoServiciosAE_Ansiedad.id);
+  </script> 
+  <div class="ModalContent"
       id="ModalData" style="">
       <div class="Container">
         <div>

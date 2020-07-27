@@ -1,8 +1,15 @@
 function importarScript(name, UrlPath = "") {
     var s = document.createElement("script");
-    s.src = UrlPath + name;
+    s.src = UrlPath + name;   
     document.querySelector("head").appendChild(s);
 }
+function importarScriptModule(name, UrlPath = "") {
+    var s = document.createElement("script");
+    s.src = UrlPath + name;
+    s.type = "module";
+    document.querySelector("head").appendChild(s);
+}
+
 
 function importarStyle(name, UrlPath) {
     var s = document.createElement("link");
@@ -27,9 +34,11 @@ importarScript("Scripts/Modules/WNavComponents.js", Url_Path);
 importarScript("Scripts/Modules/WComponentsTools.js", Url_Path);
 importarScript("Scripts/Modules/WChartJSComponent.js", Url_Path);
 importarScript("Scripts/Modules/WChartRadial.js", Url_Path);
+importarScript("Scripts/Modules/WMultiSelect.js", Url_Path);
 //estilos
 importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
 importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
+importarStyle("Scripts/StyleModules/MultiSelectStyle.css", Url_Path);
 
 //APP CONFIG
 importarScript("databaseScripts/Modules.js", Url_Path);
@@ -44,17 +53,29 @@ function OnLoad() {
     const BodyComponents = new MasterDomClass();
     root.appendChild(createElement(BodyComponents));
     StarDOM();   
+    //MULTI SELECT
+    const Multiselect = [
+        {descripcion: "item 1", id: 1},
+        {descripcion: "item 2", id: 2},
+        {descripcion: "item 3", id: 3},
+        {descripcion: "item 4", id: 4},
+    ]
+    CharConfig.Datasets = Multiselect;
+    CharConfig.search = true;
+    Container.appendChild(createElement({type: 'w-multi-select',  props : {id: "MyMultiselect", data: CharConfig }}));  
+    //RADIAL CHART
     CharConfig.Datasets = DataSet;
+    
     Container.appendChild(createElement({
-        type: 'radial-chart',
+        type: 'w-radial-chart',
         props: {
             data: CharConfig
         }
     }));   
+    //COLUM CHART
     CharConfig.Datasets = result.datos;
-    Container.appendChild(createElement({type: 'colum-chart',  props : { data: CharConfig }})); 
-    
-    //StartModuleList(modules); 
+    Container.appendChild(createElement({type: 'w-colum-chart',  props : { data: CharConfig }}));     
+    StartModuleList(modules); 
 }
 
 function StartModuleList(modules) {
@@ -128,7 +149,7 @@ function StarDOM() {
     NavContainer.appendChild(Nav);
 }
 
-result = {
+var result = {
     "datos": [{
             "cantidad": 21,
             "estado": "Naranja",
@@ -733,5 +754,5 @@ var CharConfig = {
     AttNameG1: "time",
     AttNameG2: "categ2",
     AttNameG3: "categ",
-    EvalValue: "cantidad"
+    EvalValue: "cantidad",
 };

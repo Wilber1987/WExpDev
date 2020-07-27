@@ -1,30 +1,31 @@
 //CARROSEL
 function GetObj(id) {
-  var Obj = document.getElementById(id)
+  var Obj = document.getElementById(id);
   return Obj;
 }
 
 function autoplay(ContainerId) {
-  var Container = GetObj(ContainerId).getElementsByTagName('div');
+  var Container = GetObj(ContainerId).getElementsByTagName("div");
   //var Container2 = GetObj(ContainerId).getElementsByClassName('card_entrenamiento_fecha');
- //console.log(Container.length)
+  //console.log(Container.length)
   // for (let index = 0; index < Container2.length; index++) {
   //   const element = Container2[index];
   //   element.style.display='inline-block';
-  //   element.style.margin = '10px';   
-    
-  // } 
+  //   element.style.margin = '10px';
+
+  // }
   //console.log(Container)
   if (Container.length > 1) {
-      interval = setInterval(function() {
-          myFunctionNext(ContainerId);
-      }, 15000);
+    setTimeout(function() {
+      myFunctionNext(ContainerId);
+      autoplay(ContainerId);
+    }, 15000);
   }
   if (Container.length == 1) {
     //console.log(Container[0])
-      // Container[0].style.display = 'block';
-      // Container[0].style.margin = 'auto';
-  }  
+    // Container[0].style.display = 'block';
+    // Container[0].style.margin = 'auto';
+  }
 }
 
 function myFunctionNext(ContainerId) {
@@ -32,14 +33,25 @@ function myFunctionNext(ContainerId) {
   var LastCard = slider.lastElementChild;
   var firstCard = slider.firstElementChild;
   var widthAnimation = firstCard.offsetWidth + 10;
-  //console.log(widthAnimation)
-  slider.animate(
-      [{ transform: "translateY(0px)" }, { transform: "translateX(-"+widthAnimation+"px)" }], {
-          duration: 1000
-      }
-  );
+  //console.log(widthAnimation)\
+  slider.style.transition =  "all 1s";
+  slider.style.webkitTransform =  "translateX(-" + widthAnimation + "px)";
+
+
+
+  // slider.animate(
+  //   [
+  //     { '-webkit-transform' : "translateY(0px)" },
+  //     { '-webkit-transform' : "translateX(-" + widthAnimation + "px)" }
+  //   ],
+  //   {
+  //     duration: 1000
+  //   }
+  // );
   setTimeout(function() {
-      LastCard.parentNode.insertBefore(firstCard, LastCard.nextSibling);
+    slider.style.transition =  "none";
+    slider.style.webkitTransform =  "translateX(-" + 0 + "px)";
+    LastCard.parentNode.insertBefore(firstCard, LastCard.nextSibling);
   }, 1000);
 }
 
@@ -48,22 +60,33 @@ function myFunctionPrev(ContainerId) {
   var firstCard = slider.firstElementChild;
   var LastCard = slider.lastElementChild;
   var widthAnimation = firstCard.offsetWidth + 10;
-  slider.animate(
-      [{ transform: "translateY(0px)" }, { transform: "translateX(+"+widthAnimation+"px)" }], {
-          duration: 1000
-      }
-  );
+//dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+  slider.style.transition =  "all 1s";
+  slider.style.webkitTransform =  "translateX(+" + widthAnimation + "px)";
+
+  // slider.animate(
+  //   [
+  //     { '-webkit-transform': "translateY(0px)" },
+  //     { '-webkit-transform': "translateX(+" + widthAnimation + "px)" }
+  //   ],
+  //   {
+  //     duration: 1000
+  //   }
+  // );
   setTimeout(function() {
-      slider.insertBefore(LastCard, slider.firstChild);
+    slider.style.transition =  "none";
+    slider.style.webkitTransform =  "translateX(+" + 0 + "px)";
+    slider.insertBefore(LastCard, slider.firstChild);
   }, 1000);
 }
 
 //correr en el cocumet reddy
-            // var slider = document.getElementById(ContainerId);
-            // var LastCard = slider.lastChild;
-            // slider.style.marginLeft = "-240px";
-            // slider.insertBefore(LastCard, slider.firstChild);
-            //autoplay();
+// var slider = document.getElementById(ContainerId);
+// var LastCard = slider.lastChild;
+// slider.style.marginLeft = "-240px";
+// slider.insertBefore(LastCard, slider.firstChild);
+//autoplay();
 
 function ClearInputElement(GroupID) {
   // DEFINIMOS EL GRUPO QUE CONTIENE NUESTROS ELEMENTOS
@@ -91,7 +114,11 @@ function ClearInputElement(GroupID) {
       }
       if ((e.getElementsByTagName("input")[0].type != "text") == "input") {
         e.getElementsByTagName("input")[0].value = "";
-      }
+      }      
+    }
+    if (e.getElementsByTagName("textarea")[0]) {
+      //console.log( e.getElementsByTagName("textarea")[0].innerText);
+      e.getElementsByTagName("textarea")[0].value = "";
     }
   }
 }
@@ -113,9 +140,9 @@ function modalFunction(DivModal) {
   }
 }
 
-function DisplayAcordeon(value, SectionId,size = null) {
-  if (size==null) {
-    size='500px';
+function DisplayAcordeon(value, SectionId, size = null) {
+  if (size == null) {
+    size = "500px";
   }
   // var ventanaM = document.getElementById(idModal);
   var acc = document.getElementsByClassName("GrupFormAcordeon");
@@ -126,7 +153,6 @@ function DisplayAcordeon(value, SectionId,size = null) {
       //  if (ventanaM.style.height != "300px") {
       ventanaM.style.transition = "all ease 1s";
       ventanaM.style.height = "0px";
-
       //ventanaM.style.overflow = "scroll";
     } else {
       ventanaM.style.transition = "all ease 1s";
@@ -134,14 +160,89 @@ function DisplayAcordeon(value, SectionId,size = null) {
       //ventanaM.style.oveflow = "hidden";
     }
   }
-  // alert(value);
-  // if (value == true) {
-  //     ventanaM.style.transition = "all ease 1s";
-  //     ventanaM.style.height = "250px";
-  // } else {
-  //     ventanaM.style.transition = "all ease 1s";
-  //     ventanaM.style.height = "0px";
-  // }
+}
+function DisplayTab(value, SectionId, size = null) {
+  if (size == null) {
+    size = "500px";
+  }
+  //console.log(value);
+  var acc = document.querySelectorAll("input[name="+value.name+"]");
+  for (let index = 0; index < acc.length; index++) {
+    const element = acc[index];
+    element.parentNode.className = "";
+  }
+  //console.log(value.parentNode)
+  value.parentNode.className = "ActiveTap";
+  // var ventanaM = document.getElementById(idModal);
+  var acc = document.getElementsByClassName("WTab");
+  for (var i = 0; i < acc.length; i++) {
+    ventanaM = acc[i];
+    if (ventanaM.id != SectionId) {
+      //  if (ventanaM.style.height != "300px") {
+      ventanaM.style.transition = "all ease 1s";
+      ventanaM.style.display = "none";
+     
+      //ventanaM.style.overflow = "scroll";
+    } else {
+      ventanaM.style.transition = "all ease 1s";
+      ventanaM.style.display = "block";
+      //value.parentNode.className = "ActiveTap";
+      //ventanaM.style.height = size;
+      //ventanaM.style.oveflow = "hidden";
+    }
+  }
+}
+function DisplayAcordeonF(value, SectionId, size = null) {
+  //console.log("DisplayAcordeonF: " + SectionId);
+  if (size == null) {
+    size = "500px";
+  }
+  // var ventanaM = document.getElementById(idModal);
+  var acc = document.getElementsByClassName("GrupFormAcordeon");
+  for (var i = 0; i < acc.length; i++) {
+    ventanaM = acc[i];
+
+    //alert(ventanaM.id+" != "+SectionId)
+    if (ventanaM.id != SectionId) {
+      //  if (ventanaM.style.height != "300px") {
+      ventanaM.style.transition = "all ease 1s";
+      ventanaM.style.maxHeight = "0px";
+      ventanaM.style.minHeight = "0px";
+      //console.log(SectionId)
+      //ventanaM.style.overflow = "scroll";
+    } else {
+      ventanaM.style.transition = "all ease 1s";
+      ventanaM.style.maxHeight = "4000px";
+      ventanaM.style.minHeight = "600px";
+      //ventanaM.style.oveflow = "hidden";
+    }
+  }
+}
+
+function DisplayContainer(objId, size = null, maxSize = null) {
+  if (size == null) {
+    size = "50px";
+  }
+  if (maxSize == null) {
+    maxSize = "500px";
+  }
+  container = GetObj(objId);
+  //console.log(container.offsetHeight  +" + "+ parseInt(size.replace('px','')))
+  if (
+    container.style.maxHeight == size ||
+    container.offsetHeight == parseInt(size.replace("px", ""))
+  ) {
+    container.style.transition = "all ease 1s";
+    container.style.maxHeight = maxSize;
+    //setTimeout(function () {
+    container.style.overflow = "inherit";
+    //},1000)
+  } else {
+    container.style.transition = "all ease 1s";
+    container.style.maxHeight = size;
+    container.style.overflow = "hidden";
+    //console.log(container.style.overflow);
+  }
 }
 
 //PRUEBAS JSON******************************************
@@ -149,8 +250,9 @@ function DisplayAcordeon(value, SectionId,size = null) {
 var StoreList = [];
 
 function GetList(StoreListName, storeControlId) {
+  //console.log(storeControlId)
   var Lista = document.getElementById(storeControlId);
-
+  //console.log(Lista)
   if (Lista.value == "") {
     StoreList = [];
     //console.log("lista vacia");
@@ -239,7 +341,6 @@ function DrawTable(
         tdForInput.appendChild(InputForRT);
       }
       if (editBtn == 1) {
-        
         //var InputForRTEdit = document.createElement("input");
         //InputForRTEdit.type = "Button";
         //InputForRTEdit.value = "Editar ";
@@ -262,11 +363,11 @@ function DrawTable(
 
       if (selectBtn == 1) {
         //reparar
-         var InputForRTSelect = document.createElement("Input");
-         InputForRTSelect.type = "checkbox";
-         InputForRTSelect.value = "Select ";
-         InputForRTSelect.className = "BTNForm colorFormA";
-        
+        var InputForRTSelect = document.createElement("Input");
+        InputForRTSelect.type = "checkbox";
+        InputForRTSelect.value = "Select ";
+        InputForRTSelect.className = "BTNForm colorFormA";
+
         InputForRTSelect.setAttribute(
           "onchange",
           "SelectElement('" +
@@ -374,7 +475,7 @@ function SelectElement(
     }
     SaveList(list2, "", storeControlIdSelect);
     DrawTable(TableNameSelected, "", "", storeControlIdSelect, 0, "", 1, 0);
-   // console.log(list2);
+    // console.log(list2);
 
     //}
   }
@@ -424,9 +525,9 @@ function EditElement(tdRow, IndexElement, StoreListName, GroupDataId) {
 
   var Data = document.getElementById(GroupDataId).getElementsByTagName("div");
   for (let index = 0; index < tr.getElementsByTagName("td").length; index++) {
-   // console.log(Data[index])
-   // console.log(index)
-    if (Data[index]) {      
+    // console.log(Data[index])
+    // console.log(index)
+    if (Data[index]) {
       if (Data[index].getElementsByTagName("input")[0]) {
         if (Data[index].getElementsByTagName("input")[0].type != "button") {
           Data[index].getElementsByTagName(
@@ -434,10 +535,11 @@ function EditElement(tdRow, IndexElement, StoreListName, GroupDataId) {
           )[0].value = tr.getElementsByTagName("td")[index].innerHTML;
         }
       }
-      if (Data[index].getElementsByTagName("textarea")[0]) {      
-          Data[index].getElementsByTagName(
-            "textarea"
-          )[0].innerText = tr.getElementsByTagName("td")[index].innerHTML;     
+      if (Data[index].getElementsByTagName("textarea")[0]) {
+        //console.log( tr.getElementsByTagName("td")[index].innerHTML)
+        Data[index].getElementsByTagName(
+          "textarea"
+        )[0].value = tr.getElementsByTagName("td")[index].innerHTML;
       }
       if (Data[index].getElementsByTagName("select")[0]) {
         var aTags = Data[index]
@@ -454,17 +556,21 @@ function EditElement(tdRow, IndexElement, StoreListName, GroupDataId) {
             break;
           }
         }
-      }      
-    }    
+      }
+    }
   }
-  
+
   modalFunction("divModal_1");
 
   //definir nombres genericos
-  var btnNew = document.getElementById("btnAgPreg_Data");
-  var btnUpdate = document.getElementById("btnUpPreg_Data");
-  btnNew.style.display = "none";
-  btnUpdate.style.display = "inline-block";
+  if (document.getElementById("btnAgPreg_Data")) {
+    var btnNew = document.getElementById("btnAgPreg_Data");    
+    btnNew.style.display = "none";
+  }
+  if (document.getElementById("btnUpPreg_Data")) {  
+    var btnUpdate = document.getElementById("btnUpPreg_Data");
+    btnUpdate.style.display = "inline-block";
+  }
   
 }
 
@@ -538,7 +644,7 @@ function inicializar(id) {
     language: {
       info: "Registro _START_ a _END_ de _TOTAL_ Registros",
       infoEmpty: "Registro 0 a 0 de 0 deshueses",
-      zeroRecords: "No se encontro coincidencia",
+      zeroRecords: "No se encontró coincidencia",
       infoFiltered: "(filtrado de _MAX_ registros en total)",
       emptyTable: '<i class="fa fa-folder-open "></i>',
       lengthMenu: "_MENU_ ",
@@ -552,4 +658,415 @@ function inicializar(id) {
       }
     }
   });
+}
+
+//select
+function DrawSelect(
+  TableName,
+  parameter,
+  StoreListName,
+  storeControlId,
+  editBtn,
+  GroupDataId,
+  delBtn,
+  selectBtn,
+  storeControlIdSelect,
+  TableNameSelected
+) {
+  //alert(storeControlId);
+  /*como notaran esta funcion sigue la misma logica de dibujar tabla, pero coin la diferencia que
+    especifica los datos que quiero filtrar de la lista
+    */
+  var list = GetList(StoreListName, storeControlId);
+  //console.log(list);
+  if (parameter != "") {
+    list = StoreList.filter(list => list.Name == parameter);
+  }
+
+  //console.log(list);
+  tbody = document.querySelector("#" + TableName + " tbody");
+  tbody.innerHTML = "";
+  //console.log(list);
+  for (var i = 0; i < list.length; i++) {
+    var row = tbody.insertRow(i);
+    var TdForRow = document.createElement("td");
+    var LabelTd = document.createElement("label");
+    LabelTd.for = list[i].id_ + "radio" + storeControlIdSelect;
+    //LabelTd.innerText =
+    for (var Propiedad in list[i]) {
+      //console.log('....')
+      if (Propiedad.includes("id_")) {
+        //
+      } else {
+        //TdForRow.setAttribute("for",list[i].id_ +"radio")
+        LabelTd.innerHTML = LabelTd.innerHTML + list[i][Propiedad];
+        // `<label for="${list[i].id_}radio${storeControlIdSelect}">
+        //     ${list[i][Propiedad]}
+        // </label><span></span>`;
+      }
+    }
+    row.appendChild(TdForRow);
+
+    if (delBtn == 1 || editBtn == 1 || selectBtn == 1) {
+      var tdForInput = document.createElement("td");
+      if (selectBtn == 1) {
+        //reparar
+        var InputForRTSelect = document.createElement("Input");
+        InputForRTSelect.type = "checkbox";
+        //InputForRTSelect.checked = true;
+        InputForRTSelect.setAttribute(
+          "id",
+          list[i].id_ + "radio" + storeControlIdSelect
+        );
+        InputForRTSelect.value = "Select";
+        InputForRTSelect.className = "BTNForm colorFormA";
+
+        InputForRTSelect.setAttribute(
+          "onchange",
+          "SelectMElement('" +
+            i.toString() +
+            "','" +
+            StoreListName +
+            "','" +
+            storeControlId +
+            "','" +
+            storeControlIdSelect +
+            "','" +
+            "',this);" //filtrar los datos de los informes
+        );
+        //tdForInput.appendChild(InputForRTSelect);
+        //tdForInput.append(document.createElement("span"));
+        //tdForInput.style= "display: none";
+
+        LabelTd.append(InputForRTSelect);
+        LabelTd.append(document.createElement("span"));
+        TdForRow.append(LabelTd);
+      }
+      //row.appendChild(tdForInput);
+    }
+    tbody.appendChild(row);
+  }
+  //console.log(storeControlIdSelect)
+  reCheck(storeControlIdSelect);
+}
+
+function SelectMElement(
+  IndexElement,
+  storeControlIdSelected,
+  storeControlId,
+  storeControlIdSelect,
+  TableNameSelected,
+  e
+) {
+  // console.log(storeControlId + ' - '+ storeControlIdSelect)
+  var ListElements = JSON.parse(document.getElementById(storeControlId).value);
+  var elementSeleccionado = ListElements[IndexElement];
+  //console.log(elementSeleccionado)
+  var FindElement = false;
+  if (e.checked == true) {
+    var list = [];
+    if (document.getElementById(storeControlIdSelect).value != "") {
+      list = JSON.parse(document.getElementById(storeControlIdSelect).value);
+      for (let index = 0; index < list.length; index++) {
+        // console.log(list)
+        // console.log(ListElements)
+        if (list[index]["id_"] == elementSeleccionado.id_) {
+          FindElement = true;
+        }
+      }
+    }
+    if (FindElement == false) {
+      list.push(elementSeleccionado.id_);
+      SaveList(list, "", storeControlIdSelect);
+    } else {
+      alert("elemento ya esta en lista");
+    }
+  } else {
+    var list2 = [];
+    //if (document.getElemeid_ntById(storeControlIdSelect).value != "") {
+    list2 = JSON.parse(document.getElementById(storeControlIdSelect).value);
+    for (let index = 0; index < list2.length; index++) {
+      if (list2[index] == elementSeleccionado.id_) {
+        list2.splice(index, 1);
+      }
+    }
+    SaveList(list2, "", storeControlIdSelect);
+  }
+}
+function reCheck(Selecteds) {
+  //console.log(Selecteds)
+  SelectedsObjs = JSON.parse(GetObj(Selecteds).value);
+  //alert(Selecteds)
+  var objSlice = SelectedsObjs.slice();
+  for (let i = 0; i < SelectedsObjs.length; i++) {
+    const Selected = SelectedsObjs[i];
+    var control = document.getElementById(Selected + "radio" + Selecteds);
+    // console.log("indice "+i+" id "+Selected+"radio"+Selecteds+" - "+control)
+    if (control) {
+      control.setAttribute("checked", "true");
+    } else {
+      for (let index = 0; index < objSlice.length; index++) {
+        const element = objSlice[index];
+        if (element == Selected) {
+          objSlice.splice(index, 1);
+        }
+      }
+    }
+  }
+  SaveList(objSlice, "", Selecteds);
+}
+
+function DrawMultiSelect(IdElement) {
+  //Getconsole.log(GetObj(IdElement).value)
+  if (GetObj(IdElement).type != "hidden") {
+    console.log("no es hidden");
+    return;
+  }
+
+  if (GetObj(IdElement + "Container")) {
+    var divC = GetObj(IdElement + "Container");
+    divC.className = "DivCM5 DisplaySelect";
+    DrawSelect(
+      "table_" + IdElement,
+      "",
+      "",
+      IdElement + "Datos",
+      0,
+      "",
+      0,
+      1,
+      IdElement
+    );
+    //console.log(divC);
+  } else {
+    var divC = document.createElement("div");
+    divC.className = "DivCM5 DisplaySelect";
+    divC.id = IdElement + "Container";
+    var Container = GetObj(IdElement).parentNode;
+    Container.append(divC);
+
+    var LabelDiv = document.createElement("div");
+    LabelDiv.className = "LabelSelectC";
+    LabelDiv.innerHTML = IdElement;
+    var divCDisplay = document.createElement("div");
+    divCDisplay.className = "DisplaySelectC";
+    divC.append(LabelDiv, divCDisplay);
+    var tableSelect = document.createElement("Table");
+    tableSelect.className = "TableSelectC";
+    tableSelect.id = "table_" + IdElement;
+    var tbody = document.createElement("tbody");
+    tableSelect.append(tbody);
+    divCDisplay.append(tableSelect);
+    DrawSelect(
+      tableSelect.id,
+      "",
+      "",
+      IdElement + "Datos",
+      0,
+      "",
+      0,
+      1,
+      IdElement
+    );
+  }
+}
+function DrawMultiSelect(IdElement, selectControl) {
+  //recibe el id del elemento que contiene los datos y el select donde los va a dibujar
+
+
+  //console.log(selectControl)
+  if (GetObj(selectControl).type != "hidden") {
+    // console.log("no es hidden");
+    return;
+  }
+  if (GetObj(selectControl).id == "CentroValorVista") {
+    //var Container = GetObj(selectControl).parentNode;
+   // console.log(selectControl +" - "+IdElement);
+
+    var control = GetObj(selectControl);   
+    var controlDatos =  GetObj(IdElement);
+    control.id = "CentroValorVista" + control.parentNode.id;
+    controlDatos.id = "CentroValorVista" + control.parentNode.id + "Datos";
+    selectControl = control.id;
+    IdElement =   controlDatos.id;
+
+  }
+ // else{
+  if (GetObj(IdElement + "Container")) {
+      var divC = GetObj(IdElement + "Container");
+      divC.className = "DivCM5 DisplaySelect";
+      DrawSelect("table_" + IdElement, "","", IdElement, 0, "",0, 1,selectControl);    
+      AsignarEvents(selectControl, "table_" + IdElement);
+      //console.log(divC);
+    } else {
+      var divC = document.createElement("div");
+      divC.className = "DivCM5 DisplaySelect";
+      divC.id = IdElement + "Container";
+      var Container = GetObj(selectControl).parentNode;
+      Container.append(divC);
+
+      var LabelDiv = document.createElement("div");
+      LabelDiv.className = "LabelSelectC";
+      LabelDiv.innerHTML = GetObj(selectControl).name;
+      var divCDisplay = document.createElement("div");
+      divCDisplay.className = "DisplaySelectC";
+      divC.append(LabelDiv, divCDisplay);
+      var tableSelect = document.createElement("Table");
+      tableSelect.className = "TableSelectC TableMultiSelect";
+      tableSelect.id = "table_" + IdElement;
+      var tbody = document.createElement("tbody");
+      tableSelect.append(tbody);
+      divCDisplay.append(tableSelect);
+      DrawSelect(tableSelect.id, "", "", IdElement, 0, "", 0, 1, selectControl);
+      AsignarEvents(selectControl, "table_" + IdElement);
+      var selects = tableSelect.querySelectorAll("input[type=checkbox]");
+     
+    }  
+ // }
+
+ 
+}
+
+function DrawMenuMultiSelect(IdElement) {
+  //console.log("DrawMenuMultiSelect: "+IdElement)//
+  if (!GetObj(IdElement)){
+    return null;
+  }
+  if (GetObj(IdElement + "Container")) {
+    var divC = GetObj(IdElement + "Container");
+    divC.className = "DivCM5 DisplaySelect";
+    DrawSelect(
+      "table_" + IdElement,
+      "",
+      "",
+      IdElement + "Datos",
+      0,
+      "",
+      0,
+      1,
+      IdElement
+    );
+    //console.log(divC);
+  } else {
+    var divC = document.createElement("div");
+    divC.className = "DivCM5 DisplaySelect";
+    divC.id = IdElement + "Container";
+    var Container = GetObj(IdElement).parentNode;
+    Container.append(divC);
+    var divCDisplay = document.createElement("div");
+    divCDisplay.className = "";
+    divC.append(divCDisplay);
+    var tableSelect = document.createElement("Table");
+    tableSelect.className = "MenuTableSelectC";
+    tableSelect.id = "table_" + IdElement;
+    var tbody = document.createElement("tbody");
+    tableSelect.append(tbody);
+    divCDisplay.append(tableSelect);
+    DrawSelect(
+      tableSelect.id,
+      "",
+      "",
+      IdElement + "Datos",
+      0,
+      "",
+      0,
+      1,
+      IdElement
+    );
+    var selects = tableSelect.querySelectorAll("input[type=checkbox]");
+    for (let index = 0; index < selects.length; index++) {
+      const element = selects[index];
+      element.checked = true;
+      SelectMElement(index.toString(), "" , IdElement + "Datos" ,IdElement,'',element);            
+    }
+  }
+}
+function DrawGroupMultiSelect(IdElement) {
+  // console.log(IdElement)
+  if (GetObj(IdElement + "Container")) {
+    var divC = GetObj(IdElement + "Container");
+    divC.className = "DisplaySelectGroup";
+    DrawSelect(
+      "table_" + IdElement, "", "", IdElement + "Datos",  0, "",  0, 1, IdElement );
+    //console.log(divC);
+  } else {
+    var divC = document.createElement("div");
+    divC.className = "DisplaySelectGroup";
+    divC.id = IdElement + "Container";
+    var Container = GetObj(IdElement).parentNode;
+    Container.append(divC);
+    var LabelDiv = document.createElement("label");
+    LabelDiv.className = "LabelSelectC";
+    LabelDiv.innerText = GetObj(IdElement).name;
+    LabelDiv.setAttribute( "for", IdElement + "ContainerCheck");  
+    var InputForRTSelect = document.createElement("Input");
+        InputForRTSelect.type = "checkbox";
+        //InputForRTSelect.checked = true;
+        InputForRTSelect.setAttribute(
+          "id",
+          IdElement + "ContainerCheck"
+        );
+        InputForRTSelect.value = "Select";
+        InputForRTSelect.className = "BTNForm colorFormA";
+        InputForRTSelect.setAttribute(
+          "onchange",
+          "DisplayContainer('"+IdElement+"Container','38px');SelectGroupMultiselect(this,"+IdElement+");"
+        );
+    LabelDiv.append(InputForRTSelect);
+    LabelDiv.append(document.createElement("span"));   
+    var divCDisplay = document.createElement("div");
+    divCDisplay.className = "";
+    divC.append(LabelDiv, divCDisplay);
+    var tableSelect = document.createElement("Table");
+    tableSelect.className = "TableSelectC";
+    tableSelect.id = "table_" + IdElement;
+    var tbody = document.createElement("tbody");
+    tableSelect.append(tbody);
+    divCDisplay.append(tableSelect);
+    DrawSelect( tableSelect.id, "","", IdElement + "Datos", 0, "", 0,1, IdElement);
+  }
+  var selects = tableSelect.querySelectorAll("input[type=checkbox]");
+  for (let index = 0; index < selects.length; index++) {
+    const element = selects[index]; 
+    element.addEventListener('change', function (e) {
+      var containerGroupId = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id;
+      var containerGroup = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+      var containerSelect = containerGroup.querySelectorAll('.DisplaySelectGroup');
+      AutoDisplayGroupMultiselect(containerGroupId, containerSelect);
+    })       
+  }
+}
+
+function SelectGroupMultiselect(element, elementId){
+      var containerGroupId = element.parentNode.parentNode.id;
+      var containerGroup = element.parentNode.parentNode.parentNode;
+      var containerSelect = containerGroup.querySelectorAll('.DisplaySelectGroup');    
+      var checks = element.parentNode.parentNode.querySelectorAll('table input[type=checkbox]');     
+      for (let index3 = 0; index3 < checks.length; index3++) {
+        const check = checks[index3];
+        if (element.checked == true) {
+          check.checked = true; 
+        }else {
+          check.checked = false;
+        }
+        SelectMElement(index3.toString(), "" , elementId.id + "Datos" ,elementId.id,'',check);       
+      }
+      AutoDisplayGroupMultiselect(containerGroupId, containerSelect);
+
+}
+
+function AutoDisplayGroupMultiselect(containerGroupId, containerSelect) { 
+  for (let index2 = 0; index2 < containerSelect.length; index2++) {
+    const elementMultiSelect = containerSelect[index2];
+    if(elementMultiSelect.id != containerGroupId){
+      var checks = elementMultiSelect.querySelectorAll("input[type=checkbox]");
+      for (let index3 = 0; index3 < checks.length; index3++) {
+        const check = checks[index3];
+        check.checked = false; 
+      }
+      var hidden = GetObj(elementMultiSelect.id.replace("Container", ""));
+      hidden.value = "[]";
+      elementMultiSelect.style = "transition: all 1s ease 0s; max-height: 38px; overflow: hidden;";
+    }        
+  }  
 }

@@ -2,7 +2,7 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
-  
+
 class RadialChart extends HTMLElement {
     constructor(props) {
       super();
@@ -83,11 +83,9 @@ class RadialChart extends HTMLElement {
                     //"stroke-linecap": "round"
                 },
             }); 
-
             //texto
             let degs = (360 * porcentajeF) / 100;
-            let degs2 = (((360 * porcentaje) / 100) /2) - 12;
-            console.log(degs2)
+            let degs2 = (((360 * porcentaje) / 100) /2) - 12;            
             let TextSVG = createElementNS({
                 type: "text",
                 class: "circleText",
@@ -147,4 +145,4 @@ class RadialChart extends HTMLElement {
         }
         return Maxvalue;
   }
-  customElements.define("radial-chart", RadialChart);
+customElements.define("w-radial-chart", RadialChart);

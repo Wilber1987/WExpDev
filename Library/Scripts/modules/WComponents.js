@@ -18,6 +18,7 @@ function CreateStringNode(string) {
     return node;
 }
 function createElement(node) {   
+    //console.log(node)
     if (typeof node === 'string') {
       return document.createTextNode(node)
     }
@@ -296,7 +297,7 @@ function FilterInList(ArrayList, Param, Config, TableId) {
         var ListArray = ArrayList.filter(function (element) {
                 //element => element.name.includes(Param)
                 for (var key in element) {
-                    if (element[key].includes(Param)) {
+                    if (element[key].toString().includes(Param)) {
                         return element;                                                
                     }
                 }
