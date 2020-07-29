@@ -45,24 +45,51 @@ importarScript("databaseScripts/Modules.js", Url_Path);
 importarScript("MasterDomClass.js", Url_Path);
 importarStyle("Styles/AppStyles.css", Url_Path);
 //var modules = null;
-
-
-
+const Multiselect = [
+    {descripcion: "item 1aaa", id: 1},
+    {descripcion: "item 2", id: 2},
+    {descripcion: "item 3", id: 3},
+    {descripcion: "item 4", id: 4},
+];
+const GroupMultiselect = {
+    Group1:[
+        {descripcion: "item 1", id: 1},
+        {descripcion: "item 2", id: 2},
+        {descripcion: "item 3", id: 3},
+        {descripcion: "item 4", id: 4},
+    ], Group2:[
+        {descripcion: "item 1", id: 1},
+        {descripcion: "item 2", id: 2},
+        {descripcion: "item 3", id: 3},
+        {descripcion: "item 4", id: 4},
+    ], Group3:[
+        {descripcion: "item 1", id: 1},
+        {descripcion: "item 2", id: 2},
+        {descripcion: "item 3", id: 3},
+        {descripcion: "item 4", id: 4},
+    ],
+};
 function OnLoad() {    
     var modules = new Modules();
     const BodyComponents = new MasterDomClass();
     root.appendChild(createElement(BodyComponents));
     StarDOM();   
-    //MULTI SELECT
-    const Multiselect = [
-        {descripcion: "item 1", id: 1},
-        {descripcion: "item 2", id: 2},
-        {descripcion: "item 3", id: 3},
-        {descripcion: "item 4", id: 4},
-    ]
+    //MULTI SELECT  
     CharConfig.Datasets = Multiselect;
     CharConfig.search = true;
-    Container.appendChild(createElement({type: 'w-multi-select',  props : {id: "MyMultiselect", data: CharConfig }}));  
+    Container.appendChild(createElement({type: 'w-multi-select',
+        props : {id: "MyMultiselect",
+        data: CharConfig }}));  
+    //GROUP MULTI SELECT  
+    CharConfig.Datasets = GroupMultiselect;
+    CharConfig.search = true;
+    CharConfig.groupMultiSelect = true;
+    ///*
+    Container.appendChild(createElement({type: 'w-multi-select',
+        props : {id: "MyGroupMultiselect",
+        data: CharConfig }}));  
+
+      //  */
     //RADIAL CHART
     CharConfig.Datasets = DataSet;
     
@@ -719,14 +746,11 @@ var result = {
         }
     ],
 };
-
 const DataSet = [
     {cantidad: 20,time: 2020,},
     {cantidad: 80,time: 2020, },
     {cantidad: 90,time: 2020,}
-  ];   
-
-
+];  
 var backgroud = ["#ff6699", "#ffbb99", "#adebad"];
 var estadoColores = [{
         id_: "Fresa",
