@@ -9,15 +9,12 @@ function importarScriptModule(name, UrlPath = "") {
     s.type = "module";
     document.querySelector("head").appendChild(s);
 }
-
-
 function importarStyle(name, UrlPath) {
     var s = document.createElement("link");
     s.href = UrlPath + name;
     s.rel = "stylesheet";
     document.querySelector("head").appendChild(s);
 }
-
 function getAbsolutePath() {
     let pathName = "";
     if (document.getElementById("URLPath")) {
@@ -75,24 +72,23 @@ function OnLoad() {
     root.appendChild(createElement(BodyComponents));
     StarDOM();   
     //MULTI SELECT  
+    Container.appendChild(createElement({type:"h1",children:["Multiselect"]}));
     CharConfig.Datasets = Multiselect;
     CharConfig.search = true;
     Container.appendChild(createElement({type: 'w-multi-select',
         props : {id: "MyMultiselect",
         data: CharConfig }}));  
     //GROUP MULTI SELECT  
+    Container.appendChild(createElement({type:"h1",children:["Multiselect agrupado"]}));
     CharConfig.Datasets = GroupMultiselect;
     CharConfig.search = true;
-    CharConfig.groupMultiSelect = true;
-    ///*
+    CharConfig.groupMultiSelect = true;     
     Container.appendChild(createElement({type: 'w-multi-select',
         props : {id: "MyGroupMultiselect",
         data: CharConfig }}));  
-
-      //  */
     //RADIAL CHART
-    CharConfig.Datasets = DataSet;
-    
+    Container.appendChild(createElement({type:"h1",children:["Radial Chart"]}));
+    CharConfig.Datasets = DataSet;    
     Container.appendChild(createElement({
         type: 'w-radial-chart',
         props: {
@@ -100,8 +96,11 @@ function OnLoad() {
         }
     }));   
     //COLUM CHART
+    Container.appendChild(createElement({type:"h1",children:["BarChar Agrupado"]}));
     CharConfig.Datasets = result.datos;
-    Container.appendChild(createElement({type: 'w-colum-chart',  props : { data: CharConfig }}));     
+    Container.appendChild(createElement({type: 'w-colum-chart',  props : { data: CharConfig }}));   
+    //tabla dinamica estilizada  
+    Container.appendChild(createElement({type:"h1",children:["Tabla Dinamica"]}));
     StartModuleList(modules); 
 }
 
@@ -110,20 +109,20 @@ function StartModuleList(modules) {
         TableId: "TableData",
         className: "CardStyleComponent"
     });
-    let ApiUrlUpdate = "http://localhost/INCLUSIVE_PROYECT/PhpApi/ApiSWGetModules.php";
-    let ApiUrlCreate = "http://localhost/INCLUSIVE_PROYECT/PhpApi/ApiSWGetModules.php";
-    let ApiUrlDelete = "http://localhost/INCLUSIVE_PROYECT/PhpApi/ApiSWGetModules.php";
-    let ApiUrlSelect = "http://localhost/INCLUSIVE_PROYECT/PhpApi/ApiSWGetModules.php";
+    let ApiUrlUpdate = "";
+    let ApiUrlCreate = "";
+    let ApiUrlDelete = "";
+    let ApiUrlSelect = "";
 
-    var Config = {
+    var ConfigTable = {
         Table: Table,
         CardStyle: true,
         TableContainer: false,
         Options: {
             Search: true,
             ApiSelect: {
-                ApiUrlSelect: ApiUrlSelect,
-                ResponseName: "Monsters"
+                //ApiUrlSelect: ApiUrlSelect,
+                //ResponseName: "name"
             },
             Show: true,
             ShowOptions: {
@@ -136,15 +135,15 @@ function StartModuleList(modules) {
                     }
                 }
             },
-            Edit: false,
+            Edit: true,
             EditOptions: {
                 FormName: false,
-                ApiUrlUpdate: ApiUrlUpdate
+               // ApiUrlUpdate: ApiUrlUpdate
             },
             Select: false
         },
     };
-    DrawTable(modules.Modules, Config);
+    DrawTable(modules.Modules, ConfigTable);
     Container.appendChild(Table);
     // let xhr
     // if (window.XMLHttpRequest) xhr = new XMLHttpRequest()

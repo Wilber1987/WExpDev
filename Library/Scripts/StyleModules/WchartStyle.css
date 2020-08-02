@@ -162,10 +162,8 @@
     position: relative;
     border-top: rgba(190, 190, 190,0) solid 1px;
     height: 100%;
-    /* display: block;        */
     align-items: flex-start;
     display: flex;
-    /* padding-left: 5PX; */
     font-size: 9px;
     
 }
@@ -207,39 +205,25 @@
     background: #ccc;
     border-radius: 4px;
 }
-
-
-/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
-
 .SectionBars::-webkit-scrollbar-thumb:hover {
     background: #b3b3b3;
     box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
 }
-
-
-/* Cambiamos el fondo cuando esté en active */
 
 .SectionBars::-webkit-scrollbar-thumb:active {
     background-color: #999999;
 }
 
 .SectionBars::-webkit-scrollbar {
-    width: 8px;
-    /* Tamaño del scroll en vertical */
+    width: 8px;   
     height: 15px;
     margin: 10px;
-    /* Tamaño del scroll en horizontal */
-    /* Ocultar scroll */
 }
 
 .SectionBars::-webkit-scrollbar-track {
     background: #e1e1e1;
     border-radius: 4px;
 }
-
-
-/* Cambiamos el fondo cuando esté en active o hover */
-
 .SectionBars::-webkit-scrollbar-track:hover,
 .SectionBars::-webkit-scrollbar-track:active {
     background: #d4d4d4;
@@ -257,7 +241,7 @@
     min-height: 200px;
     border-radius: 5px;
 }
-/*RADIALLLLL*/
+/*RADIALLLLL------------------------------------------------------------------------------------------------------*/
 .SectionRadialChart{
     position: relative;
     text-align: center;
@@ -266,14 +250,6 @@
     height: 300px;
 }
 .RadialDataBackground{
-    /* height: 200px;
-    width: 200px;
-    border-radius: 50%;
-    display: block;
-    position: absolute;
-    top:0;
-    left: calc(50% - 100px);
-    margin: auto; */
     transform: rotate(-90deg);
 }
 .RadialDataBackground:first-child {
@@ -288,7 +264,6 @@
     top:0;
     left: calc(50% - 100px);
     margin: auto;
-    /* background: linear-gradient( 0deg, #000 50% ,rgba(73, 54, 54, 0) 50%);     */
 }
 .RadialData::before{
     content: "";

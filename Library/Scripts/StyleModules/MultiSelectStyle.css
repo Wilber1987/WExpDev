@@ -171,39 +171,39 @@ w-multi-select .DisplaySelectC::-webkit-scrollbar-track:active {
 
 /*MULTI SELECTGROUP*/
 
-.MultiGroupSelect {
+w-multi-select .MultiGroupSelect {
     position: absolute;
     max-height: 38px;
     overflow-x: hidden;
     width: calc(100% - 2px);
     transition: all 0.8s;
-    overflow-y: hidden;
+    overflow-y: scroll;
     z-index: 2;
     background-color: #fff;
     border-radius: 0.2cm;
     border: 1px solid #a1a1a1;
 }
-w-multi-select .DisplaySelectGroup label span::before{
+w-multi-select .DisplaySelectGroup .LabelAutoselect span::before{
     content: "";
     background: transparent;
     border: 2px solid #757575 !important;
     /* border-radius: 5px;
     display: inline-block; */
     height: 15px;
-    line-height: 15px;
-    margin-right: 5px;
+    line-height: 25px;
+    margin-right: 10px;
     text-align: center;
     vertical-align: middle;
     width: 15px;
     position: relative;
-    margin: 5px;
+    margin: 9px;
     float: right;
     top: 0px;
 }
-w-multi-select  .DisplaySelectGroup label input {
+w-multi-select  .DisplaySelectGroup input[type="checkbox"] {
     display: none;
 }
-w-multi-select  .DisplaySelectGroup label input[type="checkbox"]:checked + span::before{
+w-multi-select  .DisplaySelectGroup .LabelAutoselect input[type="checkbox"]:checked + span::before{
 	content: '';
     font-size: 15px;
     color: #757575;
@@ -212,12 +212,11 @@ w-multi-select  .DisplaySelectGroup label input[type="checkbox"]:checked + span:
     transition: all ease 0.5s;
 }
 
-
-.MultiGroupSelect:hover {     
+w-multi-select .MultiGroupSelect:hover {     
     max-height: 400px; 
-    overflow-y: auto;  
+    overflow-y: scroll;  
 }
-.DisplaySelectGroup{
+w-multi-select .DisplaySelectGroup{
     /* border: solid 1px #a1a1a1; */
     border-radius: 0.2cm ;
     cursor: pointer;
@@ -230,25 +229,32 @@ w-multi-select  .DisplaySelectGroup label input[type="checkbox"]:checked + span:
     background-color: #fff;
     background-clip: padding-box;
     border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    
 }
-.TableSelectC{
+w-multi-select .TableSelectC{
     width: 95%;
     display: block;
     margin: auto;
 }
-.MultiGroupSelect::-webkit-scrollbar-thumb:hover {
+w-multi-select .MultiGroupSelect::-webkit-scrollbar-thumb:hover {
     background: #b3b3b3;
     box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
-}.MultiGroupSelect::-webkit-scrollbar-thumb:active {
+}w-multi-select .MultiGroupSelect::-webkit-scrollbar-thumb {
+    background: #b3b3b3;
+    cursor: pointer;
+   
+}w-multi-select .MultiGroupSelect::-webkit-scrollbar-thumb:active {
     background-color: #999999;
-}.MultiGroupSelect::-webkit-scrollbar {
+}w-multi-select .MultiGroupSelect::-webkit-scrollbar {
     width: 8px;
     height: 8px;    
-}.MultiGroupSelect::-webkit-scrollbar-track {
-    background: #e1e1e1;
+}w-multi-select .MultiGroupSelect::-webkit-scrollbar-track {
+    background: #ffffff;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border-radius: 4px;
-}.MultiGroupSelect::-webkit-scrollbar-track:hover,
-.MultiGroupSelect::-webkit-scrollbar-track:active {
+}
+w-multi-select .MultiGroupSelect::-webkit-scrollbar-track:hover,
+w-multi-select .MultiGroupSelect::-webkit-scrollbar-track:active {
     background: #d4d4d4;
 }

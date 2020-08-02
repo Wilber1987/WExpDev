@@ -2,8 +2,6 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }  
-//import MultiSelectConfig from "./WChartJSComponent";
-
 class MultiSelectConfig {
     constructor(Config) {
         this.ContainerName = Config.ContainerName;
@@ -38,8 +36,7 @@ class MultiSelect extends HTMLElement{
         this.MultiSelectInstance = new MultiSelectConfig(this.data);
         this.SelectFragment = document.createElement("div");
         this.SelectFragment.className = "DisplaySelect";
-        if ( this.MultiSelectInstance.groupMultiSelect == true) {
-            console.log("Drawing grouped...");
+        if ( this.MultiSelectInstance.groupMultiSelect == true) {            
             this._DrawGroupMultiSelect();
         }else {
             this._DrawMultiselect();
@@ -93,29 +90,36 @@ class MultiSelect extends HTMLElement{
                 }
             });            
             this.GroupSelectedsItems[GroupName] = [];
-
             //DESIGN.....
             this.GroupLabels[GroupName + "Label"] = createElement({
                 type: "label", props:{
                     class:"selectLabel", id: GroupName + "Label", title: GroupName,
                     //onclick: ()=>{ console.log("click")  }
                 },
-                children:[GroupName, {type: "span"}]
+                children:[GroupName]
             });
+            if (this.MultiSelectInstance.autoselectAll) {
+                this.GroupLabels[GroupName + "Label"].className = "LabelAutoselect";
+            }
             //select all
-           // this.GroupLabels[GroupName + "Label"].innerText = "sdfgmslkdhfg"
-           // console.log(this.GroupLabels[GroupName + "Label"])
             this.GroupLabels[GroupName + "Label"].append(createElement({
                 type:"input",                              
                 props:{ type: "checkbox",
                     id: "radio_" + GroupName,                
                     onchange: ()=>{ 
-                        this._DisplayContainer( GroupName + "Container", "38px")                        
-                        this._SelectGroupMultiselect("radio_" + GroupName, this.GroupTables[GroupName +"Table"])
+                        this._DisplayContainer( GroupName + "Container", "38px")   
+                        if (this.MultiSelectInstance.autoselectAll) {
+                            this._SelectGroupMultiselect(
+                                "radio_" + GroupName,
+                                this.GroupTables[GroupName +"Table"],
+                                this.GroupSelectedsItems[GroupName], 
+                                this.GroupLabels[GroupName + "Label"]
+                            );
+                        }     
                     }
                 }
-            }))
-
+            }))            
+            this.GroupLabels[GroupName + "Label"].append(createElement({type: "span"}));
             //fin select all
             this._DrawSelecteds(this.GroupLabels[GroupName + "Label"], this.GroupSelectedsItems[GroupName]);           
             let DisplaySelectGroup = createElement({
@@ -142,8 +146,8 @@ class MultiSelect extends HTMLElement{
                         }
                     }]
                }));
-           }
-           this.GroupTables[GroupName +"Table"].style.marginTop = this.SearchMargin; 
+            }
+            this.GroupTables[GroupName +"Table"].style.marginTop = this.SearchMargin; 
             DisplaySelectGroup.append(                
                 this._AddSectionData(ArrayGroup[GroupName],
                     this.GroupTables[GroupName +"Table"], 
@@ -182,11 +186,11 @@ class MultiSelect extends HTMLElement{
                             element.descripcion,
                             {
                                 type:"input",                              
-                                props:{ type: "checkbox",
-                                id: "radio_" + element.id,
+                                props:{ type: "checkbox", elementValue: element,
+                                id: "radio_" + element.id + label.id,
                                 checked: checked,
                                 onchange: ()=>{ 
-                                    this._SelectElement(element, "radio_" + element.id, SelectedsItems, label)
+                                    this._SelectElement(element, "radio_" + element.id + label.id, SelectedsItems, label)
                                 }}
                             },
                             { type:"span" }
@@ -200,9 +204,9 @@ class MultiSelect extends HTMLElement{
         var index = 0;    
         return Table;
     }
-    _SelectElement(Value, ControlId, SelectedsItems, label){       
+    _SelectElement(Value, ControlId, SelectedsItems, label){ 
         let Control = this.querySelector(`#${ControlId}`);    
-        //console.log()
+       // console.log(Control)
         //console.log(Control.checked)    
         if (Control.checked == true) {
            let filtObject = SelectedsItems.filter(param => param == Value);
@@ -218,7 +222,7 @@ class MultiSelect extends HTMLElement{
             }
         }
         this._DrawSelecteds(label,SelectedsItems);
-        //console.log( this.selectedItems)         
+        //console.log(SelectedsItems)         
     }
     _filter(Table, Label, selectedItems, ArrayGroup){
         //console.log(Table)
@@ -247,11 +251,15 @@ class MultiSelect extends HTMLElement{
                 Selecteds += ", ";
             }             
         });
+        let labelSel = "";
         if (Selecteds != "") {        
-            Label.firstChild.innerHTML = `${Label.title} (${Selecteds})`;            
+            labelSel = `${Label.title} (${Selecteds})`;            
         }else{            
-            Label.firstChild.innerHTML = `${Label.title}`; 
-        }       
+            labelSel = `${Label.title}`; 
+        }               
+        let fChild = Label.firstChild;
+        Label.insertBefore( document.createTextNode(labelSel), fChild);
+        Label.removeChild(fChild);
     }
     _DisplayContainer(objId, size = null, maxSize = null) {
         if (size == null) {
@@ -265,14 +273,27 @@ class MultiSelect extends HTMLElement{
         if (container.style.maxHeight == size || container.offsetHeight == parseInt(size.replace("px", ""))) {
           container.style.transition = "all ease 1s";
           container.style.maxHeight = maxSize;          
-        } else {
-        console.log("heare")
+        } else {       
           container.style.transition = "all ease 1s";
           container.style.maxHeight = size;         
         }
     }
-    _SelectGroupMultiselect(GroupName, GroupTables){
-
+    _SelectGroupMultiselect(CheckGroupId, GroupTables, SelectedsItems, label){
+        let checks = GroupTables.querySelectorAll("input[type=checkbox]");
+        let CheckGroup = document.getElementById(CheckGroupId).checked;
+        checks.forEach(check => {           
+            if (CheckGroup == true) {
+                check.checked = true; 
+            }else {
+                check.checked = false;
+            }
+            this._SelectElement(
+                    check.elementValue,
+                    check.id,
+                    SelectedsItems,
+                    label
+                );            
+        });        
     }
 }
 customElements.define("w-multi-select", MultiSelect);

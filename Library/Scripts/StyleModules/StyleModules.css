@@ -3,11 +3,9 @@
  .CardStyleComponent thead, 
  .CardStyleComponent tbody,
   .CardStyleComponent tfoot{
-    display: block;
-   
+    display: block;   
     text-align: center;
 }
-
 .CardStyleComponent tr{
     display: inline-block;
     width: 40%;
