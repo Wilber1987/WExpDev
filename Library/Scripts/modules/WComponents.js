@@ -17,7 +17,7 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
-function createElement(node) {   
+export function createElement(node) {   
     //console.log(node)
     if (typeof node === 'string') {
       return document.createTextNode(node)
@@ -41,7 +41,7 @@ function createElement(node) {
     }  
     return element;
 }
-function createElementNS(node) {
+export function createElementNS(node) {
     //console.log(node);
     if (typeof node === 'string') {
       return document.createTextNode(node)

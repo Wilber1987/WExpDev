@@ -1,6 +1,25 @@
+
+//import {createElementNS} from "./Scripts/Modules/WComponents.js";
 function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
+}
+class RadialChartConfig {
+  constructor(Config) {
+      this.ContainerName = Config.ContainerName;
+      this.Title = Config.Title;
+      this.AttNameEval = Config.AttNameEval;
+      this.EvalValue = Config.EvalValue;
+      this.AttNameG1 = Config.AttNameG1;
+      this.AttNameG2 = Config.AttNameG2;
+      this.AttNameG3 = Config.AttNameG3;
+      this.GroupLabelsData = Config.GroupLabelsData;//series
+      this.Datasets = Config.Datasets; //datos        
+      this.Colors = Config.Colors;
+      this.GroupDataTotals = Config.GroupDataTotals;
+      this.ContainerSize = Config.ContainerSize;
+      this.ColumnLabelDisplay = Config.ColumnLabelDisplay;
+  }
 }
 
 class RadialChart extends HTMLElement {
@@ -13,8 +32,10 @@ class RadialChart extends HTMLElement {
     connectedCallback() {
       this.DrawChart();
     }
-    DrawChart() {
-      this.ChartInstance = new ChartConfig(this.data);
+   // DrawChart() {
+    DrawChart =  async () =>{
+      const {createElementNS} = await import("./WComponents.js");
+      this.ChartInstance = new RadialChartConfig(this.data);
       let ChartFragment = document.createElement("div");
       ChartFragment.className = "WChartContainer";
       ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
@@ -24,7 +45,7 @@ class RadialChart extends HTMLElement {
           this.ChartInstance.Colors
         )
       );     
-      ChartFragment.append(this._AddSectionData(this.ChartInstance));
+      ChartFragment.append(this._AddSectionData(this.ChartInstance, createElementNS));
       this.append(ChartFragment);
     }
     _AddSectionTitle(Title) {
@@ -53,7 +74,7 @@ class RadialChart extends HTMLElement {
       });
       return SectionLabels;
     }   
-    _AddSectionData(Config) {
+    _AddSectionData(Config, createElementNS) {     
         const DataSet = Config.Datasets; 
         let SectionChart = document.createElement("section");
         SectionChart.className = "SectionRadialChart";
@@ -145,4 +166,6 @@ class RadialChart extends HTMLElement {
         }
         return Maxvalue;
   }
+//var Radial = 
 customElements.define("w-radial-chart", RadialChart);
+//export {Radial};

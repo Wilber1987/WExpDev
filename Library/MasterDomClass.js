@@ -4,7 +4,6 @@ class DomComponent {
     type = "form";
     props = { class: "MyForm" };   
 }
-
 class MasterDomClass extends DomComponent{    
     constructor(props){     
         super();
@@ -16,12 +15,15 @@ class MasterDomClass extends DomComponent{
     footer = new footerClass();
     children= [
         this.header,        
-        { type: 'nav', props: {id:"NavContainer", class: "Menu"} },
+        { type: 'nav', props: {id:"NavContainer", class: "Menu"} ,
+            children: [ new MyNavigator(
+                {class: "MyNav", id: "MyLateralNav", style: "opacity: 0; pointer-events: none"}
+            )]
+        },
         { type: 'main', children: [{ type: 'section', props: {id:"Container"}}] },
         this.footer,
     ]
 }
-
 class footerClass extends DomComponent {
     constructor(props){     
         super();
@@ -49,10 +51,47 @@ class headerClass extends DomComponent {
         props: {
             id:"ViewMenu",
             type: "button",
-            onclick: function(){
-                 console.log("pruebaFun");
-            }},
+            onclick: ()=> {
+                this._DispalNav("ViewMenu","MyLateralNav", "SlideLeft")
+            }
+        },
         children: ['Nav']
         } 
     ];
+    _DispalNav(BTNId, NavContainerId, NavAnimation){
+        let CallBTN = document.querySelector("#"+BTNId);    
+        let NavContainer = document.querySelector("#"+NavContainerId);
+        let Nav = NavContainer.querySelector("ul"); 
+        NavContainer.style.transition = "all 1s";
+        Nav.style.transition = "all 1s";
+        Nav.style.webkitTransform =  "translateX(-100%)"; 
+        if (NavContainer.style.opacity == 0) {
+            NavContainer.style.pointerEvents = "all";
+            NavContainer.style.opacity = 1;
+            if (NavAnimation == "SlideLeft") {                   
+                Nav.style.webkitTransform =  "translateX(0%)";         
+            }
+        }else {
+            NavContainer.style.pointerEvents = "none";
+            NavContainer.style.opacity = 0;
+            if (NavAnimation == "SlideLeft") {
+                Nav.style.webkitTransform =  "translateX(-100%)";         
+            }
+        }                   
+    }
 }
+class MyNavigator{   
+    constructor(props){
+        this.props = props;
+    }
+    type= "div";
+    children = [{type: "ul",
+        children: [            
+            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+        ]    
+    }];        
+}
+export {MasterDomClass};
