@@ -17,7 +17,7 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
-export function createElement(node) {   
+function createElement(node) {   
     //console.log(node)
     if (typeof node === 'string') {
       return document.createTextNode(node)
@@ -41,12 +41,12 @@ export function createElement(node) {
     }  
     return element;
 }
-export function createElementNS(node) {
+function createElementNS(node) {
     //console.log(node);
     if (typeof node === 'string') {
       return document.createTextNode(node)
     }
-    SVGN = "http:\/\/www.w3.org/2000/svg";
+    const SVGN = "http:\/\/www.w3.org/2000/svg";
     const element = document.createElementNS(SVGN,node.type)
     if (node.props) {
         for (const prop in node.props) {             
@@ -59,7 +59,7 @@ export function createElementNS(node) {
                     element.setAttributeNS(null, prop, node.props[prop])
                 } catch (error) {
                     //console.log(prop, node.props[prop])
-                    //console.log(error);
+                    console.log(error);
                     element.setAttributeNS(SVGN, prop, node.props[prop]);
                 }  
             }  
@@ -72,6 +72,7 @@ export function createElementNS(node) {
     }  
     return element;
 }
+export{createElementNS, createElement}
 
 function CreateInput(Data) {
     var InputForRT = document.createElement("input");

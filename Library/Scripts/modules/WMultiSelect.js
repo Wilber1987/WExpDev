@@ -1,3 +1,5 @@
+//const { createElement } = require("./WComponents.js");
+
 function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
@@ -31,19 +33,21 @@ class MultiSelect extends HTMLElement{
     GroupTables = {};
     GroupLabels = {};
     GroupSelectedsItems = {};
-    Draw(){
+    Draw =  async () =>{
         //console.log("multiselect...");
+        const {createElement} = await import("./WComponents.js");
+        this.createElement = createElement;
         this.MultiSelectInstance = new MultiSelectConfig(this.data);
         this.SelectFragment = document.createElement("div");
         this.SelectFragment.className = "DisplaySelect";
         if ( this.MultiSelectInstance.groupMultiSelect == true) {            
-            this._DrawGroupMultiSelect();
+            this._DrawGroupMultiSelect(createElement);
         }else {
-            this._DrawMultiselect();
+            this._DrawMultiselect(createElement);
         }       
     }
     _DrawMultiselect(){        
-        this.LabelSelect = createElement({
+        this.LabelSelect = this.createElement({
             type: "label", props:{class:"selectLabel", title: this.MultiSelectInstance.Title},
             children:[this.MultiSelectInstance.Title]
         });
@@ -51,16 +55,17 @@ class MultiSelect extends HTMLElement{
         this.SelectFragment.append(this.LabelSelect);
         if (this.MultiSelectInstance.search) {
             this.SearchMargin = "40px";           
-            this.SelectFragment.append(createElement({
+            this.SelectFragment.append(this.createElement({
                 type: "div", props:{class: "SearchContainer"},
                 children:[{
                     type: "input", props: {
                         type: "text",
+                        id: "inputSearch",
                         placeholder: "Search Element",
                         onchange: ()=>{ this._filter(this.MultiSelectTable,
                             this.LabelSelect,
                             this.selectedItems,
-                            this.MultiSelectInstance.Datasets)}
+                            this.MultiSelectInstance.Datasets, "inputSearch")}
                     }
                 }]
             }));
@@ -82,7 +87,7 @@ class MultiSelect extends HTMLElement{
         for (const GroupName in ArrayGroup) {  
             //const Array = ArrayGroup[GroupName];
             //PREPARANDO LA DATA.............
-            this.GroupTables[GroupName +"Table"] = createElement({
+            this.GroupTables[GroupName +"Table"] = this.createElement({
                 type: "table", 
                 props: {
                     id: GroupName +"Table", class: "DisplaySelectC",
@@ -91,7 +96,7 @@ class MultiSelect extends HTMLElement{
             });            
             this.GroupSelectedsItems[GroupName] = [];
             //DESIGN.....
-            this.GroupLabels[GroupName + "Label"] = createElement({
+            this.GroupLabels[GroupName + "Label"] = this.createElement({
                 type: "label", props:{
                     class:"selectLabel", id: GroupName + "Label", title: GroupName,
                     //onclick: ()=>{ console.log("click")  }
@@ -102,7 +107,7 @@ class MultiSelect extends HTMLElement{
                 this.GroupLabels[GroupName + "Label"].className = "LabelAutoselect";
             }
             //select all
-            this.GroupLabels[GroupName + "Label"].append(createElement({
+            this.GroupLabels[GroupName + "Label"].append(this.createElement({
                 type:"input",                              
                 props:{ type: "checkbox",
                     id: "radio_" + GroupName,                
@@ -119,10 +124,10 @@ class MultiSelect extends HTMLElement{
                     }
                 }
             }))            
-            this.GroupLabels[GroupName + "Label"].append(createElement({type: "span"}));
+            this.GroupLabels[GroupName + "Label"].append(this.createElement({type: "span"}));
             //fin select all
             this._DrawSelecteds(this.GroupLabels[GroupName + "Label"], this.GroupSelectedsItems[GroupName]);           
-            let DisplaySelectGroup = createElement({
+            let DisplaySelectGroup = this.createElement({
                 type:"div", props :{
                     class: "DisplaySelectGroup",
                     id: GroupName + "Container",
@@ -132,17 +137,19 @@ class MultiSelect extends HTMLElement{
             DisplaySelectGroup.append(this.GroupLabels[GroupName + "Label"]);
             if (this.MultiSelectInstance.search) {
                 //this.SearchMargin = "40px";
-                DisplaySelectGroup.append(createElement({
+                DisplaySelectGroup.append(this.createElement({
                     type: "div", props:{class: "SearchContainer",
                     style:"max-height:initial; position: relative; opacity:1; pointer-events:all"},
                     children:[{
                         type: "input", props: {
                            type: "text",
+                           id: "input"+GroupName,
                            placeholder: "Search Element",                          
-                           onchange: ()=>{ this._filter(this.GroupTables[GroupName +"Table"],
+                           onchange: ()=>{ this._filter(
+                            this.GroupTables[GroupName +"Table"],
                             this.GroupLabels[GroupName + "Label"],
                             this.GroupSelectedsItems[GroupName],
-                            ArrayGroup[GroupName])}
+                            ArrayGroup[GroupName], "input"+GroupName) }
                         }
                     }]
                }));
@@ -177,7 +184,7 @@ class MultiSelect extends HTMLElement{
                 console.log(filtObject)
                 checked = true;
             } 
-            var Row = createElement({
+            var Row = this.createElement({
                 type: "tr",
                 props: {},
                 children: [
@@ -224,21 +231,16 @@ class MultiSelect extends HTMLElement{
         this._DrawSelecteds(label,SelectedsItems);
         //console.log(SelectedsItems)         
     }
-    _filter(Table, Label, selectedItems, ArrayGroup){
-        //console.log(Table)
-        let inputSearch = this.querySelector(".SearchContainer input"); 
-        //console.log(inputSearch.value)       
+    _filter(Table, Label, selectedItems, ArrayGroup, inputName){      
+        let inputSearch = this.querySelector(".SearchContainer #"+inputName);   
         if (inputSearch.value != "") {           
-            var ListArray = ArrayGroup.filter(function (element) {                  
+            var ListArray = ArrayGroup.filter(function (element) {   
                 for (var key in element) {
                     if (element[key].toString().includes(inputSearch.value)) { return element;  }
                 }
             });   
-            //console.log(ListArray);
-            //console.log(Table)
             this._AddSectionData(ArrayGroup, Table, selectedItems, Label, ListArray)
        }else{
-            //console.log(this.MultiSelectInstance.Datasets);
             this._AddSectionData(ArrayGroup, Table, selectedItems, Label)
        }
     }
@@ -294,6 +296,9 @@ class MultiSelect extends HTMLElement{
                     label
                 );            
         });        
+    }
+    Style(){
+        return ;
     }
 }
 customElements.define("w-multi-select", MultiSelect);

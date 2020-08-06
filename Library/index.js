@@ -22,6 +22,14 @@ function getAbsolutePath() {
     }
     return pathName;
 }
+function awaitFunction() { 
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(0);
+      }, 0);
+    });
+}
+
 
 var result = {
     "datos": [{
@@ -617,7 +625,7 @@ var CharConfig = {
     Title: "MyChart",
     GroupLabelsData: estadoColores,
     GroupDataset: result.Labels,
-    Datasets: result.datos,
+    //Datasets: result.datos,
     Colors: backgroud,
     ContainerSize: 400,
     ColumnLabelDisplay: 0,
@@ -631,21 +639,21 @@ var CharConfig = {
 
 var Url_Path = getAbsolutePath();
 // //scripts
-// importarScript("Scripts/Modules/WComponents.js", Url_Path);
+//importarScript("Scripts/Modules/WComponents.js", Url_Path);
 // importarScript("Scripts/Modules/WNavComponents.js", Url_Path);
 // importarScript("Scripts/Modules/WComponentsTools.js", Url_Path);
 // importarScript("Scripts/Modules/WChartJSComponent.js", Url_Path);
 // importarScript("Scripts/Modules/WChartRadial.js", Url_Path);
 // importarScript("Scripts/Modules/WMultiSelect.js", Url_Path);
 // //estilos
-// importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
-// importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
-// importarStyle("Scripts/StyleModules/MultiSelectStyle.css", Url_Path);
+ importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
+ importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
+ importarStyle("Scripts/StyleModules/MultiSelectStyle.css", Url_Path);
 
 // //APP CONFIG
 // importarScript("databaseScripts/Modules.js", Url_Path);
 // importarScript("MasterDomClass.js", Url_Path);
-// importarStyle("Styles/AppStyles.css", Url_Path);
+ importarStyle("Styles/AppStyles.css", Url_Path);
 //var modules = null;
 const Multiselect = [
     {descripcion: "item 1aaa", id: 1},
@@ -658,55 +666,59 @@ const GroupMultiselect = {
         {descripcion: "item 1", id: 1},
         {descripcion: "item 2", id: 2},
         {descripcion: "item 3", id: 3},
-        {descripcion: "item 4", id: 4},
+        {descripcion: "itvem 4", id: 4},
     ], Group2:[
         {descripcion: "item 1", id: 1},
         {descripcion: "item 2", id: 2},
-        {descripcion: "item 3", id: 3},
+        {descripcion: "itefm 3", id: 3},
         {descripcion: "item 4", id: 4},
     ], Group3:[
-        {descripcion: "item 1", id: 1},
+        {descripcion: "itrem 1", id: 1},
         {descripcion: "item 2", id: 2},
         {descripcion: "item 3", id: 3},
         {descripcion: "item 4", id: 4},
     ],
 };
 const OnLoad =  async () => { 
-    const modules = await import("./MasterDomClass.js");
     const {createElement} = await import("./Scripts/Modules/WComponents.js");
-    await import("./Scripts/Modules/WChartJSComponent.js");
-    await import("./Scripts/Modules/WChartRadial.js");   
-    //await import("./Scripts/Modules/WChartRadial.js");
+    const modules = await import("./MasterDomClass.js"); 
+    await import("./Scripts/Modules/WChartRadial.js"); 
+    await import("./Scripts/Modules/WMultiSelect.js"); 
+    await import("./Scripts/Modules/WMultiSelect.js"); 
+    await import("./Scripts/Modules/WChartJSComponent.js"); 
     const BodyComponents = new modules.MasterDomClass();
-    root.appendChild(createElement(BodyComponents));
-    // StarDOM();   
-    //MULTI SELECT  
-    Container.appendChild(createElement({type:"h1",children:["Multiselect"]}));
-    CharConfig.Datasets = Multiselect;
+    root.appendChild(createElement(BodyComponents));   
+    //MULTI SELECT---------------------------------------------------------------------  
+    Container.appendChild(createElement({type:"h1",children:["Multiselect"]}));  
+    await awaitFunction(); 
+    CharConfig.Datasets =  Multiselect;
     CharConfig.search = true;
     Container.appendChild(createElement({type: 'w-multi-select',
         props : {id: "MyMultiselect",
         data: CharConfig }}));  
-    //GROUP MULTI SELECT  
-    Container.appendChild(createElement({type:"h1",children:["Multiselect agrupado"]}));
+    //GROUP MULTI SELECT----------------------------------------------------------------  
+    Container.appendChild(createElement({type:"h1",children:["Multiselect agrupado"]}));  
+    await awaitFunction();  
     CharConfig.Datasets = GroupMultiselect;
     CharConfig.search = true;
     CharConfig.groupMultiSelect = true;     
     Container.appendChild(createElement({type: 'w-multi-select',
         props : {id: "MyGroupMultiselect",
         data: CharConfig }}));  
-    //RADIAL CHART
-    Container.appendChild(createElement({type:"h1",children:["Radial Chart"]}));
-    CharConfig.Datasets = DataSet;    
+    //RADIAL CHART--------------------------------------------------------------------
+    Container.appendChild(createElement({type:"h1",children:["Radial Chart"]}));    
+    await awaitFunction();
+    CharConfig.Datasets =  DataSet;       
     Container.appendChild(createElement({
         type: 'w-radial-chart',
         props: {
             data: CharConfig
         }
     }));   
-    //COLUM CHART
+    //COLUM CHART----------------------------------------------------------------------
     Container.appendChild(createElement({type:"h1",children:["BarChar Agrupado"]}));
-    CharConfig.Datasets = result.datos;
+    await awaitFunction();
+    CharConfig.Datasets = result.datos;      
     Container.appendChild(createElement({type: 'w-colum-chart',  props : { data: CharConfig }}));   
     //tabla dinamica estilizada  
     Container.appendChild(createElement({type:"h1",children:["Tabla Dinamica"]}));
