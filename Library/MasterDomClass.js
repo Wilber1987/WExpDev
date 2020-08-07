@@ -1,3 +1,5 @@
+import { createElement } from "./Scripts/Modules/WComponents.js";
+
 class DomComponent {
     constructor(){        
     }
@@ -20,7 +22,10 @@ class MasterDomClass extends DomComponent{
                 {class: "MyNav", id: "MyLateralNav", style: "opacity: 0; pointer-events: none"}
             )]
         },
-        { type: 'main', children: [{ type: 'section', props: {id:"Container"}}] },
+        { type: 'main', children: [
+            { type: 'section', props: {id:"ContainerNavigate"}},
+            { type: 'section', props: {id:"Container"}}
+        ] },
         this.footer,
     ]
 }
@@ -87,11 +92,35 @@ class MyNavigator{
     type= "div";
     children = [{type: "ul",
         children: [            
-            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
-            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
-            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
-            {type: "li", children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", props:{onclick: ()=>{
+
+                console.log("navegando");
+                this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+
+            }}, children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", props:{onclick:  ()=>{
+
+                console.log("navegando login");
+                this.NavigateFunction("MyRegister", "./Modules/Security/Register.js");
+                        
+            }}, children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", props:{onclick: ()=>{
+                console.log("navegando");
+                
+            }}, children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            {type: "li", props:{onclick: ()=>{
+                console.log("navegando");
+
+            }}, children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
         ]    
-    }];        
+    }];  
+    NavigateFunction =  async (IdComponent, Path)=>{
+        const MyComponent = await import(Path);
+        const ComponentsInstance = new MyComponent[IdComponent]({id:IdComponent});
+        const ContainerNavigate = document.querySelector("#ContainerNavigate");
+        if (!ContainerNavigate.querySelector("#"+IdComponent)) {
+            ContainerNavigate.append(createElement(ComponentsInstance));
+        }      
+    }    
 }
 export {MasterDomClass};

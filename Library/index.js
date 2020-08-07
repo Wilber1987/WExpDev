@@ -635,8 +635,6 @@ var CharConfig = {
     AttNameG3: "categ",
     EvalValue: "cantidad",
 };
-
-
 var Url_Path = getAbsolutePath();
 // //scripts
 //importarScript("Scripts/Modules/WComponents.js", Url_Path);
