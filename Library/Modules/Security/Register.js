@@ -1,5 +1,6 @@
 class MyRegister{    
     constructor(props){
+        this.type = "div";
         this.props = props;  
     }      
     children= [
