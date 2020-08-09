@@ -5,13 +5,16 @@ class DomComponent {
     }
     type = "form";
     props = { class: "MyForm" }; 
-    NavigateFunction =  async (IdComponent, Path)=>{       
+    NavigateFunction =  async (IdComponent, Path, props = {})=>{ 
         const ContainerNavigate = document.querySelector("#ContainerNavigate");
         let Nodes = ContainerNavigate.querySelectorAll("div");        
         Nodes.forEach((node) => {
             if (node.id != IdComponent) {                                  
-                this.NavForm[node.id] = node;                
-                ContainerNavigate.removeChild(node);
+                this.NavForm[node.id] = node;
+                console.log(node)
+                if (ContainerNavigate.querySelector("#"+node.id)) {
+                    ContainerNavigate.removeChild(node);
+                }  
             }  
         });
         if (!ContainerNavigate.querySelector("#"+IdComponent)) {
@@ -19,8 +22,9 @@ class DomComponent {
                 ContainerNavigate.append(this.NavForm[IdComponent]);                            
                 return;
             }
-            const MyComponent = await import(Path);
-            const ComponentsInstance = new MyComponent[IdComponent]({id:IdComponent});
+            const MyComponent = await import(Path);        
+            props.id = IdComponent;
+            const ComponentsInstance = new MyComponent[IdComponent](props);            
             ContainerNavigate.append(createElement(ComponentsInstance));
             return;
         }   
@@ -36,12 +40,16 @@ class DomComponent {
             NavContainer.style.opacity = 1;
             if (NavAnimation == "SlideLeft") {                   
                 Nav.style.webkitTransform =  "translateX(0%)";         
+            }if (NavAnimation == "SlideRight") {                   
+                Nav.style.webkitTransform =  "translateX(0%)";         
             }
         }else {
             NavContainer.style.pointerEvents = "none";
             NavContainer.style.opacity = 0;
             if (NavAnimation == "SlideLeft") {
                 Nav.style.webkitTransform =  "translateX(-100%)";         
+            }if (NavAnimation == "SlideRight") {                   
+                Nav.style.webkitTransform =  "translateX(+100%)";         
             }
         }                   
     }  
@@ -90,17 +98,35 @@ class headerClass extends DomComponent {
         this.type = "header";
         this.props.class = "";                 
     }  
+    SecurityNavigator = new SecurityNavigator(
+        {class: "LoginNav", 
+        id: "LoginNav", 
+        style: "opacity: 0; pointer-events: none;"}
+    );
     children = [
-        {type: 'button', 
-        props: {
-            id:"ViewMenu",
-            type: "button",
-            onclick: ()=> {
-                this._DispalNav("MyLateralNav", "SlideLeft")
-            }
+        {
+            type: 'button', 
+            props: {
+                id:"ViewMenu",
+                type: "button",
+                onclick: ()=> {
+                    this._DispalNav("MyLateralNav", "SlideLeft")
+                }
+            },
+            children: ['Nav']
+        },{
+            type: 'button', 
+            props: {
+                id:"LoginBtn",
+                class:"LoginBtn",
+                type: "button",
+                onclick: ()=> {
+                    this._DispalNav("LoginNav", "SlideRight")
+                }
+            },
+            children: ['Login']
         },
-        children: ['Nav']
-        } 
+        this.SecurityNavigator
     ];
    
 }
@@ -108,34 +134,79 @@ class MyNavigator extends DomComponent{
     constructor(props){
         super();
         this.props = props;
-        this.NavForm = [];      
+        this.NavForm = [];    
+        this.modules = [
+            {des:"sdafsd", des2:"sadasdasd"},
+            {des:"sdafsd", des2:"sadasdasd"},
+            {des:"sdafsd", des2:"sadasdasd"}
+        ]   
     }
     type= "div";
     children = [{type: "ul",
         children: [            
             {type: "li", props:{
                 onclick: ()=>{
-                    this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+                    this.NavigateFunction("Modules", "./Modules/Modules.js", {modules: this.modules});
+                    //this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
                     this._DispalNav("MyLateralNav", "SlideLeft");
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Login"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["Modulos"]}]},
             {type: "li", props:{
                 onclick:  ()=>{
                     this.NavigateFunction("MyRegister", "./Modules/Security/Register.js");  
                     this._DispalNav("MyLateralNav", "SlideLeft");                   
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Register"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["Informes"]}]},
             {type: "li", props:{
                 onclick: ()=>{
-                    console.log("navegando");                
+                    this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+                    this._DispalNav("MyLateralNav", "SlideLeft");          
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["Test"]}]},
             {type: "li", props:{
                 onclick: ()=>{
-                    console.log("navegando");
+                    this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+                    this._DispalNav("MyLateralNav", "SlideLeft");
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Menu 1"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["Perfil"]}]},
         ]    
     }];      
 }
+class SecurityNavigator extends DomComponent{   
+    constructor(props){
+        super();
+        this.props = props;
+        this.NavForm = [];              
+    }
+    type= "div";
+    children = [{type: "ul",
+        children: [            
+            {type: "li", props:{
+                onclick: ()=>{
+                    //this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+                    this._DispalNav("LoginNav", "SlideRight")
+                }
+            }, children: ["Login"]},
+            {type: "li", props:{
+                onclick:  ()=>{
+                    //this.NavigateFunction("MyRegister", "./Modules/Security/Register.js");  
+                    this._DispalNav("LoginNav", "SlideRight")           
+                }
+            }, children: ["Register"]},
+            {type: "li", props:{
+                onclick: ()=>{
+                    console.log("navegando");   
+                    this._DispalNav("LoginNav", "SlideRight")             
+                }
+            }, children:["Perfil"]},
+            {type: "li", props:{
+                onclick: ()=>{
+                    console.log("navegando");
+                    this._DispalNav("LoginNav", "SlideRight")
+                }
+            }, children: ["Logout"]},
+        ]    
+    }];      
+}
+
 export {MasterDomClass};

@@ -680,13 +680,14 @@ const GroupMultiselect = {
 const OnLoad =  async () => { 
     const {createElement} = await import("./Scripts/Modules/WComponents.js");
     const modules = await import("./MasterDomClass.js"); 
-    // await import("./Scripts/Modules/WChartRadial.js"); 
-    // await import("./Scripts/Modules/WMultiSelect.js"); 
-    // await import("./Scripts/Modules/WMultiSelect.js"); 
-    // await import("./Scripts/Modules/WChartJSComponent.js"); 
+    await import("./Scripts/Modules/WChartRadial.js"); 
+    await import("./Scripts/Modules/WMultiSelect.js"); 
+    await import("./Scripts/Modules/WMultiSelect.js"); 
+    await import("./Scripts/Modules/WChartJSComponent.js"); 
     const BodyComponents = new modules.MasterDomClass();
     root.appendChild(createElement(BodyComponents));   
     /*
+
     //MULTI SELECT---------------------------------------------------------------------  
     Container.appendChild(createElement({type:"h1",children:["Multiselect"]}));  
     await awaitFunction(); 
@@ -723,6 +724,7 @@ const OnLoad =  async () => {
     Container.appendChild(createElement({type:"h1",children:["Tabla Dinamica"]}));
     //StartModuleList(modules); 
     */
+    
 }
 
 function StartModuleList(modules) {

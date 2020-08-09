@@ -18,10 +18,14 @@ function CreateStringNode(string) {
     return node;
 }
 function createElement(node) {   
-    //console.log(node)
+    //console.log(typeof node)
     if (typeof node === 'string') {
       return document.createTextNode(node)
     }
+    if(node.tagName){
+        return node;
+    }    
+    //HTMLDivElement
     const element = document.createElement(node.type)
     if (node.props) {
         for (const prop in node.props) {             
@@ -34,6 +38,7 @@ function createElement(node) {
             }  
          }
     }  
+    
     if (node.children) {
         node.children
             .map(createElement)
@@ -72,7 +77,7 @@ function createElementNS(node) {
     }  
     return element;
 }
-export{createElementNS, createElement}
+//export{createElementNS, createElement}
 
 function CreateInput(Data) {
     var InputForRT = document.createElement("input");
@@ -114,10 +119,10 @@ function DrawTable(List, Config, TableId = null) {
     
     var Config = new ConfigTable(Config);
     if (TableId == null) {
-        tbody = Config.Table.querySelector("tbody");
-        TableId =  Config.Table.id;
+        var tbody = Config.Table.querySelector("tbody");
+        var TableId =  Config.Table.id;
     }else {
-        tbody = document.querySelector("#" + TableId + " tbody");
+        var tbody = document.querySelector("#" + TableId + " tbody");
     }
     if (tbody.parentNode.querySelector("tOptions")) {      
         let Search = true;
@@ -228,7 +233,7 @@ function DrawTable(List, Config, TableId = null) {
             }
             if (Config.Options.Select) {
                 var InputForRT = CreateInput({type:'button',value:'Select',className: "BtnSuccess"});
-                SelectData = {           
+                var SelectData = {           
                     'sector': i,
                     'holding': "", 
                     'empresa': ""
@@ -238,7 +243,7 @@ function DrawTable(List, Config, TableId = null) {
             }            
             if (Config.Options.Show) {                
                 const InputForRT = CreateInput({type:'button',value:'Show',className: "BtnSecundary"});  
-                ShowData = {
+                var ShowData = {
                     Index:i,
                     Config:Config,
                     TableId:TableId,
@@ -331,7 +336,10 @@ function ShowElement(Data){
                 TableId:Data.TableId
             }           
             var control = GetObj(Data.Config.Options.ShowOptions.FormName).querySelector(".BtnUpdate");
-            control.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+            //control.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+            control.onclick = ()=>{
+                UpdateElement(UpdateData);
+            }
         }   
         var index = 0;
         for (var Propiedad in Data.DataElement) {
@@ -414,7 +422,10 @@ function EditElement(Data) {
                 TableId:Data.TableId
             }           
             var control = GetObj(Data.Config.Options.EditOptions.FormName).querySelector(".BtnUpdate");
-            control.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+            //control.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+            control.onclick = ()=>{
+                UpdateElement(UpdateData);
+            }
         }   
         var index = 0;
         for (var Propiedad in Data.DataElement) {            
@@ -482,10 +493,16 @@ function CreateForm(Data) {
         DataElement:Data.DataElement,
         TableId:Data.TableId
     }
-    InputSave.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+   // InputSave.setAttribute("onclick","UpdateElement("+JSON.stringify(UpdateData) +");");
+    InputSave.onclick = ()=>{
+        UpdateElement(UpdateData);
+    }
     ActionsContainer.appendChild(InputSave);
     var InputClose = CreateInput({type:'button',value:'Cerrar'});   
-    InputClose.setAttribute("onclick","modalFunction('TempForm'); RemoveTempForm()");
+    //InputClose.setAttribute("onclick","modalFunction('TempForm'); RemoveTempForm()");
+    InputClose.onclick = ()=>{
+        modalFunction('TempForm'); RemoveTempForm()
+    }
     ActionsContainer.appendChild(InputClose);
     Form.append(Header,ControlContainer,ActionsContainer);
     FormContainer.append(Form);
@@ -607,7 +624,10 @@ function CreateShowForm(Data) {
     var ActionsContainer = document.createElement('div');
     ActionsContainer.className = 'GroupForm HeaderForm';
     var InputClose = CreateInput({type:'button',value:'◄ Back', className: 'BtnPrimary'});   
-    InputClose.setAttribute("onclick","modalFunction('TempForm'); RemoveTempForm()");    
+    //InputClose.setAttribute("onclick","modalFunction('TempForm'); RemoveTempForm()"); 
+    InputClose.onclick = ()=>{
+        modalFunction('TempForm'); RemoveTempForm();
+    }  
     ActionsContainer.appendChild(InputClose);
     
     Form.append(ActionsContainer,ControlContainer);
@@ -617,9 +637,9 @@ function CreateShowForm(Data) {
 }
 
 function UpdateElement(Data) {   
-    ArrayObject = ArrayList.find(element => element.id_ = Data.DataElement.id_);
+    var ArrayObject = ArrayList.find(element => element = Data.DataElement);
     for (let index = 0; index < Object.keys(Data.DataElement).length; index++) {
-      prop = Object.keys(Data.DataElement)[index];
+      var prop = Object.keys(Data.DataElement)[index];
       ArrayObject[prop] = GetObj(prop).value;
     }    
     if (Data.Config.Options.EditOptions.ApiUrlUpdate) {
@@ -686,3 +706,6 @@ function  UpdateArrayForApi(UpdateObject, Config, TableId){
     } 
     xhr.send(JSON.stringify(UpdateObject));
 }
+
+
+export{createElementNS, createElement, CreateTable, DrawTable}

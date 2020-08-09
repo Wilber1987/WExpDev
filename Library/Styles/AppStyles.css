@@ -23,6 +23,7 @@ header button {
     position: fixed;
     top: 5px;
     left: 5px;
+    cursor: pointer;
 }
 nav, main{
     position: fixed;
@@ -83,4 +84,34 @@ nav{
     color: #fff;
     text-align: center;
     line-height: 50px;
+}
+
+.LoginNav {       
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 0;
+    z-index: 2; 
+}
+.LoginNav ul {
+    float: right;
+    height: 200px;
+    width: 150px;
+    text-align: center;
+    min-width: 150px;
+    background-color: #fff;
+    border-radius: 0.3cm;
+    margin-top: 50px;
+    box-shadow: 0 0px 3px 2px rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    
+}
+.LoginNav ul li{
+    text-align: left;
+    text-decoration: none;
+    color: #808080;
+    cursor: pointer;
+    list-style: none;
+}
+.LoginBtn{
+    right: 0;
+    left: initial;
 }

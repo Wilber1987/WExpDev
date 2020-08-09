@@ -218,6 +218,11 @@ class ColumChart extends HTMLElement{
         var val = parseInt(value / 10);
         //%
         countLine =10
+        if(ValP == 1){
+            countLine =10
+            //var value = parseInt(value / 10) * 10 + 10;
+            val = 10;
+        }
         var ContainerLine = document.createElement('section');
         ContainerLine.className = "BackGrounLineX";
         var valueLabel = 0;
@@ -279,7 +284,7 @@ class ColumChart extends HTMLElement{
         if (Config.ColumnLabelDisplay == 1) {
             //dibujar el valor en porcentaje
             styleP = ";flex-grow: 1;"
-            var total = FindInTotal(element, Config.GroupDataTotals, Config);
+            var total = FindInTotal(element,  this.Totals, Config);
             var multiplier = Math.pow(10, 1 || 0);
             var number = labelCol / total[Config.EvalValue] * 100
             number = Math.round(number * multiplier) / multiplier
