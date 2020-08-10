@@ -29,7 +29,10 @@ class RadialChart extends HTMLElement {
     attributeChangedCallBack() {
       this.DrawChart();
     }
-    connectedCallback() {
+    connectedCallback() {     
+      if (this.innerHTML != "") {        
+          return;
+      }
       this.DrawChart();
     }
    // DrawChart() {

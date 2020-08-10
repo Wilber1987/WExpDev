@@ -18,7 +18,7 @@ function CreateStringNode(string) {
     return node;
 }
 function createElement(node) {   
-    //console.log(typeof node)
+    
     if (typeof node === 'string') {
       return document.createTextNode(node)
     }

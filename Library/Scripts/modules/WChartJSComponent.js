@@ -33,8 +33,10 @@ class ColumChart extends HTMLElement{
     attributeChangedCallBack(){
         this.DrawChart();
     }
-    connectedCallback(){    
-        //this.innerHTML =`<h1>hola</h1>`;  
+    connectedCallback(){           
+        if (this.innerHTML != "") {            
+            return;
+        }
         this.DrawChart();
     }
     DrawChart(){

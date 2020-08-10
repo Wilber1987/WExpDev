@@ -15,15 +15,24 @@ header{
     right: 0px;
     z-index: 1;
 }
-header::after{
+/* header::after{
     font-family: Arial, Helvetica, sans-serif;
     content: "MyInclusiveApp";
-}
+} */
 header button {
     position: fixed;
     top: 5px;
     left: 5px;
     cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #e4e4e4;    
+}
+.LoginBtn{
+    right: 5px;
+    left: initial;
 }
 nav, main{
     position: fixed;
@@ -110,8 +119,4 @@ nav{
     color: #808080;
     cursor: pointer;
     list-style: none;
-}
-.LoginBtn{
-    right: 0;
-    left: initial;
 }

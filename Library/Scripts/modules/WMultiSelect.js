@@ -24,6 +24,9 @@ class MultiSelect extends HTMLElement{
         this.Draw();
     }
     connectedCallback() {
+        if (this.innerHTML != "") {            
+            return;
+        }
         this.Draw();
     }
     //PSTYLE PROPS

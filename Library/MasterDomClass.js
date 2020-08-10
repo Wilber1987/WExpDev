@@ -1,17 +1,43 @@
 import { createElement } from "./Scripts/Modules/WComponents.js";
-
+import { Modules } from "./Modules/Modules.js";
 class DomComponent {
-    constructor(){        
+    constructor(){    
+        this.modules = [
+            { 
+                cantidad: 21,
+                estado: "Naranja",
+                time: "julio 2019",
+                categ2: "Moderado",
+                categ: "Ekisde"
+            },{
+                cantidad: 2,
+                estado: "Naranja",
+                time: "julio 2019",
+                categ2: "Moderado",
+                categ: "Nic"
+            },{
+                cantidad: 14,
+                estado: "Fresa",
+                time: "julio 2019",
+                categ2: "Moderado",
+                categ: "Galaxia"
+            },{
+                cantidad: 17,
+                estado: "Fresa",
+                time: "julio 2019",
+                categ2: "Moderado",
+                categ: "Nic2"
+            }
+        ]     
     }
     type = "form";
-    props = { class: "MyForm" }; 
+    props = { class: "MyForm" };   
     NavigateFunction =  async (IdComponent, Path, props = {})=>{ 
         const ContainerNavigate = document.querySelector("#ContainerNavigate");
-        let Nodes = ContainerNavigate.querySelectorAll("div");        
+        let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");        
         Nodes.forEach((node) => {
             if (node.id != IdComponent) {                                  
                 this.NavForm[node.id] = node;
-                console.log(node)
                 if (ContainerNavigate.querySelector("#"+node.id)) {
                     ContainerNavigate.removeChild(node);
                 }  
@@ -24,7 +50,8 @@ class DomComponent {
             }
             const MyComponent = await import(Path);        
             props.id = IdComponent;
-            const ComponentsInstance = new MyComponent[IdComponent](props);            
+            props.class = "DivContainer";
+            const ComponentsInstance = new MyComponent[IdComponent](props);               
             ContainerNavigate.append(createElement(ComponentsInstance));
             return;
         }   
@@ -52,30 +79,29 @@ class DomComponent {
                 Nav.style.webkitTransform =  "translateX(+100%)";         
             }
         }                   
-    }  
+    }      
 }
 class MasterDomClass extends DomComponent{    
-    constructor(props){     
-        super();
-        if (props) {
-            this.props = props;  
-        } 
-    }   
-    header = new headerClass();
-    footer = new footerClass();
-    children= [
-        this.header,        
-        { type: 'nav', props: {id:"NavContainer", class: "Menu"} ,
-            children: [ new MyNavigator(
-                {class: "MyNav", id: "MyLateralNav", style: "opacity: 0; pointer-events: none"}                
-            )]
-        },
-        { type: 'main', children: [
-            { type: 'section', props: {id:"ContainerNavigate"}},
-            { type: 'section', props: {id:"Container"}}
-        ] },
-        this.footer,
-    ]
+    constructor(){     
+        super();         
+        this.MainComponent = new Modules({id:"Modules", class:"DivContainer", modules: this.modules});
+        this.header = new headerClass();
+        this.footer = new footerClass();
+        this.children= [
+            this.header,        
+            { type: 'nav', props: {id:"NavContainer", class: "Menu"} ,
+                children: [ new MyNavigator(
+                    {class: "MyNav", id: "MyLateralNav", style: "opacity: 0; pointer-events: none"}                
+                )]
+            },
+            { type: 'main', children: [
+                { type: 'section', props: {id:"ContainerNavigate"},
+                    children: [this.MainComponent]},
+                { type: 'section', props: {id:"Container"}}
+            ] },
+            this.footer,
+        ]
+    } 
 }
 class footerClass extends DomComponent {
     constructor(props){     
@@ -134,12 +160,7 @@ class MyNavigator extends DomComponent{
     constructor(props){
         super();
         this.props = props;
-        this.NavForm = [];    
-        this.modules = [
-            {des:"sdafsd", des2:"sadasdasd"},
-            {des:"sdafsd", des2:"sadasdasd"},
-            {des:"sdafsd", des2:"sadasdasd"}
-        ]   
+        this.NavForm = [];   
     }
     type= "div";
     children = [{type: "ul",
@@ -153,22 +174,22 @@ class MyNavigator extends DomComponent{
             }, children: [{type:"a", props:{href:"#"}, children: ["Modulos"]}]},
             {type: "li", props:{
                 onclick:  ()=>{
-                    this.NavigateFunction("MyRegister", "./Modules/Security/Register.js");  
+                    this.NavigateFunction("BarReport", "./Modules/BarReport.js");  
                     this._DispalNav("MyLateralNav", "SlideLeft");                   
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Informes"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["Bar Report"]}]},
             {type: "li", props:{
                 onclick: ()=>{
-                    this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+                    this.NavigateFunction("RadialReport", "./Modules/RadialReport.js");  
                     this._DispalNav("MyLateralNav", "SlideLeft");          
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Test"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["Radial Report"]}]},
             {type: "li", props:{
                 onclick: ()=>{
-                    this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
+                    this.NavigateFunction("MultiSelectControls", "./Modules/MultiSelectControls.js");
                     this._DispalNav("MyLateralNav", "SlideLeft");
                 }
-            }, children: [{type:"a", props:{href:"#"}, children: ["Perfil"]}]},
+            }, children: [{type:"a", props:{href:"#"}, children: ["MultiSelect"]}]},
         ]    
     }];      
 }
