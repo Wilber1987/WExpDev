@@ -14,6 +14,7 @@ class MultiSelectControls{
             }     
         ]
     }    
+  
     StarMultiSelect = () => {       
         const Multiselect = [
             {descripcion: "item 1aaa", id: 1},
@@ -44,8 +45,10 @@ class MultiSelectControls{
         CharConfig.search = true;
         fragment.appendChild(createElement({type: 'w-multi-select',
             props : {id: "MyMultiselect",
-            data: CharConfig }}));  
-        return fragment;        
+            data: CharConfig }})); 
+            
+        return fragment; 
+          
     }
     StarGroupMultiSelect = () => {         
         const GroupMultiselect = {

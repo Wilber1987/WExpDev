@@ -10,9 +10,8 @@ class Modules{
             { type: 'section', props: {id:"", class: ""} ,
                children: [ this.StartModuleList(this.props.modules) ]
             }     
-        ]
+        ]                
     } 
-   
     StartModuleList = (modules) => {
        
         var Table = CreateTable({
@@ -56,8 +55,7 @@ class Modules{
         DrawTable(modules, ConfigTable);
         //console.log(Table)
         return Table;        
-    }
-    
+    }    
 }
 export {Modules}
 
