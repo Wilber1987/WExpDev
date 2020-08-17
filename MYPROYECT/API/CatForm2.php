@@ -6,5 +6,5 @@
     foreach ($q as $row) {
         $Form[] = $row;
     }        
-    echo json_encode(array('Form'=> $Form));
+    echo json_encode(array('Form'=> $Form));    
 ?>
