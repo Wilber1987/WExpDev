@@ -1,17 +1,22 @@
 import { Render } from "./toolComponets.js";
-class DomClass{    
+class DomClass{
+    constructor() {              
+    }
     NavForm = [];
     AjaxRequest = async (url = null, prop = null, data = {})=>{
-        console.log(data)
         if (url == null) {
             return [];
-        }               
+        }        
         let response = await fetch(url, data);
         response = await response.json();
         return response[prop];
     }
-    Navegando = async (url, id, apiURL = null, prop = null)=>{  
-        const Data = await this.AjaxRequest(apiURL, prop);
+    Navegando = async (url, id, apiURL = null, prop = null, actions = {})=>{  
+        const Model = await this.AjaxRequest(apiURL, prop);
+        const DataForm = {
+            actions: actions,
+            structure: Model
+        }
         const MyContainer = document.querySelector("#MyContainer");
         let nodes = MyContainer.querySelectorAll("form"); 
         nodes.forEach(node => {
@@ -25,7 +30,7 @@ class DomClass{
              return;
         }
         const ObjNav = await import(url);
-        const ObjNavInstance = new ObjNav[id]({id: id}, Data);
+        const ObjNavInstance = new ObjNav[id]({id: id}, DataForm);
         const MyForm = Render(ObjNavInstance);  
         this.NavForm[id] = MyForm;
         MyContainer.append(MyForm);
@@ -68,10 +73,15 @@ class MyNav extends DomClass{
                             this.Navegando("../modules/Form1.js","Form1", apiURL, "Cards");
                         }
                     }, children: ["Form 1"]},
-                        { type: "li", props:{onclick: ()=>{ 
-                            //const apiURL = "http://localhost/MYPROYECT/Api/CatForm2.php";
-                            const apiURL = "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
-                            this.Navegando("../modules/Form2.js","Form2", apiURL, "Form");
+                        { type: "li", props:{onclick: ()=>{
+                            const apiURL = "http://localhost/MYPROYECT/Api/CatForm2.php/?function=GetModel";
+                            const actions = {
+                                Insert:  "http://localhost/MYPROYECT/Api/CatForm2.php/?function=Insert",
+                                Get:  "http://localhost/MYPROYECT/Api/CatForm2.php/?function=Get",
+                                Update:  "http://localhost/MYPROYECT/Api/CatForm2.php/?function=Update",
+                                Delete:  "http://localhost/MYPROYECT/Api/CatForm2.php/?function=Delete"
+                            }
+                            this.Navegando("../modules/Form2.js","Form2", apiURL, "Form", actions);
                         }
                     }, children: ["Form 2"]},
                         { type: "li", props:{onclick: ()=>{ 

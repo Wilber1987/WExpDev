@@ -4,44 +4,75 @@
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
     header('Content-Type: application/json; charset=utf-8');
     $JSONData = file_get_contents("php://input");
-    $Request = json_decode($JSONData);
+    $Data = json_decode($JSONData);
     $Function =  $_GET["function"];  
-    $Function($Request);  
-    //GET MODEL
-    function GetModel($data){
-        $pMysqli = new mysqli('localhost','root','','dbprueba');    
-        $Form = [];        
-        $q = $pMysqli->query('DESCRIBE form'); 
+    $Function($Data);
+    function GetModel($request)
+    { 
+        $Form = [];
+        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $q = $pMysqli->query("DESCRIBE $request->tablename"); 
         foreach ($q as $row) {
             $Form[] = $row;
-        }  
+        }        
         echo json_encode(array('Form'=> $Form));
-        return;   
     }
-    //GET DATA--------------------------------
-    function Get($data){
-        # code...
+    function Get($request)
+    {
+        $Form = [];
+        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $q = $pMysqli->query("SELECT * FROM $request->tablename"); 
+        foreach ($q as $row) {
+            $Form[] = $row;
+        }        
+        echo json_encode(array('data'=> $Form));
     }
-    //INSERT----------------------------------
-    function Insert($Request){
-        $pMysqli = new mysqli('localhost','root','','dbprueba');
-        if ($pMysqli->connect_error) {
-            die("Connection failed: " . $pMysqli->connect_error);
+    function Insert($request)
+    {
+        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $colums = "";
+        $values = "";
+        foreach ($request->dataForm as $key => $value) {
+           if ($key != "id") {
+                $colums = $colums . $key . ",";
+                $values = $values ."'". $value. "',"; 
+           }
         }
-        $values = "";       
-        foreach ($Request->data as $key => $valor) {
-            $values = $values . $valor.",";
+        $colums = substr($colums, 0, -1);       
+        $values = substr($values, 0, -1);
+        if (mysqli_query($pMysqli, "INSERT INTO $request->tablename($colums) values($values)")) {
+            echo json_encode(array('success'=> "true"));
+        }   
+        else {
+            echo json_encode(array('success'=> "false"));
         }
-        $values = substr($values, 0, -1);        
-        if (mysqli_query($pMysqli, "INSERT into form VALUES($values)")) {
-            echo json_encode(array('data'=> "success"));
-         } else {
-            echo json_encode(array('data'=> "fail"));
-         }
-         //$pMysqli->close();
+       // echo json_encode(array('success'=> $request->dataForm));
     }
-    
-    function Update($data){
+    function Update($request)
+    {
+        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        //$colums = "";
+        $values = "";
+        foreach ($request->dataForm as $key => $value) {
+           if ($key != "id") {
+               // $colums = $colums . $key . ",";
+                $values = $values ." $key = '$value',"; 
+           }
+        }
+       // $colums = substr($colums, 0, -1);       
+        $values = substr($values, 0, -1);
+        $id = $request->dataForm->id;
+        $query = "UPDATE $request->tablename SET $values where id = $id";
+        //echo $query;      
+        if (mysqli_query($pMysqli, $query)) {
+            echo json_encode(array('success'=> "true"));
+        }   
+        else {
+            echo json_encode(array('success'=> "false"));
+        }
+    }
+    function Delete($request)
+    {
         # code...
     }
 

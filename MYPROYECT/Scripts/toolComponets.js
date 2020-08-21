@@ -23,7 +23,14 @@ function Render(Node) {
     if (Node.children) {
         Node.children.map(Render)
         .forEach(Child => element.appendChild(Child));
-    }
+    }     
+    if (Node.events) {
+        for (const event in Node.events) {
+            element.addEventListener(event, 
+                Node.events[event]()
+            , false);
+        }
+    } 
     return element;
 }
 export {Render}
