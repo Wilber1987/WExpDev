@@ -1,10 +1,11 @@
 class Form2{
     constructor(props, structure = []){
-        this.type  = "form"
+        this.type  = "form";
+        this.tableName = "form";
         this.props = props; 
         this.props.DataForm = {};
         this.children.push(props.id); 
-        structure.forEach(element => {    
+        structure.forEach(element => {  
             this.props.DataForm[element.Field] = null;          
             let field = {};
             field.type = "input";
@@ -38,9 +39,17 @@ class Form2{
     AsignarValor = (idControl)=>{
         this.props.DataForm[idControl] = document.getElementById(idControl).value;
     }    
-    Guardar = ()=>{
+    Guardar = async()=>{
         console.log("Guardando");
-        console.log(this.props.DataForm);
+        //console.log(this.props.DataForm);          
+        const {DomClass} = await import("../Scripts/MasterTemplate.js");
+        const inst = new DomClass();
+        const apiURL = 
+         "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Insert";
+        inst.AjaxRequest(apiURL, {
+            method: 'POST',
+            body: JSON.stringify({table: this.tableName, data: this.props.DataForm})
+         });
     }
 }
 export {Form2}

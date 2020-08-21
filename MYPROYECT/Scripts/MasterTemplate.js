@@ -1,12 +1,11 @@
 import { Render } from "./toolComponets.js";
-class DomClass{
-    constructor() {              
-    }
+class DomClass{    
     NavForm = [];
     AjaxRequest = async (url = null, prop = null, data = {})=>{
+        console.log(data)
         if (url == null) {
             return [];
-        }        
+        }               
         let response = await fetch(url, data);
         response = await response.json();
         return response[prop];
@@ -70,7 +69,8 @@ class MyNav extends DomClass{
                         }
                     }, children: ["Form 1"]},
                         { type: "li", props:{onclick: ()=>{ 
-                            const apiURL = "http://localhost/MYPROYECT/Api/CatForm2.php";
+                            //const apiURL = "http://localhost/MYPROYECT/Api/CatForm2.php";
+                            const apiURL = "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
                             this.Navegando("../modules/Form2.js","Form2", apiURL, "Form");
                         }
                     }, children: ["Form 2"]},
@@ -96,5 +96,5 @@ class MyFooter extends DomClass{
         this.type= "footer";
     }
 }
-export {MyContainer}
+export {MyContainer, DomClass}
 
