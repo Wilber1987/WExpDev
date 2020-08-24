@@ -17,33 +17,38 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
-function createElement(node) {   
-    
-    if (typeof node === 'string') {
-      return document.createTextNode(node)
+function createElement(Node) {   
+    if (typeof Node === "undefined") {
+        return document.createTextNode("");
     }
-    if(node.tagName){
-        return node;
-    }    
-    //HTMLDivElement
-    const element = document.createElement(node.type)
-    if (node.props) {
-        for (const prop in node.props) {             
-            if (typeof  node.props[prop] === "function") {
-                element[prop] = node.props[prop];
-            }else if (typeof  node.props[prop] === 'object') {                
-                element[prop] = node.props[prop];
-            }else{
-                element.setAttribute(prop, node.props[prop]);
-            }  
-         }
-    }  
-    
-    if (node.children) {
-        node.children
-            .map(createElement)
-            .forEach(child => element.appendChild(child))
-    }  
+    if (typeof Node === "string") {
+        return document.createTextNode(Node);
+    } 
+    if (Node.tagName) {
+        return Node;
+    }   
+    const element = document.createElement(Node.type);
+    if (Node.props) {
+        for (const prop in Node.props) {
+            if (typeof Node.props[prop] === "function" 
+                || typeof Node.props[prop] === "object" ) {
+                element[prop] = Node.props[prop];
+            }else {
+                element.setAttribute(prop,Node.props[prop])
+            }
+        }
+    }
+    if (Node.children) {
+        Node.children.map(Render)
+        .forEach(Child => element.appendChild(Child));
+    }     
+    if (Node.events) {
+        for (const event in Node.events) {
+            element.addEventListener(event, 
+                Node.events[event]()
+            , false);
+        }
+    } 
     return element;
 }
 function createElementNS(node) {

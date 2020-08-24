@@ -6,11 +6,17 @@ class Modules{
         this.children= [
             { type: 'h1', props: {id:"", class: ""} ,
                 children: ["Modules"]
-            },
-            { type: 'section', props: {id:"", class: ""} ,
-               children: [ this.StartModuleList(this.props.modules) ]
-            }  
-        ]                
+            }             
+        ];
+        if (this.props.modules) {
+            this.children.push( { type: 'section', props: {id:"", class: ""} ,
+                children: [ this.StartModuleList(this.props.modules) ]
+            });
+        }  else {            
+            this.events = { load:  
+                console.log("recuperando modulos....")               
+            }
+        }           
     } 
     StartModuleList = (modules) => {
        

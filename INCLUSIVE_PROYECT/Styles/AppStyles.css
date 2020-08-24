@@ -134,11 +134,12 @@ nav {
   margin: auto;
   display: block;
   margin-top: 50px;
+  transition: all 1s;
 }
 .LoadingPage h1 {
   margin: auto;
   display: block;
-  margin-top: 50px;
+  margin: 10px;
   text-align: center;
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
@@ -159,6 +160,29 @@ nav {
     border:none;
     border-radius:0.3cm;
     cursor: pointer;
+}
+
+.LoginForm .DivContainer{
+  display: block;
+  margin: auto;
+  width: 80%;
+  padding: 10px;
+  max-width: 500px;
+  border: solid 1px #fff;
+  border-radius: 0.3cm;
+  margin-top: 20px;
+}
+divControl{
+  width: calc(100% - 2px);
+  display: block;
+  color: #fff;
+}
+divControl input{
+  display: block;
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #888888;
+  border-radius: 0.2cm ;
 }
 
 
