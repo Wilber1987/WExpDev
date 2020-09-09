@@ -1,86 +1,46 @@
-body{
-    padding: 0px;
-    margin: 0px;
-}
-header{  
-    background-color: royalblue;
-    height: 50px;
-    content: "MyInclusiveApp";
-    color: #fff;
-    text-align: center;
-    line-height: 50px;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    z-index: 1;
-}
-header::after{
+.ContainerForm{
     font-family: Arial, Helvetica, sans-serif;
-    content: "MyInclusiveApp";
 }
-header button {
-    position: fixed;
-    top: 5px;
-    left: 5px;
-}
-nav, main{
-    position: fixed;
-    top: 50px;
-    left: 0px;
-    right: 0px;
-}
-main{
-    height: calc(100% - 120px);
-    padding: 10px;
-    overflow-y: auto;
-    bottom: 50px;
-}
-nav{
-    z-index: 1;
-}
-.MyNav{
-    height: 100%;
-    width: 100%;
-    position: fixed;    
-    background-color: rgba(0, 0, 0, 0.5);
-    margin: 0;
-    z-index: 2;    
-}
-.MyNav ul {
-    width: 70%;
-    list-style: none;
+.ContainerForm h2{
+    line-height: 50px;
+    color: #ffffff;
+    border-radius:0cm 0cm 0.3cm 0.3cm ;
+    text-align: left;
+    font-size: 16px !important;
     margin: 0px;
-    padding: 0px;
-    height: 100%;
-    background-color: rgb(73, 73, 73);
-}
-.MyNav ul li {
-    width: 100%;   
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
-    color: #fff;
-    border-bottom: 1PX #fff solid;
-    background-color: rgb(73, 73, 73);
-}
-.MyNav ul li a {
-    padding: 10px;
-    display: block;
-    color: #fff;
-    text-decoration: none;
-    margin: 0px;   
-    border-bottom: 1PX #fff solid;
-    background-color: rgb(73, 73, 73);
+    box-shadow: 0px 0px 5px -1px #6b6b70;
+    font-weight: 100;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
 }
 
-.myFooter{
-    position: fixed;
-    height: 50px;
-    bottom: 0px;
+.ContainerForm section{
+    display: block;
+    margin: 10px;    
+    border-radius: 0.3cm;
+    overflow: hidden;
+    min-height: 0px;
+}
+.ContainerForm section label{
+    display: block;
+    color:rgb(65, 65, 65);        
+    border-bottom: #0060b9 solid 1px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
+    text-align: left;
+}
+.ContainerForm section article{
+    padding-left:5px;
+}
+.SectionElement{
+    display: none;
     width: 100%;
-    background-color: rgb(105, 48, 48);
-    color: #fff;
-    text-align: center;
-    line-height: 50px;
+    max-height: 0px;
+    min-height: 0px;
+    border-width: 0px;
+    transition: all 1s;
+}
+article.SectionElement{
+    padding: 10px;
 }

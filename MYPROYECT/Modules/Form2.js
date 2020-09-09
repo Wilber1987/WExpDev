@@ -45,7 +45,9 @@ class Form2{
                 }
             }, children: ["Actualizar"]
         });
-        let MyGrid = new Grid({class:"Grid", id: "Grid"+this.props.id}, this.props.Get);
+        let MyGrid = new Grid({
+            class:"Grid", id: "Grid"+this.props.id, idContainer:this.props.id
+            }, this.props.Get, this.props.DataForm);
         this.children.push(MyGrid);
 
     }
@@ -65,20 +67,22 @@ class Form2{
                 method: "POST",
                 body: JSON.stringify(
                     {
-                        tablename: "form",
+                        tablename: this.props.id,
                         dataForm: this.props.DataForm
                     }
                 )
             }
         );
     }
+
 }
 class Grid {
-    constructor(props, apiUrlGet = null, data = []){
+    constructor(props, apiUrlGet = null, DataForm,  data = []){
         this.type = "table";       
         this.props = props; 
         this.children = [];
         this.props.apiUrlGet = apiUrlGet;
+        this.props.DataForm = DataForm;
         this.props.data = data;
         this.events = { load: this.Draw };     
     }
@@ -88,7 +92,8 @@ class Grid {
         const inst = new DomClass();
         const apiURL = this.props.apiUrlGet;
         let data = await inst.AjaxRequest(apiURL, "data" ,{
-            method: 'POST'
+            method: 'POST',
+            body: JSON.stringify({tablename:this.props.idContainer})
         }); 
         if (data.lenght == 0) {
             data = this.props.data;
@@ -118,6 +123,13 @@ class Grid {
     }
     edit = (obj)=>{
         console.log(obj);
+        const formControls = document.querySelectorAll("#"+this.props.containerId+" input");        
+        formControls.forEach(control => {
+            if (obj[control.id]) {
+                control.value = obj[control.id];
+                this.props.DataForm[control.id] = obj[control.id];
+            }
+        });
     }
 }
 export {Form2}

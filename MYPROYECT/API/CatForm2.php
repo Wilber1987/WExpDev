@@ -10,7 +10,8 @@
     function GetModel($request)
     { 
         $Form = [];
-        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $pMysqli = new mysqli('localhost','root','','dbprueba');
+       // echo   "DESCRIBE $request->tablename"; 
         $q = $pMysqli->query("DESCRIBE $request->tablename"); 
         foreach ($q as $row) {
             $Form[] = $row;

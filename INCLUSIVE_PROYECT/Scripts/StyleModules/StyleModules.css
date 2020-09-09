@@ -105,10 +105,19 @@
     min-width: 100px;   
     border-radius: 0.15cm;
     cursor: pointer;
-
 }
-
-
+.Btn{
+    margin-left: 5PX;
+    margin-right: 5PX;    
+    border:none;
+    padding: 0px;
+    text-align: center;
+    display: inline-block;  
+    cursor: pointer;
+    background:none;
+    font: inherit;
+    color: inherit;
+}
 .BtnPrimary {
     color: #fff;
     background-color:#007bff;
@@ -119,11 +128,15 @@
 }
 .BtnSuccess {
     color: #fff;
-    background-color: #28a745;
+    background: linear-gradient(90deg, #9ebd13 0%, #008552 100%);
 }
 .BtnSecundary {
     color: #fff;
-    background-color: #17a2b8;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+}
+.BtnSecundaryR {
+    color: #fff;
+    background: linear-gradient(90deg, #d53369 0%, #daae51 100%);
 }
 
 
@@ -155,7 +168,7 @@
     width: 70%;
     max-height: 800px;
     overflow-y: auto;
-    padding: 20px;
+    padding: 0px;
     min-height: 200px;
     border-radius: 5px;
     position: relative;
@@ -199,8 +212,8 @@
 @media(max-width: 1000px){  
     .ModalContent {  padding-bottom: 0px;  }
     .ContainerForm { 
-        width: calc(100% - 40px);
-        height:  calc(100% - 40px);
+        width: calc(100% - 0px);
+        height:  calc(100% - 0px);
         margin-top: 0px;
         border-radius: 0px;
         max-height: 2000px;        
@@ -250,3 +263,118 @@
     background: #d4d4d4;
 }
 
+
+
+/*CARROCEL*/
+
+.SliderContainer {
+    width: 98%;
+    height: 290px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: all ease 1s;
+    display: block;
+    margin: auto;
+    padding: 0px;
+    border-radius: 0.3cm;
+    
+    
+    /* text-align: center; */
+}
+
+.SliderContainerBorder {
+    width: 98%;
+    height: 290px;
+    overflow: hidden;
+    border: solid 1px rgb(112, 112, 112);
+    white-space: nowrap;
+    transition: all ease 1s;
+    display: block;
+    margin: auto;
+    padding: 0px;
+    border-radius: 0.3cm;
+}
+
+.GrupFormCardCarrocel .cardForm {
+    transition: all ease 1s;
+}
+
+.GrupFormCardCarrocel {
+    width: 100%;
+    padding-top: 10px;
+    height: 300px;
+    white-space: nowrap;
+    transition: all ease 1s;
+    display: block;
+    margin: 0px;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    padding-right: 30px;
+    padding-left: 30px;
+    transition: all 1s;
+}
+.GrupFormCardCarrocel div{
+    transition: all 1s;
+}
+.btn-prev,
+.btn-next {
+    width: 40px;
+    height: 40px;
+    line-height:40px;
+    background: rgba(187, 187, 187, 0.5);   
+    position: relative;
+    top: -170px;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 1s;  
+    border-radius:50% ;
+    color: #fff !important;
+}
+.btn-prev {
+    /* border-radius: 0.3cm 0cm 0cm 0.3cm; */
+    float: left;
+}
+
+.btn-next {
+    /* border-radius: 0cm 0.3cm 0.3cm 0cm; */
+    float: right;
+}
+.cardForm {
+    height: 250px;
+    width: 80%;
+    overflow: hidden;
+    border-radius: 0.5cm;
+    box-shadow: 0px 0px 5px -1px #6b6b70;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5PX;
+    margin-bottom: 5PX;
+    display: inline-block;
+    
+}
+.cardForm .pCard{
+    white-space:pre-wrap;
+    text-align: justify;  
+    padding-left: 10px;  
+    padding-right: 10px; 
+    height: 70px; 
+}
+.cardForm .labelCard{
+    white-space:pre-wrap;
+    font-size: 1.2rem;
+    display: block;
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
+}
+.cardForm div{
+    text-align: center;
+}
+
+/*CARROCEL*/

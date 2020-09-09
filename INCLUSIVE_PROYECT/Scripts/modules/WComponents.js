@@ -1,8 +1,61 @@
+
+function autoplay(ContainerId) {
+    var Container = GetObj(ContainerId).getElementsByTagName("div");
+    //var Container2 = GetObj(ContainerId).getElementsByClassName('card_entrenamiento_fecha');
+    //console.log(Container.length)
+    // for (let index = 0; index < Container2.length; index++) {
+    //   const element = Container2[index];
+    //   element.style.display='inline-block';
+    //   element.style.margin = '10px';
+    // }
+    //console.log(Container)
+    if (Container.length > 1) {
+      setTimeout(function() {
+        myFunctionNext(ContainerId);
+        autoplay(ContainerId);
+      }, 15000);
+    }
+    if (Container.length == 1) {
+      //console.log(Container[0])
+      // Container[0].style.display = 'block';
+      // Container[0].style.margin = 'auto';
+    }
+  }
+  
+  function myFunctionNext(ContainerId) {
+    var slider = GetObj(ContainerId);
+    var LastCard = slider.lastElementChild;
+    var firstCard = slider.firstElementChild;
+    var widthAnimation = firstCard.offsetWidth + 10;
+    //console.log(widthAnimation)\
+    slider.style.transition =  "all 1s";
+    slider.style.webkitTransform =  "translateX(-" + widthAnimation + "px)";  
+    setTimeout(function() {
+      slider.style.transition =  "none";
+      slider.style.webkitTransform =  "";
+      LastCard.parentNode.insertBefore(firstCard, LastCard.nextSibling);
+    }, 1000);
+  }
+  
+  function myFunctionPrev(ContainerId) {
+    var slider = GetObj(ContainerId);
+    var firstCard = slider.firstElementChild;
+    var LastCard = slider.lastElementChild;
+    var widthAnimation = firstCard.offsetWidth + 10;  
+    slider.style.transition =  "all 1s";
+    slider.style.webkitTransform =  "translateX(+" + widthAnimation + "px)";  
+    setTimeout(function() {
+      slider.style.transition =  "none";
+      slider.style.webkitTransform =  "";
+      slider.insertBefore(LastCard, slider.firstChild);
+    }, 1000);
+  }
+  
 //TABLAS -------------------------------------->
 function GetObj(id) {
     var Obj = document.getElementById(id)
     return Obj;
-  }
+}
 
 var ArrayList = [];
 class ConfigTable{
@@ -17,13 +70,17 @@ function CreateStringNode(string) {
     let node = document.createRange().createContextualFragment(string);
     return node;
 }
-function createElement(Node) {   
+function createElement(Node) {  
+   
     if (typeof Node === "undefined") {
         return document.createTextNode("");
     }
     if (typeof Node === "string") {
         return document.createTextNode(Node);
     } 
+    if (Node.type == "documentFragment") {
+        return CreateStringNode(Node.stringFragment);
+    }
     if (Node.tagName) {
         return Node;
     }   
@@ -39,7 +96,7 @@ function createElement(Node) {
         }
     }
     if (Node.children) {
-        Node.children.map(Render)
+        Node.children.map(createElement)
         .forEach(Child => element.appendChild(Child));
     }     
     if (Node.events) {
@@ -297,8 +354,6 @@ function AsigEventsDel(InputForRT, DelData){
     )  
 }
 //FIN ASIGNACION DE EVENTOS
-
-
 
 function FilterInList(ArrayList, Param, Config, TableId) {
    if (Param != "") {
@@ -713,4 +768,4 @@ function  UpdateArrayForApi(UpdateObject, Config, TableId){
 }
 
 
-export{createElementNS, createElement, CreateTable, DrawTable}
+//export{createElementNS, createElement, CreateTable, DrawTable}

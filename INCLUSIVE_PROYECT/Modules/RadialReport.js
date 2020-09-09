@@ -1,5 +1,5 @@
-import {createElement}  from "../Scripts/Modules/WComponents.js";
-import("../Scripts/Modules/WChartRadial.js"); 
+//import {createElement}  from "../Scripts/Modules/WComponents.js";
+//import("../Scripts/Modules/WChartRadial.js"); 
 class RadialReport{    
     constructor(props){
         this.type = "div";
@@ -40,5 +40,5 @@ class RadialReport{
     }
     
 }
-export {RadialReport}
+//export {RadialReport}
 

@@ -1,5 +1,5 @@
-import {createElement}  from "../Scripts/Modules/WComponents.js";
-import("../Scripts/Modules/WMultiSelect.js"); 
+//import {createElement}  from "../Scripts/Modules/WComponents.js";
+//import("../Scripts/Modules/WMultiSelect.js"); 
 class MultiSelectControls{    
     constructor(props){
         this.type = "div";
@@ -99,4 +99,4 @@ class MultiSelectControls{
     }
     
 }
-export {MultiSelectControls}
+//export {MultiSelectControls}

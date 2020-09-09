@@ -144,7 +144,7 @@
                 if (result == true) {
                     $.ajax({
                         type: "POST",
-                        url: "Default.aspx/Subscribe",
+                        url: "Default.aspx/Save",
                         //url: "Employee.cs/get",
                         contentType: "application/json; charset=utf-8",
                         data: '{"name":"' + $("#nameInput").val() + '","email":"' + $("#emailInput").val() + '"}',

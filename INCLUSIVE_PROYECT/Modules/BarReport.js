@@ -1,5 +1,5 @@
-import {createElement}  from "../Scripts/Modules/WComponents.js";
-import("../Scripts/Modules/WChartJSComponent.js"); 
+//import {createElement}  from "../Scripts/Modules/WComponents.js";
+//import("../Scripts/Modules/WChartJSComponent.js"); 
 class BarReport{    
     constructor(props){
         this.type = "div";
@@ -117,5 +117,5 @@ class BarReport{
     }
     
 }
-export {BarReport}
+//export {BarReport}
 

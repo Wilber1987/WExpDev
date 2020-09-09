@@ -1,6 +1,6 @@
 function Render(Node) {
-    //console.log(Node)
-    if (typeof Node === "undefined") {
+    console.log(Node)
+    if (typeof Node === "undefined" || typeof Node === "null") {
         return document.createTextNode("");
     }
     if (typeof Node === "string") {

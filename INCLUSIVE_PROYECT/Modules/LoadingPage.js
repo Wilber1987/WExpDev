@@ -1,11 +1,13 @@
-import {DomComponent}  from "../MasterDomClass.js";
+//import {DomComponent}  from "../MasterDomClass.js";
 class Loading{    
     constructor(props, Navegando){
         this.type = "div";
         this.props = props; 
         this.children= [
             { type: 'section', props: { class: ""} ,
-               children: [ { type: "img", props: {src: "./Media/img/Marca2.png", id: "IconSection"}} ]
+               children: [ { type: "div", props: {
+                   //src: "Media/img/Marca2.png", 
+                   id: "IconSection", class: "IconSection"}} ]
             },
             { type: 'h1', props: { class: ""} , children: ["InclusiveApp"] },
             new LoginOptions({id: "LoginOptions"}, Navegando),
@@ -22,9 +24,11 @@ class LoginOptions{
     constructor(props, Navegando){
         this.type = "div";
         this.props = props;
+        this.props.inst = new DomComponent();
         this.children = [            
             { type: 'button', props: { class: "BtnPrimary", type:"button", onclick:()=>{
                     document.getElementById("IconSection").style.width = "200px";
+                    document.getElementById("IconSection").style.height = "120px";
                     const login ={
                         user: localStorage.getItem("user"),
                         pass: localStorage.getItem("pass")
@@ -34,24 +38,22 @@ class LoginOptions{
                          method: "POST",
                          body: JSON.stringify(login)
                      });*/
-                    const response = "false"
+                    const response = "true"
                     if(response == "true"){
                          Navegando();                         
                     }
-                    else{
-                         const inst = new DomComponent();
-                         inst.NavigateFunction("MyLogin", "./Modules/Security/Login.js", {class: "LoginForm"} , "LoginForm");
+                    else{               
+                        this.props.inst.NavigateFunction("MyLogin", new MyLogin({class: "DivContainer", id: "MyLogin"}), {class: "LoginForm"} , "LoginForm");
                     }  
                 }
             } ,children: ["Login"]},
             { type: 'button', props: { class: "BtnPrimary", type:"button", onclick:async ()=>{
                     document.getElementById("IconSection").style.width = "200px";
-                    const inst = new DomComponent();
-                    inst.NavigateFunction("MyRegister", "./Modules/Security/Register.js", {class: "LoginForm"} , "LoginForm");                                      
+                    document.getElementById("IconSection").style.height = "120px";                    
+                    this.props.inst.NavigateFunction("MyRegister", new MyRegister({class: "DivContainer", id: "MyRegister"}), {class: "LoginForm"} , "LoginForm");                                      
                 }
             } ,children: ["Register"]},
         ] 
     }
-
 }
-export {Loading}
+//export {Loading}

@@ -1,3 +1,8 @@
+function onDeviceReady() {
+    // Cordova is now initialized. Have fun!
+    console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+    document.getElementById('deviceready').classList.add('ready');
+}
 function importarScript(name, UrlPath = "") {
     var s = document.createElement("script");
     s.src = UrlPath + name;   
@@ -17,9 +22,9 @@ function importarStyle(name, UrlPath) {
 }
 function getAbsolutePath() {
     let pathName = "";
-    if (document.getElementById("URLPath")) {
+    /*if (document.getElementById("URLPath")) {
         pathName = document.getElementById("URLPath").value;
-    }
+    }*/
     return pathName;
 }
 function awaitFunction() { 
@@ -30,68 +35,37 @@ function awaitFunction() {
     });
 }
 var Url_Path = getAbsolutePath();
-
- importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
- importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
- importarStyle("Scripts/StyleModules/MultiSelectStyle.css", Url_Path);
+/*
+importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
+importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
+importarStyle("Scripts/StyleModules/MultiSelectStyle.css", Url_Path);
+importarScript("Scripts/modules/WChartJSComponent.js", Url_Path);
+importarScript("Scripts/modules/WChartRadial.js", Url_Path);
 
 // //APP CONFIG
-// importarScript("databaseScripts/Modules.js", Url_Path);
-// importarScript("MasterDomClass.js", Url_Path);
+ //importarScript("databaseScripts/Modules.js", Url_Path);
+ importarScript("MasterDomClass.js", Url_Path);
+ importarScript("Scripts/modules/WComponents.js", Url_Path);
+ importarScript("Modules/Modules.js", Url_Path);
+ importarScript("Modules/ModulesView.js", Url_Path);
+ importarScript("Modules/LoadingPage.js", Url_Path);
+ importarScript("Modules/MultiSelectControls.js", Url_Path);
+ importarScript("Modules/RadialReport.js", Url_Path);
+ importarScript("Modules/BarReport.js", Url_Path);
+ importarScript("Modules/Security/Login.js", Url_Path);
+ importarScript("Modules/Security/Register.js", Url_Path);
+ */
+ //PLUGING
+
+ //importarScript("MasterDomClass.js", Url_Path);
  importarStyle("Styles/AppStyles.css", Url_Path);
-//var modules = null;
+ importarStyle("Styles/MyStyle.css", Url_Path);
+var modules = null;
 
-const OnLoad =  async () => { 
-    const {createElement} = await import("./Scripts/Modules/WComponents.js");
-    const modules = await import("./MasterDomClass.js");
-    const BodyComponents = new modules.MasterDomClass();
-    root.appendChild(createElement(BodyComponents));
+const OnLoad =  async () => {     
+    const BodyComponents = new MasterDomClass();
+    BodyRoot.appendChild(createElement(BodyComponents));
 }
-
-function StartModuleList(modules) {
-    var Table = CreateTable({
-        TableId: "TableData",
-        className: "CardStyleComponent"
-    });
-    let ApiUrlUpdate = "";
-    let ApiUrlCreate = "";
-    let ApiUrlDelete = "";
-    let ApiUrlSelect = "";
-
-    var ConfigTable = {
-        Table: Table,
-        CardStyle: true,
-        TableContainer: false,
-        Options: {
-            Search: true,
-            ApiSelect: {
-                //ApiUrlSelect: ApiUrlSelect,
-                //ResponseName: "name"
-            },
-            Show: true,
-            ShowOptions: {
-                FormName: false,
-                Actions: {
-                    btnInput: {
-                        value: "Add Build",
-                        className: "BtnSuccess",
-                        onclick: "AddBuild()"
-                    }
-                }
-            },
-            Edit: true,
-            EditOptions: {
-                FormName: false,
-               // ApiUrlUpdate: ApiUrlUpdate
-            },
-            Select: false
-        },
-    };
-    DrawTable(modules.Modules, ConfigTable);
-    Container.appendChild(Table);
-    
-}
-
-
-
-window.onload = OnLoad; 
+//document.addEventListener('deviceready', onDeviceReady, false);
+document.addEventListener('deviceready', OnLoad, false);
+window.addEventListener('load', OnLoad, false);

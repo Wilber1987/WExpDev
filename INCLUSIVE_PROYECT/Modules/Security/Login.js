@@ -1,4 +1,4 @@
-import {DomComponent}  from "../../MasterDomClass.js";
+//import {DomComponent}  from "../../MasterDomClass.js";
 class MyLogin{    
     constructor(props, Navegando){
         this.type = "div";
@@ -47,7 +47,8 @@ class MyLogin{
                             localStorage.setItem("user", this.MyLoginData.user);
                             localStorage.setItem("pass", this.MyLoginData.pass);
                             const inst = new DomComponent();
-                            inst.NavigateFunction("Modules", "./Modules/Modules.js");
+                            //inst.NavigateFunction("Modules", "./Modules/Modules.js");
+                            inst.NavigateFunction("Modules",new Modules({class: "DivContainer", id: "Modules", modules: inst.modules}));
                             //inst.NavigateFunction("MyLogin", "./Modules/Security/Login.js", {class: "LoginForm"} , "LoginForm");
                             //Navegando();
                         }
@@ -60,5 +61,5 @@ class MyLogin{
         ]}
     ]
 }
-export {MyLogin}
+//export {MyLogin}
 

@@ -1,39 +1,24 @@
-import { createElement } from "./Scripts/Modules/WComponents.js";
-import { Loading } from "./Modules/LoadingPage.js";
+//import { createElement } from "./Scripts/Modules/WComponents.js";
+//import { Loading } from "./Modules/LoadingPage.js";
 class DomComponent {
     constructor(){
         this.NavForm = [];    
         this.modules = [
-            { 
-                cantidad: 21,
-                estado: "Naranja",
-                time: "julio 2019",
-                categ2: "Moderado",
-                categ: "Ekisde"
-            },{
-                cantidad: 2,
-                estado: "Naranja",
-                time: "julio 2019",
-                categ2: "Moderado",
-                categ: "Nic"
-            },{
-                cantidad: 14,
-                estado: "Fresa",
-                time: "julio 2019",
-                categ2: "Moderado",
-                categ: "Galaxia"
-            },{
-                cantidad: 17,
-                estado: "Fresa",
-                time: "julio 2019",
-                categ2: "Moderado",
-                categ: "Nic2"
+            {   id: "Module1",             
+                title: "Programacion Logaritmica 1",
+                desc: "Prueba la nueva tecnología PowerShell multiplataforma https://aka.ms/pscore6",
+                categ: "Programs"
+            }, {    
+                id: "Module2",             
+                title: "Programacion Logaritmica 2",
+                desc: "Prueba la nueva tecnología PowerShell multiplataforma https://aka.ms/pscore6",
+                categ: "Programs"
             }
         ]     
     }
     type = "form";
     props = { class: "MyForm" };   
-    NavigateFunction =  async (IdComponent, Path, props = {}, ContainerName = "ContainerNavigate" )=>{ 
+    NavigateFunction =  async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate" )=>{ 
         const ContainerNavigate = document.querySelector("#"+ContainerName);
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");        
         Nodes.forEach((node) => {
@@ -50,14 +35,38 @@ class DomComponent {
                 ContainerNavigate.append(this.NavForm[IdComponent]);                            
                 return;
             }
-            const MyComponent = await import(Path);        
-            props.id = IdComponent;
-            props.class = "DivContainer";
-            const ComponentsInstance = new MyComponent[IdComponent](props);               
+            //const MyComponent = await import(Path);        
+            //props.id = IdComponent;
+            //props.class = "DivContainer";
+            //const ComponentsInstance = new MyComponent[IdComponent](props);               
             ContainerNavigate.append(createElement(ComponentsInstance));
             return;
         }   
     } 
+    ModalNavigateFunction =  async (IdComponent, ComponentsInstance, props = {}, ContainerName = "ContainerNavigate" )=>{ 
+        const ContainerNavigate = document.querySelector("#"+ContainerName);        
+        if (!ContainerNavigate.querySelector("#"+IdComponent)) {
+            if (typeof this.NavForm[IdComponent] != "undefined") {
+                ContainerNavigate.append(this.NavForm[IdComponent]); 
+                setTimeout(
+                    ()=>{  modalFunction( this.NavForm[IdComponent].id); }, 100
+                );                           
+                return;
+            }   
+            this.NavForm[IdComponent] = createElement(ComponentsInstance);         
+            ContainerNavigate.append(this.NavForm[IdComponent]);
+            setTimeout(
+                ()=>{  modalFunction(this.NavForm[IdComponent].id); }, 100
+            );
+            return;
+        } else {
+            this.NavForm[IdComponent] = ContainerNavigate.querySelector("#"+IdComponent);
+            modalFunction( this.NavForm[IdComponent].id);
+            setTimeout(
+                ()=>{  ContainerNavigate.removeChild(this.NavForm[IdComponent]); }, 1000
+            );
+        }   
+    }
     _DispalNav(NavContainerId, NavAnimation){          
         let NavContainer = document.querySelector("#"+NavContainerId);
         let Nav = NavContainer.querySelector("ul"); 
@@ -94,11 +103,10 @@ class DomComponent {
 class MasterDomClass extends DomComponent{    
     constructor(){     
         super();         
-        this.MainComponent = new Loading({id:"Load", class:"LoadingPage DivContainer"}, ()=>{
-            this.NavigateFunction("Modules", "./Modules/Modules.js", {modules: this.modules});
+        this.MainComponent = new Loading({id:"Load", class:"LoadingPage DivContainer"}, ()=>{         
+            this.NavigateFunction("Modules",new Modules({class: "DivContainer", id: "Modules", modules: this.modules}));           
         });
-        this.header = new headerClass();
-        this.footer = new footerClass();
+        this.header = new headerClass();       
         this.children= [
             this.header,        
             { type: 'nav', props: {id:"NavContainer", class: "Menu"} ,
@@ -111,25 +119,9 @@ class MasterDomClass extends DomComponent{
                     children: [this.MainComponent]
                 },
                 { type: 'section', props: {id:"Container"}}
-            ] },
-            this.footer,
+            ] },           
         ]
     } 
-}
-class footerClass extends DomComponent {
-    constructor(props){     
-        super();
-        if (props) {
-            this.props = props;  
-        } else {
-            this.type = "footer";
-            this.props.class = "myFooter";
-        }            
-    }  
-    children = [
-        {type: 'label', children:["Contactenos"]},
-        {type: 'label', children:["- 8807-8386"]}
-    ];
 }
 class headerClass extends DomComponent {
     constructor(){     
@@ -148,11 +140,12 @@ class headerClass extends DomComponent {
             props: {
                 id:"ViewMenu",
                 type: "button",
+                class: "btnMenu",
                 onclick: ()=> {
                     this._DispalNav("MyLateralNav", "SlideLeft")
                 }
             },
-            children: ['Nav']
+            children: ['']
         },{
             type: 'button', 
             props: {
@@ -163,7 +156,7 @@ class headerClass extends DomComponent {
                     this._DispalNav("LoginNav", "SlideRight")
                 }
             },
-            children: ['Login']
+            children: ['']
         },
         this.SecurityNavigator
     ];
@@ -179,26 +172,26 @@ class MyNavigator extends DomComponent{
         children: [            
             {type: "li", props:{
                 onclick: ()=>{
-                    this.NavigateFunction("Modules", "./Modules/Modules.js", {modules: this.modules});
+                    this.NavigateFunction("Modules",new Modules({class: "DivContainer", id: "Modules", modules: this.modules}));
                     //this.NavigateFunction("MyLogin", "./Modules/Security/Login.js");
                     this._DispalNav("MyLateralNav", "SlideLeft");
                 }
             }, children: [{type:"a", props:{href:"#"}, children: ["Modulos"]}]},
             {type: "li", props:{
                 onclick:  ()=>{
-                    this.NavigateFunction("BarReport", "./Modules/BarReport.js");  
+                    this.NavigateFunction("BarReport", new BarReport({class: "DivContainer", id: "BarReport"}));  
                     this._DispalNav("MyLateralNav", "SlideLeft");                   
                 }
             }, children: [{type:"a", props:{href:"#"}, children: ["Bar Report"]}]},
             {type: "li", props:{
                 onclick: ()=>{
-                    this.NavigateFunction("RadialReport", "./Modules/RadialReport.js");  
+                    this.NavigateFunction("RadialReport",new RadialReport({class: "DivContainer", id: "RadialReport"}));  
                     this._DispalNav("MyLateralNav", "SlideLeft");          
                 }
             }, children: [{type:"a", props:{href:"#"}, children: ["Radial Report"]}]},
             {type: "li", props:{
                 onclick: ()=>{
-                    this.NavigateFunction("MultiSelectControls", "./Modules/MultiSelectControls.js");
+                    this.NavigateFunction("MultiSelectControls", new MultiSelectControls({class: "DivContainer", id: "MultiSelectControls"}));
                     this._DispalNav("MyLateralNav", "SlideLeft");
                 }
             }, children: [{type:"a", props:{href:"#"}, children: ["MultiSelect"]}]},
@@ -241,4 +234,4 @@ class SecurityNavigator extends DomComponent{
     }];      
 }
 
-export {MasterDomClass, DomComponent};
+//export {MasterDomClass, DomComponent};

@@ -1,4 +1,4 @@
-import {DomComponent}  from "../../MasterDomClass.js";
+//import {DomComponent}  from "../../MasterDomClass.js";
 class MyRegister{    
     constructor(props, Navegando){
         this.type = "div";
@@ -84,4 +84,4 @@ class MyRegister{
         ]}
     ]
 }
-export {MyRegister}
+//export {MyRegister}
