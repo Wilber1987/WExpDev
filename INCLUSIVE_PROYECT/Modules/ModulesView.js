@@ -17,73 +17,90 @@ class ModulesView{
             let Sections = [ 
                 { type: 'h2', props: {id:"", class: ""}, children: [InputClose,"- " ,data.title]}
             ];
-            data.sections.forEach(element => {
+            data.sections.forEach((element, index = 0) => {
+                let DefaultMinSize = "0px";
+                let DefaultMaxSize = "0px";
+                let DefaultDisplay = "none";
+                if (index == 0) {
+                    DefaultMinSize = "300px";
+                    DefaultMaxSize = "800px";
+                    DefaultDisplay = "block";
+                }
                 let obj = { type: "section", props: {}, children:[
-                    {type: "label", props: {onclick:()=>{
-                        let SectionElement = GetObj(element.idSection + this.props.id);       
-                        if (SectionElement.style.display == "none") {
-                            SectionElement.style.display = "block";                         
-                            setTimeout(()=>{                               
-                                SectionElement.style.maxHeight = "800px"; 
-                                SectionElement.style.minHeight = "360px";                              
-                            }, 100);                            
-                        }else {
-                            SectionElement.style.maxHeight = "0px";  
-                            SectionElement.style.minHeight = "0px";                          
-                            setTimeout(()=>{                              
-                                SectionElement.style.display = "none";                               
-                            }, 1000); 
-                        }
-                    }}, children: [element.titleSection]}
+                    {type: "label", props: {class: "labelAcordeon",onclick:()=>{
+                        let elementId = element.IdSection + this.props.id;   
+                        DisplayUniqAcorden(elementId)
+                    }}, children: [element.Title]}
                 ]};
                 let view = { type: "p", props: {
                     class:"SectionElement WScroll",
-                    id: element.idSection + this.props.id,
-                    style: "display: none;"
+                    id: element.IdSection + this.props.id,                   
+                    style: `display: ${DefaultDisplay}; max-height: ${DefaultMaxSize}; min-height:${DefaultMinSize} `
                 }, children:[]};
-                if (element.type == "video") {
+                //view.events = {};                
+                if (element.Type == "video" || element.Type == "googleForm") {
                     view.type = "iframe";                 
-                    view.props.src = element.contenido;
-                }else if (element.type == "pdf") {                   
+                    view.props.src = element.UrlContent;
+                }else if (element.Type == "pdf") {                   
                     // view.type = "embed";
-                    // view.props.src = element.contenido;
+                    // view.props.src = element.UrlContent;
                     // view.props.type="application/pdf";
-                    view.type = "a";
-                    view.props.href = "#";
+                    //view.type = "a";
+                    
+                   /* view.props.href = "#";
                     view.props.onclick = ()=>{
                         window.open(
-                            element.contenido,
+                            element.UrlContent,
                             "_blank",  'location=no'
                         );
-                    } 
-                    view.children.push("Ver PDF");
-                }else if (element.type == "game") {
+                    } */
+                   // view.children.push("Ver PDF"); 
+                   
+                   //PRUEBA CANVAS
+                   view.type = "div";
+                   /*view.children.push({
+                       type:"input", props: {type:"file", }
+                   })*/
+                   const params = {
+                       id: element.IdSection + this.props.id,
+                       url: element.UrlContent 
+                   }             
+                    view.events = { load: this.getPdf, loadParams: params};
+                   // view.props.onload = this.getPdf;
+                    //FIN PRUEBA
+                }else if (element.Type == "game") {
                     view.type = "canvas";
                     //view.props.id = "canvas";
                     view.events = {};
                     view.children.push(
                         {type:"script", props: {
-                                src: element.contenido,
+                                src: element.UrlContent,
                                 type:"application/javascript"
                             }
                         });                                      
-                }else if (element.type == "flash") {
+                }else if (element.Type == "flash") {
                     view.type = "object";                  
                     view.props.type = "application/x-shockwave-flash";
-                    view.props.data = element.contenido;
+                    view.props.data = element.UrlContent;
                     view.events = {};                    
-                    view.children.push({type:"h1", props: {name:"movie", value:element.contenido}});  
+                    view.children.push({type:"h1", props: {name:"movie", value:element.UrlContent}});  
                     view.children.push({type:"h2", props: {name:"menu", value:"false"}}); 
                     view.children.push({type:"h3", props: {name:"quality", value:"high"}}); 
-                }else if (element.type == "test"){
+                }else if (element.Type == "test"){
+                    view.type = "w-form-view";
+                   // console.log(element.UrlContent)
+                    view.props.idform = [parseInt(element.UrlContent)];
+                    //view.children.push("Esto es un test");
+                }else if (element.Type == "img"){
                     view.type = "label";
-                    view.children.push("Esto es un test");
+                    view.children.push("Esto es una imagen");
                 }else {
                     view.type = "article";
-                    view.children.push(element.contenido);
+                    view.children.push(element.UrlContent);
                 }
                 obj.children.push(view);
                 Sections.push(obj);
+                index ++;
             });
             this.children.push({
                 type: "div", props: {class:"ContainerForm WScroll"},
@@ -94,7 +111,16 @@ class ModulesView{
                 children: ["No hay secciones en este módulo"]
             });
         }                 
-                   
+                  
     }    
+    getPdf = async (obj)=>{
+        //console.log(obj);  
+        const canvas = await DrawCanvasPdf(obj.url);
+        //console.log(canvas);     
+        let v = document.getElementById(obj.id);
+        //console.log(v);
+        v.append(canvas);         
+    }      
+   
 }
 //export {ModulesView}

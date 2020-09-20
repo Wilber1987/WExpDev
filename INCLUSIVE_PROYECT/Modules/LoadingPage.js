@@ -26,31 +26,29 @@ class LoginOptions{
         this.props = props;
         this.props.inst = new DomComponent();
         this.children = [            
-            { type: 'button', props: { class: "BtnPrimary", type:"button", onclick:()=>{
-                    document.getElementById("IconSection").style.width = "200px";
-                    document.getElementById("IconSection").style.height = "120px";
+            { type: 'button', props: { class: "BtnPrimary", type:"button", onclick:async ()=>{                   
                     const login ={
-                        user: localStorage.getItem("user"),
-                        pass: localStorage.getItem("pass")
+                        Username: localStorage.getItem("Username"),
+                        Password: localStorage.getItem("Password")
                     }
-                     /*
-                     const response = await fetch("/", {
-                         method: "POST",
-                         body: JSON.stringify(login)
-                     });*/
-                    const response = "true"
-                    if(response == "true"){
+                    let response = await PostRequest(Url_Path + 'api/User/PostLogin', login);                      
+                    if(response == true){
                          Navegando();                         
                     }
-                    else{               
-                        this.props.inst.NavigateFunction("MyLogin", new MyLogin({class: "DivContainer", id: "MyLogin"}), {class: "LoginForm"} , "LoginForm");
+                    else{   
+                        document.getElementById("IconSection").style.width = "200px";
+                        document.getElementById("IconSection").style.height = "120px";
+                        localStorage.setItem("Username", "");
+                        localStorage.setItem("Password", "");     
+                        //console.log(Navegando);       
+                        this.props.inst.NavigateFunction("MyLogin", new MyLogin({class: "DivContainer", id: "MyLogin"}, Navegando), "LoginForm");
                     }  
                 }
             } ,children: ["Login"]},
             { type: 'button', props: { class: "BtnPrimary", type:"button", onclick:async ()=>{
                     document.getElementById("IconSection").style.width = "200px";
                     document.getElementById("IconSection").style.height = "120px";                    
-                    this.props.inst.NavigateFunction("MyRegister", new MyRegister({class: "DivContainer", id: "MyRegister"}), {class: "LoginForm"} , "LoginForm");                                      
+                    this.props.inst.NavigateFunction("MyRegister", new MyRegister({class: "DivContainer", id: "MyRegister"},  Navegando) , "LoginForm");                                      
                 }
             } ,children: ["Register"]},
         ] 

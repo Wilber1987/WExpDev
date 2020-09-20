@@ -34,7 +34,8 @@ function awaitFunction() {
       }, 0);
     });
 }
-var Url_Path = getAbsolutePath();
+var Url_Path = "http://localhost:6601/"; //getAbsolutePath();
+
 /*
 importarStyle("Scripts/StyleModules/StyleModules.css", Url_Path);
 importarStyle("Scripts/StyleModules/WchartStyle.css", Url_Path);
@@ -58,9 +59,39 @@ importarScript("Scripts/modules/WChartRadial.js", Url_Path);
  //PLUGING
 
  //importarScript("MasterDomClass.js", Url_Path);
- importarStyle("Styles/AppStyles.css", Url_Path);
- importarStyle("Styles/MyStyle.css", Url_Path);
+ //importarStyle("Styles/AppStyles.css", Url_Path);
+ //importarStyle("Styles/MyStyle.css", Url_Path);
 var modules = null;
+const Load = async () => {
+    let response = await fetch(Url_Path + 'api/movie/GetMyMovies', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    response = await response.json();
+    console.log(response)   
+}
+function find() {
+    fetch(Url_Path + 'api/module/GetModules', {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: "Some text here" })
+    });
+}
+function find2() {
+    let response =  fetch(Url_Path + 'api/module/PostMyModules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ User: 1 })
+    });
+   // response =  response.json();
+}
+function find3() {
+    fetch(Url_Path +'api/products/PostTakeProducts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ obj: "Some text here" })
+    });
+}
 
 const OnLoad =  async () => {     
     const BodyComponents = new MasterDomClass();

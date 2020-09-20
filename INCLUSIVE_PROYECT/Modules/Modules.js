@@ -10,12 +10,12 @@ class Modules{
                 children: ["Mis Módulos"]
             }
         );
-        if (this.props.modules) {
+        if (this.props.MyModules) {
             this.children.push( { type: 'div', props: {id:"", class: "SliderContainer"} ,
                 children: [
                     {
                         type: "div", props: {id:"GrupFormCardCarrocel", class: "GrupFormCardCarrocel"},
-                        children: this.StartModuleList(this.props.modules)
+                        children: this.StartModuleList(this.props.MyModules)
                     },
                     { type: "div", props: {id:"", class: "btn-prev",
                      onclick:()=>{ myFunctionPrev('GrupFormCardCarrocel')} }, children: ["<"]},
@@ -32,27 +32,50 @@ class Modules{
             { type: 'h3', props: {id:"", class: ""} ,
                 children: ["Modulos Recomendados"]
             }
-        );          
-        this.children.push( { type: 'section', props: {id:"Modulos recomendados...", class: ""} ,
-            children: ["No hay nuevos módulos"]
-        });             
+        );  
+        if (this.props.modules) {
+            this.children.push( { type: 'div', props: {id:"", class: "SliderContainer"} ,
+                children: [
+                    {
+                        type: "div", props: {id:"GrupFormCardCarrocelModules", class: "GrupFormCardCarrocel"},
+                        children: this.StartModuleList(this.props.modules, false)
+                    },
+                    { type: "div", props: {id:"", class: "btn-prev",
+                     onclick:()=>{ myFunctionPrev('GrupFormCardCarrocelModules')} }, children: ["<"]},
+                    { type: "div", props: {id:"", class: "btn-next", 
+                     onclick:()=>{ myFunctionNext('GrupFormCardCarrocelModules')} }, children: [">"]}
+                ]
+            });
+        }  else {            
+            this.children.push( { type: 'section', props: {id:"Modulos recomendados...", class: ""} ,
+                children: ["No hay nuevos módulos"]
+            });    
+        }    
     } 
-    StartModuleList = (modules) => {  
+    StartModuleList = (modules, view = true) => {  
         let ApiUrlUpdate = "";
         let ApiUrlCreate = "";
         let ApiUrlDelete = "";
-        let ApiUrlSelect = "";   
+        let ApiUrlSelect = "";  
         
+        let Label = "Go...!";
+        if (view == false) {
+            Label = "+Add";
+        }        
+      //  console.log(modules);
         let Cards = [];
         modules.forEach(element => {
             Cards.push(
-                {type: "div", props:{ class: "cardForm"},
+                {type: "div", props:{ class: "cardForm" , x:["hola"],
+                id:"card"+element.IdModules},
                 children:[
-                    {type: "label",props:{ class: "labelCard"},children:[element.title]},
-                    {type: "p",props:{ class: "pCard"}, children:[element.desc]}, 
+                    {type: "label",props:{ class: "labelCard" },
+                            children:[element.Title]},
+                    {type: "p",props:{ class: "pCard"}, children:[element.Description]}, 
                     {type: "div", props:{id:element.id+"Container"}, children:[
                         {type: "button", props:{class: "BtnSecundary", type: "button", onclick: async ()=>{
                             //MODELO
+                            /*
                             let ModuleModel = {
                                 id: "module1"+element.id,
                                 title: "Mi Modulo - " + element.id,
@@ -65,7 +88,8 @@ class Modules{
                                     {
                                         idSection:2,
                                         titleSection: "Seccion2",
-                                        type: "pdf", contenido: "https://scielo.conicyt.cl/pdf/rchnut/v42n2/art14.pdf"//"./Media/video/Prueba.pdf"
+                                        type: "pdf", 
+                                        contenido: "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf"//"./Media/video/Prueba.pdf"
                                     },
                                     {
                                         idSection:3,
@@ -88,20 +112,29 @@ class Modules{
                                         type: "flash", contenido: "./Media/games/Ley775.swf"
                                     }
                                 ]
-                            }                            
+                            }    */                        
                             //inst.NavigateFunction("Modules", "./Modules/Modules.js");
-                            instModules.ModalNavigateFunction(element.id+"Container",
-                                new ModulesView(ModuleModel),  {class: "LoginForm"}, element.id+"Container"
-                            );
+                            if (view == true) {
+                                let MyModulesDetail = await PostRequest(Url_Path + 'api/module/PostModuleDetail', { IdModules: 1 }); 
+                                let ModuleModel = {
+                                    id: "module"+element.IdModules,
+                                    title: element.Title,
+                                    sections: MyModulesDetail};
+                                instModules.ModalNavigateFunction(element.id+"Container",
+                                    new ModulesView(ModuleModel),  {class: "LoginForm"}, element.id+"Container"
+                                );
+                            }else {
+                                //agregar
+                            }
                            // modalFunction(ModuleModel.id);
-                        }}, children:["Go!"]},
+                        }}, children:[Label]},
                     ]},                  
                 ]}
             );
         });
 
         //DrawTable(modules, ConfigTable);
-        console.log(Cards)
+       // console.log(Cards)
         return Cards;        
     }   
 }
