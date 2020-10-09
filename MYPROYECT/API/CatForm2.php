@@ -10,7 +10,7 @@
     function GetModel($request)
     { 
         $Form = [];
-        $pMysqli = new mysqli('localhost','root','','dbprueba');
+        $pMysqli = new mysqli('localhost','root','','psicovitalem');
        // echo   "DESCRIBE $request->tablename"; 
         $q = $pMysqli->query("DESCRIBE $request->tablename"); 
         foreach ($q as $row) {
@@ -21,7 +21,7 @@
     function Get($request)
     {
         $Form = [];
-        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $pMysqli = new mysqli('localhost','root','','psicovitalem');   
         $q = $pMysqli->query("SELECT * FROM $request->tablename"); 
         foreach ($q as $row) {
             $Form[] = $row;
@@ -30,7 +30,7 @@
     }
     function Insert($request)
     {
-        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $pMysqli = new mysqli('localhost','root','','psicovitalem');   
         $colums = "";
         $values = "";
         foreach ($request->dataForm as $key => $value) {
@@ -51,7 +51,7 @@
     }
     function Update($request)
     {
-        $pMysqli = new mysqli('localhost','root','','dbprueba');   
+        $pMysqli = new mysqli('localhost','root','','psicovitalem');   
         //$colums = "";
         $values = "";
         foreach ($request->dataForm as $key => $value) {

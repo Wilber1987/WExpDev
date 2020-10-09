@@ -362,6 +362,8 @@
     padding-left: 10px;  
     padding-right: 10px; 
     height: 70px; 
+    overflow: hidden;
+    font-size: 12px;
 }
 .cardForm .labelCard{
     white-space:pre-wrap;
@@ -378,3 +380,4 @@
 }
 
 /*CARROCEL*/
+

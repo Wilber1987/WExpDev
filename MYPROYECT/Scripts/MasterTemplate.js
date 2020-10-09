@@ -75,27 +75,38 @@ class MyNav extends DomClass{
                         }
                     }, children: ["Form 1"]},
                         { type: "li", props:{onclick: ()=>{
-                            const apiURL = "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
+                            const apiURL = "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
                             const actions = {
-                                Insert:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Insert",
-                                Get:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
-                                Update:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Update",
-                                Delete:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Delete"
+                                Insert:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Insert",
+                                Get:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
+                                Update:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Update",
+                                Delete:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Delete"
                             }
-                            this.Navegando("../modules/Form2.js","tblForm1", apiURL, "Form", "Form2", actions);
+                            this.Navegando("../modules/Form2.js","cat_areas", apiURL, "Form", "Form2", actions);
                         }
                     }, children: ["Form 2"]},
                         { type: "li", props:{onclick: ()=>{ 
-                            const apiURL = "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
+                            const apiURL = "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
                             const actions = {
-                                Insert:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Insert",
-                                Get:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
-                                Update:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Update",
-                                Delete:  "http://localhost/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Delete"
+                                Insert:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Insert",
+                                Get:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
+                                Update:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Update",
+                                Delete:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Delete"
                             }
-                            this.Navegando("../modules/Form2.js","tblForm2", apiURL, "Form", "Form2", actions);
+                            this.Navegando("../modules/Form2.js","cat_ciudades", apiURL, "Form", "Form2", actions);
                         }
-                    }, children: ["Form 3"]}
+                    }, children: ["Form 3"]},                    
+                    { type: "li", props:{onclick: ()=>{ 
+                        const apiURL = "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetModel";
+                        const actions = {
+                            Insert:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Insert",
+                            Get:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
+                            Update:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Update",
+                            Delete:  "http://localhost:8820/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Delete"
+                        }
+                        this.Navegando("../modules/Form2.js","usuarios", apiURL, "Form", "Form2", actions);
+                    }
+                }, children: ["usuarios"]}
                 ]
             }
         ];

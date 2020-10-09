@@ -29,10 +29,10 @@ function autoplay(ContainerId) {
     var widthAnimation = firstCard.offsetWidth + 10;
     //console.log(widthAnimation)\
     slider.style.transition =  "all 1s";
-    slider.style.webkitTransform =  "translateX(-" + widthAnimation + "px)";  
+    slider.style.transform =  "translateX(-" + widthAnimation + "px)";  
     setTimeout(function() {
       slider.style.transition =  "none";
-      slider.style.webkitTransform =  "";
+      slider.style.transform =  "";
       LastCard.parentNode.insertBefore(firstCard, LastCard.nextSibling);
     }, 1000);
   }
@@ -43,10 +43,10 @@ function autoplay(ContainerId) {
     var LastCard = slider.lastElementChild;
     var widthAnimation = firstCard.offsetWidth + 10;  
     slider.style.transition =  "all 1s";
-    slider.style.webkitTransform =  "translateX(+" + widthAnimation + "px)";  
+    slider.style.transform =  "translateX(+" + widthAnimation + "px)";  
     setTimeout(function() {
       slider.style.transition =  "none";
-      slider.style.webkitTransform =  "";
+      slider.style.transform =  "";
       slider.insertBefore(LastCard, slider.firstChild);
     }, 1000);
   }
@@ -101,9 +101,12 @@ function createElement(Node) {
     }     
     if (Node.events) {
         for (const event in Node.events) {
-            element.addEventListener(event, 
-                Node.events[event]()
-            , false);
+            if (!event.includes("Params")) {
+                element.addEventListener(event,
+                    //console.log(Node.props.pdfData),
+                    Node.events[event](Node.events[event+"Params"])
+               );                
+            }            
         }
     } 
     return element;

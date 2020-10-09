@@ -19,6 +19,7 @@ class DomComponent {
     type = "form";
     props = { class: "MyForm" };   
     NavigateFunction =  async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate" )=>{ 
+        console.log(this.NavForm);
         const ContainerNavigate = document.querySelector("#"+ContainerName);
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");        
         Nodes.forEach((node) => {
@@ -103,8 +104,15 @@ class DomComponent {
 class MasterDomClass extends DomComponent{    
     constructor(){     
         super();         
-        this.MainComponent = new Loading({id:"Load", class:"LoadingPage DivContainer"}, ()=>{         
-            this.NavigateFunction("Modules",new Modules({class: "DivContainer", id: "Modules", modules: this.modules}));           
+        this.MainComponent = new Loading({id:"Load", class:"LoadingPage DivContainer"}, async ()=>{ 
+            //TAKE MODULESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS           
+            let MyModules = await PostRequest(Url_Path + 'api/module/PostMyModules', { IdUsers: 1 });         
+            let OModules = await PostRequest(Url_Path + 'api/module/PostModules', { IdUsers: 1 }); 
+            //console.log(MyModules);
+           // console.log(OModules);
+            this.NavigateFunction("Modules",new Modules({
+                class: "DivContainer", id: "Modules", MyModules: MyModules,   modules: OModules
+            }));           
         });
         this.header = new headerClass();       
         this.children= [
