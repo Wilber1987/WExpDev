@@ -38,7 +38,7 @@ class MultiSelect extends HTMLElement{
     GroupSelectedsItems = {};
     Draw =  async () =>{
         //console.log("multiselect...");
-        const {createElement} = await import("./WComponents.js");
+        const {createElement} = await import("../WModules/WComponents.js");
         this.createElement = createElement;
         this.MultiSelectInstance = new MultiSelectConfig(this.data);
         this.SelectFragment = document.createElement("div");

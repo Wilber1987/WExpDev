@@ -37,7 +37,7 @@ class RadialChart extends HTMLElement {
     }
    // DrawChart() {
     DrawChart =  async () =>{
-      const {createElementNS} = await import("./WComponents.js");
+      const {createElementNS} = await import("../WModules/WComponents.js");
       this.ChartInstance = new RadialChartConfig(this.data);
       let ChartFragment = document.createElement("div");
       ChartFragment.className = "WChartContainer";
