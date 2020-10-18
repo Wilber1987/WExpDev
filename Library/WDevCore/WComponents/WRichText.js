@@ -34,31 +34,57 @@ class WRichText extends HTMLElement {
             props: { class: "WOptionsSection" },
             children: []
         }
-        OptionsSection.children.push({
-            type: "button",
-            props: {
+        this.Commands.forEach(command => {
+            OptionsSection.children.push({
                 type: "button",
-                class: "ROption",
-                innerText: "B",
-                onclick: () => {
-                    console.log("clixk")
-                    document.execCommand("bold");
+                props: {
+                    type: "button",
+                    class: "ROption",
+                    innerText: command.commandName,
+                    onclick: () => {
+                        document.execCommand(command.commandName);
+                    }
                 }
-            }
-        })
-        OptionsSection.children.push({
-            type: "button",
-            props: {
-                type: "button",
-                class: "ROption",
-                innerText: "B",
-                onclick: () => {
-                    document.execCommand("bold");
-                }
-            }
-        })
+            })
+        });
         this.append(WRender.createElement(OptionsSection));
     }
+    Commands = [
+        { commandName: "backColor", icon: "", commandOptions: null },
+        { commandName: "bold", icon: "", commandOptions: null },
+        { commandName: "createLink", icon: "", commandOptions: null },
+        { commandName: "copy", icon: "", commandOptions: null },
+        { commandName: "cut", icon: "", commandOptions: null },
+        { commandName: "defaultParagraphSeparator", icon: "", commandOptions: null },
+        { commandName: "delete", icon: "", commandOptions: null },
+        { commandName: "fontName", icon: "", commandOptions: null },
+        { commandName: "fontSize", icon: "", commandOptions: null },
+        { commandName: "foreColor", icon: "", commandOptions: null },
+        { commandName: "formatBlock", icon: "", commandOptions: null },
+        { commandName: "forwardDelete", icon: "", commandOptions: null },
+        { commandName: "insertHorizontalRule", icon: "", commandOptions: null },
+        { commandName: "insertHTML", icon: "", commandOptions: null },
+        { commandName: "insertImage", icon: "", commandOptions: null },
+        { commandName: "insertLineBreak", icon: "", commandOptions: null },
+        { commandName: "insertOrderedList", icon: "", commandOptions: null },
+        { commandName: "insertParagraph", icon: "", commandOptions: null },
+        { commandName: "insertText", icon: "", commandOptions: null },
+        { commandName: "insertUnorderedList", icon: "", commandOptions: null },
+        { commandName: "justifyCenter", icon: "", commandOptions: null },
+        { commandName: "justifyFull", icon: "", commandOptions: null },
+        { commandName: "justifyLeft", icon: "", commandOptions: null },
+        { commandName: "justifyRight", icon: "", commandOptions: null },
+        { commandName: "outdent", icon: "", commandOptions: null },
+        { commandName: "paste", icon: "", commandOptions: null },
+        { commandName: "redo", icon: "", commandOptions: null },
+        { commandName: "selectAll", icon: "", commandOptions: null },
+        { commandName: "strikethrough", icon: "", commandOptions: null },
+        { commandName: "styleWithCss", icon: "", commandOptions: null },
+        { commandName: "subscript", icon: "", commandOptions: null },
+        { commandName: "superscript", icon: "", commandOptions: null },
+        { commandName: "undo", icon: "", commandOptions: null },
+        { commandName: "unlink", icon: "", commandOptions: null },
+    ];
 }
 
 const WRichTextStyle = {
@@ -73,7 +99,6 @@ const WRichTextStyle = {
                 padding: "10px"
             }),
             new WCssClass("w-rich-text .WOptionsSection", {
-                height: "50px",
                 border: "solid 1px #000",
                 display: "block",
                 margin: 0
