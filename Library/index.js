@@ -4,12 +4,12 @@ WImports.importarStyle("Styles/AppStyles.css", Url_Path);
 //var modules = null;
 
 const OnLoad = async() => {
-    const { createElement } = await
-    import ("./WDevCore/WModules/WComponents.js");
+    const { WRender } = await
+    import ("./WDevCore/WModules/WComponentsTools.js");
     const modules = await
     import ("./MasterDomClass.js");
     const BodyComponents = new modules.MasterDomClass();
-    root.appendChild(createElement(BodyComponents));
+    root.appendChild(WRender.createElement(BodyComponents));
 }
 
 function StartModuleList(modules) {

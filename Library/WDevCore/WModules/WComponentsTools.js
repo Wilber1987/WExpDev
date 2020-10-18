@@ -82,11 +82,12 @@ class WAjaxTools {
     }
 }
 class WRender {
-    static CreateStringNode = async(string) => {
+    static CreateStringNode = (string) => {
         let node = document.createRange().createContextualFragment(string);
         return node;
     }
-    static createElement = async(Node) => {
+    static createElement = (Node) => {
+        //console.log(Node)
         if (typeof Node === "undefined") {
             return document.createTextNode("");
         }
@@ -110,23 +111,25 @@ class WRender {
             }
         }
         if (Node.children) {
-            Node.children.map(createElement)
-                .forEach(Child => element.appendChild(Child));
+            Node.children.forEach(Child => {
+                element.appendChild(this.createElement(Child));
+            });
         }
         if (typeof Node.events !== 'undefined' || Node.events != null) {
+            console.log(Node.events)
             for (const event in Node.events) {
                 if (typeof Node.events[event] !== 'undefined') {
                     if (!event.includes("Params")) {
-                        element.addEventListener(event,
+                        element.addEventListener(event, () => {
                             Node.events[event](Node.events[event + "Params"])
-                        );
+                        });
                     }
                 }
             }
         }
         return element;
     }
-    static createElementNS = async(node) => {
+    static createElementNS = (node) => {
         if (typeof node === 'string') {
             return document.createTextNode(node)
         }
@@ -150,7 +153,7 @@ class WRender {
         }
         if (node.children) {
             node.children
-                .map(createElementNS)
+                .map(this.createElementNS)
                 .forEach(child => element.appendChild(child))
         }
         return element;
@@ -181,7 +184,7 @@ class DomComponent {
                 ContainerNavigate.append(this.NavForm[IdComponent]);
                 return;
             }
-            ContainerNavigate.append(createElement(ComponentsInstance));
+            ContainerNavigate.append(WRender.createElement(ComponentsInstance));
             return;
         }
     }
@@ -197,7 +200,7 @@ class DomComponent {
                 );
                 return;
             }
-            this.NavForm[IdComponent] = createElement(ComponentsInstance);
+            this.NavForm[IdComponent] = WRender.createElement(ComponentsInstance);
             ContainerNavigate.append(this.NavForm[IdComponent]);
             setTimeout(
                 () => {
@@ -259,9 +262,4 @@ class DomComponent {
     }
 }
 
-
-if (typeof module !== 'undefined' && module.exports) {
-    console.log(module)
-    console.log(module.exports)
-}
 export { WAjaxTools, WRender, DomComponent }

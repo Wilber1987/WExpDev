@@ -1,11 +1,20 @@
-import { DomComponent } from "./WDevCore/WModules/WComponentsTools.js"
-
+import { DomComponent } from "./WDevCore/WModules/WComponentsTools.js";
+import { Modules } from "./Modules/Modules.js";
+const Foros = [{
+    title: "Foro de prueba 1",
+    date: "2020-01-01"
+}, {
+    title: "Foro de prueba 2",
+    date: "2020-01-01"
+}, {
+    title: "Foro de prueba 3",
+    date: "2020-01-01"
+}];
 class MasterDomClass extends DomComponent {
     constructor() {
         super();
-        this.MainComponent = "Contenedor primario"; //new Modules({id:"Modules", class:"DivContainer", modules: this.modules});
+        this.MainComponent = new Modules({ class: "DivContainer", id: "Modules", Foros: Foros });
         this.header = new headerClass();
-        this.footer = new footerClass();
         this.children = [
             this.header,
             {
@@ -23,24 +32,13 @@ class MasterDomClass extends DomComponent {
                     { type: 'section', props: { id: "Container" } }
                 ]
             },
-            this.footer,
+            new FooterNavigator({
+                class: "FooterNav",
+                id: "FooterNav",
+                style: ""
+            })
         ]
     }
-}
-class footerClass extends DomComponent {
-    constructor(props) {
-        super();
-        if (props) {
-            this.props = props;
-        } else {
-            this.type = "footer";
-            this.props.class = "myFooter";
-        }
-    }
-    children = [
-        { type: 'label', children: ["Contactenos"] },
-        { type: 'label', children: ["- 8807-8386"] }
-    ];
 }
 class headerClass extends DomComponent {
     constructor() {
@@ -48,42 +46,24 @@ class headerClass extends DomComponent {
         this.type = "header";
         this.props.class = "";
     }
-    SecurityNavigator = new SecurityNavigator({
-        class: "LoginNav",
-        id: "LoginNav",
-        style: "opacity: 0; pointer-events: none;"
-    });
     children = [{
-            type: 'button',
-            props: {
-                id: "ViewMenu",
-                type: "button",
-                onclick: () => {
-                    this._DispalNav("MyLateralNav", "SlideLeft")
-                }
-            },
-            children: ['Nav']
-        }, {
-            type: 'button',
-            props: {
-                id: "LoginBtn",
-                class: "LoginBtn",
-                type: "button",
-                onclick: () => {
-                    this._DispalNav("LoginNav", "SlideRight")
-                }
-            },
-            children: ['Login']
+        type: 'button',
+        props: {
+            id: "ViewMenu",
+            type: "button",
+            class: "btnMenu",
+            onclick: () => {
+                this._DispalNav("MyLateralNav", "SlideLeft")
+            }
         },
-        this.SecurityNavigator
-    ];
+        children: ['']
+    }, { type: 'label', props: { innerText: "My Inclusive APP" } }];
 
 }
 class MyNavigator extends DomComponent {
     constructor(props) {
         super();
         this.props = props;
-        this.NavForm = [];
     }
     type = "div";
     children = [{
@@ -95,7 +75,7 @@ class MyNavigator extends DomComponent {
                         this._DispalNav("MyLateralNav", "SlideLeft");
                     }
                 },
-                children: [{ type: "a", props: { href: "#" }, children: ["Modulos"] }]
+                children: [{ type: "a", props: { href: "#" }, children: ["Perfil"] }]
             },
             {
                 type: "li",
@@ -104,7 +84,7 @@ class MyNavigator extends DomComponent {
                         this._DispalNav("MyLateralNav", "SlideLeft");
                     }
                 },
-                children: [{ type: "a", props: { href: "#" }, children: ["Bar Report"] }]
+                children: [{ type: "a", props: { href: "#" }, children: ["Notificaciones"] }]
             },
             {
                 type: "li",
@@ -113,7 +93,7 @@ class MyNavigator extends DomComponent {
                         this._DispalNav("MyLateralNav", "SlideLeft");
                     }
                 },
-                children: [{ type: "a", props: { href: "#" }, children: ["Radial Report"] }]
+                children: [{ type: "a", props: { href: "#" }, children: ["Mensajes"] }]
             },
             {
                 type: "li",
@@ -122,16 +102,15 @@ class MyNavigator extends DomComponent {
                         this._DispalNav("MyLateralNav", "SlideLeft");
                     }
                 },
-                children: [{ type: "a", props: { href: "#" }, children: ["MultiSelect"] }]
+                children: [{ type: "a", props: { href: "#" }, children: ["Cerrar Sesión"] }]
             },
         ]
     }];
 }
-class SecurityNavigator extends DomComponent {
+class FooterNavigator extends DomComponent {
     constructor(props) {
         super();
         this.props = props;
-        this.NavForm = [];
     }
     type = "div";
     children = [{
@@ -139,41 +118,54 @@ class SecurityNavigator extends DomComponent {
         children: [{
                 type: "li",
                 props: {
-                    onclick: () => {
-                        this._DispalNav("LoginNav", "SlideRight")
+                    onclick: async() => {
+                        const { Modules } = await
+                        import ("./Modules/Modules.js");
+                        this.NavigateFunction("Modules", new Modules({ class: "DivContainer", id: "Modules", Foros: Foros }));
                     }
                 },
-                children: ["Login"]
+                children: [{
+                    type: "button",
+                    props: {
+                        type: "button",
+                        style: `background: url('./Media/icons/modules2.png') no-repeat;background-size: 100% 100%;`
+                    }
+                }]
             },
             {
                 type: "li",
                 props: {
-                    onclick: () => {
-                        this._DispalNav("LoginNav", "SlideRight")
+                    onclick: async() => {
+                        const { ForosView } = await
+                        import ("./Modules/ForosView.js");
+                        this.NavigateFunction("ForosView", new ForosView({ class: "DivContainer DivSection", id: "ForosView" }));
                     }
                 },
-                children: ["Register"]
+                children: [{
+                    type: "button",
+                    props: {
+                        type: "button",
+                        style: `background: url('./Media/icons/foro2.png') no-repeat;background-size: 100% 100%;`
+                    }
+                }]
             },
             {
                 type: "li",
                 props: {
-                    onclick: () => {
-                        console.log("navegando");
-                        this._DispalNav("LoginNav", "SlideRight")
+                    onclick: async() => {
+                        const { ReportView } = await
+                        import ("./Modules/ReportView.js");
+                        this.NavigateFunction("ReportView", new ReportView({ class: "DivContainer DivSection", id: "ReportView" }));
                     }
                 },
-                children: ["Perfil"]
-            },
-            {
-                type: "li",
-                props: {
-                    onclick: () => {
-                        console.log("navegando");
-                        this._DispalNav("LoginNav", "SlideRight")
+                children: [{
+                    type: "button",
+                    props: {
+                        type: "button",
+                        style: `background: url('./Media/icons/bar.png') no-repeat;background-size: 100% 100%;`
                     }
-                },
-                children: ["Logout"]
-            },
+                }]
+            }
         ]
     }];
 }

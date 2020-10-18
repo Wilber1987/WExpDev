@@ -1,18 +1,19 @@
-class WStyledRender extends HTMLElement{ 
-    constructor(){
-        super();  
+import { WRender } from "./WComponentsTools.js";
+
+class WStyledRender extends HTMLElement {
+    constructor() {
+        super();
     }
-    attributeChangedCallBack(){
+    attributeChangedCallBack() {
         this.DrawStyle();
     }
-    connectedCallback(){           
-        if (this.innerHTML != "") {            
+    connectedCallback() {
+        if (this.innerHTML != "") {
             return;
         }
         this.DrawStyle();
-        //console.log(this.CSSProps)
     }
-    DrawStyle(){
+    DrawStyle() {
         let styleFrag = {
             type: "style",
             props: {},
@@ -24,18 +25,24 @@ class WStyledRender extends HTMLElement{
                 let bodyClass = ""
                 let index = 0;
                 for (const prop in Class.CSSProps) {
-                    bodyClass = bodyClass + `${prop}: ${Class.CSSProps[prop]};`; 
-                    index++; 
-                }  
-                bodyClass = `${Class.Name} {${bodyClass}}`; 
+                    bodyClass = bodyClass + `${prop}: ${Class.CSSProps[prop]};`;
+                    index++;
+                }
+                bodyClass = `${Class.Name} {${bodyClass}}`;
                 bodyStyle = bodyStyle + bodyClass;
-            });   
-            styleFrag.children.push(bodyStyle);        
+            });
+            styleFrag.children.push(bodyStyle);
         }
-        this.append(createElement(styleFrag));
+        this.append(WRender.createElement(styleFrag));
     }
 }
-class CSSProps  {
+class WCssClass {
+    constructor(ClassName, PropsList = (new CSSProps())) {
+        this.Name = ClassName;
+        this.CSSProps = PropsList;
+    }
+}
+class CSSProps {
     "align-content" = null;
     "align-items" = null;
     "align-self" = null;
@@ -218,12 +225,6 @@ class CSSProps  {
     "background-image" = null;
     "border" = null;
     "border-radius" = null;
-}   
-
-class WCssClass {
-    constructor(ClassName, PropsList = (new CSSProps())){
-        this.Name = ClassName;
-        this.CSSProps = PropsList;
-    }
 }
 customElements.define("w-style", WStyledRender);
+export { WCssClass, CSSProps };
