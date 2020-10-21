@@ -2,6 +2,9 @@
 WImports.importarStyle("Styles/AppStyles.css", Url_Path);
 
 //var modules = null;
+function name() {
+    console.log("ya cargo todo")
+}
 
 const OnLoad = async() => {
     const { WRender } = await

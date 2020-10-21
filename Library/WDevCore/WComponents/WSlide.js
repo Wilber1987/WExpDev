@@ -3,7 +3,7 @@ import { WCssClass } from "../WModules/WStyledRender.js";
 class WSlide extends HTMLElement {
     constructor() {
         super();
-        console.log(this)
+        //console.log(this)
         this.slideIndex = 1;
     }
     attributeChangedCallBack() {

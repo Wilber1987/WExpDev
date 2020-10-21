@@ -116,13 +116,16 @@ class WRender {
             });
         }
         if (typeof Node.events !== 'undefined' || Node.events != null) {
-            console.log(Node.events)
+            //console.log(Node.events)
             for (const event in Node.events) {
                 if (typeof Node.events[event] !== 'undefined') {
                     if (!event.includes("Params")) {
-                        element.addEventListener(event, () => {
-                            Node.events[event](Node.events[event + "Params"])
-                        });
+                        element.addEventListener(event, 
+                           // () => {
+                            //console.log(Node.events)
+                            Node.events[event]//(Node.events[event + "Params"])
+                        //}
+                        );
                     }
                 }
             }
@@ -261,5 +264,177 @@ class DomComponent {
         }
     }
 }
+class ArrayFunctions {
+    static orderByDate(Arry, type) {
+        var meses = [
+            "enero", "febrero", "marzo",
+            "abril", "mayo", "junio", "julio",
+            "agosto", "septiembre", "octubre",
+            "noviembre", "diciembre"
+        ];
+        if (type == 1) {
+            Arry.sort((a, b) => a.time - b.time);
+        } else if (type == 2) {
+            Arry.forEach(element => {
+                if (element.time.includes("diciembre")) {
+                    var Year = new Date(Date.parse(element.time)).getFullYear();
+                    element.time = Date.parse(Year + " December");
+                } else element.time = Date.parse(element.time);
+            });
+            Arry.sort((a, b) => a.time - b.time);
 
-export { WAjaxTools, WRender, DomComponent }
+            Arry.forEach(element => {
+                var fecha = new Date(element.time);
+                element.time = meses[fecha.getMonth()] + " " + fecha.getFullYear();
+            });
+
+        } else {
+            var Array2 = [];
+            Arry.forEach(element => {
+                var object = {
+                    cuarter: null,
+                    year: null
+                };
+                object.cuarter = element.time.substring(1, 0);
+                object.year = element.time.substring(element.time.length, 14);
+                Array2.push(object);
+            })
+            Array2.sort((a, b) => a.year - b.year);
+            var Array3 = [];
+            Array2.forEach(element => {
+                var object = Arry.find(x => x.time.substring(1, 0).includes(element.cuarter) &&
+                    x.time.includes(element.year));
+                Array3.push(object);
+            });
+            Arry = Array3;
+        }
+        return Arry;
+    }
+    static ArryUnique(DataArray, param, param2 = null, param3 = null) {
+        if (typeof param3 !== 'undefined' && param3 != null && param3 != "") {
+            let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) => {
+                return Array.findIndex(ArryValue =>
+                    (JSON.stringify(ArryValue[param3]) ===
+                        JSON.stringify(ActalValue[param3])) &&
+                    (JSON.stringify(ArryValue[param2]) ===
+                        JSON.stringify(ActalValue[param2])) &&
+                    (JSON.stringify(ArryValue[param]) ===
+                        JSON.stringify(ActalValue[param]))
+                ) === ActualIndex
+            });
+            return DataArraySR;
+        } else if (typeof param2 !== 'undefined' && param2 != null && param2 != "") {
+            let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) => {
+                return Array.findIndex(ArryValue =>
+                    (JSON.stringify(ArryValue[param2]) ===
+                        JSON.stringify(ActalValue[param2])) &&
+                    (JSON.stringify(ArryValue[param]) ===
+                        JSON.stringify(ActalValue[param]))
+                ) === ActualIndex
+            });
+            return DataArraySR;
+        } else if (typeof param !== 'undefined' && param != null && param != "") {
+            let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) => {
+                return Array.findIndex(ArryValue => JSON.stringify(ArryValue[param]) ===
+                    JSON.stringify(ActalValue[param])) === ActualIndex
+            });
+            return DataArraySR;
+        }
+        return null;
+    }
+    static DataTotals(Config) {
+        let UniqueTotals = this.ArryUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);
+        let Totals = [];
+        if (typeof Config.AttNameG3 !== 'undefined' && Config.AttNameG3 != null && Config.AttNameG3 != "") {
+            UniqueTotals.forEach(element => {
+                let suma = 0;
+                Config.Datasets.forEach(elementGroup => {
+
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
+                        element[Config.AttNameG2] == elementGroup[Config.AttNameG2] &&
+                        element[Config.AttNameG3] == elementGroup[Config.AttNameG3]) {
+                        suma = suma + parseFloat(elementGroup[Config.EvalValue]);
+                    }
+                });
+                let NewObj = {};
+                NewObj[Config.AttNameG1] = element[Config.AttNameG1];
+                NewObj[Config.AttNameG2] = element[Config.AttNameG2];
+                NewObj[Config.AttNameG3] = element[Config.AttNameG3];
+                NewObj[Config.EvalValue] = suma;
+                Totals.push(NewObj);
+            });
+        } else if (typeof Config.AttNameG2 !== 'undefined' && Config.AttNameG2 != null && Config.AttNameG2 != "") {
+            UniqueTotals.forEach(element => {
+                let suma = 0;
+                Config.Datasets.forEach(elementGroup => {
+
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
+                        element[Config.AttNameG2] == elementGroup[Config.AttNameG2]) {
+                        suma = suma + parseFloat(elementGroup[Config.EvalValue]);
+                    }
+                });
+                let NewObj = {};
+                NewObj[Config.AttNameG1] = element[Config.AttNameG1];
+                NewObj[Config.AttNameG2] = element[Config.AttNameG2];
+                NewObj[Config.EvalValue] = suma;
+                Totals.push(NewObj);
+            });
+        } else if (typeof Config.AttNameG1 !== 'undefined' && Config.AttNameG1 != null && Config.AttNameG1 != "") {
+            UniqueTotals.forEach(element => {
+                let suma = 0;
+                Config.Datasets.forEach(elementGroup => {
+
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]) {
+                        suma = suma + parseFloat(elementGroup[Config.EvalValue]);
+                    }
+                });
+                let NewObj = {};
+                NewObj[Config.AttNameG1] = element[Config.AttNameG1];
+                NewObj[Config.EvalValue] = suma;
+                Totals.push(NewObj);
+            });
+        }
+        return Totals;
+    }
+    static MaxValue(DataArry, Config) {
+        var Maxvalue = 0;
+        for (let index = 0; index < DataArry.length; index++) {
+            if (parseInt(DataArry[index][Config.EvalValue]) > Maxvalue) {
+                Maxvalue = DataArry[index][Config.EvalValue];
+            }
+        }
+        return Maxvalue;
+    }
+    static FindInTotal(Elemento, list, Config) {
+            var FindElement = false;
+            for (let index = 0; index < list.length; index++) {
+                if (list[index][Config.AttNameG3]) {
+                    if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
+                        list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] &&
+                        list[index][Config.AttNameG3] == Elemento[Config.AttNameG3]) {
+                        FindElement = list[index];
+                    }
+                } else if (list[index][Config.AttNameG2]) {
+                    if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
+                        list[index][Config.AttNameG2] == Elemento[Config.AttNameG2]) {
+                        FindElement = list[index];
+                    }
+                } else {
+                    if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1]) {
+                        FindElement = list[index];
+                    }
+                }
+            }
+            return FindElement;
+        }
+        //reparar
+    static SumValue(DataArry, Config) {
+        var Maxvalue = 0;
+        for (let index = 0; index < DataArry.length; index++) {
+            Maxvalue = Maxvalue + parseFloat(DataArry[index][Config.EvalValue]);
+        }
+        return Maxvalue;
+    }
+}
+
+export { WAjaxTools, WRender, DomComponent, ArrayFunctions }
