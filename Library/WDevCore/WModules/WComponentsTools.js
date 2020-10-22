@@ -20,8 +20,8 @@ function DisplayAcordeon(value, SectionId, size = null) {
     }
 }
 class WAjaxTools {
-    constructor() {}
-    static PostRequest = async(Url, Data = {}) => {
+    constructor() { }
+    static PostRequest = async (Url, Data = {}) => {
         try {
             let response = await fetch(Url, {
                 method: 'POST',
@@ -49,7 +49,7 @@ class WAjaxTools {
             }
         }
     }
-    static GetRequest = async(Url) => {
+    static GetRequest = async (Url) => {
         try {
             let response = await fetch(Url, {
                 method: 'GET',
@@ -87,50 +87,55 @@ class WRender {
         return node;
     }
     static createElement = (Node) => {
-        //console.log(Node)
-        if (typeof Node === "undefined") {
-            return document.createTextNode("");
-        }
-        if (typeof Node === "string") {
-            return document.createTextNode(Node);
-        }
-        if (Node.type == "documentFragment") {
-            return CreateStringNode(Node.stringFragment);
-        }
-        if (Node.tagName) {
-            return Node;
-        }
-        const element = document.createElement(Node.type);
-        if (Node.props) {
-            for (const prop in Node.props) {
-                if (prop == "class") {
-                    element.className = Node.props[prop];
-                } else {
-                    element[prop] = Node.props[prop];
-                }
+        try {
+            //console.log(Node)
+            if (typeof Node === "undefined") {
+                return document.createTextNode("");
             }
-        }
-        if (Node.children) {
-            Node.children.forEach(Child => {
-                element.appendChild(this.createElement(Child));
-            });
-        }
-        if (typeof Node.events !== 'undefined' || Node.events != null) {
-            //console.log(Node.events)
-            for (const event in Node.events) {
-                if (typeof Node.events[event] !== 'undefined') {
-                    if (!event.includes("Params")) {
-                        element.addEventListener(event, 
-                           // () => {
-                            //console.log(Node.events)
-                            Node.events[event]//(Node.events[event + "Params"])
-                        //}
-                        );
+            if (typeof Node === "string" || typeof Node === "number") {
+                return document.createTextNode(Node);
+            }
+            if (Node.type == "documentFragment") {
+                return CreateStringNode(Node.stringFragment);
+            }
+            if (Node.tagName) {
+                return Node;
+            }
+            const element = document.createElement(Node.type);
+            if (Node.props) {
+                for (const prop in Node.props) {
+                    if (prop == "class") {
+                        element.className = Node.props[prop];
+                    } else {
+                        element[prop] = Node.props[prop];
                     }
                 }
             }
+            if (Node.children) {
+                Node.children.forEach(Child => {
+                    element.appendChild(this.createElement(Child));
+                });
+            }
+            if (typeof Node.events !== 'undefined' || Node.events != null) {
+                //console.log(Node.events)
+                for (const event in Node.events) {
+                    if (typeof Node.events[event] !== 'undefined') {
+                        if (!event.includes("Params")) {
+                            element.addEventListener(event,
+                                // () => {
+                                //console.log(Node.events)
+                                Node.events[event]//(Node.events[event + "Params"])
+                                //}
+                            );
+                        }
+                    }
+                }
+            }
+            return element;
+        } catch (error) {
+            //console.log(error)
+            //console.log(Node)
         }
-        return element;
     }
     static createElementNS = (node) => {
         if (typeof node === 'string') {
@@ -170,7 +175,7 @@ class DomComponent {
             class: "MyForm"
         };
     }
-    NavigateFunction = async(IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
+    NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
         //console.log(this.NavForm);
         const ContainerNavigate = document.querySelector("#" + ContainerName);
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
@@ -191,7 +196,7 @@ class DomComponent {
             return;
         }
     }
-    ModalNavigateFunction = async(IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
+    ModalNavigateFunction = async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
         const ContainerNavigate = document.querySelector("#" + ContainerName);
         if (!ContainerNavigate.querySelector("#" + IdComponent)) {
             if (typeof this.NavForm[IdComponent] != "undefined") {
@@ -406,28 +411,28 @@ class ArrayFunctions {
         return Maxvalue;
     }
     static FindInTotal(Elemento, list, Config) {
-            var FindElement = false;
-            for (let index = 0; index < list.length; index++) {
-                if (list[index][Config.AttNameG3]) {
-                    if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
-                        list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] &&
-                        list[index][Config.AttNameG3] == Elemento[Config.AttNameG3]) {
-                        FindElement = list[index];
-                    }
-                } else if (list[index][Config.AttNameG2]) {
-                    if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
-                        list[index][Config.AttNameG2] == Elemento[Config.AttNameG2]) {
-                        FindElement = list[index];
-                    }
-                } else {
-                    if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1]) {
-                        FindElement = list[index];
-                    }
+        var FindElement = false;
+        for (let index = 0; index < list.length; index++) {
+            if (list[index][Config.AttNameG3]) {
+                if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
+                    list[index][Config.AttNameG2] == Elemento[Config.AttNameG2] &&
+                    list[index][Config.AttNameG3] == Elemento[Config.AttNameG3]) {
+                    FindElement = list[index];
+                }
+            } else if (list[index][Config.AttNameG2]) {
+                if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1] &&
+                    list[index][Config.AttNameG2] == Elemento[Config.AttNameG2]) {
+                    FindElement = list[index];
+                }
+            } else {
+                if (list[index][Config.AttNameG1] == Elemento[Config.AttNameG1]) {
+                    FindElement = list[index];
                 }
             }
-            return FindElement;
         }
-        //reparar
+        return FindElement;
+    }
+    //reparar
     static SumValue(DataArry, Config) {
         var Maxvalue = 0;
         for (let index = 0; index < DataArry.length; index++) {

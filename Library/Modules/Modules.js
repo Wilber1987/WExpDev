@@ -164,7 +164,7 @@ class TableCont {
             "datos": [{
                     "cantidad": 21,
                     "estado": "Naranja",
-                    "time": "julio 2019",
+                    "time": "julio 2012",
                     "categ2": "Moderado",
                     "categ": "Ekisde"
                 },
@@ -192,7 +192,7 @@ class TableCont {
                 {
                     "cantidad": 36,
                     "estado": "Naranja",
-                    "time": "julio 2019",
+                    "time": "julio 2012",
                     "categ2": "Moderado",
                     "categ": "Galaxia"
                 },
