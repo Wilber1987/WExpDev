@@ -207,7 +207,6 @@ class WTableComponent extends HTMLElement {
         }
         return val;
     }
-
 }
 const WTableStyle = {
     type: "w-style",
