@@ -59,76 +59,26 @@ class WTableComponent extends HTMLElement {
     }
     //GROUP TABLE
     DrawGroupTable() {
-        this.GroupsData = [
-            ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.TableConfig.AttNameEval),
-            ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.TableConfig.AttNameG1),
-            ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.TableConfig.AttNameG2),
-            ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.TableConfig.AttNameG3)
-        ];
-        this.GroupsData2 = [];
-        this.groupParams = [this.AttNameG3, this.AttNameG2, this.AttNameG1];
+        this.GroupsData = [];
+        if (!this.groupParams) {
+            this.groupParams = [
+                this.AttNameG3
+                , this.AttNameG2
+                , this.AttNameG1
+            ];
+        }
+        this.EvalArray = ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
         this.groupParams.forEach(groupParam => {
-            this.GroupsData2.push(ArrayFunctions.ArryUnique(this.TableConfig.Datasets, groupParam))
+            this.GroupsData.push(ArrayFunctions.ArryUnique(this.TableConfig.Datasets, groupParam))
         });
-        console.log(this.GroupsData2);
-        let table = { type: "table", props: { class: this.TableClass }, children: [] };
-        //table.children.push(this.DrawGroupTH(this.ChargeGroup(this.GroupsData2)));
-        let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData2))
-        console.log(div)
+        let table = { type: "div", props: { class: this.TableClass }, children: [] };
+        let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
         table.children.push(div);
-        //table.children.push(this.DrawGroupTBody());        
+        this.append(WRender.createElement(this.TableOptions()));
         this.append(WRender.createElement(WTableStyle));
         this.append(WRender.createElement(table));
     }
-    DrawGroupTHead = () => {
-        let thead = { type: "thead", props: {}, children: [] };
-        const element = this.Dataset[0];
-        let trGroup1 = { type: "tr", children: [] }
-        let trGroup2 = { type: "tr", children: [] }
-        let trGroup3 = { type: "tr", children: [] }
-        thead.children.push(trGroup1);
-        trGroup1.children.push({
-            type: "th", children: [this.TableConfig.AttNameEval]
-        });
-        this.GroupsData[1].forEach(elementG1 => {
-            trGroup1.children.push({
-                type: "th", children: [elementG1[this.TableConfig.AttNameG1]]
-            });
-        });
-        return thead;
-    }
-    DrawGroupTBody = () => {
-        let tbody = { type: "tbody", props: {}, children: [] };
-        this.GroupsData[0].forEach(element => {
-            let tr = { type: "tr", children: [] };
-            tr.children.push({
-                type: "td", children: [element[this.TableConfig.AttNameEval].toString()]
-            });
-            this.GroupsData[1].forEach(elementG1 => {
-                let value = this.Dataset.find(a =>
-                    a[this.AttNameG1] == elementG1[this.AttNameG1]
-                    && a[this.AttNameEval] == element[this.AttNameEval]
-                );
-                console.log(value)
-                if (typeof value === "undefined") {
-                    value = {}
-                    value[this.EvalValue] = "n/a"
-                }
-                tr.children.push({
-                    type: "td", children: [value[this.EvalValue].toString()]
-                });
-            });
-            tbody.children.push(tr);
-        });
-        return tbody;
-    }
-    CreateGroupsArray(DataGroups, Dataset) {
-        let NewGroupData = [];
-        DataGroups.forEach(GroupValue => {
-            NewGroupData.push(ArrayFunctions.ArryUnique(Dataset, GroupValue));
-        });
-        return NewGroupData;
-    }
+    //no table
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
             return null;
@@ -140,72 +90,134 @@ class WTableComponent extends HTMLElement {
         }
         return ObjGroup;
     }
-    DrawGroupTH = (Groups, ParentLength = 1, thead = { type: "thead", props: {}, children: [] }) => {
-        console.log(Groups);
-        let trGroup = { type: "tr", children: [] };
-        for (let index = 0; index < ParentLength; index++) {
-            Groups.data.forEach((Group) => {
-                trGroup.children.push({
-                    type: "th", props: { colspan: 1 }, children: [Group[this.AttNameG1]]
-                });
-            });
-        }
-        thead.children.push(trGroup);
-        if (Groups.children != null) {
-            thead = this.DrawGroupTH(Groups.children, (Groups.data.length * ParentLength), thead);
-        } else {
-            //console.log(thead);
-        }
-        return thead;
+    AttEval = () => {
+        let div = { type: "div", props: { class: "TContainerBlockL" }, children: [] };
+        div.children.push({ type: "Tlabel", children: ["cajon"] });
+        this.EvalArray.forEach(evalValue => {
+            div.children.push({ type: "TData", children: [evalValue[this.AttNameEval]] });
+        });
+        return div;
     }
-    //no table
-    DrawGroupDiv = (Groups, div = { type: "div", props: { class: "TContainer" }, children: [] }, arrayP = {}) => {
-        Groups.data.forEach((Group, index = 0) => {
+    DrawGroupDiv = (Groups, div = { type: "div", props: { class: "TContainer" }, children: [this.AttEval()] }, arrayP = {}) => {
+        Groups.data.forEach((Group) => {
             let trGroup = { type: "div", props: { class: "TContainerBlock" }, children: [] };
-            trGroup.children.push({ type: "Tlabel", children: ["cajon"] });
+            trGroup.children.push({ type: "Tlabel", children: [Group[Groups.groupParam]] });
+            /////
+            let dataGroup = { type: "div", props: { class: "Cajon" }, children: [] };
+            trGroup.children.push(dataGroup);
             arrayP[Groups.groupParam] = Group[Groups.groupParam];
             if (Groups.children != null) {
                 if (Groups.children.children == null) {
                     trGroup.props.class = "flexChild";
                 }
-                this.DrawGroupDiv(Groups.children, trGroup, arrayP);
+                this.DrawGroupDiv(Groups.children, dataGroup, arrayP);
             } else {
-                const DataEval = ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
-                DataEval.forEach(Eval => {
+                trGroup.props.class = "TContainerBlockData";
+                this.EvalArray.forEach(Eval => {
                     arrayP[this.AttNameEval] = Eval[this.AttNameEval];
-                    trGroup.children.push({ type: "TData", children: [this.FindData(arrayP)] });
+                    dataGroup.children.push({ type: "TData", children: [this.FindData(arrayP)] });
                 });
             }
             div.children.push(trGroup);
-            index++;
         });
         return div;
     }
     FindData(arrayP) {
         let val = false;
         let node = null;
-        this.TableConfig.Datasets.forEach(Data => {                       
+        this.TableConfig.Datasets.forEach(Data => {
             val = this.compareObj(arrayP, Data)
-            if (val == true) {                
-                node = Data                
-                return; 
-            }     
-        });  
-        if(node != null){
+            if (val == true) {
+                node = Data
+                return;
+            }
+        });
+        if (node != null) {
             return node[this.EvalValue];
-        }else {
+        } else {
             return "n/a";
-        }   
+        }
     }
     compareObj(arrayP, Data) {
         let val = true;
-        for (const prop in arrayP) {            
+        for (const prop in arrayP) {
             if (arrayP[prop] !== Data[prop]) {
                 val = false;
                 break;
-            }           
+            }
         }
         return val;
+    }
+    /////////////////////////////////////////////////////////  
+    TableOptions = () => {
+        let divAtt = {
+            type: "div", props: {
+                class: "TableOptionsAtribs", id: this.id + "ListAtribs",
+                ondrop: this.drop, ondragover: this.allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Parametros", class: "titleParam" }
+            }]
+        };
+        let model = this.Dataset[0];
+        for (const props in model) {
+            divAtt.children.push({
+                type: "label", children: [props], props: {
+                    id: props, class: "labelParam",
+                    draggable: true, ondragstart: this.drag
+                }
+            });
+        }
+        let divEvalAttib = {
+            type: "div", props: {
+                class: "TableOptionsAtribs", id: this.id + "ListEval" ,
+                ondrop: this.drop, ondragover: this.allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Evaluación", class: "titleParam" }
+            }]
+        };
+        let divEvalValue = {
+            type: "div", props: {
+                class: "TableOptionsAtribs", id: this.id + "ListValue" ,
+                ondrop: this.drop, ondragover: this.allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Valor", class: "titleParam" }
+            }]
+        };
+        let divEvalGroups = {
+            type: "div", props: {
+                class: "TableOptionsAtribs", id: this.id + "ListGroups" ,
+                ondrop: this.drop, ondragover: this.allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Agrupaciones", class: "titleParam" }
+            }]
+        };
+        return { type: "div", props: { class: "TableOptions" }, 
+            children: [divAtt, divEvalAttib, divEvalValue, divEvalGroups] };
+    }
+    allowDrop(ev) {        
+        ev.preventDefault();
+    }
+    drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+    drop(ev) {
+        console.log(this)
+        ev.preventDefault();      
+        var data = ev.dataTransfer.getData("text");
+        let target =  ev.target;       
+        if (target.className == "TableOptionsAtribs") { 
+            //console.log(target.children.length)    
+            //console.log(target.id)
+            if (target.id.includes("ListEval") && target.children.length == 2) {
+                console.log("entro1")             
+            } else if (target.id.includes("ListValue") && target.children.length == 2) {
+                console.log("entro2") 
+            } else {
+                target.appendChild(document.getElementById(data));
+            }
+        } else{
+            alert("error")
+        }       
     }
 }
 const WTableStyle = {
@@ -215,6 +227,10 @@ const WTableStyle = {
             new WCssClass("w-table .WTable", {
                 "font-family": "Verdana, sans-serif",
                 width: "100%",
+                "align-items": "flex-end",
+                border: "solid 1px #000",
+                "overflow-y": "hidden",
+                "overflow-x": "scroll"
             }),
             new WCssClass("w-table .WTable td", {
                 padding: "5px"
@@ -222,34 +238,56 @@ const WTableStyle = {
             //flexcajones
             new WCssClass("w-table .TContainer", {
                 padding: "0px",
-                display: "block",
-                border: "solid 1px #000",
-                "overflow-y": "hiden",
-                "overflow-x": "scroll"
+                display: "flex",
             }),
             new WCssClass("w-table .TContainerBlock", {
-                display: "block",
-                border: "solid 1px #000",
-                float: "left"
+                "border-right": "1px solid #000"
+            }), new WCssClass(" w-table .TContainerBlockL", {
+                display: "flex",
+                "flex-direction": "column",
+                "justify-content": "flex-end",
+                "border-right": "1px solid #000"
             }),
-            new WCssClass("w-table .TContainerBlock Tlabel", {
+            new WCssClass("w-table  Tlabel", {
                 display: "block",
-                border: "solid 1px #000",
-                padding: "5px"
-            }), new WCssClass("w-table .TContainerBlock div", {
-                display: "block",
-                border: "solid 1px #000",
-                float: "left"
+                padding: "5px",
+                "border-bottom": "1px solid #000"
+            }), new WCssClass("w-table .TContainerBlockData .Cajon", {
+                overflow: "hidden",
+                display: "flex",
+                "flex-direction": "column"
+
             }),
             new WCssClass("w-table .flexChild", {
                 padding: "0px",
-                display: "flex",
-                "flex-direction": "column",
-                border: "solid 1px #000",
             }),
             new WCssClass("w-table TData", {
-                display: "block",
                 padding: "5px"
+            }),
+            new WCssClass("w-table .Cajon", {
+                display: "flex"
+            }),
+            new WCssClass("w-table .TableOptions", {
+                display: "flex",
+            }),
+            new WCssClass("w-table .TableOptionsAtribs", {
+                display: "flex",
+                width: "100%",
+                "flex-direction": "column",
+                border: "1px solid #000",
+                "padding-bottom": "20px",
+                "background-color": "#efefef"                
+            }), 
+            new WCssClass("w-table .titleParam", {
+                display: "block",                
+                padding: "10px",               
+                "border-bottom": "1px solid #000",
+                "margin-bottom": "10px"
+            }),
+            new WCssClass("w-table .labelParam", {
+                display: "block",                
+                padding: "10px",
+                "background-color": "#fff",cursor:"pointer"
             }),
         ]
     }
