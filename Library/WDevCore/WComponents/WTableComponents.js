@@ -25,8 +25,8 @@ class WTableComponent extends HTMLElement {
         //this.DrawTable();  
         this.DrawGroupTable();
     }
-    attributeChangedCallback() {}
-    //BASIC TABLE----------------------
+    attributeChangedCallback() { }
+    //BASIC TABLE-----------------------------------------------------------------------
     DrawTable() {
         let table = { type: "table", props: { class: this.TableClass }, children: [] };
         table.children.push(this.DrawTHead());
@@ -61,6 +61,7 @@ class WTableComponent extends HTMLElement {
         });
         return tbody;
     }
+    //FIN BASIOC TABLE-------------------------------------------------------------------
     DrawGroupTable() {
         this.GroupsData = [];
         this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
@@ -97,7 +98,6 @@ class WTableComponent extends HTMLElement {
             this.append(WRender.createElement(ChartContainer));
         }
     }
-
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
             return null;
@@ -111,7 +111,7 @@ class WTableComponent extends HTMLElement {
     }
     AttEval = () => {
         let div = { type: "div", props: { class: "TContainerBlockL" }, children: [] };
-        div.children.push({ type: "Tlabel", children: ["cajon"] });
+        div.children.push({ type: "Tlabel", children: [this.AttNameEval] });
         //console.log(this.EvalArray)
         if (this.EvalArray != null) {
             this.EvalArray.forEach(evalValue => {
@@ -277,56 +277,39 @@ class WTableComponent extends HTMLElement {
                 alert("error")
             }
         }
-        const allowDrop = (ev) => {
-            ev.preventDefault();
-        }
-        const drag = (ev) => {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
+        const allowDrop = (ev) => { ev.preventDefault(); }
+        const drag = (ev) => { ev.dataTransfer.setData("text", ev.target.id); }
         let divAtt = {
-            type: "div",
-            props: {
-                class: "TableOptionsAtribs",
-                id: this.id + "ListAtribs",
-                ondrop: drop,
-                ondragover: allowDrop
+            type: "div", props: {
+                class: "TableOptionsAtribs", id: this.id + "ListAtribs",
+                ondrop: drop, ondragover: allowDrop
             },
             children: [{
-                type: "label",
-                props: { innerText: "Parametros", class: "titleParam" }
+                type: "label", props: { innerText: "Parametros", class: "titleParam" }
             }]
         };
         let model = this.Dataset[0];
         for (const props in model) {
             divAtt.children.push({
-                type: "label",
-                children: [props],
+                type: "label", children: [props],
                 props: {
-                    id: props + this.id,
-                    class: "labelParam",
-                    draggable: true,
-                    ondragstart: drag
+                    id: props + this.id, class: "labelParam", draggable: true, ondragstart: drag
                 }
             });
         }
         let divEvalAttib = {
             type: "div",
             props: {
-                class: "TableOptionsAtribs",
-                id: this.id + "ListEval",
-                ondrop: drop,
-                ondragover: allowDrop
-            },
-            children: [{
-                type: "label",
-                props: { innerText: "Evaluación", class: "titleParam" }
+                class: "TableOptionsAtribs", id: this.id + "ListEval", 
+                ondrop: drop, ondragover: allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Evaluación", class: "titleParam" }
             }]
         };
         let select = {
             type: "select",
             props: {
-                id: "Select" + this.id,
-                class: "titleParam",
+                id: "Select" + this.id, class: "titleParam",
                 onchange: () => {
                     this.DefineTable();
                 }
@@ -339,30 +322,22 @@ class WTableComponent extends HTMLElement {
         let divEvalValue = {
             type: "div",
             props: {
-                class: "TableOptionsAtribs",
-                id: this.id + "ListValue",
-                ondrop: drop,
-                ondragover: allowDrop
+                class: "TableOptionsAtribs", id: this.id + "ListValue",
+                ondrop: drop, ondragover: allowDrop
             },
             children: [select]
         };
         let divEvalGroups = {
             type: "div",
             props: {
-                class: "TableOptionsAtribs",
-                id: this.id + "ListGroups",
-                ondrop: drop,
-                ondragover: allowDrop
+                class: "TableOptionsAtribs", id: this.id + "ListGroups",
+                ondrop: drop, ondragover: allowDrop
             },
             children: [{
-                type: "label",
-                props: { innerText: "Agrupaciones", class: "titleParam" },
+                type: "label", props: { innerText: "Agrupaciones", class: "titleParam" },
                 children: [{
-                    type: "label",
-                    props: {
-                        innerText: "»",
-                        class: "btn",
-                        onclick: () => {
+                    type: "label", props: {
+                        innerText: "»", class: "btn", onclick: () => {
                             DomComponent.DisplayAcorden("TableOptions" + this.id, 38);
                         }
                     }

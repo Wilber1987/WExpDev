@@ -20,14 +20,14 @@ class ChartConfig {
 }
 class ColumChart extends HTMLElement {
     constructor(props) {
-            super();
-        }
-        /*
-            PARA CONVERTIRLO EN GRAFICO DE BARRAS NO STAKED
-            1. modificar el flex direccion de Conteinerbars
-            2. modificar ancho de containerbars y label(la agrupada), en base a la cantidad de series/staks usar anchos fijos
-            3. modificar el alto y ancho de la bar
-        */
+        super();
+    }
+    /*
+        PARA CONVERTIRLO EN GRAFICO DE BARRAS NO STAKED
+        1. modificar el flex direccion de Conteinerbars
+        2. modificar ancho de containerbars y label(la agrupada), en base a la cantidad de series/staks usar anchos fijos
+        3. modificar el alto y ancho de la bar
+    */
     attributeChangedCallBack() {
         this.DrawChart();
     }
@@ -75,6 +75,10 @@ class ColumChart extends HTMLElement {
         }
         SectionLabels.className = "SectionLabels"
         GroupLabelsData.forEach(element => {
+            var color = Colors[index];
+            if (!color) {
+                Colors.push(this.generarColor());
+            }
             SectionLabels.appendChild(WRender.CreateStringNode(
                 `<label style="${style}"><span style="background:${Colors[index]}">
                 </span>${element.Descripcion}</label>`
@@ -177,33 +181,33 @@ class ColumChart extends HTMLElement {
         let index = 0;
         Config.GroupLabelsData.forEach(elementLabelData => { //RECORREMOS LOS STAKS 
             Config.Datasets.forEach(element => { //RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-                    //console.log(element[Config.AttNameG1], element[Config.AttNameG2], element[Config.AttNameG3]);
-                    //console.log(elementGroup[Config.AttNameG1], elementGroup[Config.AttNameG2], elementGroup[Config.AttNameG3]);
-                    //console.log(element);
-                    let bar = null;
-                    if (elementThreeGroup != null) {
-                        if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
-                            element[Config.AttNameEval] == elementLabelData.id_ &&
-                            element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2] &&
-                            element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
-                            bar = this._DrawBar(element, Config, index);
-                        }
-                    } else if (elementSecondGroup != null) {
-                        if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
-                            element[Config.AttNameEval] == elementLabelData.id_ &&
-                            element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {
-                            bar = this._DrawBar(element, Config, index);
-                        }
-                    } else if (elementGroup != null) {
-                        if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
-                            element[Config.AttNameEval] == elementLabelData.id_) {
-                            bar = this._DrawBar(element, Config, index);
-                        }
+                //console.log(element[Config.AttNameG1], element[Config.AttNameG2], element[Config.AttNameG3]);
+                //console.log(elementGroup[Config.AttNameG1], elementGroup[Config.AttNameG2], elementGroup[Config.AttNameG3]);
+                //console.log(element);
+                let bar = null;
+                if (elementThreeGroup != null) {
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
+                        element[Config.AttNameEval] == elementLabelData.id_ &&
+                        element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2] &&
+                        element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
+                        bar = this._DrawBar(element, Config, index);
                     }
-                    if (bar != null) {
-                        ContainerBars.appendChild(bar);
+                } else if (elementSecondGroup != null) {
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
+                        element[Config.AttNameEval] == elementLabelData.id_ &&
+                        element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {
+                        bar = this._DrawBar(element, Config, index);
                     }
-                }) //FIN DATA
+                } else if (elementGroup != null) {
+                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
+                        element[Config.AttNameEval] == elementLabelData.id_) {
+                        bar = this._DrawBar(element, Config, index);
+                    }
+                }
+                if (bar != null) {
+                    ContainerBars.appendChild(bar);
+                }
+            }) //FIN DATA
             index++;
 
         });
@@ -217,7 +221,7 @@ class ColumChart extends HTMLElement {
         countLine = 10
         if (ValP == 1) {
             countLine = 10
-                //var value = parseInt(value / 10) * 10 + 10;
+            //var value = parseInt(value / 10) * 10 + 10;
             val = 10;
         }
         var ContainerLine = document.createElement('section');
@@ -248,7 +252,7 @@ class ColumChart extends HTMLElement {
         countLine = 10
         if (ValP == 1) {
             countLine = 10
-                //var value = parseInt(value / 10) * 10 + 10;
+            //var value = parseInt(value / 10) * 10 + 10;
             val = 10;
         }
         var ContainerLine = document.createElement('section');
@@ -319,6 +323,15 @@ class ColumChart extends HTMLElement {
 
         return SectionLabelGroup;
     }
+    generarColor() {
+        var hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+        var color_aleatorio = "#";
+        for (let index = 0; index < 6; index++) {
+            const random = Math.floor(Math.random() * hexadecimal.length);
+            color_aleatorio += hexadecimal[random]
+        }
+        return color_aleatorio
+    }
 }
 class RadialChart extends HTMLElement {
     constructor(props) {
@@ -328,13 +341,13 @@ class RadialChart extends HTMLElement {
         this.DrawChart();
     }
     connectedCallback() {
-            if (this.innerHTML != "") {
-                return;
-            }
-            this.DrawChart();
+        if (this.innerHTML != "") {
+            return;
         }
-        // DrawChart() {
-    DrawChart = async() => {
+        this.DrawChart();
+    }
+    // DrawChart() {
+    DrawChart = async () => {
         //const { WRender.createElementNS } = await
         //import ("../WModules/WComponents.js");
         this.ChartInstance = new ChartConfig(this.data);
