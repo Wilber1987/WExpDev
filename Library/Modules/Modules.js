@@ -8,7 +8,7 @@ class Modules {
         this.props = props;
         this.props.style = "padding: 10px";
         this.children = [
-            new TableCont(),    
+            new TableCont(),
             //  Ritch           
             new RichText(),
             //  SLIDE           
@@ -154,11 +154,11 @@ class TableCont {
         this.type = "div";
         this.children = [];
         let TableList = [];
-        TableList.push({id_: 1, content: "des", cant: 3,  AttNameG1: "g1", AttNameG1: "g2", AttNameG1: "g3" });
-        TableList.push({id_: 1, content: "des", cant: 3,  AttNameG1: "g1", AttNameG1: "g1", AttNameG1: "g3" });
-        TableList.push({id_: 1, content: "des", cant: 3,  AttNameG1: "g2", AttNameG1: "g2", AttNameG1: "g3" });
-        TableList.push({id_: 1, content: "des", cant: 3,  AttNameG1: "g2", AttNameG1: "g2", AttNameG1: "g3" });
-        TableList.push({id_: 1, content: "des", cant: 3,  AttNameG1: "g1", AttNameG1: "g1", AttNameG1: "g3" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG1: "g2", AttNameG1: "g3" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG1: "g1", AttNameG1: "g3" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g2", AttNameG1: "g2", AttNameG1: "g3" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g2", AttNameG1: "g2", AttNameG1: "g3" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG1: "g1", AttNameG1: "g3" });
         //TABLE CONFIG
         var result = {
             "datos": [{
@@ -166,7 +166,7 @@ class TableCont {
                     "estado": "Naranja",
                     "time": "julio 2012",
                     "categ2": "Moderado",
-                    "categ": "Ekisde"
+                    "categ": "Ekisde",
                 },
                 {
                     "cantidad": 2,
@@ -240,7 +240,7 @@ class TableCont {
                 }
             ],
         };
-        var Config = {     
+        var Config = {
             Datasets: result.datos,
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             AttNameEval: "estado",
@@ -248,17 +248,21 @@ class TableCont {
             AttNameG2: "categ2",
             AttNameG3: "categ",
             EvalValue: "cantidad",
+            Dinamic: true,
+            AddChart: true
         };
         this.children.push({
             type: 'h2',
-            props: { innerText: "Table........."},
+            props: { innerText: "Table........." },
         })
         this.children.push({
             type: "w-table",
             props: {
-                id: "table", TableConfig: Config
+                id: "table",
+                TableConfig: Config
             }
         })
+
     }
 }
-export {Modules}
+export { Modules }

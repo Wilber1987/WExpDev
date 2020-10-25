@@ -1,12 +1,17 @@
-import { WRender, ArrayFunctions } from "../WModules/WComponentsTools.js";
+import { WRender, WArrayF, DomComponent } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
+import "./WChartJSComponent.js";
 class WTableComponent extends HTMLElement {
     constructor() {
         super();
-        this.TableClass = "WTable";
+        this.TableClass = "WTable WScroll";
     }
     connectedCallback() {
-        //console.log(this.TableConfig);
+        this.innerHTML = "";
+        if (typeof this.TableConfig.Datasets === "undefined" || this.TableConfig.Datasets.length == 0) {
+            this.innerHTML = "Defina un Dataset en formato JSON";
+            return;
+        }
         this.Dataset = this.TableConfig.Datasets;
         this.Colors = ["#ff6699", "#ffbb99", "#adebad"];
         this.AttNameEval = this.TableConfig.AttNameEval;
@@ -14,16 +19,13 @@ class WTableComponent extends HTMLElement {
         this.AttNameG2 = this.TableConfig.AttNameG2;
         this.AttNameG3 = this.TableConfig.AttNameG3;
         this.EvalValue = this.TableConfig.EvalValue;
-
-        if (typeof this.Dataset === "undefined" || this.Dataset.length == 0) {
-            return;
-        }
         if (this.TableConfig.TableClass) {
-            this.TableClass = this.TableConfig.TableClass;
+            this.TableClass = this.TableConfig.TableClass + " WScroll";
         }
         //this.DrawTable();  
         this.DrawGroupTable();
     }
+    attributeChangedCallback() {}
     //BASIC TABLE----------------------
     DrawTable() {
         let table = { type: "table", props: { class: this.TableClass }, children: [] };
@@ -39,7 +41,8 @@ class WTableComponent extends HTMLElement {
         thead.children.push(tr);
         for (const prop in element) {
             tr.children.push({
-                type: "th", children: [prop]
+                type: "th",
+                children: [prop]
             });
         }
         return thead;
@@ -50,35 +53,51 @@ class WTableComponent extends HTMLElement {
             let tr = { type: "tr", children: [] }
             for (const prop in element) {
                 tr.children.push({
-                    type: "td", children: [element[prop].toString()]
+                    type: "td",
+                    children: [element[prop].toString()]
                 });
             }
             tbody.children.push(tr);
         });
         return tbody;
     }
-    //GROUP TABLE
     DrawGroupTable() {
         this.GroupsData = [];
-        if (!this.groupParams) {
-            this.groupParams = [
-                this.AttNameG3
-                , this.AttNameG2
-                , this.AttNameG1
-            ];
+        this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
+        if (this.TableConfig.Dinamic == true) {
+            this.AttNameEval = null;
+            this.EvalValue = null;
+            this.groupParams = [];
+            this.EvalArray = [];
+            this.ProcessData = [];
+            this.append(WRender.createElement(this.TableOptions()));
         }
-        this.EvalArray = ArrayFunctions.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
+        if (!this.groupParams || typeof this.groupParams !== "object") {
+            this.groupParams = [];
+            if (this.AttNameG1) {
+                this.groupParams.push(this.AttNameG1)
+            }
+            if (this.AttNameG2) {
+                this.groupParams.push(this.AttNameG2)
+            }
+            if (this.AttNameG3) {
+                this.groupParams.push(this.AttNameG3)
+            }
+        }
         this.groupParams.forEach(groupParam => {
-            this.GroupsData.push(ArrayFunctions.ArryUnique(this.TableConfig.Datasets, groupParam))
+            this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
         });
-        let table = { type: "div", props: { class: this.TableClass }, children: [] };
+        this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
-        table.children.push(div);
-        this.append(WRender.createElement(this.TableOptions()));
+        this.table.children.push(div);
         this.append(WRender.createElement(WTableStyle));
-        this.append(WRender.createElement(table));
+        this.append(WRender.createElement(this.table));
+        if (this.TableConfig.AddChart == true) {
+            let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+            this.append(WRender.createElement(ChartContainer));
+        }
     }
-    //no table
+
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
             return null;
@@ -93,12 +112,20 @@ class WTableComponent extends HTMLElement {
     AttEval = () => {
         let div = { type: "div", props: { class: "TContainerBlockL" }, children: [] };
         div.children.push({ type: "Tlabel", children: ["cajon"] });
-        this.EvalArray.forEach(evalValue => {
-            div.children.push({ type: "TData", children: [evalValue[this.AttNameEval]] });
-        });
+        //console.log(this.EvalArray)
+        if (this.EvalArray != null) {
+            this.EvalArray.forEach(evalValue => {
+                div.children.push({ type: "TData", children: [evalValue[this.AttNameEval]] });
+            });
+            div.children.push({ type: "TDataTotal", children: ["Total"] });
+        }
         return div;
     }
     DrawGroupDiv = (Groups, div = { type: "div", props: { class: "TContainer" }, children: [this.AttEval()] }, arrayP = {}) => {
+        //console.log(Groups)
+        if (Groups == null) {
+            return "";
+        }
         Groups.data.forEach((Group) => {
             let trGroup = { type: "div", props: { class: "TContainerBlock" }, children: [] };
             trGroup.children.push({ type: "Tlabel", children: [Group[Groups.groupParam]] });
@@ -113,10 +140,31 @@ class WTableComponent extends HTMLElement {
                 this.DrawGroupDiv(Groups.children, dataGroup, arrayP);
             } else {
                 trGroup.props.class = "TContainerBlockData";
-                this.EvalArray.forEach(Eval => {
-                    arrayP[this.AttNameEval] = Eval[this.AttNameEval];
-                    dataGroup.children.push({ type: "TData", children: [this.FindData(arrayP)] });
-                });
+                //let dataGroupeV = { type: "div", props: { class: "Cajon" }, children: [] };
+                if (this.EvalArray != null) {
+                    this.EvalArray.forEach(Eval => {
+                        arrayP[this.AttNameEval] = Eval[this.AttNameEval];
+                        const Data = this.FindData(arrayP)
+                        dataGroup.children.push({ type: "TData", children: [Data] });
+                        let NewObject = {};
+                        for (const prop in arrayP) {
+                            NewObject[prop] = arrayP[prop];
+                        }
+                        if (parseFloat(Data).toString() != "NaN") {
+                            NewObject[this.EvalValue] = Data;
+                            this.ProcessData.push(NewObject)
+                        }
+                    });
+                    let sum = 0;
+                    dataGroup.children.forEach(element => {
+                        //console.log(element.children[0])
+                        const value = parseFloat(element.children[0]);
+                        if (typeof value === "number" && value.toString() != "NaN") {
+                            sum = sum + value;
+                        }
+                    });
+                    dataGroup.children.push({ type: "TDataTotal", children: [sum] });
+                }
             }
             div.children.push(trGroup);
         });
@@ -124,16 +172,22 @@ class WTableComponent extends HTMLElement {
     }
     FindData(arrayP) {
         let val = false;
-        let node = null;
+        let nodes = [];
         this.TableConfig.Datasets.forEach(Data => {
             val = this.compareObj(arrayP, Data)
             if (val == true) {
-                node = Data
-                return;
+                nodes.push(Data)
             }
         });
-        if (node != null) {
-            return node[this.EvalValue];
+        if (nodes.length != []) {
+            let Operations = this.querySelector("#Select" + this.id);
+            let value = "fail!";
+            if (Operations.value == "sum") {
+                value = WArrayF.SumValAtt(nodes, this.EvalValue);
+            } else if (Operations.value == "count") {
+                value = nodes.length;
+            }
+            return value;
         } else {
             return "n/a";
         }
@@ -148,89 +202,227 @@ class WTableComponent extends HTMLElement {
         }
         return val;
     }
-    /////////////////////////////////////////////////////////  
+    DefineTable() {
+        this.ProcessData = [];
+        let table = this.querySelector("#MainTable" + this.id);
+        if (this.EvalValue == null) {
+            table.innerHTML = "Agregue un Value";
+        } else {
+            table.innerHTML =
+                this.GroupsData = [];
+            this.groupParams.forEach(groupParam => {
+                this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
+            });
+            let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
+            table.append(WRender.createElement(div));
+        }
+        if (this.TableConfig.AddChart == true) {
+            let ChartContainer = this.querySelector("#Chart" + this.id);
+            ChartContainer.innerHTML = "";
+            ChartContainer.append(WRender.createElement(this.DrawChart()));
+        }
+    }
     TableOptions = () => {
+        const drop = (ev) => {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            let target = ev.target;
+            let control = this.querySelector("#" + data);
+            //console.log(control.parentNode);
+            const OriginalParent = control.parentNode.id;
+            if (control == null) {
+                console.log("error", target.parentNode.id, "TableOptions" + this.id)
+                return;
+            }
+            if (target.className == "TableOptionsAtribs") {
+                if (target.id.includes("ListEval")) {
+                    if (target.children.length == 2) {
+                        console.log("entro1");
+                        return;
+                    }
+                    this.AttNameEval = document.getElementById(data).innerText;
+                    this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
+                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    if (find) {
+                        this.groupParams.splice(this.groupParams.indexOf(find), 1);
+                    }
+                } else if (target.id.includes("ListValue")) {
+                    if (target.children.length == 2) {
+                        console.log("entro1");
+                        return;
+                    }
+                    this.EvalValue = document.getElementById(data).innerText;
+                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    if (find) {
+                        this.groupParams.splice(this.groupParams.indexOf(find), 1);
+                    }
+                } else if (target.id.includes("ListGroups")) {
+                    this.groupParams.push(document.getElementById(data).innerText);
+                } else if (target.id.includes("ListAtribs")) {
+                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    if (find) {
+                        this.groupParams.splice(this.groupParams.indexOf(find), 1);
+                    }
+                }
+                target.appendChild(document.getElementById(data));
+                if (OriginalParent.includes("ListEval")) {
+                    this.AttNameEval = null;
+                    this.EvalArray = null;
+                }
+                if (OriginalParent.includes("ListValue")) {
+                    this.EvalValue = null;
+                }
+                this.DefineTable();
+            } else {
+                alert("error")
+            }
+        }
+        const allowDrop = (ev) => {
+            ev.preventDefault();
+        }
+        const drag = (ev) => {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
         let divAtt = {
-            type: "div", props: {
-                class: "TableOptionsAtribs", id: this.id + "ListAtribs",
-                ondrop: this.drop, ondragover: this.allowDrop
-            }, children: [{
-                type: "label", props: { innerText: "Parametros", class: "titleParam" }
+            type: "div",
+            props: {
+                class: "TableOptionsAtribs",
+                id: this.id + "ListAtribs",
+                ondrop: drop,
+                ondragover: allowDrop
+            },
+            children: [{
+                type: "label",
+                props: { innerText: "Parametros", class: "titleParam" }
             }]
         };
         let model = this.Dataset[0];
         for (const props in model) {
             divAtt.children.push({
-                type: "label", children: [props], props: {
-                    id: props, class: "labelParam",
-                    draggable: true, ondragstart: this.drag
+                type: "label",
+                children: [props],
+                props: {
+                    id: props + this.id,
+                    class: "labelParam",
+                    draggable: true,
+                    ondragstart: drag
                 }
             });
         }
         let divEvalAttib = {
-            type: "div", props: {
-                class: "TableOptionsAtribs", id: this.id + "ListEval" ,
-                ondrop: this.drop, ondragover: this.allowDrop
-            }, children: [{
-                type: "label", props: { innerText: "Evaluación", class: "titleParam" }
+            type: "div",
+            props: {
+                class: "TableOptionsAtribs",
+                id: this.id + "ListEval",
+                ondrop: drop,
+                ondragover: allowDrop
+            },
+            children: [{
+                type: "label",
+                props: { innerText: "Evaluación", class: "titleParam" }
             }]
         };
+        let select = {
+            type: "select",
+            props: {
+                id: "Select" + this.id,
+                class: "titleParam",
+                onchange: () => {
+                    this.DefineTable();
+                }
+            },
+            children: [
+                { type: "option", props: { innerText: "Value - Suma", value: "sum" } },
+                { type: "option", props: { innerText: "Value - Count", value: "count" } }
+            ]
+        }
         let divEvalValue = {
-            type: "div", props: {
-                class: "TableOptionsAtribs", id: this.id + "ListValue" ,
-                ondrop: this.drop, ondragover: this.allowDrop
-            }, children: [{
-                type: "label", props: { innerText: "Valor", class: "titleParam" }
-            }]
+            type: "div",
+            props: {
+                class: "TableOptionsAtribs",
+                id: this.id + "ListValue",
+                ondrop: drop,
+                ondragover: allowDrop
+            },
+            children: [select]
         };
         let divEvalGroups = {
-            type: "div", props: {
-                class: "TableOptionsAtribs", id: this.id + "ListGroups" ,
-                ondrop: this.drop, ondragover: this.allowDrop
-            }, children: [{
-                type: "label", props: { innerText: "Agrupaciones", class: "titleParam" }
+            type: "div",
+            props: {
+                class: "TableOptionsAtribs",
+                id: this.id + "ListGroups",
+                ondrop: drop,
+                ondragover: allowDrop
+            },
+            children: [{
+                type: "label",
+                props: { innerText: "Agrupaciones", class: "titleParam" },
+                children: [{
+                    type: "label",
+                    props: {
+                        innerText: "»",
+                        class: "btn",
+                        onclick: () => {
+                            DomComponent.DisplayAcorden("TableOptions" + this.id, 38);
+                        }
+                    }
+                }]
             }]
         };
-        return { type: "div", props: { class: "TableOptions" }, 
-            children: [divAtt, divEvalAttib, divEvalValue, divEvalGroups] };
+        return {
+            type: "div",
+            props: { class: "TableOptions", id: "TableOptions" + this.id },
+            children: [divAtt, divEvalAttib, divEvalValue, divEvalGroups]
+        };
     }
-    allowDrop(ev) {        
-        ev.preventDefault();
-    }
-    drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
-    drop(ev) {
-        console.log(this)
-        ev.preventDefault();      
-        var data = ev.dataTransfer.getData("text");
-        let target =  ev.target;       
-        if (target.className == "TableOptionsAtribs") { 
-            //console.log(target.children.length)    
-            //console.log(target.id)
-            if (target.id.includes("ListEval") && target.children.length == 2) {
-                console.log("entro1")             
-            } else if (target.id.includes("ListValue") && target.children.length == 2) {
-                console.log("entro2") 
-            } else {
-                target.appendChild(document.getElementById(data));
-            }
-        } else{
-            alert("error")
-        }       
+    DrawChart() {
+        if (this.groupParams.length > 0 && this.EvalArray != null) {
+            let GroupLabelsData = [];
+            this.EvalArray.forEach(element => {
+                GroupLabelsData.push({
+                    id_: element[this.AttNameEval],
+                    Descripcion: element[this.AttNameEval]
+                });
+            });
+            var CharConfig = {
+                ContainerName: "MyChart",
+                Title: "MyChart",
+                GroupLabelsData: GroupLabelsData,
+                GroupDataset: this.EvalArray,
+                Datasets: this.ProcessData,
+                Colors: this.Colors,
+                ContainerSize: 400,
+                ColumnLabelDisplay: 0,
+                AttNameEval: this.AttNameEval,
+                AttNameG1: this.groupParams[0],
+                AttNameG2: this.groupParams[1],
+                AttNameG3: this.groupParams[2],
+                EvalValue: this.EvalValue,
+            };
+            return { type: 'w-colum-chart', props: { data: CharConfig } };
+        }
+        //import ("../Scripts/Modules/WChartJSComponent.js");
+        return "No hay agrupaciones";
     }
 }
 const WTableStyle = {
     type: "w-style",
     props: {
         ClassList: [
+            new WCssClass("w-table", {
+                border: "#000 1px solid",
+                overflow: "hidden",
+                display: "block"
+            }),
             new WCssClass("w-table .WTable", {
                 "font-family": "Verdana, sans-serif",
                 width: "100%",
                 "align-items": "flex-end",
-                border: "solid 1px #000",
                 "overflow-y": "hidden",
-                "overflow-x": "scroll"
+                "overflow-x": "auto",
+                "min-height": "200px",
+                background: "#ebebf0",
+                "border-top": "solid 1px #999999"
             }),
             new WCssClass("w-table .WTable td", {
                 padding: "5px"
@@ -247,48 +439,100 @@ const WTableStyle = {
                 "flex-direction": "column",
                 "justify-content": "flex-end",
                 "border-right": "1px solid #000"
+            }), new WCssClass(" w-table .TContainerBlockData", {
+                width: "100%"
             }),
             new WCssClass("w-table  Tlabel", {
                 display: "block",
                 padding: "5px",
-                "border-bottom": "1px solid #000"
+                "border-bottom": "1px solid #000",
+                height: "30px",
+                "overflow-y": "hidden",
+                "white-space": "nowrap",
+                "overflow": "hidden",
+                "text-overflow": "ellipsis",
+                "min-width": "60px",
+                "background-color": "#717183",
+                color: "#fff"
             }), new WCssClass("w-table .TContainerBlockData .Cajon", {
                 overflow: "hidden",
                 display: "flex",
-                "flex-direction": "column"
-
+                "flex-direction": "column",
             }),
             new WCssClass("w-table .flexChild", {
                 padding: "0px",
+                width: "100%"
             }),
             new WCssClass("w-table TData", {
-                padding: "5px"
+                padding: "5px",
+                height: "30px",
+                "overflow-y": "hidden",
+                "white-space": "nowrap",
+                "overflow": "hidden",
+                "text-overflow": "ellipsis",
+                "min-width": "60px"
+            }),
+            new WCssClass("w-table TDataTotal", {
+                padding: "5px",
+                height: "30px",
+                "overflow-y": "hidden",
+                "white-space": "nowrap",
+                "overflow": "hidden",
+                "text-overflow": "ellipsis",
+                "min-width": "60px",
+                "border-top": "solid 1px #000",
+                "border-bottom": "solid 1px #000",
             }),
             new WCssClass("w-table .Cajon", {
                 display: "flex"
             }),
+            //aaaaaa
             new WCssClass("w-table .TableOptions", {
                 display: "flex",
+                transition: "all 1s",
+                "max-height": "38px",
+                overflow: "hidden",
             }),
             new WCssClass("w-table .TableOptionsAtribs", {
                 display: "flex",
                 width: "100%",
                 "flex-direction": "column",
-                border: "1px solid #000",
                 "padding-bottom": "20px",
-                "background-color": "#efefef"                
-            }), 
+                "background-color": "#efefef"
+            }),
             new WCssClass("w-table .titleParam", {
-                display: "block",                
-                padding: "10px",               
+                display: "block",
+                padding: "10px",
                 "border-bottom": "1px solid #000",
-                "margin-bottom": "10px"
+                "margin-bottom": "10px",
+                cursor: "pointer",
+                "font-size": "16px",
+                "text-align": "center",
+                position: "relative"
+            }),
+            new WCssClass("w-table select.titleParam, w-table select.titleParam:focus, w-table select.titleParam:active", {
+                cursor: "pointer",
+                "background-color": "#efefef",
+                border: "none",
+                "border-bottom": "1px solid #000",
+                outline: "none",
+                "outline-width": "0",
             }),
             new WCssClass("w-table .labelParam", {
-                display: "block",                
+                display: "block",
                 padding: "10px",
-                "background-color": "#fff",cursor:"pointer"
+                "background-color": "#fff",
+                cursor: "pointer",
+                border: "solid 1px #999999"
+            }), new WCssClass("w-table .btn", {
+                "margin-left": "10px",
+                cursor: "pointer",
+                display: "inline-block",
+                "font-weight": "bold",
+                position: "absolute",
+                transform: "rotate(90deg)"
             }),
+
         ]
     }
 }

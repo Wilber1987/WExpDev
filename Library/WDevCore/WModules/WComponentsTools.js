@@ -1,5 +1,5 @@
 function DisplayAcordeon(value, SectionId, size = null) {
-    console.log(value)
+    //console.log(value)
     if (size == null) {
         size = "500px";
     }
@@ -153,7 +153,7 @@ class WRender {
                     try {
                         element.setAttributeNS(null, prop, node.props[prop])
                     } catch (error) {
-                        console.log(error);
+                        //console.log(error);
                         element.setAttributeNS(SVGN, prop, node.props[prop]);
                     }
                 }
@@ -268,8 +268,39 @@ class DomComponent {
             }, 1000);
         }
     }
+    static DisplayUniqAcorden(elementId) {
+        let SectionElement = document.getElementById(elementId);
+        let valueSize = "0px"
+        if (SectionElement.offsetHeight != 0) {
+            valueSize = SectionElement.offsetHeight + "px";
+        }
+        if (SectionElement.style.display == "none") {
+            SectionElement.style.display = "block";
+            setTimeout(() => {
+                SectionElement.style.maxHeight = "800px";
+                SectionElement.style.minHeight = "300px";
+            }, 100);
+        } else {
+            SectionElement.style.maxHeight = valueSize;
+            SectionElement.style.minHeight = valueSize;
+            setTimeout(() => {
+                SectionElement.style.display = "none";
+            }, 1000);
+        }
+    }
+    static DisplayAcorden(elementId, valueSize = 0) {
+        let SectionElement = document.getElementById(elementId);        
+        if (SectionElement.offsetHeight == valueSize) {
+            SectionElement.style.maxHeight = "800px";
+            SectionElement.style.minHeight = "150px";
+        } else {
+            SectionElement.style.maxHeight = valueSize + "px";
+            SectionElement.style.minHeight = valueSize + "px";
+
+        }
+    }
 }
-class ArrayFunctions {
+class WArrayF {
     static orderByDate(Arry, type) {
         var meses = [
             "enero", "febrero", "marzo",
@@ -440,6 +471,18 @@ class ArrayFunctions {
         }
         return Maxvalue;
     }
+    static SumValAtt(DataArry, EvalValue) {
+        var Maxvalue = 0;
+        for (let index = 0; index < DataArry.length; index++) {
+            if (typeof DataArry[index][EvalValue] === "number") {
+                Maxvalue = Maxvalue + parseFloat(DataArry[index][EvalValue]);
+            } else {
+                Maxvalue = "Error!";
+                break;
+            }
+        }
+        return Maxvalue;
+    }
 }
 
-export { WAjaxTools, WRender, DomComponent, ArrayFunctions }
+export { WAjaxTools, WRender, DomComponent, WArrayF }

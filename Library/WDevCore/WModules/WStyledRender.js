@@ -225,6 +225,11 @@ class CSSProps {
     "background-image" = null;
     "border" = null;
     "border-radius" = null;
+    "border-top" = null;
+    "border-right" = null;
+    "border-left" = null;
+    "border-bottom" = null;
+    "box-shadow" = "";
 }
 customElements.define("w-style", WStyledRender);
 export { WCssClass, CSSProps };

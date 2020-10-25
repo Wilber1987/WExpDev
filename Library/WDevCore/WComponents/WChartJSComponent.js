@@ -1,4 +1,4 @@
-import { WRender, ArrayFunctions } from "../WModules/WComponentsTools.js";
+import { WRender, WArrayF } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js"
 
 class ChartConfig {
@@ -41,8 +41,8 @@ class ColumChart extends HTMLElement {
         this.ChartInstance = new ChartConfig(this.data);
         // this.ChartInstance.GroupDataset =  orderByDate(this.ChartInstance.GroupDataset,
         //  sessionStorage.getItem('type'));        
-        this.Totals = ArrayFunctions.DataTotals(this.ChartInstance);
-        this.MaxVal = ArrayFunctions.MaxValue(this.Totals, this.ChartInstance);
+        this.Totals = WArrayF.DataTotals(this.ChartInstance);
+        this.MaxVal = WArrayF.MaxValue(this.Totals, this.ChartInstance);
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
         ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
@@ -50,9 +50,9 @@ class ColumChart extends HTMLElement {
 
         let GroupsData = [
             this.ChartInstance.Datasets,
-            ArrayFunctions.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG1),
-            ArrayFunctions.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG2),
-            ArrayFunctions.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
+            WArrayF.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG1),
+            WArrayF.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG2),
+            WArrayF.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
         ];
         ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
         ChartFragment.append(this._AddSectionLabelsGroups(this.ChartInstance));
@@ -174,10 +174,12 @@ class ColumChart extends HTMLElement {
         return SectionBars;
     }
     _DrawGroupChart(Config, ContainerBars, elementGroup = null, elementSecondGroup = null, elementThreeGroup = null) {
-        //console.log(Config)
         let index = 0;
         Config.GroupLabelsData.forEach(elementLabelData => { //RECORREMOS LOS STAKS 
             Config.Datasets.forEach(element => { //RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
+                    //console.log(element[Config.AttNameG1], element[Config.AttNameG2], element[Config.AttNameG3]);
+                    //console.log(elementGroup[Config.AttNameG1], elementGroup[Config.AttNameG2], elementGroup[Config.AttNameG3]);
+                    //console.log(element);
                     let bar = null;
                     if (elementThreeGroup != null) {
                         if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
@@ -277,7 +279,7 @@ class ColumChart extends HTMLElement {
         if (Config.ColumnLabelDisplay == 1) {
             //dibujar el valor en porcentaje
             styleP = ";flex-grow: 1;"
-            var total = ArrayFunctions.FindInTotal(element, this.Totals, Config);
+            var total = WArrayF.FindInTotal(element, this.Totals, Config);
             var multiplier = Math.pow(10, 1 || 0);
             var number = labelCol / total[Config.EvalValue] * 100
             number = Math.round(number * multiplier) / multiplier
@@ -385,7 +387,7 @@ class RadialChart extends HTMLElement {
             }
         });
         Chart.setAttribute("class", "RadialChart");
-        var total = ArrayFunctions.SumValue(DataSet, Config);
+        var total = WArrayF.SumValue(DataSet, Config);
         var index = 0;
         var porcentajeF = 0;
         DataSet.forEach((element) => {
@@ -465,4 +467,3 @@ class RadialChart extends HTMLElement {
 
 customElements.define("w-radial-chart", RadialChart);
 customElements.define("w-colum-chart", ColumChart);
-
