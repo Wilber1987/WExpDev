@@ -1,4 +1,4 @@
-.WChartContainer {
+/* .WChartContainer {
     padding-left: 30px;
     font-size: 12px;
     border: #d4d4d4 solid 4px;
@@ -49,7 +49,6 @@
     display: flex;
     align-items: flex-end;
     overflow-y: hidden;
-    /* height:80%;      */
     padding-left: 30px;
     position: relative;
     overflow-x: scroll;
@@ -80,14 +79,12 @@
     border: solid 1px #d4d4d4;
     align-items: stretch;
     background-color: #fff;
-    /* min-height: 30px; */
 }
 
 .groupLabels label {
     padding: 5px;
     flex-grow: 1;
     width: 80px;
-    /* border: solid 1px #d4d4d4;    */
     text-align: center;
     margin-bottom: 0px !important;
     white-space: nowrap;
@@ -98,8 +95,6 @@
 .ContainerBars {
     display: flex;
     width: 100%;
-    /* margin-left: 5px;
-    margin-right: 5px; */
     padding-left: 10px;
     padding-right: 10px;
     flex-direction: column;
@@ -116,7 +111,7 @@
     min-height: 20PX;
     background: rgb(177, 177, 177);
     background: linear-gradient(0deg, rgba(177, 177, 177, 1) 0%, rgba(209, 209, 209, 1) 53%);
-    /* flex-grow: 1; */
+    
 }
 
 .Bars label {
@@ -236,7 +231,6 @@
 }
 
 
-/*RADIALLLLL------------------------------------------------------------------------------------------------------*/
 
 .SectionRadialChart {
     position: relative;
@@ -333,4 +327,4 @@
     background-blend-mode: screen;
     z-index: 5;
     clip-path: circle(52% at 50% 50%);
-}
+} */

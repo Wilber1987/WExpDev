@@ -385,9 +385,10 @@ const WTableStyle = {
     props: {
         ClassList: [
             new WCssClass("w-table", {
-                border: "#000 1px solid",
+                border: "#999999 2px solid",
                 overflow: "hidden",
-                display: "block"
+                display: "block",
+                "border-radius": "0.2cm"
             }),
             new WCssClass("w-table .WTable", {
                 "font-family": "Verdana, sans-serif",
