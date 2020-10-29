@@ -78,7 +78,7 @@ class ColumChart extends HTMLElement {
         GroupLabelsData.forEach(element => {
             var color = Colors[index];
             if (!color) {
-                Colors.push(this.generarColor());
+                Colors.push(this.GenerateColor());
             }
             SectionLabels.appendChild(WRender.CreateStringNode(
                 `<label style="${style}"><span style="background:${Colors[index]}">
@@ -181,10 +181,7 @@ class ColumChart extends HTMLElement {
     _DrawGroupChart(Config, ContainerBars, elementGroup = null, elementSecondGroup = null, elementThreeGroup = null) {
         let index = 0;
         Config.GroupLabelsData.forEach(elementLabelData => { //RECORREMOS LOS STAKS 
-            Config.Datasets.forEach(element => { //RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK
-                //console.log(element[Config.AttNameG1], element[Config.AttNameG2], element[Config.AttNameG3]);
-                //console.log(elementGroup[Config.AttNameG1], elementGroup[Config.AttNameG2], elementGroup[Config.AttNameG3]);
-                //console.log(element);
+            Config.Datasets.forEach(element => { //RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK                
                 let bar = null;
                 if (elementThreeGroup != null) {
                     if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
@@ -322,7 +319,7 @@ class ColumChart extends HTMLElement {
         }
         return SectionLabelGroup;
     }
-    generarColor() {
+    GenerateColor() {
         var hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
         var color_aleatorio = "#FF";
         for (let index = 0; index < 4; index++) {
