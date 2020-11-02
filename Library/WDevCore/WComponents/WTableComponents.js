@@ -25,7 +25,17 @@ class WTableComponent extends HTMLElement {
         //this.DrawTable();  
         this.DrawGroupTable();
     }
-    attributeChangedCallback() { }
+    
+    attributeChangedCallback(name, oldValue, newValue) {
+        console.log('Custom square element attributes changed.');
+        //updateStyle(this);
+    }
+    static get observedAttributes() { 
+        if (typeof this.TableConfig !== "undefined") {
+            return this.TableConfig;            
+        }
+       
+    }
     //BASIC TABLE-----------------------------------------------------------------------
     DrawTable() {
         let table = { type: "table", props: { class: this.TableClass }, children: [] };
