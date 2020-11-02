@@ -2,7 +2,8 @@
 function loadDOM() {
     let ArticleCont = document.createElement("article-container");
     ArticleCont.Articles = Articles;
-    ArticleCont.Autores = Autores;
+   // ArticleCont.Pepito = Articles;
+    ArticleCont.Autores = Maria;
     MainContainer.append(ArticleCont);
 }
 window.addEventListener("load", () => {

@@ -57,6 +57,6 @@ function StartModuleList(modules) {
     DrawTable(modules.Modules, ConfigTable);
     Container.appendChild(Table);
 }
-customElements.define("w-colum-chart", ColumChart);
+//customElements.define("w-colum-chart", ColumChart);
 
 window.onload = OnLoad;

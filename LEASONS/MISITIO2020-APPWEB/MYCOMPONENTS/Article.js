@@ -5,7 +5,7 @@ class Article extends HTMLElement {
     connectedCallback() {
         this.DrawComponent();
     }
-    DrawComponent() {       
+    DrawComponent() {             
         this.className = "Article";
         let ArtTitle = document.createElement("h2");
         ArtTitle.innerText = this.article.titulo;

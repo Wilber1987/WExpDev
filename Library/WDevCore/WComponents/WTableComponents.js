@@ -22,17 +22,63 @@ class WTableComponent extends HTMLElement {
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
         }
-        //this.DrawTable();  
-        this.DrawGroupTable();
+        this.append(WRender.createElement(WTableStyle));
+        this.RunTable()
     }
     attributeChangedCallback() { }
+    RunTable() {
+        this.GroupsData = [];
+        this.ProcessData = [];
+        this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
+        if (this.TableConfig.Dinamic == true) {
+            this.AttNameEval = null;
+            this.EvalValue = null;
+            this.groupParams = [];
+            this.EvalArray = [];            
+            this.append(WRender.createElement(this.TableOptions()));
+            this.DrawTable(); 
+            if (this.TableConfig.AddChart == true) {
+                let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                this.append(WRender.createElement(ChartContainer));
+            }
+            return;
+        }
+        if (!this.groupParams || typeof this.groupParams !== "object") {
+            this.groupParams = [];
+            if (this.AttNameG1) {
+                this.groupParams.push(this.AttNameG1)
+            }
+            if (this.AttNameG2) {
+                this.groupParams.push(this.AttNameG2)
+            }
+            if (this.AttNameG3) {
+                this.groupParams.push(this.AttNameG3)
+            }
+            if (this.groupParams.length > 0 && this.AttNameEval !== undefined && this.EvalValue !== undefined) {
+                this.DrawGroupTable();
+                if (this.TableConfig.AddChart == true) {
+                    let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                    this.append(WRender.createElement(ChartContainer));
+                }                
+            }else{
+                this.DrawTable();
+            }           
+            return;
+        }
+    }   
     //BASIC TABLE-----------------------------------------------------------------------
+
     DrawTable() {
-        let table = { type: "table", props: { class: this.TableClass }, children: [] };
-        table.children.push(this.DrawTHead());
-        table.children.push(this.DrawTBody());
-        this.append(WRender.createElement(WTableStyle));
-        this.append(WRender.createElement(table));
+        let table = this.querySelector("#MainTable" + this.id);
+        if (typeof table === "undefined" ||  table == null) {
+            table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
+            table.children.push(this.DrawTHead());
+            table.children.push(this.DrawTBody());
+            this.append(WRender.createElement(table));            
+        } else {
+            table.innerHTML = "";
+            table.append(WRender.createElement(this.DrawTHead()), WRender.createElement(this.DrawTBody()) )            
+        }      
     }
     DrawTHead = () => {
         let thead = { type: "thead", props: {}, children: [] };
@@ -62,41 +108,15 @@ class WTableComponent extends HTMLElement {
         return tbody;
     }
     //FIN BASIOC TABLE-------------------------------------------------------------------
-    DrawGroupTable() {
-        this.GroupsData = [];
-        this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
-        if (this.TableConfig.Dinamic == true) {
-            this.AttNameEval = null;
-            this.EvalValue = null;
-            this.groupParams = [];
-            this.EvalArray = [];
-            this.ProcessData = [];
-            this.append(WRender.createElement(this.TableOptions()));
-        }
-        if (!this.groupParams || typeof this.groupParams !== "object") {
-            this.groupParams = [];
-            if (this.AttNameG1) {
-                this.groupParams.push(this.AttNameG1)
-            }
-            if (this.AttNameG2) {
-                this.groupParams.push(this.AttNameG2)
-            }
-            if (this.AttNameG3) {
-                this.groupParams.push(this.AttNameG3)
-            }
-        }
+
+    DrawGroupTable() {        
         this.groupParams.forEach(groupParam => {
             this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
         });
         this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
-        this.table.children.push(div);
-        this.append(WRender.createElement(WTableStyle));
-        this.append(WRender.createElement(this.table));
-        if (this.TableConfig.AddChart == true) {
-            let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
-            this.append(WRender.createElement(ChartContainer));
-        }
+        this.table.children.push(div);       
+        this.append(WRender.createElement(this.table));       
     }
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
@@ -169,47 +189,16 @@ class WTableComponent extends HTMLElement {
             div.children.push(trGroup);
         });
         return div;
-    }
-    FindData(arrayP) {
-        let val = false;
-        let nodes = [];
-        this.TableConfig.Datasets.forEach(Data => {
-            val = this.compareObj(arrayP, Data)
-            if (val == true) {
-                nodes.push(Data)
-            }
-        });
-        if (nodes.length != []) {
-            let Operations = this.querySelector("#Select" + this.id);
-            let value = "fail!";
-            if (Operations.value == "sum") {
-                value = WArrayF.SumValAtt(nodes, this.EvalValue);
-            } else if (Operations.value == "count") {
-                value = nodes.length;
-            }
-            return value;
-        } else {
-            return "n/a";
-        }
-    }
-    compareObj(arrayP, Data) {
-        let val = true;
-        for (const prop in arrayP) {
-            if (arrayP[prop] !== Data[prop]) {
-                val = false;
-                break;
-            }
-        }
-        return val;
-    }
+    }    
     DefineTable() {
         this.ProcessData = [];
         let table = this.querySelector("#MainTable" + this.id);
         if (this.EvalValue == null) {
-            table.innerHTML = "Agregue un Value";
+            //table.innerHTML = "Agregue un Value";
+            this.DrawTable();
         } else {
-            table.innerHTML =
-                this.GroupsData = [];
+            table.innerHTML = "";
+            this.GroupsData = [];
             this.groupParams.forEach(groupParam => {
                 this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
             });
@@ -378,6 +367,42 @@ class WTableComponent extends HTMLElement {
         }
         //import ("../Scripts/Modules/WChartJSComponent.js");
         return "No hay agrupaciones";
+    }
+    FindData(arrayP) {
+        let val = false;
+        let nodes = [];
+        this.TableConfig.Datasets.forEach(Data => {
+            val = this.compareObj(arrayP, Data)
+            if (val == true) {
+                nodes.push(Data)
+            }
+        });
+        if (nodes.length != []) {
+            let Operations = this.querySelector("#Select" + this.id);
+            let value = "fail!";
+            if (Operations != null) {
+                if (Operations.value == "sum") {
+                    value = WArrayF.SumValAtt(nodes, this.EvalValue);
+                } else if (Operations.value == "count") {
+                    value = nodes.length;
+                }                
+            }else {
+                value = WArrayF.SumValAtt(nodes, this.EvalValue);
+            }            
+            return value;
+        } else {
+            return "n/a";
+        }
+    }
+    compareObj(arrayP, Data) {
+        let val = true;
+        for (const prop in arrayP) {
+            if (arrayP[prop] !== Data[prop]) {
+                val = false;
+                break;
+            }
+        }
+        return val;
     }
 }
 const WTableStyle = {

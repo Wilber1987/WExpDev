@@ -60,7 +60,7 @@ main {
     margin-right: 10px;
     font-size: 20px;
 }
-.ArtContenido{
+.ArtContenido, .ViewNewArt{
     position: fixed;
     top: 0;
     left: 0;
@@ -71,4 +71,17 @@ main {
     font-size: 26px;
     text-align: justify;
     display: none;
+}
+.ViewNewArt input,.ViewNewArt select, .ViewNewArt textarea {
+    display: block;
+    padding: 10px;
+    font-size: 20px;
+    margin: 5px;
+    width: 95%;
+}
+.txtSearch{
+    padding: 10px;
+    display: block;
+    width: 95%;
+    font-size: 18px;
 }

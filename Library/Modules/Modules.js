@@ -241,15 +241,17 @@ class TableCont {
             ],
         };
         var Config = {
-            Datasets: result.datos,
-            Colors: ["#ff6699", "#ffbb99", "#adebad"],
-            AttNameEval: "estado",
-            AttNameG1: "time",
-            AttNameG2: "categ2",
-            AttNameG3: "categ",
-            EvalValue: "cantidad",
-            Dinamic: true,
-            AddChart: true
+            Datasets: result.datos, /*DATOS DE LA TABLA*/
+            Colors: ["#ff6699", "#ffbb99", "#adebad"],/*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
+            /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
+            //AttNameEval: "estado",
+            //AttNameG1: "time",
+            //AttNameG2: "categ2",
+            //AttNameG3: "categ",
+            //EvalValue: "cantidad",
+            /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
+            //Dinamic: true,/*DEFINE LA TABLA DINAMICA*/
+            AddChart: true/*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
         };
         this.children.push({
             type: 'h2',
