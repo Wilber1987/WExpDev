@@ -154,11 +154,11 @@ class TableCont {
         this.type = "div";
         this.children = [];
         let TableList = [];
-        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG1: "g2", AttNameG1: "g3" });
-        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG1: "g1", AttNameG1: "g3" });
-        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g2", AttNameG1: "g2", AttNameG1: "g3" });
-        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g2", AttNameG1: "g2", AttNameG1: "g3" });
-        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG1: "g1", AttNameG1: "g3" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG2: "g2", fecha: "2020-01-01" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG2: "g1", fecha: "2020-01-01" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g2", AttNameG2: "g2", fecha: "2020-01-01" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g2", AttNameG2: "g2", fecha: "2020-01-01" });
+        TableList.push({ id_: 1, content: "des", cant: 3, AttNameG1: "g1", AttNameG2: "g1", fecha: "2020-01-01" });
         //TABLE CONFIG
         var result = {
             "datos": [{
@@ -241,15 +241,24 @@ class TableCont {
             ],
         };
         var Config = {
-            Datasets: result.datos,
-            Colors: ["#ff6699", "#ffbb99", "#adebad"],
-            AttNameEval: "estado",
-            AttNameG1: "time",
-            AttNameG2: "categ2",
-            AttNameG3: "categ",
-            EvalValue: "cantidad",
-            Dinamic: true,
-            AddChart: true
+            //Datasets: result.datos, /*DATOS DE LA TABLA*/
+            Datasets: TableList,
+            Colors: ["#ff6699", "#ffbb99", "#adebad"],/*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
+            /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
+            //AttNameEval: "estado",
+            //AttNameG1: "time",
+            //AttNameG2: "categ2",
+            //AttNameG3: "categ",
+            //EvalValue: "cantidad",
+            /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
+            //Dinamic: true,/*DEFINE LA TABLA DINAMICA*/
+            AddChart: true,/*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
+            Options: {
+                Search: true,                
+                Show: true,               
+                Edit: true, //UrlUpdate: "",
+                Select: true,
+            },
         };
         this.children.push({
             type: 'h2',

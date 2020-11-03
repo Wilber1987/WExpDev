@@ -1,10 +1,13 @@
-import { WRender, WArrayF, DomComponent } from "../WModules/WComponentsTools.js";
+import { WRender, WArrayF, DomComponent, WAjaxTools } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import "./WChartJSComponent.js";
 class WTableComponent extends HTMLElement {
     constructor() {
         super();
         this.TableClass = "WTable WScroll";
+        this.Dataset = [];
+        this.selectedItems = [];
+        this.ModelObject = {};
     }
     connectedCallback() {
         this.innerHTML = "";
@@ -19,69 +22,38 @@ class WTableComponent extends HTMLElement {
         this.AttNameG2 = this.TableConfig.AttNameG2;
         this.AttNameG3 = this.TableConfig.AttNameG3;
         this.EvalValue = this.TableConfig.EvalValue;
+        this.Options = this.TableConfig.Options;
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
         }
-        //this.DrawTable();  
-        this.DrawGroupTable();
+        this.append(WRender.createElement(WTableStyle));
+        this.RunTable()
     }
-    
+
     attributeChangedCallback(name, oldValue, newValue) {
         console.log('Custom square element attributes changed.');
         //updateStyle(this);
     }
-    static get observedAttributes() { 
-        if (typeof this.TableConfig !== "undefined") {
-            return this.TableConfig;            
-        }
-       
+    static get observedAttributes() {
+        return this.Dataset;
     }
-    //BASIC TABLE-----------------------------------------------------------------------
-    DrawTable() {
-        let table = { type: "table", props: { class: this.TableClass }, children: [] };
-        table.children.push(this.DrawTHead());
-        table.children.push(this.DrawTBody());
-        this.append(WRender.createElement(WTableStyle));
-        this.append(WRender.createElement(table));
-    }
-    DrawTHead = () => {
-        let thead = { type: "thead", props: {}, children: [] };
-        const element = this.Dataset[0];
-        let tr = { type: "tr", children: [] }
-        thead.children.push(tr);
-        for (const prop in element) {
-            tr.children.push({
-                type: "th",
-                children: [prop]
-            });
-        }
-        return thead;
-    }
-    DrawTBody = () => {
-        let tbody = { type: "tbody", props: {}, children: [] };
-        this.Dataset.forEach(element => {
-            let tr = { type: "tr", children: [] }
-            for (const prop in element) {
-                tr.children.push({
-                    type: "td",
-                    children: [element[prop].toString()]
-                });
-            }
-            tbody.children.push(tr);
-        });
-        return tbody;
-    }
-    //FIN BASIOC TABLE-------------------------------------------------------------------
-    DrawGroupTable() {
+
+    RunTable() {
         this.GroupsData = [];
+        this.ProcessData = [];
         this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
         if (this.TableConfig.Dinamic == true) {
             this.AttNameEval = null;
             this.EvalValue = null;
             this.groupParams = [];
             this.EvalArray = [];
-            this.ProcessData = [];
             this.append(WRender.createElement(this.TableOptions()));
+            this.DrawTable();
+            if (this.TableConfig.AddChart == true) {
+                let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                this.append(WRender.createElement(ChartContainer));
+            }
+            return;
         }
         if (!this.groupParams || typeof this.groupParams !== "object") {
             this.groupParams = [];
@@ -94,19 +66,208 @@ class WTableComponent extends HTMLElement {
             if (this.AttNameG3) {
                 this.groupParams.push(this.AttNameG3)
             }
+            if (this.groupParams.length > 0 && this.AttNameEval !== undefined && this.EvalValue !== undefined) {
+                this.DrawGroupTable();
+                if (this.TableConfig.AddChart == true) {
+                    let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                    this.append(WRender.createElement(ChartContainer));
+                }
+            } else {
+                this.DrawTable();
+            }
+            return;
         }
+    }
+    //BASIC TABLE-----------------------------------------------------------------------
+    DrawTable() {
+        let table = this.querySelector("#MainTable" + this.id);
+        if (typeof table === "undefined" || table == null) {
+            table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
+            table.children.push(this.DrawTHead());
+            table.children.push(this.DrawTBody());
+            this.append(WRender.createElement(table));
+        } else {
+            table.innerHTML = "";
+            table.append(WRender.createElement(this.DrawTHead()), WRender.createElement(this.DrawTBody()))
+        }
+    }
+    DrawTHead = () => {
+        let thead = { type: "thead", props: {}, children: [] };
+        const element = this.Dataset[0];
+        let tr = { type: "tr", children: [] }
+        thead.children.push(tr);
+        for (const prop in element) {
+            tr.children.push({
+                type: "th",
+                children: [prop]
+            });
+            this.ModelObject[prop] = null;
+        }
+        if (this.Options != undefined) {
+            const Options = { type: "th", children: ["Options"] }
+            tr.children.push(Options);
+        }
+        return thead;
+    }
+    DrawTBody = () => {
+        let tbody = { type: "tbody", props: {}, children: [] };
+        this.Dataset.forEach(element => {
+            let tr = { type: "tr", children: [] };
+            for (const prop in element) {
+                tr.children.push({
+                    type: "td",
+                    children: [element[prop].toString()]
+                });
+            }
+            if (this.Options != undefined) {
+                const Options = { type: "td", children: [] };
+                if (this.Options.Show != undefined && this.Options.Show == true) {
+                    Options.children.push({
+                        type: "button", props: {
+                            class: "Btn", type: "button", innerText: "Show", onclick: async () => {
+                                this.ShowForm(element);
+                            }
+                        }
+                    })
+                }
+                if (this.Options.Edit != undefined && this.Options.Edit == true) {
+                    Options.children.push({
+                        type: "button", props: {
+                            class: "Btn", type: "button", innerText: "Edit", onclick: async () => {
+                                this.CrudForm(element);
+                            }
+                        }
+                    })
+                }
+                if (this.Options.Select != undefined && this.Options.Select == true) {
+                    Options.children.push({
+                        type: "input", props: {
+                            class: "Btn", type: "checkbox", innerText: "Select",
+                            onclick: async (ev) => {
+                                const control = ev.target;
+                                const index = this.selectedItems.indexOf(element);
+                                if (index == -1 && control.checked == true) {
+                                    this.selectedItems.push(element)
+                                }
+                                else {
+                                    this.selectedItems.splice(index, 1)
+                                }
+                            }
+                        }
+                    })
+                }
+                tr.children.push(Options);
+            }
+            tbody.children.push(tr);
+        });
+        return tbody;
+    }
+    ShowForm(Object) {
+        const Modal = { type: "div", props: { class: "ModalContent", id: "TempModal" }, children: [] };
+        const Form = { type: "div", props: { class: "ContainerForm" }, children: [] };
+        const InputClose = {
+            type: 'button', props: {
+                class: 'Btn', type: "button", onclick: () => {
+                    DomComponent.modalFunction(Modal.props.id);
+                    setTimeout(() => {
+                        this.removeChild(this.querySelector("#" + Modal.props.id))
+                    }, 1000);
+                }
+            },
+            children: ['◄ Back']
+        };
+        const Section = { type: 'h2', children: [InputClose, "- Object Detail"] };
+        Form.children.push(Section);
+        for (const prop in Object) {
+            Form.children.push({
+                type: "div", props: { class: "ModalElement" }, children: [
+                    { type: "h3", props: { innerText: prop } },
+                    { type: "p", props: { innerHTML: Object[prop] } }
+                ]
+            });           
+        }
+        Modal.children.push(Form);
+        this.append(WRender.createElement(Modal));
+        DomComponent.modalFunction(Modal.props.id);
+    }
+    CrudForm(Object = {}, ObjectOptions = { AddObject: false, Url: undefined }) {
+        const Modal = { type: "div", props: { class: "ModalContent", id: "TempModal" }, children: [] };
+        const Form = { type: "div", props: { class: "ContainerForm" }, children: [] };
+        const InputClose = {
+            type: 'button', props: {
+                class: 'Btn', type: "button", onclick: () => {
+                    DomComponent.modalFunction(Modal.props.id);
+                    setTimeout(() => {
+                        this.removeChild(this.querySelector("#" + Modal.props.id))
+                    }, 1000);
+                }
+            }, children: ['◄ Back']
+        };
+        const Section = { type: 'h2', children: [InputClose, "- Object Detail"] };
+        Form.children.push(Section);        
+        for (const prop in Object) {
+            const ControlContainer = {
+                type: "div", props: { class: "ModalElement" }, children: [prop]
+            }
+            let ControlTagName = "input";
+            let InputType = typeof Object[prop];
+            if (prop.includes("date") || prop.includes("fecha")) {
+                InputType = "date";
+            } else if (prop.includes("image") || prop.includes("img")) {
+                InputType = "file";
+            }
+            if (Object[prop].length >= 50) {
+                ControlTagName = "textarea";
+            }
+            ControlContainer.children.push({
+                type: ControlTagName, props: {
+                    type: InputType, id: "ControlValue" + prop, value: Object[prop]                   
+                }
+            })
+            Form.children.push(ControlContainer);
+        }
+        const InputSave = {
+            type: 'button', props: {
+                class: 'Btn', type: "button", onclick: async () => {
+                   for (const prop in this.ModelObject) {
+                        const ControlValue = this.querySelector("#ControlValue" + prop);
+                        if (ControlValue.value.length < 1) {
+                            ControlValue.style.border = "red solid 1px";
+                            return;
+                        }
+                        Object[prop] = ControlValue.value;
+                    }
+                    if (ObjectOptions.AddObject == true) {
+                        this.Dataset.push(Object);
+                    }
+                    this.DefineTable();
+                    DomComponent.modalFunction(Modal.props.id);
+                    setTimeout(() => {
+                        this.removeChild(this.querySelector("#" + Modal.props.id))
+                    }, 1000);
+                    if (ObjectOptions.Url != undefined) {
+                        const response = await WAjaxTools.PostRequest(Url, Object);
+                        console.log(response);
+                    }
+                }
+            }, children: ['Guardar']
+        };
+        const OptionsSection = { type: 'div', children: [InputSave] };
+        Form.children.push(OptionsSection);
+        Modal.children.push(Form);
+        this.append(WRender.createElement(Modal));
+        DomComponent.modalFunction(Modal.props.id);
+    }
+    //FIN BASIOC TABLE-------------------------------------------------------------------
+
+    DrawGroupTable() {
         this.groupParams.forEach(groupParam => {
             this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
         });
         this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
         this.table.children.push(div);
-        this.append(WRender.createElement(WTableStyle));
         this.append(WRender.createElement(this.table));
-        if (this.TableConfig.AddChart == true) {
-            let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
-            this.append(WRender.createElement(ChartContainer));
-        }
     }
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
@@ -180,53 +341,22 @@ class WTableComponent extends HTMLElement {
         });
         return div;
     }
-    FindData(arrayP) {
-        let val = false;
-        let nodes = [];
-        this.TableConfig.Datasets.forEach(Data => {
-            val = this.compareObj(arrayP, Data)
-            if (val == true) {
-                nodes.push(Data)
-            }
-        });
-        if (nodes.length != []) {
-            let Operations = this.querySelector("#Select" + this.id);
-            let value = "fail!";
-            if (Operations.value == "sum") {
-                value = WArrayF.SumValAtt(nodes, this.EvalValue);
-            } else if (Operations.value == "count") {
-                value = nodes.length;
-            }
-            return value;
-        } else {
-            return "n/a";
-        }
-    }
-    compareObj(arrayP, Data) {
-        let val = true;
-        for (const prop in arrayP) {
-            if (arrayP[prop] !== Data[prop]) {
-                val = false;
-                break;
-            }
-        }
-        return val;
-    }
     DefineTable() {
         this.ProcessData = [];
         let table = this.querySelector("#MainTable" + this.id);
         if (this.EvalValue == null) {
-            table.innerHTML = "Agregue un Value";
+            //table.innerHTML = "Agregue un Value";
+            this.DrawTable();
         } else {
-            table.innerHTML =
-                this.GroupsData = [];
+            table.innerHTML = "";
+            this.GroupsData = [];
             this.groupParams.forEach(groupParam => {
                 this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
             });
             let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
             table.append(WRender.createElement(div));
         }
-        if (this.TableConfig.AddChart == true) {
+        if (this.TableConfig.AddChart == true && this.EvalValue != null) {
             let ChartContainer = this.querySelector("#Chart" + this.id);
             ChartContainer.innerHTML = "";
             ChartContainer.append(WRender.createElement(this.DrawChart()));
@@ -310,7 +440,7 @@ class WTableComponent extends HTMLElement {
         let divEvalAttib = {
             type: "div",
             props: {
-                class: "TableOptionsAtribs", id: this.id + "ListEval", 
+                class: "TableOptionsAtribs", id: this.id + "ListEval",
                 ondrop: drop, ondragover: allowDrop
             }, children: [{
                 type: "label", props: { innerText: "Evaluación", class: "titleParam" }
@@ -320,9 +450,7 @@ class WTableComponent extends HTMLElement {
             type: "select",
             props: {
                 id: "Select" + this.id, class: "titleParam",
-                onchange: () => {
-                    this.DefineTable();
-                }
+                onchange: () => {  this.DefineTable(); }
             },
             children: [
                 { type: "option", props: { innerText: "Value - Suma", value: "sum" } },
@@ -386,8 +514,43 @@ class WTableComponent extends HTMLElement {
             };
             return { type: 'w-colum-chart', props: { data: CharConfig } };
         }
-        //import ("../Scripts/Modules/WChartJSComponent.js");
         return "No hay agrupaciones";
+    }
+    FindData(arrayP) {
+        let val = false;
+        let nodes = [];
+        this.TableConfig.Datasets.forEach(Data => {
+            val = this.compareObj(arrayP, Data)
+            if (val == true) {
+                nodes.push(Data)
+            }
+        });
+        if (nodes.length != []) {
+            let Operations = this.querySelector("#Select" + this.id);
+            let value = "fail!";
+            if (Operations != null) {
+                if (Operations.value == "sum") {
+                    value = WArrayF.SumValAtt(nodes, this.EvalValue);
+                } else if (Operations.value == "count") {
+                    value = nodes.length;
+                }
+            } else {
+                value = WArrayF.SumValAtt(nodes, this.EvalValue);
+            }
+            return value;
+        } else {
+            return "n/a";
+        }
+    }
+    compareObj(arrayP, Data) {
+        let val = true;
+        for (const prop in arrayP) {
+            if (arrayP[prop] !== Data[prop]) {
+                val = false;
+                break;
+            }
+        }
+        return val;
     }
 }
 const WTableStyle = {

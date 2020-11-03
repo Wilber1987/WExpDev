@@ -57,4 +57,5 @@ function StartModuleList(modules) {
     DrawTable(modules.Modules, ConfigTable);
     Container.appendChild(Table);
 }
+
 window.onload = OnLoad;
