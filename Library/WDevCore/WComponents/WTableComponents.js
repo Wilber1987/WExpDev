@@ -79,7 +79,7 @@ class WTableComponent extends HTMLElement {
         }
     }
     //BASIC TABLE-----------------------------------------------------------------------
-    DrawTable() {
+    DrawTable(Dataset = this.Dataset) {
         let table = this.querySelector("#MainTable" + this.id);
         if (typeof table === "undefined" || table == null) {
             table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
@@ -88,30 +88,63 @@ class WTableComponent extends HTMLElement {
             this.append(WRender.createElement(table));
         } else {
             table.innerHTML = "";
-            table.append(WRender.createElement(this.DrawTHead()), WRender.createElement(this.DrawTBody()))
+            table.append(WRender.createElement(this.DrawTHead()), WRender.createElement(this.DrawTBody(Dataset)))
         }
     }
     DrawTHead = () => {
-        let thead = { type: "thead", props: {}, children: [] };
+        const thead = { type: "thead", props: {}, children: [] };
         const element = this.Dataset[0];
         let tr = { type: "tr", children: [] }
-        thead.children.push(tr);
+
         for (const prop in element) {
             tr.children.push({
                 type: "th",
                 children: [prop]
             });
-            this.ModelObject[prop] = null;
+            this.ModelObject[prop] = "";
         }
         if (this.Options != undefined) {
             const Options = { type: "th", children: ["Options"] }
             tr.children.push(Options);
+            if (this.Options.Search != undefined || this.Options.Add != undefined) {
+                const trOptions = { type: "tr", children: [] }
+                if (this.Options.Search != undefined) {
+                    const InputOptions = {
+                        type: "input", props: {
+                            class: "", type: "text",  onchange: async (ev) => { 
+                                const Dataset = this.Dataset.filter((element)=>{
+                                    for (const prop in element) {
+                                        if (element[prop].toString().includes(ev.target.value)) {
+                                            return element;                                            
+                                        }                                        
+                                    }
+                                })                               
+                                let table = this.querySelector("#MainTable" + this.id);
+                                table.removeChild(this.querySelector("tbody"));
+                                table.append(WRender.createElement(this.DrawTBody(Dataset)));
+                            }
+                        }
+                    }
+                    trOptions.children.push(InputOptions);                }
+                if (this.Options.Add != undefined) {
+                    const BtnOptions = {
+                        type: "button", props: {
+                            class: "Btn", type: "button", innerText: "Add+", onclick: async () => {    
+                                this.CrudForm(this.ModelObject, {AddObject: true});                    
+                            }
+                        }
+                    }
+                    trOptions.children.push(BtnOptions);
+                }
+                thead.children.push(trOptions);
+            }
         }
+        thead.children.push(tr);
         return thead;
     }
-    DrawTBody = () => {
+    DrawTBody = (Dataset = this.Dataset) => {
         let tbody = { type: "tbody", props: {}, children: [] };
-        this.Dataset.forEach(element => {
+        Dataset.forEach(element => {
             let tr = { type: "tr", children: [] };
             for (const prop in element) {
                 tr.children.push({
@@ -184,7 +217,7 @@ class WTableComponent extends HTMLElement {
                     { type: "h3", props: { innerText: prop } },
                     { type: "p", props: { innerHTML: Object[prop] } }
                 ]
-            });           
+            });
         }
         Modal.children.push(Form);
         this.append(WRender.createElement(Modal));
@@ -204,7 +237,7 @@ class WTableComponent extends HTMLElement {
             }, children: ['◄ Back']
         };
         const Section = { type: 'h2', children: [InputClose, "- Object Detail"] };
-        Form.children.push(Section);        
+        Form.children.push(Section);
         for (const prop in Object) {
             const ControlContainer = {
                 type: "div", props: { class: "ModalElement" }, children: [prop]
@@ -221,7 +254,7 @@ class WTableComponent extends HTMLElement {
             }
             ControlContainer.children.push({
                 type: ControlTagName, props: {
-                    type: InputType, id: "ControlValue" + prop, value: Object[prop]                   
+                    type: InputType, id: "ControlValue" + prop, value: Object[prop]
                 }
             })
             Form.children.push(ControlContainer);
@@ -229,7 +262,7 @@ class WTableComponent extends HTMLElement {
         const InputSave = {
             type: 'button', props: {
                 class: 'Btn', type: "button", onclick: async () => {
-                   for (const prop in this.ModelObject) {
+                    for (const prop in this.ModelObject) {
                         const ControlValue = this.querySelector("#ControlValue" + prop);
                         if (ControlValue.value.length < 1) {
                             ControlValue.style.border = "red solid 1px";
@@ -341,17 +374,17 @@ class WTableComponent extends HTMLElement {
         });
         return div;
     }
-    DefineTable() {
+    DefineTable(Dataset = this.Datasets) {
         this.ProcessData = [];
         let table = this.querySelector("#MainTable" + this.id);
         if (this.EvalValue == null) {
             //table.innerHTML = "Agregue un Value";
-            this.DrawTable();
+            this.DrawTable(Dataset);
         } else {
             table.innerHTML = "";
             this.GroupsData = [];
             this.groupParams.forEach(groupParam => {
-                this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
+                this.GroupsData.push(WArrayF.ArryUnique(this.Datasets, groupParam))
             });
             let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
             table.append(WRender.createElement(div));
@@ -450,7 +483,7 @@ class WTableComponent extends HTMLElement {
             type: "select",
             props: {
                 id: "Select" + this.id, class: "titleParam",
-                onchange: () => {  this.DefineTable(); }
+                onchange: () => { this.DefineTable(); }
             },
             children: [
                 { type: "option", props: { innerText: "Value - Suma", value: "sum" } },

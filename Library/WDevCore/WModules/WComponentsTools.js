@@ -170,7 +170,7 @@ class WRender {
 class DomComponent {
     constructor() {
         this.NavForm = [];
-        this.type = "form";
+        this.type = "div";
         this.props = {
             class: "MyForm"
         };
