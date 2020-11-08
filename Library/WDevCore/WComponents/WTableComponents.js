@@ -29,7 +29,6 @@ class WTableComponent extends HTMLElement {
         this.append(WRender.createElement(WTableStyle));
         this.RunTable()
     }
-
     attributeChangedCallback(name, oldValue, newValue) {
         console.log('Custom square element attributes changed.');
         //updateStyle(this);
@@ -81,12 +80,14 @@ class WTableComponent extends HTMLElement {
     //BASIC TABLE-----------------------------------------------------------------------
     DrawTable(Dataset = this.Dataset) {
         let table = this.querySelector("#MainTable" + this.id);
+        this.append(WRender.createElement(this.DrawHeadOptions()));
         if (typeof table === "undefined" || table == null) {
             table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
             table.children.push(this.DrawTHead());
             table.children.push(this.DrawTBody());
             this.append(WRender.createElement(table));
         } else {
+            table.tagName = "table";
             table.innerHTML = "";
             table.append(WRender.createElement(this.DrawTHead()), WRender.createElement(this.DrawTBody(Dataset)))
         }
@@ -95,21 +96,24 @@ class WTableComponent extends HTMLElement {
         const thead = { type: "thead", props: {}, children: [] };
         const element = this.Dataset[0];
         let tr = { type: "tr", children: [] }
-
         for (const prop in element) {
             tr.children.push({
                 type: "th",
                 children: [prop]
             });
             this.ModelObject[prop] = element[prop];
-        }
+        }     
+        thead.children.push(tr);
+        return thead;
+    }
+    DrawHeadOptions(){
         if (this.Options != undefined) {            
             if (this.Options.Search != undefined || this.Options.Add != undefined) {
                 const trOptions = { type: "div", props:{class: "thOptions"}, children: [] }
                 if (this.Options.Search != undefined) {
                     const InputOptions = {
                         type: "input", props: {
-                            class: "", type: "text",  onchange: async (ev) => { 
+                            class: "", type: "text", placeholder:"Search...",  onchange: async (ev) => { 
                                 const Dataset = this.Dataset.filter((element)=>{
                                     for (const prop in element) {
                                         if (element[prop].toString().includes(ev.target.value)) {
@@ -134,11 +138,10 @@ class WTableComponent extends HTMLElement {
                     }
                     trOptions.children.push(BtnOptions);
                 }
-                thead.children.push(trOptions);
+                return trOptions;
             }
         }
-        thead.children.push(tr);
-        return thead;
+        return "";
     }
     DrawTBody = (Dataset = this.Dataset) => {
         let tbody = { type: "tbody", props: {}, children: [] };
@@ -151,7 +154,7 @@ class WTableComponent extends HTMLElement {
                 });
             }
             if (this.Options != undefined) {
-                const Options = { type: "td", children: [] };
+                const Options = { type: "td", props: {class: "thOptions"}, children: [] };
                 if (this.Options.Show != undefined && this.Options.Show == true) {
                     Options.children.push({
                         type: "button", props: {
@@ -222,20 +225,22 @@ class WTableComponent extends HTMLElement {
         DomComponent.modalFunction(Modal.props.id);
     }
     CrudForm(Object = {}, ObjectOptions = { AddObject: false, Url: undefined }) {       
-        const Modal = { type: "div", props: { class: "ModalContent", id: "TempModal" }, children: [] };
-        const Form = { type: "div", props: { class: "ContainerForm" }, children: [] };
+        const ModalContainer = { type: "div", props: { class: "ModalContent", id: "TempModal" }, children: [] };
+        const Modal = { type: "div", props: { class: "ContainerForm" }, children: [] };
         const InputClose = {
             type: 'button', props: {
                 class: 'Btn', type: "button", onclick: () => {
-                    DomComponent.modalFunction(Modal.props.id);
+                    DomComponent.modalFunction(ModalContainer.props.id);
                     setTimeout(() => {
-                        this.removeChild(this.querySelector("#" + Modal.props.id))
+                        this.removeChild(this.querySelector("#" + ModalContainer.props.id))
                     }, 1000);
                 }
             }, children: ['◄ Back']
         };
         const Section = { type: 'h2', children: [InputClose, "- Object Detail"] };
-        Form.children.push(Section);
+        Modal.children.push(Section);
+        const Form = { type: 'divForm', children: [] };
+        Modal.children.push(Form);
         for (const prop in Object) {
             const ControlContainer = {
                 type: "div", props: { class: "ModalElement" }, children: [prop]
@@ -292,10 +297,10 @@ class WTableComponent extends HTMLElement {
             }, children: ['Guardar']
         };
         const OptionsSection = { type: 'div', children: [InputSave] };
-        Form.children.push(OptionsSection);
-        Modal.children.push(Form);
-        this.append(WRender.createElement(Modal));
-        DomComponent.modalFunction(Modal.props.id);
+        Modal.children.push(OptionsSection);
+        ModalContainer.children.push(Modal);
+        this.append(WRender.createElement(ModalContainer));
+        DomComponent.modalFunction(ModalContainer.props.id);
     }
     //FIN BASIOC TABLE-------------------------------------------------------------------
 
@@ -613,11 +618,20 @@ const WTableStyle = {
                 "min-height": "200px",
                 background: "#ebebf0",
                 "border-top": "solid 1px #999999"
-            }),new WCssClass("w-table .WTable td", {
-                padding: "5px"
+            }), new WCssClass("w-table .WTable td", {
+                padding: "5px 10px"
             }), new WCssClass("w-table .thOptions", {
-                display: "flex", "background-color": "#fff",
-                width:"100%"
+                display: "flex",               
+                width:"100%", overflow: "hidden"
+            }), new WCssClass("w-table input, w-table .Btn", {                
+                padding: "8px", border: "none", "border-bottom": "2px solid #999999",
+                width: "calc(100% - 16px)","font-size": "15px", height: "20px"
+            }), new WCssClass("w-table input:active, w-table input:focus", {                
+                "border-bottom": "2px solid #0099cc", outline: "none",
+            }), new WCssClass("w-table .Btn", {                
+                "border": "2px solid #999999", "border-radius": "0.1cm"
+            }), new WCssClass("w-table input[type=button], w-table .Btn", {                
+                cursor: "pointer", width: "calc(100% - 0px)",  height: "initial"
             }),
             //FIN ESTILO TABLA BASICAA------------------------------
             //flexcajones TABLA DINAMICA----------------------------
@@ -715,8 +729,17 @@ const WTableStyle = {
                 position: "absolute",
                 transform: "rotate(90deg)"
             }),
-
-        ]
+            //FORMSTYLE
+            new WCssClass("w-table divForm", {               
+                display: "flex",  "flex-wrap": "wrap"
+            }),new WCssClass("w-table divForm div", {               
+                width: "calc(50% - 10px)", margin: "5px"
+            })
+        ], MediaQuery: {condicion: "max-width: 600px", ClassList:[
+            new WCssClass("w-table divForm div", {               
+                width: "calc(100% - 10px)", margin: "5px"
+            })
+        ]}
     }
 }
 customElements.define("w-table", WTableComponent);

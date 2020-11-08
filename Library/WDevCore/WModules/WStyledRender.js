@@ -20,20 +20,29 @@ class WStyledRender extends HTMLElement {
             children: []
         }
         if (this.ClassList) {
-            let bodyStyle = "";
-            this.ClassList.forEach(Class => {
-                let bodyClass = ""
-                let index = 0;
-                for (const prop in Class.CSSProps) {
-                    bodyClass = bodyClass + `${prop}: ${Class.CSSProps[prop]};`;
-                    index++;
-                }
-                bodyClass = `${Class.Name} {${bodyClass}}`;
-                bodyStyle = bodyStyle + bodyClass;
-            });
-            styleFrag.children.push(bodyStyle);
+            styleFrag.children.push(this.DrawClassList(this.ClassList));
+        }
+        if (this.MediaQuery) {
+            let MediaQuery = `@media(${this.MediaQuery.condicion}){
+                ${this.DrawClassList(this.MediaQuery.ClassList)}
+            }`;
+            styleFrag.children.push(MediaQuery);
         }
         this.append(WRender.createElement(styleFrag));
+    }
+    DrawClassList(ClassList) {
+        let bodyStyle = "";
+        ClassList.forEach(Class => {
+            let bodyClass = ""
+            let index = 0;
+            for (const prop in Class.CSSProps) {
+                bodyClass = bodyClass + `${prop}: ${Class.CSSProps[prop]};`;
+                index++;
+            }
+            bodyClass = `${Class.Name} {${bodyClass}}`;
+            bodyStyle = bodyStyle + bodyClass;
+        });
+        return bodyStyle;
     }
 }
 class WCssClass {
