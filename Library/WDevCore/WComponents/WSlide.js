@@ -13,44 +13,76 @@ class WSlide extends HTMLElement {
         if (this.innerHTML != "") {
             return;
         }
-
-        if (typeof this.content !== "string") {
-            this.append("Este componente solo soporta textos por contenido");
-            return;
-        }
+        this.append(WRender.createElement(this.SlideStyle()))
         this.DrawSlide();
         this.showSlides(this.slideIndex);
     }
-    DrawSlide = async() => {
-        let frag = { type: "div", props: { class: "slideshow-container" }, children: [WSlideStyle] }
-        let dotContainer = { type: "div", props: { class: "dot-container" }, children: [] }
-
-        let NumSlides = this.content.length / 300;
+    TakeArray = () => {
         let Slides = [];
-        let inicio = 0;
-        let fin = 300;
-        for (let index = 0; index < NumSlides; index++) {
-            var cadena = this.content.slice(inicio, fin);
-            inicio = inicio + 300;
-            fin = fin + 300;
-            if (index > 0) {
-                cadena = "..." + cadena;
-            }
-            if (index < NumSlides - 1) {
-                if (cadena.charAt(cadena.length - 1).includes(" ")) {
-                    cadena = cadena.slice(0, -1);
+        if (typeof this.content === "string") {
+            let NumSlides = this.content.length / 300;
+            let inicio = 0;
+            let fin = 300;
+            for (let index = 0; index < NumSlides; index++) {
+                var cadena = this.content.slice(inicio, fin);
+                inicio = inicio + 300;
+                fin = fin + 300;
+                if (index > 0) {
+                    cadena = "..." + cadena;
                 }
-                cadena = cadena + "...";
+                if (index < NumSlides - 1) {
+                    if (cadena.charAt(cadena.length - 1).includes(" ")) {
+                        cadena = cadena.slice(0, -1);
+                    }
+                    cadena = cadena + "...";
+                }
+                Slides.push(cadena);
             }
-            Slides.push(cadena);
+        } else if (typeof this.content === "object" && this.content.length > 0) {
+            Slides = this.content;
         }
+        return Slides;
+    }
+    TakeSlide = (element) => {
+        const slide = {
+            type: "div", props: {}, children: []
+        }
+        if (this.slideType == "videos") {
+            const embed = {type: "div", props: {}, children: []}
+            embed.type = "embed";            
+            embed.props.frameborder = 0;
+            embed.props.allowfullscreen = true;
+            embed.props.src = element.url;
+            slide.props.class = "videoSlide";
+            slide.children.push(embed);
+            slide.children.push({
+                type: "div", props: {class: "videoSlideInfo"},
+                children:[
+                    {type: "h2", props: {innerText: element.title}},
+                    {type: "p", props: {innerText: element.description}},
+                ]
+            });            
+        } else if (this.slideType == "images") {
+            slide.type = "img";
+            slide.props.src = element.url;
+        } else {
+            slide.type = "p";
+            slide.props.class = "pText";
+            slide.children.push(element);
+        }
+        return slide;
+    }
+    DrawSlide = async () => {
+        let frag = { type: "div", props: { class: "slideshow-container" }, children: [] }
+        let dotContainer = { type: "div", props: { class: "dot-container" }, children: [] }
+        let Slides = this.TakeArray();
+
         Slides.forEach((element, index = 1) => {
+            const slide = this.TakeSlide(element);
             frag.children.push({
                 type: "div",
                 props: { class: "mySlides" },
-                children: [
-                    { type: "p", children: [element] }
-                ]
+                children: [slide]
             });
             dotContainer.children.push({
                 type: "span",
@@ -75,7 +107,7 @@ class WSlide extends HTMLElement {
         });
         this.append(WRender.createElement(frag), WRender.createElement(dotContainer));
     }
-    DrawForm = async() => {
+    DrawForm = async () => {
         const url = Url_Path + 'api/Form/GetForm?idform=' + this.idform[0];
         this.data = await GetRequest(url);
         let frag = { type: "div", props: { class: "slideshow-container" }, children: [FormStyle] }
@@ -104,21 +136,21 @@ class WSlide extends HTMLElement {
                     type: "div",
                     props: { class: "divOption" },
                     children: [{
-                            type: "label",
-                            props: {
-                                for: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`
-                            },
-                            children: [pregOption.OptionDesc]
+                        type: "label",
+                        props: {
+                            for: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`
                         },
-                        {
-                            type: "input",
-                            props: {
-                                type: typeOption,
-                                id: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`,
-                                name: `preg${preg.IdQuestion}`,
-                                value: pregOption.Value
-                            }
+                        children: [pregOption.OptionDesc]
+                    },
+                    {
+                        type: "input",
+                        props: {
+                            type: typeOption,
+                            id: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`,
+                            name: `preg${preg.IdQuestion}`,
+                            value: pregOption.Value
                         }
+                    }
                     ]
                 })
             });
@@ -171,74 +203,119 @@ class WSlide extends HTMLElement {
         slides[this.slideIndex - 1].style.display = "block";
         dots[this.slideIndex - 1].className += " active";
     }
-}
-
-const WSlideStyle = {
-    type: "w-style",
-    props: {
-        ClassList: [
-            new WCssClass("w-slide .slideshow-container", {
-                "box-sizing": "border-box",
-                "position": "relative",
-                "background": "#f1f1f1f1",
-                "font-family": "Verdana, sans-serif",
-                margin: 0
-            }),
-            new WCssClass("w-slide .mySlides", {
-                "display": "none",
-                "padding": "20px 50px",
-                "height": "280px",
-                "overflow-y": "auto",
-                "overflow-x": "hidden",
-                "text-align": "justify",
-                "white-space": "pre-wrap",
-            }),
-            new WCssClass("w-slide .prev, w-slide .next", {
-                "cursor": "pointer",
-                "position": "absolute",
-                "top": "50%",
-                "width": "auto",
-                "margin-top": "-30px",
-                "padding": "16px",
-                "color": "#888",
-                "font-weight": "bold",
-                "font-size": "20px",
-                "border-radius": "0 3px 3px 0",
-                "user-select": "none",
-            }),
-            new WCssClass("w-slide .next", {
-                "position": "absolute",
-                "right": "0",
-                "border-radius": "3px 0 0 3px",
-            }),
-            new WCssClass("w-slide .prev", {
-                "position": "absolute",
-                "left": "0",
-                "border-radius": "3px 0 0 3px",
-            }),
-            new WCssClass("w-slide .prev:hover, w-slide .next:hover", {
-                "background-color": "rgba(0,0,0,0.8)",
-                "color": "white",
-            }),
-            new WCssClass("w-slide .dot-container", {
-                "text-align": "center",
-                "padding": "20px",
-                "background": "#ddd",
-            }),
-            new WCssClass("w-slide .dot", {
-                "cursor": " pointer",
-                "height": " 15px",
-                "width": " 15px",
-                "margin": " 0 2px",
-                "background-color": " #bbb",
-                "border-radius": " 50%",
-                "display": " inline-block",
-                "transition": " background-color 0.6s ease",
-            }),
-            new WCssClass("w-slide .active,w-slide .dot:hover", {
-                "background-color": "#717171"
-            })
-        ]
+    SlideStyle = () => {
+        let Id = "#" + this.id + ".";
+        if (typeof this.id === "undefined" || this.id == "") {
+            Id = "";
+        }
+        const WSlideStyle = {
+            type: "w-style",
+            props: {
+                ClassList: [
+                    new WCssClass(Id + "w-slide", {
+                        position: "relative",
+                        width: "100%",
+                        display: "block"
+                    }),
+                    new WCssClass(Id + "w-slide .slideshow-container", {
+                        "box-sizing": "border-box",
+                        "position": "relative",
+                        "background": "#f1f1f1f1",
+                        "font-family": "Verdana, sans-serif",
+                        margin: 0
+                    }),
+                    new WCssClass(Id + "w-slide .mySlides", {
+                        "display": "none",
+                        //"padding": "20px 50px",
+                        "height": "350px",
+                        "overflow-y": "auto",
+                        "overflow-x": "hidden",
+                        "text-align": "justify",
+                        "white-space": "pre-wrap",
+                    }),
+                    new WCssClass(Id + "w-slide .prev, " + Id + "w-slide .next", {
+                        "cursor": "pointer",
+                        "position": "absolute",
+                        "top": "50%",
+                        "width": "auto",
+                        "margin-top": "-30px",
+                        "padding": "16px",
+                        "color": "#888",
+                        "font-weight": "bold",
+                        "font-size": "20px",
+                        "border-radius": "0 3px 3px 0",
+                        "user-select": "none",
+                    }),
+                    new WCssClass(Id + "w-slide .next", {
+                        "position": "absolute",
+                        "right": "0",
+                        "border-radius": "3px 0 0 3px",
+                    }),
+                    new WCssClass(Id + "w-slide .prev", {
+                        "position": "absolute",
+                        "left": "0",
+                        "border-radius": "3px 0 0 3px",
+                    }),
+                    new WCssClass(Id + "w-slide .prev:hover," + Id + "w-slide .next:hover", {
+                        "background-color": "rgba(0,0,0,0.8)",
+                        "color": "white",
+                    }),
+                    new WCssClass(Id + "w-slide .dot-container", {
+                        "text-align": "center",
+                        "padding": "20px",
+                        "background": "rgba(0,0,0,0.3)",
+                        width:"calc(100% - 40px)",
+                        position:"absolute",
+                        bottom: "0px"
+                    }),
+                    new WCssClass(Id + "w-slide .dot", {
+                        "cursor": " pointer",
+                        "height": " 20px",
+                        "width": " 20px",
+                        "margin": " 0 2px",
+                        "background-color": " #bbb",
+                        "border-radius": " 50%",
+                        "display": " inline-block",
+                        "transition": " background-color 0.6s ease",
+                    }),
+                    new WCssClass(Id + "w-slide .active, " + Id + "w-slide .dot:hover", {
+                        "background-color": "#717171"
+                    }),
+                    new WCssClass(Id + "w-slide .videoSlide", {
+                        width: "100%",                      
+                        height: "99%",
+                        margin: "0px",
+                        padding: "0px",
+                       // display: "flex",
+                        position: "relative"
+                    }),
+                    new WCssClass(Id + "w-slide embed", {
+                        width: "650px",                      
+                        height: "99%",
+                        margin: "0px",
+                        padding: "0px",
+                    }),
+                    new WCssClass(Id + "w-slide .videoSlideInfo", {
+                        width: "calc(100% - 600px)",                      
+                        height: "99%",
+                        margin: "0px",
+                        padding: "0px",
+                        background: "#000",
+                        position: "absolute",
+                        right: 0,
+                        top: 0,
+                        "border-right": "60px solid transparent"
+                        //"border-radius": "-50%"
+                    }),
+                    new WCssClass(Id + "w-slide p", {
+                        width: "100%",                        
+                        "padding": "20px 50px",
+                    }),
+                ]
+            }
+        }
+        return WSlideStyle;
     }
 }
+
 customElements.define("w-slide", WSlide);

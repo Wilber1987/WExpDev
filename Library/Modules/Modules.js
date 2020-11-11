@@ -2,14 +2,17 @@ import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
 import "../WDevCore/WComponents/WSlide.js";
 import "../WDevCore/WComponents/WRichText.js";
 import "../WDevCore/WComponents/WTableComponents.js";
+import { WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
+
 class Modules {
     constructor(props) {
         this.type = "div";
         this.props = props;
         this.props.style = "padding: 10px";
-        this.children = [
+        this.children = [            
+            {type: "w-slidev"},
             new TableCont(),
-            //  Ritch           
+            //  Ritch     
             new RichText(),
             //  SLIDE           
             new Slide(),
@@ -41,19 +44,19 @@ class Modules {
                     class: "Articles"
                 },
                 children: [{
-                        type: "label",
-                        props: {
-                            innerText: foro.title
-                        }
-                    },
-                    //{type: "label", props: {innerText: foro.date}},
-                    {
-                        type: "a",
-                        props: {
-                            innerText: "ver...",
-                            href: "#"
-                        }
+                    type: "label",
+                    props: {
+                        innerText: foro.title
                     }
+                },
+                //{type: "label", props: {innerText: foro.date}},
+                {
+                    type: "a",
+                    props: {
+                        innerText: "ver...",
+                        href: "#"
+                    }
+                }
                 ]
             })
         });
@@ -82,6 +85,49 @@ class Modules {
         return Style;
     }
 }
+class SlideVideos extends HTMLElement {
+    constructor() {
+        super();
+    }
+    connectedCallback() {
+        if (this.innerHTML != "") {
+            return;
+        }
+        this.DrawStyle();
+    }
+    DrawStyle = async () => {
+        var nextPageToken = "";
+        // Resultados por pagina
+        var resPorPagina = 5;
+        // Paginas a mostrar
+        var paginas = 1;
+        var key = "AIzaSyAA3IzIXETWZ_K2p8LQssMqx-3ssWhvdoA";
+        var idCanal = "UCvLhPXU--RrE_hwh9hOmQ6A";
+        var Url = "https://www.googleapis.com/youtube/v3/search?key=" +
+                    key + "&channelId=" + 
+                    idCanal + "&part=snippet,id&order=date&maxResults=" + 
+                    resPorPagina;
+        const ArrayVideos = [];
+        const response = await WAjaxTools.GetRequest(Url);
+        for (var k in response.items) {
+            var tituloVideo = response.items[k]["snippet"].title;
+            var options = "?rel=0&showinfo=0&autohide=1";
+            var urlVideo = "https://www.youtube.com/embed/" + response.items[k]["id"].videoId + options;
+            var fechaVideo = response.items[k]["snippet"].publishedAt;
+            ArrayVideos.push({
+                url: urlVideo
+            })
+        }
+        this.append(WRender.createElement({
+            type: "w-slide",
+            props: {
+                slideType: "videos",
+                content: ArrayVideos
+            }
+        }))
+    }
+}
+customElements.define("w-slidev", SlideVideos);
 class Slide {
     constructor() {
         this.type = "div";
@@ -162,82 +208,82 @@ class TableCont {
         //TABLE CONFIG
         var result = {
             "datos": [{
-                    "cantidad": 21,
-                    "estado": "Naranja",
-                    "time": "julio 2012",
-                    "categ2": "Moderado",
-                    "categ": "Ekisde",
-                },
-                {
-                    "cantidad": 2,
-                    "estado": "Naranja",
-                    "time": "julio 2019",
-                    "categ2": "Severo",
-                    "categ": "Nic"
-                },
-                {
-                    "cantidad": 14,
-                    "estado": "Fresa",
-                    "time": "julio 2019",
-                    "categ2": "Severo",
-                    "categ": "Galaxia"
-                },
-                {
-                    "cantidad": 17,
-                    "estado": "Fresa",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "Nic2"
-                },
-                {
-                    "cantidad": 36,
-                    "estado": "Naranja",
-                    "time": "julio 2012",
-                    "categ2": "Moderado",
-                    "categ": "Galaxia"
-                },
-                {
-                    "cantidad": 19,
-                    "estado": "Naranja",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "Nic2"
-                },
-                {
-                    "cantidad": 13,
-                    "estado": "Fresa",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "Canal2"
-                },
-                {
-                    "cantidad": 16,
-                    "estado": "Verde",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "Galaxia"
-                },
-                {
-                    "cantidad": 16,
-                    "estado": "Fresa",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "Nic3"
-                },
-                {
-                    "cantidad": 15,
-                    "estado": "Naranja",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "Canal2"
-                },
-                {
-                    "cantidad": 31,
-                    "estado": "Fresa",
-                    "time": "julio 2019",
-                    "categ2": "Moderado",
-                    "categ": "La Castellana"
-                }
+                "cantidad": 21,
+                "estado": "Naranja",
+                "time": "julio 2012",
+                "categ2": "Moderado",
+                "categ": "Ekisde",
+            },
+            {
+                "cantidad": 2,
+                "estado": "Naranja",
+                "time": "julio 2019",
+                "categ2": "Severo",
+                "categ": "Nic"
+            },
+            {
+                "cantidad": 14,
+                "estado": "Fresa",
+                "time": "julio 2019",
+                "categ2": "Severo",
+                "categ": "Galaxia"
+            },
+            {
+                "cantidad": 17,
+                "estado": "Fresa",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "Nic2"
+            },
+            {
+                "cantidad": 36,
+                "estado": "Naranja",
+                "time": "julio 2012",
+                "categ2": "Moderado",
+                "categ": "Galaxia"
+            },
+            {
+                "cantidad": 19,
+                "estado": "Naranja",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "Nic2"
+            },
+            {
+                "cantidad": 13,
+                "estado": "Fresa",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "Canal2"
+            },
+            {
+                "cantidad": 16,
+                "estado": "Verde",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "Galaxia"
+            },
+            {
+                "cantidad": 16,
+                "estado": "Fresa",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "Nic3"
+            },
+            {
+                "cantidad": 15,
+                "estado": "Naranja",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "Canal2"
+            },
+            {
+                "cantidad": 31,
+                "estado": "Fresa",
+                "time": "julio 2019",
+                "categ2": "Moderado",
+                "categ": "La Castellana"
+            }
             ],
         };
         var Config = {
@@ -254,8 +300,8 @@ class TableCont {
             //Dinamic: true,/*DEFINE LA TABLA DINAMICA*/
             AddChart: true,/*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
             Options: {
-                Search: true,                
-                Show: true,               
+                Search: true,
+                Show: true,
                 Edit: true, //UrlUpdate: "",
                 Select: true,
                 Add: true,
