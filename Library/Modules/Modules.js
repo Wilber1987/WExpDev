@@ -15,7 +15,7 @@ class Modules {
             //  Ritch     
             new RichText(),
             //  SLIDE           
-            new Slide(),
+            //new Slide(),
             {
                 type: 'h2',
                 props: {
@@ -108,13 +108,17 @@ class SlideVideos extends HTMLElement {
                     idCanal + "&part=snippet,id&order=date&maxResults=" + 
                     resPorPagina;
         const ArrayVideos = [];
-        const response = await WAjaxTools.GetRequest(Url);
+        //const response = await WAjaxTools.GetRequest(Url);
+        const response = {"kind":"youtube#searchListResponse","etag":"EFAG4Qk6miE5PCQJjfQwlVeUTUA","nextPageToken":"CAUQAA","regionCode":"NI","pageInfo":{"totalResults":69,"resultsPerPage":5},"items":[{"kind":"youtube#searchResult","etag":"BFZh2U7iCDyEgHXOQRE3IoGWc10","id":{"kind":"youtube#video","videoId":"z2NUvTg5Hvs"},"snippet":{"publishedAt":"2020-10-21T16:32:15Z","channelId":"UCvLhPXU--RrE_hwh9hOmQ6A","title":"APLICACIONES WEB   INTRODUCCION WEBCOMPONENTS   P15","description":"","thumbnails":{"default":{"url":"https://i.ytimg.com/vi/z2NUvTg5Hvs/default.jpg","width":120,"height":90},"medium":{"url":"https://i.ytimg.com/vi/z2NUvTg5Hvs/mqdefault.jpg","width":320,"height":180},"high":{"url":"https://i.ytimg.com/vi/z2NUvTg5Hvs/hqdefault.jpg","width":480,"height":360}},"channelTitle":"Wilber Jose Matus Gonzalez","liveBroadcastContent":"none","publishTime":"2020-10-21T16:32:15Z"}},{"kind":"youtube#searchResult","etag":"iwfLqonX2K4Q4AHxRgsE6k4-V0M","id":{"kind":"youtube#video","videoId":"FN5R-LFER_A"},"snippet":{"publishedAt":"2020-10-17T15:48:50Z","channelId":"UCvLhPXU--RrE_hwh9hOmQ6A","title":"APLICACIONES WEB - INTRODUCCION A LA POO CON JS - P14","description":"","thumbnails":{"default":{"url":"https://i.ytimg.com/vi/FN5R-LFER_A/default.jpg","width":120,"height":90},"medium":{"url":"https://i.ytimg.com/vi/FN5R-LFER_A/mqdefault.jpg","width":320,"height":180},"high":{"url":"https://i.ytimg.com/vi/FN5R-LFER_A/hqdefault.jpg","width":480,"height":360}},"channelTitle":"Wilber Jose Matus Gonzalez","liveBroadcastContent":"none","publishTime":"2020-10-17T15:48:50Z"}},{"kind":"youtube#searchResult","etag":"x96KiNPTMHtVAjL37L48XR36erQ","id":{"kind":"youtube#video","videoId":"0stpVI9T1XI"},"snippet":{"publishedAt":"2020-10-16T20:56:49Z","channelId":"UCvLhPXU--RrE_hwh9hOmQ6A","title":"APLICACIONES WEB  - DOM DINAMICO - P13","description":"","thumbnails":{"default":{"url":"https://i.ytimg.com/vi/0stpVI9T1XI/default.jpg","width":120,"height":90},"medium":{"url":"https://i.ytimg.com/vi/0stpVI9T1XI/mqdefault.jpg","width":320,"height":180},"high":{"url":"https://i.ytimg.com/vi/0stpVI9T1XI/hqdefault.jpg","width":480,"height":360}},"channelTitle":"Wilber Jose Matus Gonzalez","liveBroadcastContent":"none","publishTime":"2020-10-16T20:56:49Z"}},{"kind":"youtube#searchResult","etag":"SeadfhrXt5g60Sdwl3RzwS5Czis","id":{"kind":"youtube#video","videoId":"eqcqdY9PhuM"},"snippet":{"publishedAt":"2020-10-16T20:51:34Z","channelId":"UCvLhPXU--RrE_hwh9hOmQ6A","title":"APLICACIONES WEB - DOM DINAMICO- P12","description":"","thumbnails":{"default":{"url":"https://i.ytimg.com/vi/eqcqdY9PhuM/default.jpg","width":120,"height":90},"medium":{"url":"https://i.ytimg.com/vi/eqcqdY9PhuM/mqdefault.jpg","width":320,"height":180},"high":{"url":"https://i.ytimg.com/vi/eqcqdY9PhuM/hqdefault.jpg","width":480,"height":360}},"channelTitle":"Wilber Jose Matus Gonzalez","liveBroadcastContent":"none","publishTime":"2020-10-16T20:51:34Z"}},{"kind":"youtube#searchResult","etag":"fJ6o-ttTwDa3wd3Cf57ZOS9LKSY","id":{"kind":"youtube#video","videoId":"BfhdQd-iwqE"},"snippet":{"publishedAt":"2020-10-16T20:44:50Z","channelId":"UCvLhPXU--RrE_hwh9hOmQ6A","title":"APLICACIONES WEB - ESTRUCTURAS JSON Y ARREGLOS - P11","description":"","thumbnails":{"default":{"url":"https://i.ytimg.com/vi/BfhdQd-iwqE/default.jpg","width":120,"height":90},"medium":{"url":"https://i.ytimg.com/vi/BfhdQd-iwqE/mqdefault.jpg","width":320,"height":180},"high":{"url":"https://i.ytimg.com/vi/BfhdQd-iwqE/hqdefault.jpg","width":480,"height":360}},"channelTitle":"Wilber Jose Matus Gonzalez","liveBroadcastContent":"none","publishTime":"2020-10-16T20:44:50Z"}}]}
+
         for (var k in response.items) {
             var tituloVideo = response.items[k]["snippet"].title;
             var options = "?rel=0&showinfo=0&autohide=1";
             var urlVideo = "https://www.youtube.com/embed/" + response.items[k]["id"].videoId + options;
             var fechaVideo = response.items[k]["snippet"].publishedAt;
             ArrayVideos.push({
+                title: tituloVideo,
+                description: response.items[k]["snippet"].description, 
                 url: urlVideo
             })
         }

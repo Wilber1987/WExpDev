@@ -28,6 +28,12 @@ class WStyledRender extends HTMLElement {
             }`;
             styleFrag.children.push(MediaQuery);
         }
+        if (this.KeyFrame) {
+            let KeyFrame = `@keyframes ${this.KeyFrame.animate} {
+                ${this.DrawClassList(this.KeyFrame.ClassList)}
+            }`;
+            styleFrag.children.push(KeyFrame);
+        }
         this.append(WRender.createElement(styleFrag));
     }
     DrawClassList(ClassList) {

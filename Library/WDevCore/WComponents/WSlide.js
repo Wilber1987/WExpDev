@@ -48,20 +48,28 @@ class WSlide extends HTMLElement {
             type: "div", props: {}, children: []
         }
         if (this.slideType == "videos") {
-            const embed = {type: "div", props: {}, children: []}
-            embed.type = "embed";            
+            const embed = { type: "div", props: {}, children: [] }
+            embed.type = "embed";
             embed.props.frameborder = 0;
             embed.props.allowfullscreen = true;
             embed.props.src = element.url;
             slide.props.class = "videoSlide";
+            const content = {
+                type: "div", props: { class: "content" }, children: [
+                    { type: "h2", props: { innerText: element.title } },
+                    { type: "p", props: { innerText: element.description } },
+                ]
+            }
             slide.children.push(embed);
             slide.children.push({
-                type: "div", props: {class: "videoSlideInfo"},
-                children:[
-                    {type: "h2", props: {innerText: element.title}},
-                    {type: "p", props: {innerText: element.description}},
+                type: "div", props: { class: "videoSlideInfo" },
+                children: [
+                    content,
+                    { type: "div", props: { class: "bg" } },
+                    { type: "div", props: { class: "bg bg2" } },
+                    { type: "div", props: { class: "bg bg3" } },                    
                 ]
-            });            
+            });
         } else if (this.slideType == "images") {
             slide.type = "img";
             slide.props.src = element.url;
@@ -264,8 +272,8 @@ class WSlide extends HTMLElement {
                         "text-align": "center",
                         "padding": "20px",
                         "background": "rgba(0,0,0,0.3)",
-                        width:"calc(100% - 40px)",
-                        position:"absolute",
+                        width: "calc(100% - 0px)",
+                        position: "absolute",
                         bottom: "0px"
                     }),
                     new WCssClass(Id + "w-slide .dot", {
@@ -282,36 +290,87 @@ class WSlide extends HTMLElement {
                         "background-color": "#717171"
                     }),
                     new WCssClass(Id + "w-slide .videoSlide", {
-                        width: "100%",                      
+                        width: "100%",
                         height: "99%",
                         margin: "0px",
                         padding: "0px",
-                       // display: "flex",
+                        // display: "flex",
                         position: "relative"
                     }),
                     new WCssClass(Id + "w-slide embed", {
-                        width: "650px",                      
+                        width: "650px",
                         height: "99%",
                         margin: "0px",
                         padding: "0px",
                     }),
                     new WCssClass(Id + "w-slide .videoSlideInfo", {
-                        width: "calc(100% - 600px)",                      
+                        width: "calc(100% - 650px)",
                         height: "99%",
                         margin: "0px",
                         padding: "0px",
-                        background: "#000",
+                        display: "flex",
+                        "flex-direction": "column",
+                        "justify-content": "center",
+                        "align-items": "center",
+                        //background: "#cacaca",
+                        //background: "radial-gradient(circle, rgba(230,230,231,1) 51%, rgba(186,186,186,1) 100%)",
+                        
+                        color: "#3e3e3e",
                         position: "absolute",
                         right: 0,
                         top: 0,
-                        "border-right": "60px solid transparent"
+                        overflow: "hidden",
                         //"border-radius": "-50%"
                     }),
                     new WCssClass(Id + "w-slide p", {
-                        width: "100%",                        
-                        "padding": "20px 50px",
+                        width: "100%",
+                        //"padding": "20px 50px",
+                    }), new WCssClass(Id + "w-slide h2", {
+                        width: "80%",
+                        "text-align": "center",
+                        // background: "#072857",
+                        "border-radius": "0.3cm",
+                        padding: "10px",
+                        color: "#1e5799"
                     }),
-                ]
+                    //ANIMATION
+                    new WCssClass(Id + "w-slide .bg", {
+                        animation: "slide 3s ease-in-out infinite alternate",
+                        "background-image": "linear-gradient(-60deg, #6c3 50%, #09f 50%)",
+                        bottom: "0",
+                        left: "-50%",
+                        opacity: ".5",
+                        position: "absolute",                       
+                        right: "-50%",
+                        top: "0",
+                        "z-index": "0",
+                    }), new WCssClass(Id + "w-slide .bg2", {
+                        "animation-direction": "alternate-reverse",
+                        "animation-duration": "4s",
+                    }), new WCssClass(Id + "w-slide .bg3", {
+                        "animation-duration": "5s",
+                    }), new WCssClass(Id + "w-slide .content", {
+                        "background-color":"rgba(255,255,255,.8)",
+                        "border-radius":".25em",
+                        "box-shadow":"0 0 .25em rgba(0,0,0,.25)",
+                        "box-sizing":"border-box",
+                        display: "flex",
+                        width: "80%",
+                        "flex-direction": "column",
+                        "justify-content": "center",
+                        "align-items": "center",
+                        "z-index": 1,                        
+                    }),
+
+                ], KeyFrame: {
+                    animate: "slide", ClassList: [
+                        new WCssClass("0%", {
+                            transform: "translateX(-25%)"
+                        }), new WCssClass("100%", {
+                            transform: "translateX(25%)"
+                        })
+                    ]
+                }
             }
         }
         return WSlideStyle;
