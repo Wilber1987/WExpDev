@@ -95,7 +95,11 @@ class WTableComponent extends HTMLElement {
                 table.children.push(tbody);
             }
             this.append(WRender.createElement(table));
-        } else {            
+            this.append(WRender.createElement({
+                type: "div", props: { class: "tfooter" },
+                children: this.DrawTFooter(tbody.children)
+            }));
+        } else {
             table.style.display = "table";
             table.innerHTML = "";
             table.append(WRender.createElement(this.DrawTHead()));
@@ -106,6 +110,15 @@ class WTableComponent extends HTMLElement {
                 });
             } else {
                 table.append(WRender.createElement(tbody));
+            }
+            let footer = this.querySelector(".tfooter");
+            if (typeof footer !== "undefined" && footer != null) {
+                footer.innerHTML = "";
+                if (this.paginate == true && Dataset.length > this.maxElementByPage) {
+                    this.DrawTFooter(tbody.children).forEach(element => {
+                        footer.append(WRender.createElement(element));
+                    });
+                }
             }
         }
     }
@@ -133,6 +146,7 @@ class WTableComponent extends HTMLElement {
     }
     DrawHeadOptions() {
         if (this.querySelector(".thOptions")) {
+            this.querySelector(".thOptions").style.display = "flex";
             return "";
         }
         if (this.Options != undefined) {
@@ -190,14 +204,12 @@ class WTableComponent extends HTMLElement {
             numPage = Dataset.length / this.maxElementByPage;
             for (let index = 0; index < numPage; index++) {
                 let tBodyStyle = "display:none";
-                if(index == 0){
+                if (index == 0) {
                     tBodyStyle = "display:table-row-group";
                 }
                 tbody.children.push({ type: "tbody", props: { class: "tbodyChild", style: tBodyStyle }, children: [] });
             }
         }
-        console.log(numPage)
-        console.log(Dataset.length)
         let page = 0;
         Dataset.forEach((element) => {
             let tr = { type: "tr", children: [] };
@@ -260,25 +272,78 @@ class WTableComponent extends HTMLElement {
                 tr.children.push(Options);
             }
             if (numPage > 1 && tbody.children[page]) {
-                console.log(tbody.children[page])
                 tbody.children[page].children.push(tr);
                 if (tbody.children[page].children.length == this.maxElementByPage) {
-                    console.log(this.maxElementByPage)
+                    //console.log(this.maxElementByPage)
                     page++;
                 }
             } else {
-                console.log("no page")
+                //console.log("no page")
                 tbody.children.push(tr);
             }
-            console.log(page)
         });
         return tbody;
     }
-    DrawTFooter (numPage = 0){
-        let tfooter = { type: "tfooter", props: {}, children: [] };
-        for (let index = 0; index < numPage; index++) {
-            tfooter.children.push({ type: "a", props: {innerText: index, href: "#"}});         
+    DrawTFooter(tbody) {
+        //let tfooter = { type: "div", props: {}, children: [] };
+        let tfooter = [];
+        this.ActualPage = 0;
+        const SelectPage = (index) => {
+            let bodys = this.querySelectorAll("#MainTable" + this.id + " tbody");
+            bodys.forEach((body, indexBody) => {
+                if (indexBody == index) {
+                    body.style.display = "table-row-group";
+                } else {
+                    body.style.display = "none";
+                }
+            });
+            let buttons = this.querySelectorAll(".tfooter a");
+            buttons.forEach((button, indexBtn) => {
+                if (indexBtn == index) {
+                    button.className = "paginateBTN paginateBTNActive";
+                } else {
+                    button.className = "paginateBTN";
+                }
+            });
         }
+        tfooter.push({
+            type: "label",
+            props: {
+                innerText: "Previous", class: "paginateBTN", onclick: () => {
+                    this.ActualPage = this.ActualPage - 1;
+                    if (this.ActualPage < 0) {
+                        this.ActualPage = tbody.length - 1;
+                    }
+                    SelectPage(this.ActualPage);
+                }
+            }
+        });
+        tbody.forEach((element, index = 0) => {
+            let btnClass = "paginateBTN";
+            if (index == 0) {
+                btnClass = "paginateBTN paginateBTNActive";
+            }
+            tfooter.push({
+                type: "a",
+                props: {
+                    innerText: index + 1, class: btnClass, onclick: () => {
+                        SelectPage(index);
+                    }
+                }
+            });
+        });
+        tfooter.push({
+            type: "label",
+            props: {
+                innerText: "Next", class: "paginateBTN", onclick: () => {
+                    this.ActualPage = this.ActualPage + 1;
+                    if (this.ActualPage > tbody.length - 1) {
+                        this.ActualPage = 0;
+                    }
+                    SelectPage(this.ActualPage);
+                }
+            }
+        });
         return tfooter;
     }
     //FIN BASIOC TABLE-------------------------------------------------------------------
@@ -367,6 +432,14 @@ class WTableComponent extends HTMLElement {
     DefineTable(Dataset = this.Dataset) {
         this.ProcessData = [];
         let table = this.querySelector("#MainTable" + this.id);
+        let footer = this.querySelector(".tfooter");
+        if (typeof footer !== "undefined" && footer != null) {
+            footer.innerHTML = "";
+        }
+        let thOptions = this.querySelector(".thOptions");
+        if (typeof thOptions !== "undefined" && thOptions != null) {
+            thOptions.style.display = "none"
+        }
         if (this.EvalValue == null) {
             //table.innerHTML = "Agregue un Value";
             this.DrawTable(Dataset);
@@ -605,7 +678,8 @@ const WTableStyle = {
                 "font-family": "Verdana, sans-serif",
                 width: "100%",
                 "border-collapse": "collapse",
-                "border-top": "solid 1px #999999"
+                "border-top": "solid 1px #999999",
+                position: "relative"
             }), new WCssClass("w-table .WTable th", {
                 //background: "#999999",
                 padding: "0.5rem",
@@ -751,8 +825,24 @@ const WTableStyle = {
                 "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
             }),
             //PAGINACIONM
-            new WCssClass("w-table .tbodyChild", {
-                display: "none",
+            new WCssClass("w-table .paginateBTN", {
+                display: "inline-block",
+                padding: "8px",
+                "background-color": "#09f",
+                color: "#fff",
+                "margin": "5px",
+                cursor: "pointer",
+                "border-radius": "0.2cm",
+                "font-weight": "bold",
+                transition: "all 0.6s"
+            }), new WCssClass("w-table .paginateBTNActive", {
+                "background-color": "rgb(3, 106, 175)",
+            }), new WCssClass("w-table .tfooter", {               
+                display: "flex",
+                border: "1px rgb(185, 185, 185) solid",
+                "justify-content": "flex-end",
+                "padding-left": "20px",
+                "padding-right": "20px",
             }),
         ], MediaQuery: {
             condicion: "max-width: 600px", ClassList: [
