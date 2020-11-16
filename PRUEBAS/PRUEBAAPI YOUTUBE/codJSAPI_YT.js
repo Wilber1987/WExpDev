@@ -16,7 +16,7 @@ const loadVids = async () => {
             }
         });
         response = await response.json();
-        console.log(typeof response.items)
+        console.log(response)
         //------------------------------------------------------
         let vids = document.createElement("w-slidervids");
         vids.items = response.items;
@@ -29,7 +29,6 @@ const loadVids = async () => {
         }
     }
 }
-
 //import { WRender } from "..//WComponentsTools.js";
 class WSliderVids extends HTMLElement {
     constructor() {
@@ -45,6 +44,10 @@ class WSliderVids extends HTMLElement {
         this.DrawStyle();
     }
     DrawStyle() {
+        /*<iframe width="560" height="315" src="https://www.youtube.com/embed/TE66McLMMEw"
+         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media;
+          gyroscope; picture-in-picture" 
+         allowfullscreen></iframe>*/
         for (var k in this.items) {
             var tituloVideo=this.items[k]["snippet"].title;
             var urlVideo= "https://www.youtube.com/embed/" + this.items[k]["id"].videoId;

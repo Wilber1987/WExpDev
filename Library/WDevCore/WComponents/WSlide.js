@@ -1,5 +1,6 @@
-import { WRender } from "../WModules/WComponentsTools.js";
+import { WRender, DomComponent } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
+import "./WModalForm.js"
 class WSlide extends HTMLElement {
     constructor() {
         super();
@@ -13,7 +14,7 @@ class WSlide extends HTMLElement {
         if (this.innerHTML != "") {
             return;
         }
-        this.append(WRender.createElement(this.SlideStyle()))
+        this.append(WRender.createElement(this.SlideStyle()));
         this.DrawSlide();
         this.showSlides(this.slideIndex);
     }
@@ -53,23 +54,51 @@ class WSlide extends HTMLElement {
             embed.props.frameborder = 0;
             embed.props.allowfullscreen = true;
             embed.props.src = element.url;
+            embed.props.class = "ModalVideo";
             slide.props.class = "videoSlide";
             const content = {
                 type: "div", props: { class: "content" }, children: [
-                    { type: "h2", props: { innerText: element.title } },
+                    { type: "h3", props: { innerText: element.title } },
                     { type: "p", props: { innerText: element.description } },
                 ]
             }
-            slide.children.push(embed);
+            const image = { type: "img", props: { class: "embed", src: element.image } }
+            const midlee = {
+                type: "div", props: { class: "middle" }, children: [
+                    {
+                        type: "input", props: {
+                            class: "text", type: "button", value: "Ver Vídeo", onclick: () => {
+                                console.log(this)
+                                this.append(WRender.createElement({
+                                    type: "w-modal-form", props: {
+                                        id: "viewVideo" + this.id,
+                                        ObjectModal: embed
+                                    }
+                                }));
+                                /*
+                                setTimeout(() => {
+                                    DomComponent.modalFunction("viewVideo" + this.id)
+                                }, 100);
+                                */
+                            }
+                        }
+                    },
+                ]
+            }
+            slide.children.push({
+                type: "div", props: { class: "embed" }, children: [image, midlee]
+            })
+            //slide.children.push(image);
             slide.children.push({
                 type: "div", props: { class: "videoSlideInfo" },
                 children: [
                     content,
                     { type: "div", props: { class: "bg" } },
                     { type: "div", props: { class: "bg bg2" } },
-                    { type: "div", props: { class: "bg bg3" } },                    
+                    { type: "div", props: { class: "bg bg3" } },
                 ]
             });
+
         } else if (this.slideType == "images") {
             slide.type = "img";
             slide.props.src = element.url;
@@ -79,6 +108,9 @@ class WSlide extends HTMLElement {
             slide.children.push(element);
         }
         return slide;
+    }
+    VideoViewer(url) {
+
     }
     DrawSlide = async () => {
         let frag = { type: "div", props: { class: "slideshow-container" }, children: [] }
@@ -223,7 +255,8 @@ class WSlide extends HTMLElement {
                     new WCssClass(Id + "w-slide", {
                         position: "relative",
                         width: "100%",
-                        display: "block"
+                        display: "block",
+                        overflow: "hidden"
                     }),
                     new WCssClass(Id + "w-slide .slideshow-container", {
                         "box-sizing": "border-box",
@@ -236,8 +269,8 @@ class WSlide extends HTMLElement {
                         "display": "none",
                         //"padding": "20px 50px",
                         "height": "350px",
-                        "overflow-y": "auto",
-                        "overflow-x": "hidden",
+                        //"overflow-y": "auto",
+                        //"overflow-x": "hidden",
                         "text-align": "justify",
                         "white-space": "pre-wrap",
                     }),
@@ -291,44 +324,69 @@ class WSlide extends HTMLElement {
                     }),
                     new WCssClass(Id + "w-slide .videoSlide", {
                         width: "100%",
-                        height: "99%",
+                        height: "100%",
                         margin: "0px",
                         padding: "0px",
-                        // display: "flex",
-                        position: "relative"
+                        position: "relative",
+                        display: "flex",
                     }),
-                    new WCssClass(Id + "w-slide embed", {
-                        width: "650px",
-                        height: "99%",
+                    new WCssClass(Id + "w-slide .embed", {
+                        "max-width": "600px",
+                        width: "100%",
+                        height: "100%",
                         margin: "0px",
                         padding: "0px",
+                        "object-fit": "cover",
+                        position: "relative",
+                    }),
+                    new WCssClass(Id + "w-slide .embed .middle", {
+                        "transition": ".5s ease",
+                        "opacity": "0",
+                        "position": "absolute",
+                        "top": "0",
+                        "left": "0",
+                        "bottom": 0,
+                        right: 0,
+                        display: "flex",
+                        "justify-content": "center",
+                        "align-items": "center",
+                        "background-color": "rgba(255,255,255,0.5)"
+                    }), new WCssClass(Id + "w-slide .videoSlide .embed:hover .middle", {
+                        opacity: 1
+                    }), new WCssClass(Id + "w-slide .embed .text", {
+                        "background-color": "#09f",
+                        "color": "white",
+                        "font-size": "16px",
+                        "padding": "16px 32px",
+                        border: "none",
+                        cursor: "pointer"
+                    }),
+                    new WCssClass(Id + "w-slide .ModalVideo", {
+                        height: "450px",
+                        width: "100%",
+                        display: "block",
+                        margin: "auto"
                     }),
                     new WCssClass(Id + "w-slide .videoSlideInfo", {
-                        width: "calc(100% - 650px)",
-                        height: "99%",
+                        width: "calc(100% - 0px)",
+                        height: "100%",
                         margin: "0px",
                         padding: "0px",
                         display: "flex",
                         "flex-direction": "column",
                         "justify-content": "center",
                         "align-items": "center",
-                        //background: "#cacaca",
-                        //background: "radial-gradient(circle, rgba(230,230,231,1) 51%, rgba(186,186,186,1) 100%)",
-                        
                         color: "#3e3e3e",
-                        position: "absolute",
-                        right: 0,
-                        top: 0,
+                        position: "relative",
+                        //right: 0,
+                        //top: 0,
                         overflow: "hidden",
-                        //"border-radius": "-50%"
                     }),
                     new WCssClass(Id + "w-slide p", {
                         width: "100%",
-                        //"padding": "20px 50px",
-                    }), new WCssClass(Id + "w-slide h2", {
+                    }), new WCssClass(Id + "w-slide h3", {
                         width: "80%",
                         "text-align": "center",
-                        // background: "#072857",
                         "border-radius": "0.3cm",
                         padding: "10px",
                         color: "#1e5799"
@@ -340,7 +398,7 @@ class WSlide extends HTMLElement {
                         bottom: "0",
                         left: "-50%",
                         opacity: ".5",
-                        position: "absolute",                       
+                        position: "absolute",
                         right: "-50%",
                         top: "0",
                         "z-index": "0",
@@ -350,19 +408,36 @@ class WSlide extends HTMLElement {
                     }), new WCssClass(Id + "w-slide .bg3", {
                         "animation-duration": "5s",
                     }), new WCssClass(Id + "w-slide .content", {
-                        "background-color":"rgba(255,255,255,.8)",
-                        "border-radius":".25em",
-                        "box-shadow":"0 0 .25em rgba(0,0,0,.25)",
-                        "box-sizing":"border-box",
+                        "background-color": "rgba(255,255,255,.8)",
+                        "border-radius": ".25em",
+                        "box-shadow": "0 0 .25em rgba(0,0,0,.25)",
+                        "box-sizing": "border-box",
                         display: "flex",
                         width: "80%",
                         "flex-direction": "column",
                         "justify-content": "center",
                         "align-items": "center",
-                        "z-index": 1,                        
+                        "z-index": 1,
                     }),
 
-                ], KeyFrame: {
+                ], MediaQuery: {
+                    condicion: "max-width: 700px", ClassList: [
+                        new WCssClass(Id + "w-slide .videoSlide", {
+                            display: "flex",
+                            "flex-direction": "column",
+                        }),
+                        new WCssClass(Id + "w-slide .videoSlideInfo", {
+                            height: "100px", "z-index": 1, position: "absolute"
+                            , bottom: 0, display: "none"
+                        }),
+                        new WCssClass(Id + "w-slide .embed", {
+                            "max-width": "100%"
+                        }), new WCssClass(Id + "w-slide .embed .middle", {
+                            "opacity": "1",
+                            "background-color": "rgba(255,255,255,0.3)"
+                        }),
+                    ]
+                }, KeyFrame: {
                     animate: "slide", ClassList: [
                         new WCssClass("0%", {
                             transform: "translateX(-25%)"

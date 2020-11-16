@@ -1,6 +1,7 @@
 import { WRender, WArrayF, DomComponent, WAjaxTools } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import "./WChartJSComponent.js";
+import "./WModalForm.js";
 class WTableComponent extends HTMLElement {
     constructor() {
         super();
@@ -23,6 +24,7 @@ class WTableComponent extends HTMLElement {
         this.AttNameG3 = this.TableConfig.AttNameG3;
         this.EvalValue = this.TableConfig.EvalValue;
         this.Options = this.TableConfig.Options;
+        this.paginate = this.TableConfig.paginate;
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
         }
@@ -36,7 +38,6 @@ class WTableComponent extends HTMLElement {
     static get observedAttributes() {
         return this.Dataset;
     }
-
     RunTable() {
         this.GroupsData = [];
         this.ProcessData = [];
@@ -81,15 +82,31 @@ class WTableComponent extends HTMLElement {
     DrawTable(Dataset = this.Dataset) {
         let table = this.querySelector("#MainTable" + this.id);
         this.append(WRender.createElement(this.DrawHeadOptions()));
+        this.maxElementByPage = 5;
         if (typeof table === "undefined" || table == null) {
             table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
             table.children.push(this.DrawTHead());
-            table.children.push(this.DrawTBody());
+            const tbody = this.DrawTBody(Dataset);
+            if (this.paginate == true && Dataset.length > this.maxElementByPage) {
+                tbody.children.forEach(tb => {
+                    table.children.push(tb);
+                });
+            } else {
+                table.children.push(tbody);
+            }
             this.append(WRender.createElement(table));
-        } else {
-            table.tagName = "table";
+        } else {            
+            table.style.display = "table";
             table.innerHTML = "";
-            table.append(WRender.createElement(this.DrawTHead()), WRender.createElement(this.DrawTBody(Dataset)))
+            table.append(WRender.createElement(this.DrawTHead()));
+            const tbody = this.DrawTBody(Dataset);
+            if (this.paginate == true && Dataset.length > this.maxElementByPage) {
+                tbody.children.forEach(tb => {
+                    table.append(WRender.createElement(tb));
+                });
+            } else {
+                table.append(WRender.createElement(tbody));
+            }
         }
     }
     DrawTHead = () => {
@@ -102,37 +119,60 @@ class WTableComponent extends HTMLElement {
                 children: [prop]
             });
             this.ModelObject[prop] = element[prop];
-        }     
+        }
+        if (this.Options != undefined) {
+            const Options = { type: "th", props: { class: "" }, children: ["Options"] };
+            if (this.Options.Show != undefined
+                || this.Options.Show != undefined
+                || this.Options.Show != undefined) {
+                tr.children.push(Options);
+            }
+        }
         thead.children.push(tr);
         return thead;
     }
-    DrawHeadOptions(){
-        if (this.Options != undefined) {            
+    DrawHeadOptions() {
+        if (this.querySelector(".thOptions")) {
+            return "";
+        }
+        if (this.Options != undefined) {
             if (this.Options.Search != undefined || this.Options.Add != undefined) {
-                const trOptions = { type: "div", props:{class: "thOptions"}, children: [] }
+                const trOptions = { type: "div", props: { class: "thOptions" }, children: [] }
                 if (this.Options.Search != undefined) {
                     const InputOptions = {
                         type: "input", props: {
-                            class: "", type: "text", placeholder:"Search...",  onchange: async (ev) => { 
-                                const Dataset = this.Dataset.filter((element)=>{
+                            class: "txtControl", type: "text", placeholder: "Search...", onchange: async (ev) => {
+                                const Dataset = this.Dataset.filter((element) => {
                                     for (const prop in element) {
                                         if (element[prop].toString().includes(ev.target.value)) {
-                                            return element;                                            
-                                        }                                        
+                                            return element;
+                                        }
                                     }
-                                })                               
-                                let table = this.querySelector("#MainTable" + this.id);
-                                table.removeChild(this.querySelector("tbody"));
-                                table.append(WRender.createElement(this.DrawTBody(Dataset)));
+                                })
+                                this.DrawTable(Dataset)
+                                //let table = this.querySelector("#MainTable" + this.id);
+                                //table.removeChild(this.querySelector("tbody"));
+                                //table.append(WRender.createElement(this.DrawTBody(Dataset)));
                             }
                         }
                     }
-                    trOptions.children.push(InputOptions);                }
+                    trOptions.children.push(InputOptions);
+                }
                 if (this.Options.Add != undefined) {
                     const BtnOptions = {
                         type: "button", props: {
-                            class: "Btn", type: "button", innerText: "Add+", onclick: async () => {    
-                                this.CrudForm(this.ModelObject, {AddObject: true});                    
+                            class: "Btn", type: "button", innerText: "Add+", onclick: async () => {
+                                this.append(WRender.createElement({
+                                    type: "w-modal-form", props: {
+                                        ObjectModel: this.ModelObject,
+                                        ObjectOptions: {
+                                            AddObject: true, SaveFunction: (NewObject) => {
+                                                this.Dataset.push(NewObject);
+                                                this.DrawTable();
+                                            }
+                                        }
+                                    }
+                                }));
                             }
                         }
                     }
@@ -145,7 +185,21 @@ class WTableComponent extends HTMLElement {
     }
     DrawTBody = (Dataset = this.Dataset) => {
         let tbody = { type: "tbody", props: {}, children: [] };
-        Dataset.forEach(element => {
+        let numPage = 1;
+        if (this.paginate == true && Dataset.length > this.maxElementByPage) {
+            numPage = Dataset.length / this.maxElementByPage;
+            for (let index = 0; index < numPage; index++) {
+                let tBodyStyle = "display:none";
+                if(index == 0){
+                    tBodyStyle = "display:table-row-group";
+                }
+                tbody.children.push({ type: "tbody", props: { class: "tbodyChild", style: tBodyStyle }, children: [] });
+            }
+        }
+        console.log(numPage)
+        console.log(Dataset.length)
+        let page = 0;
+        Dataset.forEach((element) => {
             let tr = { type: "tr", children: [] };
             for (const prop in element) {
                 tr.children.push({
@@ -154,12 +208,16 @@ class WTableComponent extends HTMLElement {
                 });
             }
             if (this.Options != undefined) {
-                const Options = { type: "td", props: {class: "thOptions"}, children: [] };
+                const Options = { type: "td", props: { class: "" }, children: [] };
                 if (this.Options.Show != undefined && this.Options.Show == true) {
                     Options.children.push({
                         type: "button", props: {
                             class: "Btn", type: "button", innerText: "Show", onclick: async () => {
-                                this.ShowForm(element);
+                                this.append(WRender.createElement({
+                                    type: "w-modal-form", props: {
+                                        ObjectDetail: element
+                                    }
+                                }));
                             }
                         }
                     })
@@ -167,8 +225,17 @@ class WTableComponent extends HTMLElement {
                 if (this.Options.Edit != undefined && this.Options.Edit == true) {
                     Options.children.push({
                         type: "button", props: {
-                            class: "Btn", type: "button", innerText: "Edit", onclick: async () => {                                
-                                this.CrudForm(element);
+                            class: "Btn", type: "button", innerText: "Edit", onclick: async () => {
+                                this.append(WRender.createElement({
+                                    type: "w-modal-form", props: {
+                                        ObjectModel: element,
+                                        ObjectOptions: {
+                                            SaveFunction: () => {
+                                                this.DrawTable();
+                                            }
+                                        }
+                                    }
+                                }));
                             }
                         }
                     })
@@ -192,115 +259,27 @@ class WTableComponent extends HTMLElement {
                 }
                 tr.children.push(Options);
             }
-            tbody.children.push(tr);
+            if (numPage > 1 && tbody.children[page]) {
+                console.log(tbody.children[page])
+                tbody.children[page].children.push(tr);
+                if (tbody.children[page].children.length == this.maxElementByPage) {
+                    console.log(this.maxElementByPage)
+                    page++;
+                }
+            } else {
+                console.log("no page")
+                tbody.children.push(tr);
+            }
+            console.log(page)
         });
         return tbody;
     }
-    ShowForm(Object) {
-        const Modal = { type: "div", props: { class: "ModalContent", id: "TempModal" }, children: [] };
-        const Form = { type: "div", props: { class: "ContainerForm" }, children: [] };
-        const InputClose = {
-            type: 'button', props: {
-                class: 'Btn', type: "button", onclick: () => {
-                    DomComponent.modalFunction(Modal.props.id);
-                    setTimeout(() => {
-                        this.removeChild(this.querySelector("#" + Modal.props.id))
-                    }, 1000);
-                }
-            },
-            children: ['◄ Back']
-        };
-        const Section = { type: 'h2', children: [InputClose, "- Object Detail"] };
-        Form.children.push(Section);
-        for (const prop in Object) {
-            Form.children.push({
-                type: "div", props: { class: "ModalElement" }, children: [
-                    { type: "h3", props: { innerText: prop } },
-                    { type: "p", props: { innerHTML: Object[prop] } }
-                ]
-            });
+    DrawTFooter (numPage = 0){
+        let tfooter = { type: "tfooter", props: {}, children: [] };
+        for (let index = 0; index < numPage; index++) {
+            tfooter.children.push({ type: "a", props: {innerText: index, href: "#"}});         
         }
-        Modal.children.push(Form);
-        this.append(WRender.createElement(Modal));
-        DomComponent.modalFunction(Modal.props.id);
-    }
-    CrudForm(Object = {}, ObjectOptions = { AddObject: false, Url: undefined }) {       
-        const ModalContainer = { type: "div", props: { class: "ModalContent", id: "TempModal" }, children: [] };
-        const Modal = { type: "div", props: { class: "ContainerForm" }, children: [] };
-        const InputClose = {
-            type: 'button', props: {
-                class: 'Btn', type: "button", onclick: () => {
-                    DomComponent.modalFunction(ModalContainer.props.id);
-                    setTimeout(() => {
-                        this.removeChild(this.querySelector("#" + ModalContainer.props.id))
-                    }, 1000);
-                }
-            }, children: ['◄ Back']
-        };
-        const Section = { type: 'h2', children: [InputClose, "- Object Detail"] };
-        Modal.children.push(Section);
-        const Form = { type: 'divForm', children: [] };
-        Modal.children.push(Form);
-        for (const prop in Object) {
-            const ControlContainer = {
-                type: "div", props: { class: "ModalElement" }, children: [prop]
-            }
-            let ControlTagName = "input";
-            let InputType = typeof Object[prop];            
-            let InputValue = Object[prop];
-            if (ObjectOptions.AddObject == true) {
-                InputValue = "";
-            }
-            if (prop.includes("date") || prop.includes("fecha")) {
-                InputType = "date";
-            } else if (prop.includes("image") || prop.includes("img")) {
-                InputType = "file";
-            }
-            if (Object[prop].length >= 50) {
-                ControlTagName = "textarea";
-            }
-            ControlContainer.children.push({
-                type: ControlTagName, props: {
-                    type: InputType, id: "ControlValue" + prop, value: InputValue
-                }
-            })
-            Form.children.push(ControlContainer);
-        }
-        const InputSave = {
-            type: 'button', props: {
-                class: 'Btn', type: "button", onclick: async () => {
-                    for (const prop in this.ModelObject) {
-                        const ControlValue = this.querySelector("#ControlValue" + prop);                        
-                        if (ControlValue.value.length < 1) {
-                            ControlValue.style.border = "red solid 1px";
-                            return;
-                        }
-                        Object[prop] = ControlValue.value;                        
-                    }
-                    if (ObjectOptions.AddObject == true) {
-                        const NewObject = {};
-                        for (const prop in Object) {
-                            NewObject[prop] = Object[prop];
-                        }
-                        this.Dataset.push(NewObject);
-                    }
-                    this.DefineTable();
-                    DomComponent.modalFunction(Modal.props.id);
-                    setTimeout(() => {
-                        this.removeChild(this.querySelector("#" + Modal.props.id))
-                    }, 1000);
-                    if (ObjectOptions.Url != undefined) {
-                        const response = await WAjaxTools.PostRequest(Url, Object);
-                        console.log(response);
-                    }
-                }
-            }, children: ['Guardar']
-        };
-        const OptionsSection = { type: 'div', children: [InputSave] };
-        Modal.children.push(OptionsSection);
-        ModalContainer.children.push(Modal);
-        this.append(WRender.createElement(ModalContainer));
-        DomComponent.modalFunction(ModalContainer.props.id);
+        return tfooter;
     }
     //FIN BASIOC TABLE-------------------------------------------------------------------
 
@@ -385,7 +364,7 @@ class WTableComponent extends HTMLElement {
         });
         return div;
     }
-    DefineTable(Dataset = this.Datasets) {
+    DefineTable(Dataset = this.Dataset) {
         this.ProcessData = [];
         let table = this.querySelector("#MainTable" + this.id);
         if (this.EvalValue == null) {
@@ -394,8 +373,11 @@ class WTableComponent extends HTMLElement {
         } else {
             table.innerHTML = "";
             this.GroupsData = [];
+            table.style.display = "flex";
+            //console.log(Dataset)
+            //console.log(this.Dataset)
             this.groupParams.forEach(groupParam => {
-                this.GroupsData.push(WArrayF.ArryUnique(this.Datasets, groupParam))
+                this.GroupsData.push(WArrayF.ArryUnique(Dataset, groupParam))
             });
             let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
             table.append(WRender.createElement(div));
@@ -441,7 +423,10 @@ class WTableComponent extends HTMLElement {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);
                     }
                 } else if (target.id.includes("ListGroups")) {
-                    this.groupParams.push(document.getElementById(data).innerText);
+                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    if (!find) {
+                        this.groupParams.push(document.getElementById(data).innerText);
+                    }
                 } else if (target.id.includes("ListAtribs")) {
                     let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
                     if (find) {
@@ -456,9 +441,16 @@ class WTableComponent extends HTMLElement {
                 if (OriginalParent.includes("ListValue")) {
                     this.EvalValue = null;
                 }
+                if (OriginalParent.includes("ListGroups")) {
+                    this.groupParams = [];
+                    const Parent = this.querySelector("#" + OriginalParent);
+                    Parent.querySelectorAll(".labelParam").forEach(element => {
+                        this.groupParams.push(element.innerText);
+                    });
+                }
                 this.DefineTable();
             } else {
-                alert("error")
+                console.log("error")
             }
         }
         const allowDrop = (ev) => { ev.preventDefault(); }
@@ -612,53 +604,65 @@ const WTableStyle = {
             new WCssClass("w-table .WTable", {
                 "font-family": "Verdana, sans-serif",
                 width: "100%",
-                "align-items": "flex-end",
-                "overflow-y": "hidden",
-                "overflow-x": "auto",
-                "min-height": "200px",
-                background: "#ebebf0",
+                "border-collapse": "collapse",
                 "border-top": "solid 1px #999999"
+            }), new WCssClass("w-table .WTable th", {
+                //background: "#999999",
+                padding: "0.5rem",
+                "text-align": "left",
+                border: "1px #ccc solid"
             }), new WCssClass("w-table .WTable td", {
-                padding: "5px 10px"
+                padding: "0.25rem",
+                "text-align": "left",
+                border: "1px #ccc solid"
+            }), new WCssClass("w-table .WTable tbody tr:nth-child(odd)", {
+                "background-color": "#eee"
             }), new WCssClass("w-table .thOptions", {
-                display: "flex",               
-                width:"100%", overflow: "hidden"
-            }), new WCssClass("w-table input, w-table .Btn", {                
+                display: "flex",
+                width: "100%", overflow: "hidden"
+            }), new WCssClass("w-table input[type=text], w-table input[type=string], w-table input[type=number], w-table input[type=date]", {
                 padding: "8px", border: "none", "border-bottom": "2px solid #999999",
-                width: "calc(100% - 16px)","font-size": "15px", height: "20px"
-            }), new WCssClass("w-table input:active, w-table input:focus", {                
+                width: "calc(100% - 16px)", "font-size": "15px", height: "20px"
+            }), new WCssClass("w-table input:active, w-table input:focus", {
                 "border-bottom": "2px solid #0099cc", outline: "none",
-            }), new WCssClass("w-table .Btn", {                
-                "border": "2px solid #999999", "border-radius": "0.1cm"
-            }), new WCssClass("w-table input[type=button], w-table .Btn", {                
-                cursor: "pointer", width: "calc(100% - 0px)",  height: "initial"
+            }), new WCssClass("w-table .Btn", {
+                // "border": "2px solid #999999", "border-radius": "0.1cm"
+            }), new WCssClass("w-table input[type=button]", {
+                cursor: "pointer", width: "calc(100% - 0px)", height: "initial"
             }),
             //FIN ESTILO TABLA BASICAA------------------------------
             //flexcajones TABLA DINAMICA----------------------------
             new WCssClass("w-table .TContainer", {
                 padding: "0px",
                 display: "flex",
+                //"min-width": "100%",
             }), new WCssClass("w-table .TContainerBlock", {
-                "border-right": "1px solid #000"
+                //"border-right": "1px solid #000",
+                width: "100%"
             }), new WCssClass(" w-table .TContainerBlockL", {
                 display: "flex",
                 "flex-direction": "column",
                 "justify-content": "flex-end",
-                "border-right": "1px solid #000"
+                "background-color": "rgb(236, 235, 235)",
+                "font-weight": "bold",
             }), new WCssClass(" w-table .TContainerBlockData", {
                 width: "100%"
             }), new WCssClass("w-table  Tlabel", {
                 display: "block",
-                padding: "5px",
+                //padding: "5px",
                 "border-bottom": "1px solid #000",
-                height: "30px",
+                //height: "30px",
                 "overflow-y": "hidden",
                 "white-space": "nowrap",
                 "overflow": "hidden",
                 "text-overflow": "ellipsis",
                 "min-width": "60px",
-                "background-color": "#717183",
-                color: "#fff"
+                "background-color": "#d4d4d4",
+                color: "#000",
+                padding: "0.5rem",
+                "text-align": "left",
+                "font-weight": "bold",
+                border: "1px rgb(185, 185, 185) solid",
             }), new WCssClass("w-table .TContainerBlockData .Cajon", {
                 overflow: "hidden",
                 display: "flex",
@@ -667,16 +671,17 @@ const WTableStyle = {
                 padding: "0px",
                 width: "100%"
             }), new WCssClass("w-table TData", {
-                padding: "5px",
-                height: "30px",
+                //padding: "5px",
+                //height: "30px",
                 "overflow-y": "hidden",
                 "white-space": "nowrap",
                 "overflow": "hidden",
                 "text-overflow": "ellipsis",
-                "min-width": "60px"
+                "min-width": "60px",
+                padding: "0.5rem",
+                "text-align": "left",
+                border: "1px #ccc solid"
             }), new WCssClass("w-table TDataTotal", {
-                padding: "5px",
-                height: "30px",
                 "overflow-y": "hidden",
                 "white-space": "nowrap",
                 "overflow": "hidden",
@@ -684,6 +689,10 @@ const WTableStyle = {
                 "min-width": "60px",
                 "border-top": "solid 1px #000",
                 "border-bottom": "solid 1px #000",
+                padding: "0.5rem",
+                "text-align": "left",
+                "font-weight": "bold",
+                border: "1px #ccc solid",
             }), new WCssClass("w-table .Cajon", {
                 display: "flex"
             }),
@@ -711,7 +720,7 @@ const WTableStyle = {
             }), new WCssClass("w-table select.titleParam, w-table select.titleParam:focus, w-table select.titleParam:active", {
                 cursor: "pointer",
                 "background-color": "#efefef",
-                border: "none",
+                border: "solid 1px #efefef",
                 "border-bottom": "1px solid #000",
                 outline: "none",
                 "outline-width": "0",
@@ -720,7 +729,7 @@ const WTableStyle = {
                 padding: "10px",
                 "background-color": "#fff",
                 cursor: "pointer",
-                border: "solid 1px #999999"
+                border: "solid 3px #efefef"
             }), new WCssClass("w-table .btn", {
                 "margin-left": "10px",
                 cursor: "pointer",
@@ -728,18 +737,30 @@ const WTableStyle = {
                 "font-weight": "bold",
                 position: "absolute",
                 transform: "rotate(90deg)"
+            }), new WCssClass("w-table .txtControl", {
+                "display": "block",
+                "width": "100%",
+                "padding": ".375rem .75rem",
+                "font-size": "1rem",
+                "line-height": "1.5",
+                "color": "#495057",
+                "background-color": "#fff",
+                "background-clip": "padding-box",
+                "border": "1px solid #ced4da !important",
+                "border-radius": ".25rem",
+                "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
             }),
-            //FORMSTYLE
-            new WCssClass("w-table divForm", {               
-                display: "flex",  "flex-wrap": "wrap"
-            }),new WCssClass("w-table divForm div", {               
-                width: "calc(50% - 10px)", margin: "5px"
-            })
-        ], MediaQuery: {condicion: "max-width: 600px", ClassList:[
-            new WCssClass("w-table divForm div", {               
-                width: "calc(100% - 10px)", margin: "5px"
-            })
-        ]}
+            //PAGINACIONM
+            new WCssClass("w-table .tbodyChild", {
+                display: "none",
+            }),
+        ], MediaQuery: {
+            condicion: "max-width: 600px", ClassList: [
+                new WCssClass("w-table divForm div", {
+                    width: "calc(100% - 10px)", margin: "5px"
+                })
+            ]
+        }
     }
 }
 customElements.define("w-table", WTableComponent);

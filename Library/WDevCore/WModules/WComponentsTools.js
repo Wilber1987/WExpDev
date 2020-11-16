@@ -96,7 +96,7 @@ class WAjaxTools {
             }
         }
     }
-    LocalData = (Url) => {
+    static LocalData = (Url) => {
         let responseLocal = localStorage.getItem(Url);
         return JSON.parse(responseLocal);
     }
@@ -274,6 +274,7 @@ class DomComponent {
     }
     static modalFunction(DivModal) {
         var ventanaM = document.getElementById(DivModal);
+        //console.log(DivModal)
         if (ventanaM.style.opacity == 0) {
             ventanaM.style.transition = "all ease 1s";
             ventanaM.style.display = "block";
@@ -318,7 +319,7 @@ class DomComponent {
             SectionElement.style.minHeight = valueSize + "px";
 
         }
-    }
+    }  
 }
 class WArrayF {
     static orderByDate(Arry, type) {
