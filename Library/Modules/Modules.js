@@ -10,7 +10,7 @@ class Modules {
         this.props = props;
         this.props.style = "padding: 10px";
         this.children = [
-            { type: "w-slidev" },
+            //{ type: "w-slidev" },
             new TableCont(),
             //  Ritch     
             new RichText(),
@@ -327,18 +327,17 @@ class TableCont {
         };
         var Config = {
             Datasets: result.datos, /*DATOS DE LA TABLA*/
-            //Datasets: TableList,
             Colors: ["#ff6699", "#ffbb99", "#adebad"],/*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
             //AttNameEval: "estado",
             //AttNameG1: "time",
             //AttNameG2: "categ2",
-            //AttNameG3: "categ",
+            //AttNameG3: "categ",            
             //EvalValue: "cantidad",
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             Dinamic: true,/*DEFINE LA TABLA DINAMICA*/
             AddChart: true,/*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            paginate: true,
+            //paginate: false,
             Options: {
                 Search: true,
                 Show: true,
@@ -356,6 +355,25 @@ class TableCont {
             props: {
                 id: "table",
                 TableConfig: Config
+            }
+        })
+        var Config2 = {
+            MasterDetailTable : true,
+            ModelObject: {
+                id_: 1,
+                content: "des",
+                cant: 3, 
+                AttNameG1: "g1", 
+                CATEG: ["value1", "value2"], 
+                fecha: "2020-01-01"
+            },
+
+        }
+        this.children.push({
+            type: "w-table",
+            props: {
+                id: "table2",
+                TableConfig: Config2
             }
         })
 

@@ -153,8 +153,8 @@ class WRender {
             }
             return element;
         } catch (error) {
-            //console.log(error)
-            //console.log(Node)
+            console.log(error)
+            console.log(Node)
         }
     }
     static createElementNS = (node) => {

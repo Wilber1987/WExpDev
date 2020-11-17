@@ -22,7 +22,7 @@ class WModalForm extends HTMLElement {
         this.className = "ModalContent";
         this.Modal = { type: "div", props: { class: "ContainerForm" }, children: [] };
         this.Modal.children.push(this.DrawModalHead());
-        if (this.ObjectModal) {
+        if (this.ObjectModal) {           
             this.Modal.children.push(this.ObjectModal);
         } else if (this.ObjectDetail) {
             this.Modal.children.push(this.ShowFormDetail());
@@ -34,9 +34,12 @@ class WModalForm extends HTMLElement {
             if (this.ObjectOptions.AddObject == true) {
                 this.Modal.children.push(this.SaveOptions({}));
             } else {
-                this.Modal.children.push(this.SaveOptions(this.ObjectModel));
+                this.Modal.children.push(this.SaveOptions(this.EditObject));
             }
         }
+        console.log(this.Modal)
+        const M = WRender.createElement(this.Modal);
+        console.log(M)
         this.append(WRender.createElement(this.Modal));
         DomComponent.modalFunction(this.id)
     }
@@ -67,31 +70,54 @@ class WModalForm extends HTMLElement {
         }
         return Form;
     }
-    CrudForm(Object = {}, ObjectOptions) {
+    CrudForm(Object = {}, ObjectOptions) {        
         const Form = { type: 'divForm', children: [] };
         for (const prop in Object) {
             const ControlContainer = {
                 type: "div", props: { class: "ModalElement" }, children: [prop]
             }
-            let ControlTagName = "input";
+            let ControlTagName = "input";            
+            if (typeof Object[prop] === "string" && Object[prop].length >= 50) {
+                ControlTagName = "textarea";
+            }else if (typeof Object[prop] === "object") {
+                ControlTagName = "select";
+            }
+            const InputControl = {
+                type: ControlTagName, props: {
+                    type: "text", id: "ControlValue" + prop, value: null
+                }, children: []
+            }            
             let InputType = typeof Object[prop];
-            let InputValue = Object[prop];
+            let InputValue = "";
             if (ObjectOptions.AddObject == true) {
                 InputValue = "";
+            } else {
+                InputValue = this.EditObject[prop];
             }
-            if (prop.includes("date") || prop.includes("fecha")) {
+            //DEFINICION DE TIPO
+            if (InputType == "object") {
+                InputType = "select";
+                for (const key in Object[prop]) {   
+                    let OValue, ODisplay;                 
+                    if (typeof key === "string") {
+                        OValue = Object[key]; ODisplay = Object[key];
+                    }else {
+                        OValue = key; ODisplay = Object[key];
+                    }
+                    InputControl.children.push({
+                        type: "option", props: {
+                            value: "OValue", innerText: "ODisplay"
+                        }
+                    })
+                }
+            } else if (prop.includes("date") || prop.includes("fecha") || prop.includes("time")) {
                 InputType = "date";
             } else if (prop.includes("image") || prop.includes("img")) {
                 InputType = "file";
-            }
-            if (Object[prop].length >= 50) {
-                ControlTagName = "textarea";
-            }
-            ControlContainer.children.push({
-                type: ControlTagName, props: {
-                    type: InputType, id: "ControlValue" + prop, value: InputValue
-                }
-            })
+            } 
+            InputControl.props.type = InputType;
+            InputControl.props.value = InputValue;           
+            ControlContainer.children.push(InputControl)
             Form.children.push(ControlContainer);
         }
         return Form;
@@ -107,10 +133,10 @@ class WModalForm extends HTMLElement {
                             return;
                         }
                         if (parseFloat(ControlValue.value).toString() != "NaN") {
-                            Object[prop] = parseFloat(ControlValue.value);                            
-                        }else{
+                            Object[prop] = parseFloat(ControlValue.value);
+                        } else {
                             Object[prop] = ControlValue.value;
-                        }                       
+                        }
                     }
                     if (this.ObjectOptions.SaveFunction != undefined) {
                         this.ObjectOptions.SaveFunction(Object);
