@@ -10,8 +10,17 @@
     function GetModel($request)
     { 
         $Form = [];
-        $pMysqli = new mysqli('localhost','root','','psicovitalem');
+        $pMysqli = new mysqli('localhost','root','','psicovitalem2');
        // echo   "DESCRIBE $request->tablename"; 
+       if ($pMysqli->connect_errno) {
+            printf("Conexión fallida: %s\n", $pMysqli->connect_error);
+            exit();
+        }
+        if ($pMysqli->ping()) {
+            printf ("¡La conexión está bien!\n");
+        } else {
+            printf ("Error: %s\n", $pMysqli->error);
+        }
         $q = $pMysqli->query("DESCRIBE $request->tablename"); 
         foreach ($q as $row) {
             $Form[] = $row;
@@ -21,8 +30,9 @@
     function Get($request)
     {
         $Form = [];
-        $pMysqli = new mysqli('localhost','root','','psicovitalem');   
-        $q = $pMysqli->query("SELECT * FROM $request->tablename"); 
+        $pMysqli = new mysqli('localhost','root','','psicovitalem2');   
+        $q = $pMysqli->query("SELECT * FROM $request->tablename");
+        //echo $q;
         foreach ($q as $row) {
             $Form[] = $row;
         }        

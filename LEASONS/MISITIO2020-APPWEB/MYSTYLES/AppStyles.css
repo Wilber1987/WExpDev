@@ -21,6 +21,7 @@ aside {
     width: 30%;
     margin: 5px;
     background-color: #9b9b9b;
+    overflow-y: auto;
 }
 main {
     height: calc(100% - 10px);
@@ -84,4 +85,47 @@ main {
     display: block;
     width: 95%;
     font-size: 18px;
+}
+/*CSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS*/
+.AutorCardCssClass{
+    display: flex;
+    flex-direction: column;
+    background-color: #eeeeee;
+    border-radius: 0.3cm;
+    overflow: hidden;
+    margin: 10px
+}
+.franjaAzul{
+    height: 50px;
+    background-color: #0072b4;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    line-height: 50px;
+}
+.DataCardCssClass{
+    display: flex;
+    height: 200px;    
+    margin: 5px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.AutorCardCssClass img{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+.DataAutorCssClass {
+    margin-left: 20px;
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.DataAutorCssClass label{
+    padding: 5px;
+
 }

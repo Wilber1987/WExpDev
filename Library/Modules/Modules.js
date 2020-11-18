@@ -358,13 +358,31 @@ class TableCont {
             }
         })
         var Config2 = {
-            MasterDetailTable : true,
+            MasterDetailTable: true,
+            AddItemsFromApi: {
+                Active: true,
+                ApiUrl: "http://localhost:8080/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
+                Function: async (Param)=>{//ESTA FUNCION DEBE SER ASYNCRONA
+                    /*SINO SE DEFINE UNA FUNCION DE RETORNO SE
+                     EJECUTA UNA FUNCION POST QUE RECIBE UN
+                     PARAMETRO LLAMADPO "Param" Y SE ENVIA UNA
+                     PETICION POST */
+                    console.log("function async");
+                    const ApiUrl = "http://localhost:8080/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get";
+                    const Dataset = await WAjaxTools.PostRequest(
+                        ApiUrl,
+                        { tablename: "cat_areas", Param: Param }
+                    );
+                    return Dataset.data;
+                }
+            },
             ModelObject: {
                 id_: 1,
                 content: "des",
-                cant: 3, 
-                AttNameG1: "g1", 
-                CATEG: ["value1", "value2"], 
+                cant: 3,
+                AttNameG1: "g1",
+                CATEG: ["value1", "value2"],
+                CATEG2: [{ id: "1", desc: "val1" }, { id: "2", desc: "val2" }],
                 fecha: "2020-01-01"
             },
 

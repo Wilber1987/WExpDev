@@ -1,32 +1,34 @@
-let Autores = [];
-Autores.push({
+let AutoresList = [];
+AutoresList.push({
     IdAutor: 1,
     Nombres: "Wilber Matus",
-    Pais: "Nicaragua"
+    Pais: "Nicaragua",
+    FechaNac: "2020-01-01",
+    Especialidad: "Catedratico",
+    Photo: "Diapositiva1.jpg"
 });
-Autores.push({
+AutoresList.push({
     IdAutor: 2,
     Nombres: "Juan Perez",
-    Pais: "Nicaragua"
+    Pais: "Nicaragua",
+    FechaNac: "2020-01-01",
+    Especialidad: "Catedratico",
+    Photo: "Diapositiva2.jpg"
 });
-Autores.push({
+AutoresList.push({
     IdAutor: 3,
     Nombres: "Mario Bros",
-    Pais: "Nicaragua"
+    Pais: "Nicaragua",
+    FechaNac: "2020-01-01",
+    Especialidad: "Catedratico",
+    Photo: "Diapositiva3.jpg"
 });
-let Maria = [];
-Maria.push({
-    IdAutor: 1,
-    Nombres: "Wilber Matus",
-    Pais: "Nicaragua"
+AutoresList.push({
+    IdAutor: 4,
+    Nombres: "Maria",
+    Pais: "Nicaragua",
+    FechaNac: "2020-01-01",
+    Especialidad: "Catedratico",
+    Photo: "Diapositiva4.jpg"
 });
-Maria.push({
-    IdAutor: 2,
-    Nombres: "Juan Perez",
-    Pais: "Nicaragua"
-});
-Maria.push({
-    IdAutor: 3,
-    Nombres: "Mario Bros",
-    Pais: "Nicaragua"
-});
+

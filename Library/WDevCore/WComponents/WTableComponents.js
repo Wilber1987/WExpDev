@@ -16,22 +16,30 @@ class WTableComponent extends HTMLElement {
     connectedCallback() {
         this.innerHTML = "";
         this.append(WRender.createElement(WTableStyle));
-        if(this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true){
-            this.Dataset = []; 
-            this.Options = {
-                //TH OPTIONS
-                Search: true,
-                Add: true,
-                //TBODY OPTIONS
-                Edit: true,
-                Show: true,
-                //Select: true,                
-                //Delete: true,
-            };
-            this.ModelObject = this.TableConfig.ModelObject;            
+        this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
+        this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
+        if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
+            this.Dataset = [];
+            if (this.TableConfig.Options) {
+                this.Options = this.TableConfig.Options;
+            } else {
+                this.Options = {
+                    //TH OPTIONS
+                    Search: true,
+                    Add: true,
+                    //TBODY OPTIONS
+                    Edit: true,
+                    Show: true,
+                    //Select: true,                
+                    //Delete: true,
+                };
+            }
+            if (this.TableConfig.ModelObject) {
+                this.ModelObject = this.TableConfig.ModelObject;
+            }
             this.MasterDetailTable();
             return;
-        }else if (typeof this.TableConfig.Datasets === "undefined" || this.TableConfig.Datasets.length == 0) {
+        } else if (typeof this.TableConfig.Datasets === "undefined" || this.TableConfig.Datasets.length == 0) {
             this.innerHTML = "Defina un Dataset en formato JSON";
             return;
         }
@@ -45,17 +53,17 @@ class WTableComponent extends HTMLElement {
         this.Options = this.TableConfig.Options;
         if (this.TableConfig.paginate != undefined) {
             this.paginate = this.TableConfig.paginate;
-        }   
+        }
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
-        }  
+        }
         if (this.TableConfig.ModelObject == undefined) {
-            for (const prop in this.Dataset[0]) {                         
+            for (const prop in this.Dataset[0]) {
                 this.ModelObject[prop] = this.Dataset[0][prop];
-            }    
-        }else{
+            }
+        } else {
             this.ModelObject = this.TableConfig.ModelObject;
-        }         
+        }
         this.RunTable()
     }
     attributeChangedCallback(name, oldValue, newValue) {
@@ -120,7 +128,7 @@ class WTableComponent extends HTMLElement {
             } else {
                 table.children.push(tbody);
             }
-            this.append(WRender.createElement(table));           
+            this.append(WRender.createElement(table));
             if (this.paginate == true) {
                 this.append(WRender.createElement({
                     type: "div", props: { class: "tfooter" },
@@ -165,7 +173,7 @@ class WTableComponent extends HTMLElement {
             } else {
                 //table.children.push(tbody);
             }
-            this.append(WRender.createElement(table));           
+            this.append(WRender.createElement(table));
             if (this.paginate == true) {
                 this.append(WRender.createElement({
                     type: "div", props: { class: "tfooter" },
@@ -178,9 +186,9 @@ class WTableComponent extends HTMLElement {
             table.append(WRender.createElement(this.DrawTHead(this.ObjectStructure)));
             const tbody = this.DrawTBody(Dataset);
             if (this.paginate == true && Dataset.length > this.maxElementByPage) {
-               /* tbody.children.forEach(tb => {
-                    table.append(WRender.createElement(tb));
-                });*/
+                /* tbody.children.forEach(tb => {
+                     table.append(WRender.createElement(tb));
+                 });*/
             } else {
                 //table.append(WRender.createElement(tbody));
             }
@@ -203,7 +211,7 @@ class WTableComponent extends HTMLElement {
             tr.children.push({
                 type: "th",
                 children: [prop]
-            });           
+            });
         }
         if (this.Options != undefined) {
             const Options = { type: "th", props: { class: "" }, children: ["Options"] };
@@ -228,17 +236,27 @@ class WTableComponent extends HTMLElement {
                     const InputOptions = {
                         type: "input", props: {
                             class: "txtControl", type: "text", placeholder: "Search...", onchange: async (ev) => {
-                                const Dataset = this.Dataset.filter((element) => {
-                                    for (const prop in element) {
-                                        if (element[prop].toString().includes(ev.target.value)) {
-                                            return element;
-                                        }
+                                if (this.SearchItemsFromApi != undefined) {
+                                    if (this.SearchItemsFromApi.Function != undefined) {
+                                        const Dataset = await this.SearchItemsFromApi.Function(ev.target.value);
+                                        this.DrawTable(Dataset);
+                                    } else {
+                                        const Dataset = await WAjaxTools.PostRequest(
+                                            this.SearchItemsFromApi.ApiUrl,
+                                            { Param: ev.target.value}
+                                        );
+                                        this.DrawTable(Dataset.data);
                                     }
-                                })
-                                this.DrawTable(Dataset)
-                                //let table = this.querySelector("#MainTable" + this.id);
-                                //table.removeChild(this.querySelector("tbody"));
-                                //table.append(WRender.createElement(this.DrawTBody(Dataset)));
+                                } else {
+                                    const Dataset = this.Dataset.filter((element) => {
+                                        for (const prop in element) {
+                                            if (element[prop].toString().includes(ev.target.value)) {
+                                                return element;
+                                            }
+                                        }
+                                    })
+                                    this.DrawTable(Dataset);
+                                }
                             }
                         }
                     }
@@ -248,12 +266,14 @@ class WTableComponent extends HTMLElement {
                     const BtnOptions = {
                         type: "button", props: {
                             class: "Btn", type: "button", innerText: "Add+", onclick: async () => {
-                                console.log(this.ModelObject)
+                                //console.log(this.ModelObject)
                                 this.append(WRender.createElement({
                                     type: "w-modal-form", props: {
                                         ObjectModel: this.ModelObject,
+                                        AddItemsFromApi: this.AddItemsFromApi,
                                         ObjectOptions: {
-                                            AddObject: true, SaveFunction: (NewObject) => {
+                                            AddObject: true,
+                                            SaveFunction: (NewObject) => {
                                                 this.Dataset.push(NewObject);
                                                 this.DrawTable();
                                             }
@@ -314,7 +334,7 @@ class WTableComponent extends HTMLElement {
                                 this.append(WRender.createElement({
                                     type: "w-modal-form", props: {
                                         ObjectModel: this.ModelObject,
-                                        EditObject: element, 
+                                        EditObject: element,
                                         ObjectOptions: {
                                             SaveFunction: () => {
                                                 this.DrawTable();
@@ -379,7 +399,7 @@ class WTableComponent extends HTMLElement {
                 }
             });
         }
-        if (tbody.length  == 0) {
+        if (tbody.length == 0) {
             return tfooter;
         }
         tfooter.push({
@@ -763,10 +783,10 @@ const WTableStyle = {
                 padding: "0.25rem",
                 "text-align": "left",
                 border: "1px #ccc solid"
-            }), new WCssClass("w-table .WTable .tdAction", {                
+            }), new WCssClass("w-table .WTable .tdAction", {
                 "text-align": "right",
                 "width": "250px",
-            }),new WCssClass("w-table .WTable tbody tr:nth-child(odd)", {
+            }), new WCssClass("w-table .WTable tbody tr:nth-child(odd)", {
                 "background-color": "#eee"
             }), new WCssClass("w-table .thOptions", {
                 display: "flex",
@@ -776,7 +796,6 @@ const WTableStyle = {
                 width: "calc(100% - 16px)", "font-size": "15px", height: "20px"
             }), new WCssClass("w-table input:active, w-table input:focus", {
                 "border-bottom": "2px solid #0099cc", outline: "none",
-            }), new WCssClass("w-table .Btn", {                
             }), new WCssClass("w-table input[type=button]", {
                 cursor: "pointer", width: "calc(100% - 0px)", height: "initial"
             }),
@@ -785,7 +804,7 @@ const WTableStyle = {
             new WCssClass("w-table .TContainer", {
                 padding: "0px",
                 display: "flex",
-                "flex-grow":1,
+                "flex-grow": 1,
             }), new WCssClass("w-table .TContainerBlock", {
                 width: "100%"
             }), new WCssClass(" w-table .TContainerBlockL", {
@@ -911,7 +930,7 @@ const WTableStyle = {
                 "border-radius": "0.2cm",
                 "font-weight": "bold",
                 transition: "all 0.6s"
-            }),new WCssClass("w-table .pagBTN", {
+            }), new WCssClass("w-table .pagBTN", {
                 display: "inline-block",
                 padding: "8px",
                 "background-color": "rgb(3, 106, 175)",
@@ -922,10 +941,10 @@ const WTableStyle = {
                 "font-weight": "bold",
                 transition: "all 0.6s",
                 width: "80px",
-                "text-align": "center",                
+                "text-align": "center",
             }), new WCssClass("w-table .paginateBTNActive", {
                 "background-color": "rgb(3, 106, 175)",
-            }), new WCssClass("w-table .tfooter", {               
+            }), new WCssClass("w-table .tfooter", {
                 display: "flex",
                 border: "1px rgb(185, 185, 185) solid",
                 "justify-content": "flex-end",

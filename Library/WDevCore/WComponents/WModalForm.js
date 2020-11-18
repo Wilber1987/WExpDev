@@ -22,7 +22,7 @@ class WModalForm extends HTMLElement {
         this.className = "ModalContent";
         this.Modal = { type: "div", props: { class: "ContainerForm" }, children: [] };
         this.Modal.children.push(this.DrawModalHead());
-        if (this.ObjectModal) {           
+        if (this.ObjectModal) {
             this.Modal.children.push(this.ObjectModal);
         } else if (this.ObjectDetail) {
             this.Modal.children.push(this.ShowFormDetail());
@@ -37,9 +37,6 @@ class WModalForm extends HTMLElement {
                 this.Modal.children.push(this.SaveOptions(this.EditObject));
             }
         }
-        console.log(this.Modal)
-        const M = WRender.createElement(this.Modal);
-        console.log(M)
         this.append(WRender.createElement(this.Modal));
         DomComponent.modalFunction(this.id)
     }
@@ -70,23 +67,39 @@ class WModalForm extends HTMLElement {
         }
         return Form;
     }
-    CrudForm(Object = {}, ObjectOptions) {        
+    CrudForm(Object = {}, ObjectOptions) {
+        if (this.AddItemsFromApi != undefined) {
+            var Config = {
+                MasterDetailTable : true,
+                SearchItemsFromApi: this.AddItemsFromApi,
+                Options: {
+                    Search: true, Select: true, 
+                }
+            }
+            return {
+                type: "w-table",
+                props: {
+                    id: "SearchTable"+this.id,
+                    TableConfig: Config
+                }
+            };
+        }
         const Form = { type: 'divForm', children: [] };
         for (const prop in Object) {
             const ControlContainer = {
                 type: "div", props: { class: "ModalElement" }, children: [prop]
             }
-            let ControlTagName = "input";            
+            let ControlTagName = "input";
             if (typeof Object[prop] === "string" && Object[prop].length >= 50) {
                 ControlTagName = "textarea";
-            }else if (typeof Object[prop] === "object") {
+            } else if (typeof Object[prop] === "object") {
                 ControlTagName = "select";
             }
             const InputControl = {
                 type: ControlTagName, props: {
-                    type: "text", id: "ControlValue" + prop, value: null
+                    id: "ControlValue" + prop, value: null
                 }, children: []
-            }            
+            }
             let InputType = typeof Object[prop];
             let InputValue = "";
             if (ObjectOptions.AddObject == true) {
@@ -96,17 +109,20 @@ class WModalForm extends HTMLElement {
             }
             //DEFINICION DE TIPO
             if (InputType == "object") {
-                InputType = "select";
-                for (const key in Object[prop]) {   
-                    let OValue, ODisplay;                 
-                    if (typeof key === "string") {
-                        OValue = Object[key]; ODisplay = Object[key];
-                    }else {
-                        OValue = key; ODisplay = Object[key];
+                InputType = "";
+                console.log(Object[prop])
+                for (const key in Object[prop]) {
+                    let OValue, ODisplay;
+                    if (typeof Object[prop][key] === "object") {
+                        OValue = Object[prop][key]["id"];
+                        ODisplay = Object[prop][key]["desc"];
+                    } else {
+                        OValue = Object[prop][key];
+                        ODisplay = Object[prop][key];
                     }
                     InputControl.children.push({
                         type: "option", props: {
-                            value: "OValue", innerText: "ODisplay"
+                            value: OValue, innerText: ODisplay
                         }
                     })
                 }
@@ -114,9 +130,11 @@ class WModalForm extends HTMLElement {
                 InputType = "date";
             } else if (prop.includes("image") || prop.includes("img")) {
                 InputType = "file";
-            } 
-            InputControl.props.type = InputType;
-            InputControl.props.value = InputValue;           
+            }
+            if (InputType != "") {
+                InputControl.props.type = InputType;
+            }
+            InputControl.props.value = InputValue;
             ControlContainer.children.push(InputControl)
             Form.children.push(ControlContainer);
         }
@@ -132,7 +150,9 @@ class WModalForm extends HTMLElement {
                             ControlValue.style.border = "red solid 1px";
                             return;
                         }
-                        if (parseFloat(ControlValue.value).toString() != "NaN") {
+                        if (ControlValue.type == "date") {
+                            Object[prop] = ControlValue.value;
+                        } else if (parseFloat(ControlValue.value).toString() != "NaN") {
                             Object[prop] = parseFloat(ControlValue.value);
                         } else {
                             Object[prop] = ControlValue.value;
@@ -160,11 +180,23 @@ class WModalForm extends HTMLElement {
             type: "w-style",
             props: {
                 ClassList: [
-                    new WCssClass("w-table divForm", {
+                    new WCssClass("w-modal-form divForm", {
                         display: "flex", "flex-wrap": "wrap"
-                    }), new WCssClass("w-table divForm div", {
+                    }), new WCssClass("w-modal-form divForm div", {
                         width: "calc(50% - 10px)", margin: "5px"
-                    })
+                    }), new WCssClass(`w-modal-form input[type=text],
+                                        w-modal-form input[type=string],
+                                        w-modal-form input[type=number], 
+                                        w-modal-form input[type=date],
+                                        w-modal-form select`, {
+                        padding: "8px", border: "none", "border-bottom": "3px solid #999999",
+                        width: "calc(100% - 16px)", "font-size": "15px",
+                    }), new WCssClass(`w-modal-form input:active,
+                                        w-modal-form input:focus,
+                                        w-modal-form select:focus,
+                                        w-modal-form select:focus`, {
+                        "border-bottom": "3px solid #0099cc", outline: "none",
+                    }),
                 ]
             }
         }

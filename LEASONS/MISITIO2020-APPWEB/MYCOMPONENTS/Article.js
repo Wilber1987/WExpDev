@@ -33,8 +33,9 @@ class Article extends HTMLElement {
         ClouseBtn.onclick = ()=>{
             this.querySelector(".ArtContenido").style.display = "none";
         }
-
-        ArtContenido.append(ClouseBtn,Title, this.article.contenido);
+        let ACard = document.createElement("autor-card-w");
+        ACard.AutorProp = this.Autor;
+        ArtContenido.append(ClouseBtn,Title, ACard, this.article.contenido);
         ArtContenido.className = "ArtContenido";
 
         return ArtContenido;

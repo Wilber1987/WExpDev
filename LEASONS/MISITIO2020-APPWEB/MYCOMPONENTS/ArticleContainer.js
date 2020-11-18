@@ -57,7 +57,7 @@ class ArticleContainer extends HTMLElement {
         let inputFecha = document.createElement("input");
         inputFecha.type = "date";
         let select = document.createElement("select");
-        this.Autores.forEach(element => {
+        this.AutoresListProp.forEach(element => {
             let option = document.createElement("option");
             option.value = element.IdAutor;
             option.innerText = element.Nombres + " - " + element.Pais;
@@ -70,7 +70,7 @@ class ArticleContainer extends HTMLElement {
         inputBTN.className = "BTN";
         inputBTN.value = "Guardar"
         inputBTN.onclick = () => {
-            this.Articles.push({
+            this.ArticlesListProp.push({
                 titulo: inputTitulo.value,
                 contenido: Contenido.value,
                 fecha: inputFecha.value,
@@ -95,12 +95,12 @@ class ArticleContainer extends HTMLElement {
         //this.append(View)
         return View;
     }
-    FillContainer(ListArticles = this.Articles) {
+    FillContainer(ListArticles = this.ArticlesListProp) {
         let Frag = document.createElement("div");
         Frag.id = "Container" + this.id;
         ListArticles.forEach(ar => {
             //console.log(ar)
-            const AutorFiltrado = this.Autores.find(a => a.IdAutor == ar.autor);
+            const AutorFiltrado = this.AutoresListProp.find(a => a.IdAutor == ar.autor);
             let ArticleElement = document.createElement("article-w");
             ArticleElement.Autor = AutorFiltrado;
             ArticleElement.article = ar;
