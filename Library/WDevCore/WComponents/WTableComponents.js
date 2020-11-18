@@ -56,14 +56,7 @@ class WTableComponent extends HTMLElement {
         }
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
-        }
-        if (this.TableConfig.ModelObject == undefined) {
-            for (const prop in this.Dataset[0]) {
-                this.ModelObject[prop] = this.Dataset[0][prop];
-            }
-        } else {
-            this.ModelObject = this.TableConfig.ModelObject;
-        }
+        }        
         this.RunTable()
     }
     attributeChangedCallback(name, oldValue, newValue) {
@@ -113,7 +106,17 @@ class WTableComponent extends HTMLElement {
         }
     }
     //BASIC TABLE-----------------------------------------------------------------------
+    DefineObjectModel(Dataset = this.Dataset){
+        if (this.TableConfig.ModelObject == undefined) {
+            for (const prop in Dataset[0]) {
+                this.ModelObject[prop] = Dataset[0][prop];
+            }
+        } else {
+            this.ModelObject = this.TableConfig.ModelObject;
+        }
+    }
     DrawTable(Dataset = this.Dataset) {
+        this.DefineObjectModel();    
         let table = this.querySelector("#MainTable" + this.id);
         this.append(WRender.createElement(this.DrawHeadOptions()));
         this.maxElementByPage = 5;
@@ -159,6 +162,7 @@ class WTableComponent extends HTMLElement {
         }
     }
     MasterDetailTable(Dataset = this.Dataset) {
+        this.DefineObjectModel();    
         let table = this.querySelector("#MainTable" + this.id);
         this.append(WRender.createElement(this.DrawHeadOptions()));
         this.maxElementByPage = 5;
@@ -204,6 +208,7 @@ class WTableComponent extends HTMLElement {
         }
     }
     DrawTHead = (element = this.ModelObject) => {
+        console.log(element)
         const thead = { type: "thead", props: {}, children: [] };
         //const element = this.Dataset[0];
         let tr = { type: "tr", children: [] }
@@ -307,9 +312,14 @@ class WTableComponent extends HTMLElement {
         Dataset.forEach((element) => {
             let tr = { type: "tr", children: [] };
             for (const prop in element) {
+                let value = "";
+                //console.log(element[prop])
+                if (element[prop] != null) {
+                    value = element[prop].toString();
+                }
                 tr.children.push({
                     type: "td",
-                    children: [element[prop].toString()]
+                    children: [value]
                 });
             }
             if (this.Options != undefined) {

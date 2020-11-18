@@ -361,17 +361,17 @@ class TableCont {
             MasterDetailTable: true,
             AddItemsFromApi: {
                 Active: true,
-                ApiUrl: "http://localhost:8080/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get",
+                ApiUrl: "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetPrueba",
                 Function: async (Param)=>{//ESTA FUNCION DEBE SER ASYNCRONA
-                    /*SINO SE DEFINE UNA FUNCION DE RETORNO SE
-                     EJECUTA UNA FUNCION POST QUE RECIBE UN
-                     PARAMETRO LLAMADPO "Param" Y SE ENVIA UNA
-                     PETICION POST */
+                    // SINO SE DEFINE UNA FUNCION DE RETORNO SE
+                    //  EJECUTA UNA FUNCION POST QUE RECIBE UN
+                    //  PARAMETRO LLAMADPO "Param" Y SE ENVIA UNA
+                    //  PETICION POST 
                     console.log("function async");
-                    const ApiUrl = "http://localhost:8080/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get";
+                    const ApiUrl = "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get";
                     const Dataset = await WAjaxTools.PostRequest(
                         ApiUrl,
-                        { tablename: "cat_areas", Param: Param }
+                        { tablename: "usuarios", Param: Param }
                     );
                     return Dataset.data;
                 }

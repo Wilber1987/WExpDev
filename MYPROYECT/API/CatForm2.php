@@ -11,16 +11,7 @@
     { 
         $Form = [];
         $pMysqli = new mysqli('localhost','root','','psicovitalem2');
-       // echo   "DESCRIBE $request->tablename"; 
-       if ($pMysqli->connect_errno) {
-            printf("Conexión fallida: %s\n", $pMysqli->connect_error);
-            exit();
-        }
-        if ($pMysqli->ping()) {
-            printf ("¡La conexión está bien!\n");
-        } else {
-            printf ("Error: %s\n", $pMysqli->error);
-        }
+       // echo   "DESCRIBE $request->tablename";        
         $q = $pMysqli->query("DESCRIBE $request->tablename"); 
         foreach ($q as $row) {
             $Form[] = $row;
@@ -29,14 +20,59 @@
     }
     function Get($request)
     {
-        $Form = [];
-        $pMysqli = new mysqli('localhost','root','','psicovitalem2');   
-        $q = $pMysqli->query("SELECT * FROM $request->tablename");
-        //echo $q;
-        foreach ($q as $row) {
-            $Form[] = $row;
-        }        
-        echo json_encode(array('data'=> $Form));
+        try {
+            $Form = [];
+            $pMysqli = new mysqli('localhost','root','','psicovitalem'); 
+            /*
+            if ($pMysqli->connect_errno) {
+                printf("Conexión fallida: %s\n", $pMysqli->connect_error);
+                exit();
+            }
+            if ($pMysqli->ping()) {
+                printf ("¡La conexión está bien!\n");
+            } else {
+                printf ("Error: %s\n", $pMysqli->error);
+            }*/ 
+            $q = $pMysqli->query("SELECT * FROM $request->tablename");
+            //echo $q;
+            //echo "SELECT * FROM $request->tablename";
+            foreach ($q as $row) {  
+                $Form[] = $row;
+            }  
+            echo json_encode(array('data'=> $Form));
+        } catch (\Throwable $th) {
+            echo $th;
+        }
+      
+        //
+    }
+    function GetPrueba($request)
+    {
+        try {
+            $Form = [];
+            $pMysqli = new mysqli('localhost','root','','psicovitalem'); 
+            /*
+            if ($pMysqli->connect_errno) {
+                printf("Conexión fallida: %s\n", $pMysqli->connect_error);
+                exit();
+            }
+            if ($pMysqli->ping()) {
+                printf ("¡La conexión está bien!\n");
+            } else {
+                printf ("Error: %s\n", $pMysqli->error);
+            }*/ 
+            $q = $pMysqli->query("SELECT * FROM usuarios");
+            //echo $q;
+            //echo "SELECT * FROM $request->tablename";
+            foreach ($q as $row) {  
+                $Form[] = $row;
+            }  
+            echo json_encode(array('data'=> $Form));
+        } catch (\Throwable $th) {
+            echo $th;
+        }
+      
+        //
     }
     function Insert($request)
     {
