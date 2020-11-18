@@ -68,10 +68,11 @@ class WModalForm extends HTMLElement {
         return Form;
     }
     CrudForm(Object = {}, ObjectOptions) {
-        if (this.AddItemsFromApi != undefined) {
+        if (this.AddItemsFromApi != undefined) {            
             var Config = {
                 MasterDetailTable : true,
                 SearchItemsFromApi: this.AddItemsFromApi,
+                selectedItems: this.Dataset,
                 Options: {
                     Search: true, Select: true, 
                 }
@@ -144,20 +145,22 @@ class WModalForm extends HTMLElement {
         const InputSave = {
             type: 'button', props: {
                 class: 'Btn', type: "button", onclick: async () => {
-                    for (const prop in this.ObjectModel) {
-                        const ControlValue = this.querySelector("#ControlValue" + prop);
-                        if (ControlValue.value.length < 1) {
-                            ControlValue.style.border = "red solid 1px";
-                            return;
+                    if (this.AddItemsFromApi == undefined) {
+                        for (const prop in this.ObjectModel) {
+                            const ControlValue = this.querySelector("#ControlValue" + prop);
+                            if (ControlValue.value.length < 1) {
+                                ControlValue.style.border = "red solid 1px";
+                                return;
+                            }
+                            if (ControlValue.type == "date") {
+                                Object[prop] = ControlValue.value;
+                            } else if (parseFloat(ControlValue.value).toString() != "NaN") {
+                                Object[prop] = parseFloat(ControlValue.value);
+                            } else {
+                                Object[prop] = ControlValue.value;
+                            }
                         }
-                        if (ControlValue.type == "date") {
-                            Object[prop] = ControlValue.value;
-                        } else if (parseFloat(ControlValue.value).toString() != "NaN") {
-                            Object[prop] = parseFloat(ControlValue.value);
-                        } else {
-                            Object[prop] = ControlValue.value;
-                        }
-                    }
+                    }                    
                     if (this.ObjectOptions.SaveFunction != undefined) {
                         this.ObjectOptions.SaveFunction(Object);
                     }
@@ -173,7 +176,7 @@ class WModalForm extends HTMLElement {
                 }
             }, children: ['Guardar']
         };
-        return { type: 'div', children: [InputSave] };
+        return { type: 'div', props: { class: "DivSaveOptions" }, children: [InputSave] };
     }
     FormStyle() {
         const Style = {
@@ -196,6 +199,9 @@ class WModalForm extends HTMLElement {
                                         w-modal-form select:focus,
                                         w-modal-form select:focus`, {
                         "border-bottom": "3px solid #0099cc", outline: "none",
+                    }), new WCssClass(`w-modal-form .DivSaveOptions`, {
+                         "margin-top": "10px",
+                         "margin-bottom": "10px",
                     }),
                 ]
             }

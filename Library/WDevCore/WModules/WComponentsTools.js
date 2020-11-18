@@ -504,6 +504,28 @@ class WArrayF {
         }
         return Maxvalue;
     }
+    static FindInArray(element, Datasets){
+        let val = false;        
+        for (let index = 0; index < Datasets.length; index++) {
+            const Data = Datasets[index];
+            val = this.compareObj(element, Data)
+            if (val == true) {
+                break;
+            }             
+        }
+        return val;
+    }
+    static compareObj(arrayP, Data) {
+        let val = true;
+        for (const prop in arrayP) {
+            if (arrayP[prop] !== Data[prop]) {
+                val = false;
+                break;
+            }
+        }
+        return val;
+    }
+
 }
 
 export { WAjaxTools, WRender, DomComponent, WArrayF, type }

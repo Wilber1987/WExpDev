@@ -9,16 +9,14 @@ class WTableComponent extends HTMLElement {
         this.Dataset = [];
         this.selectedItems = [];
         this.ModelObject = {};
-        this.paginate = true;
-
-        //MASTER DETAILL TABLE OPTIONS
+        this.paginate = true;   
     }
     connectedCallback() {
         this.innerHTML = "";
         this.append(WRender.createElement(WTableStyle));
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
-        if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
+                if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
             this.Dataset = [];
             if (this.TableConfig.Options) {
                 this.Options = this.TableConfig.Options;
@@ -36,8 +34,13 @@ class WTableComponent extends HTMLElement {
             }
             if (this.TableConfig.ModelObject) {
                 this.ModelObject = this.TableConfig.ModelObject;
-            }
-            this.MasterDetailTable();
+            } 
+            if (this.TableConfig.selectedItems == undefined) {
+                this.selectedItems = [];
+            }else {
+                this.selectedItems = this.TableConfig.selectedItems;
+            }           
+            this.DrawTable();
             return;
         } else if (typeof this.TableConfig.Datasets === "undefined" || this.TableConfig.Datasets.length == 0) {
             this.innerHTML = "Defina un Dataset en formato JSON";
@@ -56,14 +59,14 @@ class WTableComponent extends HTMLElement {
         }
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
-        }        
+        }
         this.RunTable()
     }
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('Custom square element attributes changed.');
+        console.log('Custom attributes changed.' + oldValue +"  -  "+ newValue);
     }
     static get observedAttributes() {
-        return this.Dataset;
+        //return ["id", "Dataset"];
     }
     RunTable() {
         this.GroupsData = [];
@@ -106,7 +109,7 @@ class WTableComponent extends HTMLElement {
         }
     }
     //BASIC TABLE-----------------------------------------------------------------------
-    DefineObjectModel(Dataset = this.Dataset){
+    DefineObjectModel(Dataset = this.Dataset) {
         if (this.TableConfig.ModelObject == undefined) {
             for (const prop in Dataset[0]) {
                 this.ModelObject[prop] = Dataset[0][prop];
@@ -116,7 +119,7 @@ class WTableComponent extends HTMLElement {
         }
     }
     DrawTable(Dataset = this.Dataset) {
-        this.DefineObjectModel();    
+        this.DefineObjectModel(Dataset);
         let table = this.querySelector("#MainTable" + this.id);
         this.append(WRender.createElement(this.DrawHeadOptions()));
         this.maxElementByPage = 5;
@@ -131,7 +134,8 @@ class WTableComponent extends HTMLElement {
             } else {
                 table.children.push(tbody);
             }
-            this.append(WRender.createElement(table));
+            let divTableCntainer = { type: "div", props: { class: "tableContainer" }, children: [table] }
+            this.append(WRender.createElement(divTableCntainer));
             if (this.paginate == true) {
                 this.append(WRender.createElement({
                     type: "div", props: { class: "tfooter" },
@@ -153,53 +157,7 @@ class WTableComponent extends HTMLElement {
             let footer = this.querySelector(".tfooter");
             if (typeof footer !== "undefined" && footer != null) {
                 footer.innerHTML = "";
-                if (this.paginate == true && Dataset.length > this.maxElementByPage) {
-                    this.DrawTFooter(tbody.children).forEach(element => {
-                        footer.append(WRender.createElement(element));
-                    });
-                }
-            }
-        }
-    }
-    MasterDetailTable(Dataset = this.Dataset) {
-        this.DefineObjectModel();    
-        let table = this.querySelector("#MainTable" + this.id);
-        this.append(WRender.createElement(this.DrawHeadOptions()));
-        this.maxElementByPage = 5;
-        if (typeof table === "undefined" || table == null) {
-            table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
-            table.children.push(this.DrawTHead(this.ObjectStructure));
-            const tbody = this.DrawTBody(Dataset);
-            if (this.paginate == true && Dataset.length > this.maxElementByPage) {
-                /*tbody.children.forEach(tb => {
-                    table.children.push(tb);
-                });*/
-            } else {
-                //table.children.push(tbody);
-            }
-            this.append(WRender.createElement(table));
-            if (this.paginate == true) {
-                this.append(WRender.createElement({
-                    type: "div", props: { class: "tfooter" },
-                    children: this.DrawTFooter(tbody.children)
-                }));
-            }
-        } else {
-            table.style.display = "table";
-            table.innerHTML = "";
-            table.append(WRender.createElement(this.DrawTHead(this.ObjectStructure)));
-            const tbody = this.DrawTBody(Dataset);
-            if (this.paginate == true && Dataset.length > this.maxElementByPage) {
-                /* tbody.children.forEach(tb => {
-                     table.append(WRender.createElement(tb));
-                 });*/
-            } else {
-                //table.append(WRender.createElement(tbody));
-            }
-            let footer = this.querySelector(".tfooter");
-            if (typeof footer !== "undefined" && footer != null) {
-                footer.innerHTML = "";
-                if (this.paginate == true && Dataset.length > this.maxElementByPage) {
+                if (this.paginate == true) {
                     this.DrawTFooter(tbody.children).forEach(element => {
                         footer.append(WRender.createElement(element));
                     });
@@ -208,7 +166,6 @@ class WTableComponent extends HTMLElement {
         }
     }
     DrawTHead = (element = this.ModelObject) => {
-        console.log(element)
         const thead = { type: "thead", props: {}, children: [] };
         //const element = this.Dataset[0];
         let tr = { type: "tr", children: [] }
@@ -240,7 +197,8 @@ class WTableComponent extends HTMLElement {
                 if (this.Options.Search != undefined) {
                     const InputOptions = {
                         type: "input", props: {
-                            class: "txtControl", type: "text", placeholder: "Search...", onchange: async (ev) => {
+                            class: "txtControl", type: "text", placeholder: "Search...",
+                            onchange: async (ev) => {
                                 if (this.SearchItemsFromApi != undefined) {
                                     if (this.SearchItemsFromApi.Function != undefined) {
                                         const Dataset = await this.SearchItemsFromApi.Function(ev.target.value);
@@ -248,7 +206,7 @@ class WTableComponent extends HTMLElement {
                                     } else {
                                         const Dataset = await WAjaxTools.PostRequest(
                                             this.SearchItemsFromApi.ApiUrl,
-                                            { Param: ev.target.value}
+                                            { Param: ev.target.value }
                                         );
                                         this.DrawTable(Dataset.data);
                                     }
@@ -270,16 +228,19 @@ class WTableComponent extends HTMLElement {
                 if (this.Options.Add != undefined) {
                     const BtnOptions = {
                         type: "button", props: {
-                            class: "Btn", type: "button", innerText: "Add+", onclick: async () => {
-                                //console.log(this.ModelObject)
+                            class: "Btn", type: "button", innerText: "Add+",
+                            onclick: async () => {
                                 this.append(WRender.createElement({
                                     type: "w-modal-form", props: {
                                         ObjectModel: this.ModelObject,
                                         AddItemsFromApi: this.AddItemsFromApi,
+                                        Dataset: this.Dataset,
                                         ObjectOptions: {
                                             AddObject: true,
                                             SaveFunction: (NewObject) => {
-                                                this.Dataset.push(NewObject);
+                                                if (this.AddItemsFromApi == null) {
+                                                    this.Dataset.push(NewObject);
+                                                }                                                
                                                 this.DrawTable();
                                             }
                                         }
@@ -297,10 +258,10 @@ class WTableComponent extends HTMLElement {
     }
     DrawTBody = (Dataset = this.Dataset) => {
         let tbody = { type: "tbody", props: {}, children: [] };
-        let numPage = 1;
+        this.numPage = 1;
         if (this.paginate == true && Dataset.length > this.maxElementByPage) {
-            numPage = Dataset.length / this.maxElementByPage;
-            for (let index = 0; index < numPage; index++) {
+            this.numPage = Dataset.length / this.maxElementByPage;
+            for (let index = 0; index < this.numPage; index++) {
                 let tBodyStyle = "display:none";
                 if (index == 0) {
                     tBodyStyle = "display:table-row-group";
@@ -357,25 +318,30 @@ class WTableComponent extends HTMLElement {
                     })
                 }
                 if (this.Options.Select != undefined && this.Options.Select == true) {
+                    let Checked = WArrayF.FindInArray(element, this.selectedItems);                    
                     Options.children.push({
                         type: "input", props: {
-                            class: "Btn", type: "checkbox", innerText: "Select",
+                            class: "Btn", type: "checkbox", innerText: "Select", checked : Checked,
                             onclick: async (ev) => {
                                 const control = ev.target;
-                                const index = this.selectedItems.indexOf(element);
+                                const index = this.selectedItems.indexOf(element);   
                                 if (index == -1 && control.checked == true) {
-                                    this.selectedItems.push(element)
+                                    if(WArrayF.FindInArray(element, this.selectedItems) == false){                                       
+                                        this.selectedItems.push(element)
+                                    }  else{
+                                        console.log("Item Existente")
+                                    }                                  
                                 }
                                 else {
                                     this.selectedItems.splice(index, 1)
-                                }
+                                }                                
                             }
                         }
                     })
                 }
                 tr.children.push(Options);
             }
-            if (numPage > 1 && tbody.children[page]) {
+            if (this.numPage > 1 && tbody.children[page]) {
                 tbody.children[page].children.push(tr);
                 if (tbody.children[page].children.length == this.maxElementByPage) {
                     //console.log(this.maxElementByPage)
@@ -386,6 +352,9 @@ class WTableComponent extends HTMLElement {
                 tbody.children.push(tr);
             }
         });
+        if (tbody.children.length == 0) {
+            tbody.children.push({type: "h5", props: {innerText: "No hay elementos en la tabla"}});
+        }
         return tbody;
     }
     DrawTFooter(tbody) {
@@ -409,9 +378,9 @@ class WTableComponent extends HTMLElement {
                 }
             });
         }
-        if (tbody.length == 0) {
+        /*if (tbody.length == 0) {
             return tfooter;
-        }
+        }*/
         tfooter.push({
             type: "label",
             props: {
@@ -424,7 +393,7 @@ class WTableComponent extends HTMLElement {
                 }
             }
         });
-        tbody.forEach((element, index = 0) => {
+        for (let index = 0; index < this.numPage; index++) {
             let btnClass = "paginateBTN";
             if (index == 0) {
                 btnClass = "paginateBTN paginateBTNActive";
@@ -436,8 +405,8 @@ class WTableComponent extends HTMLElement {
                         SelectPage(index);
                     }
                 }
-            });
-        });
+            });            
+        }       
         tfooter.push({
             type: "label",
             props: {
@@ -460,7 +429,8 @@ class WTableComponent extends HTMLElement {
         this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
         this.table.children.push(div);
-        this.append(WRender.createElement(this.table));
+        let divTableCntainer = { type: "div", props: { class: "tableContainer" }, children: [this.table] };
+        this.append(WRender.createElement(div));
     }
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
@@ -776,10 +746,13 @@ const WTableStyle = {
                 border: "#999999 2px solid",
                 overflow: "hidden",
                 display: "block",
-                "border-radius": "0.2cm"
+                "border-radius": "0.2cm",
+                "min-height": "50px",
             }),
-            //ESTILO DE LA TABLA BASICA----------------------------
-            new WCssClass("w-table .WTable", {
+            //ESTILO DE LA TABLA BASICA----------------------------tableContainer
+            new WCssClass("w-table .tableContainer", {
+                overflow: "auto"
+            }), new WCssClass("w-table .WTable", {
                 "font-family": "Verdana, sans-serif",
                 width: "100%",
                 "border-collapse": "collapse",
@@ -960,6 +933,12 @@ const WTableStyle = {
                 "justify-content": "flex-end",
                 "padding-left": "20px",
                 "padding-right": "20px",
+            }),
+            new WCssClass("w-table h5", {  
+                padding: "0.25rem",              
+                "padding-left": "20px",
+                "padding-right": "20px",
+                margin: "0px",
             }),
         ], MediaQuery: {
             condicion: "max-width: 600px", ClassList: [
