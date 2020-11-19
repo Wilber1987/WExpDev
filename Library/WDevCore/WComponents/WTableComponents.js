@@ -60,7 +60,7 @@ class WTableComponent extends HTMLElement {
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
         }
-        this.RunTable()
+        this.RunTable();
     }
     attributeChangedCallback(name, oldValue, newValue) {
         console.log('Custom attributes changed.' + oldValue + "  -  " + newValue);
@@ -269,6 +269,7 @@ class WTableComponent extends HTMLElement {
                 tbody.children.push({ type: "tbody", props: { class: "tbodyChild", style: tBodyStyle }, children: [] });
             }
         }
+        tbody.children.push(this.MediaStyleResponsive())
         let page = 0;
         Dataset.forEach((element) => {
             let tr = { type: "tr", children: [] };
@@ -316,7 +317,7 @@ class WTableComponent extends HTMLElement {
                             }
                         }
                     })
-                }                
+                }
                 if (this.Options.Delete != undefined && this.Options.Delete == true) {
                     Options.children.push({
                         type: "button", props: {
@@ -729,7 +730,7 @@ class WTableComponent extends HTMLElement {
         let val = false;
         let nodes = [];
         this.TableConfig.Datasets.forEach(Data => {
-            val = this.compareObj(arrayP, Data)
+            val = WArrayF.compareObj(arrayP, Data)
             if (val == true) {
                 nodes.push(Data)
             }
@@ -751,15 +752,22 @@ class WTableComponent extends HTMLElement {
             return "n/a";
         }
     }
-    compareObj(arrayP, Data) {
-        let val = true;
-        for (const prop in arrayP) {
-            if (arrayP[prop] !== Data[prop]) {
-                val = false;
-                break;
-            }
+    MediaStyleResponsive() {
+        const ClassList = [];
+        let index = 1;
+        for (const prop in this.ModelObject) {
+            ClassList.push(new WCssClass(`#${this.id} td:nth-of-type(${index}):before`, {
+                content: `"${prop}:"`,
+                "margin-right": "10px"
+            }))
+            index++;
         }
-        return val;
+        return {
+            type: "w-style",
+            props: { MediaQuery: {
+                condicion: "max-width: 600px", ClassList: ClassList
+            }}
+        }
     }
 }
 const WTableStyle = {
@@ -989,15 +997,15 @@ const WTableStyle = {
                     display: "block !important", //width: "100%"
                 }), new WCssClass("w-table .WTable tbody", {
                     display: "block !important", //width: "100%"
-                }),new WCssClass("w-table .WTable th", {
+                }), new WCssClass("w-table .WTable thead", {
                     display: "none !important", //width: "100%"
                 }), new WCssClass("w-table .WTable tr", {
-                    display: "block !important", //width: "100%"
+                    display: "block !important", border: "5px solid #808080"
                 }), new WCssClass("w-table .WTable td", {
                     display: "flex !important",
                     //width: "100%"
                 }), new WCssClass("w-table .WTable .tdAction", {
-                    display: "flex !important", width: "98%","justify-content": "center", "align-items": "center"
+                    display: "flex !important", width: "calc(98% - 0.25rem)", "justify-content": "center", "align-items": "center"
                 }),
 
             ]
