@@ -344,6 +344,7 @@ class TableCont {
                 Edit: true, //UrlUpdate: "",
                 Select: true,
                 Add: true,
+                Delete: true,
             },
         };
         this.children.push({

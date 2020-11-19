@@ -24,6 +24,9 @@ class WModalForm extends HTMLElement {
         this.Modal.children.push(this.DrawModalHead());
         if (this.ObjectModal) {
             this.Modal.children.push(this.ObjectModal);
+            if (this.ObjectOptions.SaveFunction != undefined) {
+                this.Modal.children.push(this.SaveOptions());
+            }
         } else if (this.ObjectDetail) {
             this.Modal.children.push(this.ShowFormDetail());
         } else if (this.ObjectModel) {
@@ -36,7 +39,7 @@ class WModalForm extends HTMLElement {
             } else {
                 this.Modal.children.push(this.SaveOptions(this.EditObject));
             }
-        }
+        }        
         this.append(WRender.createElement(this.Modal));
         DomComponent.modalFunction(this.id)
     }
@@ -202,7 +205,11 @@ class WModalForm extends HTMLElement {
                     }), new WCssClass(`w-modal-form .DivSaveOptions`, {
                          "margin-top": "10px",
                          "margin-bottom": "10px",
-                    }),
+                    }),new WCssClass(`w-modal-form h1, 
+                            w-modal-form h3,
+                            w-modal-form h4,w-modal-form h5`, {
+                        display: "block", padding: "10px", "text-align": "center"
+                   }),
                 ]
             }
         }

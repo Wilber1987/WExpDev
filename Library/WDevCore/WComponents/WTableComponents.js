@@ -9,14 +9,14 @@ class WTableComponent extends HTMLElement {
         this.Dataset = [];
         this.selectedItems = [];
         this.ModelObject = {};
-        this.paginate = true;   
+        this.paginate = true;
     }
     connectedCallback() {
         this.innerHTML = "";
         this.append(WRender.createElement(WTableStyle));
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
-                if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
+        if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
             this.Dataset = [];
             if (this.TableConfig.Options) {
                 this.Options = this.TableConfig.Options;
@@ -34,12 +34,12 @@ class WTableComponent extends HTMLElement {
             }
             if (this.TableConfig.ModelObject) {
                 this.ModelObject = this.TableConfig.ModelObject;
-            } 
+            }
             if (this.TableConfig.selectedItems == undefined) {
                 this.selectedItems = [];
-            }else {
+            } else {
                 this.selectedItems = this.TableConfig.selectedItems;
-            }           
+            }
             this.DrawTable();
             return;
         } else if (typeof this.TableConfig.Datasets === "undefined" || this.TableConfig.Datasets.length == 0) {
@@ -63,7 +63,7 @@ class WTableComponent extends HTMLElement {
         this.RunTable()
     }
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('Custom attributes changed.' + oldValue +"  -  "+ newValue);
+        console.log('Custom attributes changed.' + oldValue + "  -  " + newValue);
     }
     static get observedAttributes() {
         //return ["id", "Dataset"];
@@ -240,7 +240,7 @@ class WTableComponent extends HTMLElement {
                                             SaveFunction: (NewObject) => {
                                                 if (this.AddItemsFromApi == null) {
                                                     this.Dataset.push(NewObject);
-                                                }                                                
+                                                }
                                                 this.DrawTable();
                                             }
                                         }
@@ -288,7 +288,7 @@ class WTableComponent extends HTMLElement {
                 if (this.Options.Show != undefined && this.Options.Show == true) {
                     Options.children.push({
                         type: "button", props: {
-                            class: "Btn", type: "button", innerText: "Show", onclick: async () => {
+                            class: "BtnTable", type: "button", innerText: "Show", onclick: async () => {
                                 this.append(WRender.createElement({
                                     type: "w-modal-form", props: {
                                         ObjectDetail: element
@@ -301,7 +301,7 @@ class WTableComponent extends HTMLElement {
                 if (this.Options.Edit != undefined && this.Options.Edit == true) {
                     Options.children.push({
                         type: "button", props: {
-                            class: "Btn", type: "button", innerText: "Edit", onclick: async () => {
+                            class: "BtnTableS", type: "button", innerText: "Edit", onclick: async () => {
                                 this.append(WRender.createElement({
                                     type: "w-modal-form", props: {
                                         ObjectModel: this.ModelObject,
@@ -316,25 +316,50 @@ class WTableComponent extends HTMLElement {
                             }
                         }
                     })
+                }                
+                if (this.Options.Delete != undefined && this.Options.Delete == true) {
+                    Options.children.push({
+                        type: "button", props: {
+                            class: "BtnTableA", type: "button", innerText: "Delete",
+                            onclick: async () => {
+                                this.append(WRender.createElement({
+                                    type: "w-modal-form", props: {
+                                        id: "Alert" + this.id,
+                                        ObjectModal: { type: "h5", children: ["¿Esta seguro de eliminar este elemento?"] },
+                                        ObjectOptions: {
+                                            SaveFunction: () => {
+                                                const index = Dataset.indexOf(element);
+                                                if (WArrayF.FindInArray(element, Dataset) == true) {
+                                                    ;
+                                                    Dataset.splice(index, 1);
+                                                    this.DrawTable();
+                                                } else { console.log("No Object") }
+                                            }
+                                        }
+                                    }
+                                }));
+                            }
+                        }
+                    })
                 }
                 if (this.Options.Select != undefined && this.Options.Select == true) {
-                    let Checked = WArrayF.FindInArray(element, this.selectedItems);                    
+                    let Checked = WArrayF.FindInArray(element, this.selectedItems);
                     Options.children.push({
                         type: "input", props: {
-                            class: "Btn", type: "checkbox", innerText: "Select", checked : Checked,
+                            class: "Btn", type: "checkbox", innerText: "Select", checked: Checked,
                             onclick: async (ev) => {
                                 const control = ev.target;
-                                const index = this.selectedItems.indexOf(element);   
+                                const index = this.selectedItems.indexOf(element);
                                 if (index == -1 && control.checked == true) {
-                                    if(WArrayF.FindInArray(element, this.selectedItems) == false){                                       
+                                    if (WArrayF.FindInArray(element, this.selectedItems) == false) {
                                         this.selectedItems.push(element)
-                                    }  else{
+                                    } else {
                                         console.log("Item Existente")
-                                    }                                  
+                                    }
                                 }
                                 else {
                                     this.selectedItems.splice(index, 1)
-                                }                                
+                                }
                             }
                         }
                     })
@@ -353,7 +378,7 @@ class WTableComponent extends HTMLElement {
             }
         });
         if (tbody.children.length == 0) {
-            tbody.children.push({type: "h5", props: {innerText: "No hay elementos en la tabla"}});
+            tbody.children.push({ type: "h5", props: { innerText: "No hay elementos en la tabla" } });
         }
         return tbody;
     }
@@ -405,8 +430,8 @@ class WTableComponent extends HTMLElement {
                         SelectPage(index);
                     }
                 }
-            });            
-        }       
+            });
+        }
         tfooter.push({
             type: "label",
             props: {
@@ -767,7 +792,7 @@ const WTableStyle = {
                 "text-align": "left",
                 border: "1px #ccc solid"
             }), new WCssClass("w-table .WTable .tdAction", {
-                "text-align": "right",
+                "text-align": "center",
                 "width": "250px",
             }), new WCssClass("w-table .WTable tbody tr:nth-child(odd)", {
                 "background-color": "#eee"
@@ -933,18 +958,48 @@ const WTableStyle = {
                 "justify-content": "flex-end",
                 "padding-left": "20px",
                 "padding-right": "20px",
-            }),
-            new WCssClass("w-table h5", {  
-                padding: "0.25rem",              
+            }), new WCssClass("w-table h5", {
+                padding: "0.25rem",
                 "padding-left": "20px",
                 "padding-right": "20px",
                 margin: "0px",
+            }), new WCssClass("w-table .BtnTable, .BtnTableA, .BtnTableS", {
+                "font-weight": "bold",
+                "border": "none",
+                "padding": "10px",
+                "text-align": "center",
+                "display": "inline-block",
+                "min-width": "50px",
+                "cursor": "pointer",
+                "background-color": "#09f",
+                "color": "#fff",
+                "border-right": "rgb(3, 106, 175) 5px solid",
+            }), new WCssClass("w-table .BtnTableS", {
+                "background-color": "#106705",
+                "border-right": "#0a3e03 5px solid"
+            }), new WCssClass("w-table .BtnTableA", {
+                "background-color": "#af0909",
+                "border-right": "#670505 5px solid"
             }),
         ], MediaQuery: {
             condicion: "max-width: 600px", ClassList: [
                 new WCssClass("w-table divForm div", {
                     width: "calc(100% - 10px)", margin: "5px"
-                })
+                }), new WCssClass("w-table .WTable", {
+                    display: "block !important", //width: "100%"
+                }), new WCssClass("w-table .WTable tbody", {
+                    display: "block !important", //width: "100%"
+                }),new WCssClass("w-table .WTable th", {
+                    display: "none !important", //width: "100%"
+                }), new WCssClass("w-table .WTable tr", {
+                    display: "block !important", //width: "100%"
+                }), new WCssClass("w-table .WTable td", {
+                    display: "flex !important",
+                    //width: "100%"
+                }), new WCssClass("w-table .WTable .tdAction", {
+                    display: "flex !important", width: "98%","justify-content": "center", "align-items": "center"
+                }),
+
             ]
         }
     }
