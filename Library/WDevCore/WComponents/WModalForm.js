@@ -1,5 +1,6 @@
 import { WRender, WAjaxTools, DomComponent } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
+let photoB64;
 class WModalForm extends HTMLElement {
     constructor() {
         super();
@@ -96,7 +97,7 @@ class WModalForm extends HTMLElement {
             let ControlTagName = "input";
             if (typeof Object[prop] === "string" && Object[prop].length >= 50) {
                 ControlTagName = "textarea";
-            } else if (typeof Object[prop] === "object") {
+            } else if (typeof Object[prop] === "object" && Object[prop] != null) {
                 ControlTagName = "select";
             }
             const InputControl = {
@@ -112,7 +113,7 @@ class WModalForm extends HTMLElement {
                 InputValue = this.EditObject[prop];
             }
             //DEFINICION DE TIPO
-            if (InputType == "object") {
+            if (InputType == "object" && InputValue != null) {
                 InputType = "";
                 console.log(Object[prop])
                 for (const key in Object[prop]) {
@@ -132,7 +133,7 @@ class WModalForm extends HTMLElement {
                 }
             } else if (prop.includes("date") || prop.includes("fecha") || prop.includes("time")) {
                 InputType = "date";
-            } else if (prop.includes("image") || prop.includes("img")) {
+            } else if (prop.includes("image") || prop.includes("img") || prop.includes("Pict")) {
                 InputType = "file";
             }
             if (InputType != "") {
@@ -157,6 +158,14 @@ class WModalForm extends HTMLElement {
                             }
                             if (ControlValue.type == "date") {
                                 Object[prop] = ControlValue.value;
+                            }else if (ControlValue.type == "file") {
+                                await this.SelectedFile(ControlValue.files[0]);
+                                await setTimeout(() => {
+                                   // Object[prop] = ControlValue.value;
+                                    Object[prop] = photoB64.toString();
+                                    //console.log(this.MyLoginData);
+                                }, 1000);                                
+                                
                             } else if (parseFloat(ControlValue.value).toString() != "NaN") {
                                 Object[prop] = parseFloat(ControlValue.value);
                             } else {
@@ -168,9 +177,10 @@ class WModalForm extends HTMLElement {
                         this.ObjectOptions.SaveFunction(Object);
                     }
                     if (this.ObjectOptions.Url != undefined) {
-                        const response = await WAjaxTools.PostRequest(Url, Object);
+                        const response = await WAjaxTools.PostRequest(this.ObjectOptions.Url, Object);
                         console.log(response);
                     }
+                    //console.log(Object);
                     DomComponent.modalFunction(this.id);
                     setTimeout(() => {
                         this.parentNode.removeChild(this);
@@ -214,6 +224,14 @@ class WModalForm extends HTMLElement {
             }
         }
         return Style;
+    }
+    async SelectedFile(value, obj) {
+        var reader = new FileReader();
+        reader.onloadend = function (e) {
+            photoB64 = e.target.result.split("base64,")[1];
+        }
+        //Aqui comienza a leer el archivo para posteriormente ejecutar la función onloadend
+        reader.readAsDataURL(value);
     }
 }
 customElements.define("w-modal-form", WModalForm);

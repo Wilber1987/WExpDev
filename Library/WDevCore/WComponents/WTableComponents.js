@@ -240,6 +240,7 @@ class WTableComponent extends HTMLElement {
                                         AddItemsFromApi: this.AddItemsFromApi,
                                         Dataset: this.Dataset,
                                         ObjectOptions: {
+                                            Url: this.Options.UrlAdd,
                                             AddObject: true,
                                             SaveFunction: (NewObject) => {
                                                 if (this.AddItemsFromApi == null) {
@@ -278,14 +279,19 @@ class WTableComponent extends HTMLElement {
             let tr = { type: "tr", children: [] };
             for (const prop in element) {
                 let value = "";
-                //console.log(element[prop])
                 if (element[prop] != null) {
                     value = element[prop].toString();
                 }
-                tr.children.push({
-                    type: "td",
-                    children: [value]
-                });
+                //DEFINICION DE VALORES-------------
+                if (prop.includes("img") || prop.includes("pic")) {
+                    tr.children.push({ type: "td",  children: [{type: "img", props: {
+                        src: "data:image/png;base64," + value,
+                        class: "imgPhoto" 
+                    }}]});
+                }else{
+                    tr.children.push({ type: "td",  children: [value]});
+                }
+                
             }
             if (this.Options != undefined) {
                 const Options = { type: "td", props: { class: "tdAction" }, children: [] };
@@ -333,6 +339,7 @@ class WTableComponent extends HTMLElement {
                                         ObjectModel: this.ModelObject,
                                         EditObject: element,
                                         ObjectOptions: {
+                                            Url: this.Options.UrlUpdate,
                                             SaveFunction: () => {
                                                 this.DrawTable();
                                             }
@@ -353,6 +360,7 @@ class WTableComponent extends HTMLElement {
                                         id: "Alert" + this.id,
                                         ObjectModal: { type: "h5", children: ["¿Esta seguro de eliminar este elemento?"] },
                                         ObjectOptions: {
+                                            Url: this.Options.UrlDelete,
                                             SaveFunction: () => {
                                                 const index = Dataset.indexOf(element);
                                                 if (WArrayF.FindInArray(element, Dataset) == true) {
@@ -385,11 +393,9 @@ class WTableComponent extends HTMLElement {
             if (this.numPage > 1 && tbody.children[page]) {
                 tbody.children[page].children.push(tr);
                 if (tbody.children[page].children.length == this.maxElementByPage) {
-                    //console.log(this.maxElementByPage)
                     page++;
                 }
             } else {
-                //console.log("no page")
                 tbody.children.push(tr);
             }
         });
@@ -1059,14 +1065,14 @@ class WTableComponent extends HTMLElement {
                     }), new WCssClass(`#${this.id} .tableContainer thead`, {
                        display: "none",
                     }), new WCssClass(`#${this.id} .tableContainer tbody`, {
-                        display: "block",
+                        display: "flex",
                     }), 
                     new WCssClass(`#${this.id} .tableContainer tbody tr`, {
                         display: "inline-block !important",
                         overflow: "hidden",
                         width: "270px", border: "solid 1px #999", "border-radius": "0.2cm",
                         height: "300px",
-                        padding: "10px", margin: "5px"
+                        padding: "10px", margin: "5px", "min-width": "300px"
                     }), new WCssClass(`#${this.id} .tableContainer td`, {
                         display: "block",
                     }),   new WCssClass(`#${this.id} .paginateBTN`, {

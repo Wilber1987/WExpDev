@@ -327,11 +327,12 @@ class TableCont {
         };
         var ConfigCards = {
             Datasets: result.datos, /*DATOS DE LA TABLA*/  
+            paginate: false,   
             Options: {
                 Search: true,
                 Show: true,
                 Edit: true, //UrlUpdate: "",
-                Select: true,
+                Select: true,                          
                // Add: true,
                 Delete: true,
                 UserActions: [{name: "Reservar", Function: (Param)=>{
