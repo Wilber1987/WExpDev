@@ -325,6 +325,37 @@ class TableCont {
             }
             ],
         };
+        var ConfigCards = {
+            Datasets: result.datos, /*DATOS DE LA TABLA*/  
+            Options: {
+                Search: true,
+                Show: true,
+                Edit: true, //UrlUpdate: "",
+                Select: true,
+               // Add: true,
+                Delete: true,
+                UserActions: [{name: "Reservar", Function: (Param)=>{
+                    alert("reserva");
+                    console.log(Param)
+                }}]
+            }, 
+            StyleType: "Cards"           
+        };
+        this.children.push({
+            type: 'h2',
+            props: { innerText: "Table CardStyles........" },
+        })
+        this.children.push({
+            type: "w-table",
+            props: {
+                id: "tableConfigCards",
+                TableConfig: ConfigCards
+            }
+        })
+        this.children.push({
+            type: 'h2',
+            props: { innerText: "Table DINAMIC MULTIOPTIONS........." },
+        })
         var Config = {
             Datasets: result.datos, /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],/*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -345,12 +376,12 @@ class TableCont {
                 Select: true,
                 Add: true,
                 Delete: true,
+                UserActions: [{name: "Reservar", Function: (Param)=>{
+                    alert("reserva");
+                    console.log(Param)
+                }}]
             },
         };
-        this.children.push({
-            type: 'h2',
-            props: { innerText: "Table........." },
-        })
         this.children.push({
             type: "w-table",
             props: {
@@ -358,6 +389,10 @@ class TableCont {
                 TableConfig: Config
             }
         })
+        this.children.push({
+            type: 'h2',
+            props: { innerText: "Table MDETAIL........." },
+        })       
         var Config2 = {
             MasterDetailTable: true,
             AddItemsFromApi: {

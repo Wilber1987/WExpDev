@@ -13,7 +13,11 @@ class WTableComponent extends HTMLElement {
     }
     connectedCallback() {
         this.innerHTML = "";
-        this.append(WRender.createElement(WTableStyle));
+        if (this.TableConfig.StyleType == "Cards") {
+            this.append(WRender.createElement(this.TableCardStyle()));
+        } else {
+            this.append(WRender.createElement(this.TableStyle()));
+        }
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
         if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
@@ -269,7 +273,6 @@ class WTableComponent extends HTMLElement {
                 tbody.children.push({ type: "tbody", props: { class: "tbodyChild", style: tBodyStyle }, children: [] });
             }
         }
-        tbody.children.push(this.MediaStyleResponsive())
         let page = 0;
         Dataset.forEach((element) => {
             let tr = { type: "tr", children: [] };
@@ -286,6 +289,28 @@ class WTableComponent extends HTMLElement {
             }
             if (this.Options != undefined) {
                 const Options = { type: "td", props: { class: "tdAction" }, children: [] };
+                if (this.Options.Select != undefined && this.Options.Select == true) {
+                    let Checked = WArrayF.FindInArray(element, this.selectedItems);
+                    Options.children.push({
+                        type: "input", props: {
+                            class: "Btn", type: "checkbox", innerText: "Select", checked: Checked,
+                            onclick: async (ev) => {
+                                const control = ev.target;
+                                const index = this.selectedItems.indexOf(element);
+                                if (index == -1 && control.checked == true) {
+                                    if (WArrayF.FindInArray(element, this.selectedItems) == false) {
+                                        this.selectedItems.push(element)
+                                    } else {
+                                        console.log("Item Existente")
+                                    }
+                                }
+                                else {
+                                    this.selectedItems.splice(index, 1)
+                                }
+                            }
+                        }
+                    })
+                }
                 if (this.Options.Show != undefined && this.Options.Show == true) {
                     Options.children.push({
                         type: "button", props: {
@@ -343,27 +368,17 @@ class WTableComponent extends HTMLElement {
                         }
                     })
                 }
-                if (this.Options.Select != undefined && this.Options.Select == true) {
-                    let Checked = WArrayF.FindInArray(element, this.selectedItems);
-                    Options.children.push({
-                        type: "input", props: {
-                            class: "Btn", type: "checkbox", innerText: "Select", checked: Checked,
-                            onclick: async (ev) => {
-                                const control = ev.target;
-                                const index = this.selectedItems.indexOf(element);
-                                if (index == -1 && control.checked == true) {
-                                    if (WArrayF.FindInArray(element, this.selectedItems) == false) {
-                                        this.selectedItems.push(element)
-                                    } else {
-                                        console.log("Item Existente")
-                                    }
-                                }
-                                else {
-                                    this.selectedItems.splice(index, 1)
+                if (this.Options.UserActions != undefined) {
+                    this.Options.UserActions.forEach(Action => {
+                        Options.children.push({
+                            type: "button", props: {
+                                class: "BtnTableA", type: "button", innerText: Action.name,
+                                onclick: async () => {
+                                    Action.Function(element);
                                 }
                             }
-                        }
-                    })
+                        })
+                    });
                 }
                 tr.children.push(Options);
             }
@@ -380,7 +395,8 @@ class WTableComponent extends HTMLElement {
         });
         if (tbody.children.length == 0) {
             tbody.children.push({ type: "h5", props: { innerText: "No hay elementos en la tabla" } });
-        }
+        }        
+        this.append(WRender.createElement(this.MediaStyleResponsive()));       
         return tbody;
     }
     DrawTFooter(tbody) {
@@ -753,263 +769,380 @@ class WTableComponent extends HTMLElement {
         }
     }
     MediaStyleResponsive() {
+        if (this.querySelector("MediaStyleResponsive" + this.id)) {
+            this.removeChild(this.querySelector("MediaStyleResponsive" + this.id));
+        }
         const ClassList = [];
         let index = 1;
-        for (const prop in this.ModelObject) {
+        for (const prop in this.ModelObject) {            
             ClassList.push(new WCssClass(`#${this.id} td:nth-of-type(${index}):before`, {
                 content: `"${prop}:"`,
                 "margin-right": "10px"
             }))
             index++;
         }
+        if (this.TableConfig.StyleType == "Cards") {
+            return {
+                type: "w-style",
+                props: { ClassList: ClassList }
+            }
+        }
         return {
             type: "w-style",
-            props: { MediaQuery: {
-                condicion: "max-width: 600px", ClassList: ClassList
-            }}
+            props: {
+                id:"MediaStyleResponsive" + this.id,
+                MediaQuery: {
+                    condicion: "max-width: 600px", ClassList: ClassList
+                }
+            }
         }
     }
-}
-const WTableStyle = {
-    type: "w-style",
-    props: {
-        ClassList: [
-            //ESTILOS GENERALES-----------------------------------
-            new WCssClass("w-table", {
-                border: "#999999 2px solid",
-                overflow: "hidden",
-                display: "block",
-                "border-radius": "0.2cm",
-                "min-height": "50px",
-            }),
-            //ESTILO DE LA TABLA BASICA----------------------------tableContainer
-            new WCssClass("w-table .tableContainer", {
-                overflow: "auto"
-            }), new WCssClass("w-table .WTable", {
-                "font-family": "Verdana, sans-serif",
-                width: "100%",
-                "border-collapse": "collapse",
-                "border-top": "solid 1px #999999",
-                position: "relative"
-            }), new WCssClass("w-table .WTable th", {
-                padding: "0.5rem",
-                "text-align": "left",
-                border: "1px #ccc solid"
-            }), new WCssClass("w-table .WTable td", {
-                padding: "0.25rem",
-                "text-align": "left",
-                border: "1px #ccc solid"
-            }), new WCssClass("w-table .WTable .tdAction", {
-                "text-align": "center",
-                "width": "250px",
-            }), new WCssClass("w-table .WTable tbody tr:nth-child(odd)", {
-                "background-color": "#eee"
-            }), new WCssClass("w-table .thOptions", {
-                display: "flex",
-                width: "100%", overflow: "hidden"
-            }), new WCssClass("w-table input[type=text], w-table input[type=string], w-table input[type=number], w-table input[type=date]", {
-                padding: "8px", border: "none", "border-bottom": "2px solid #999999",
-                width: "calc(100% - 16px)", "font-size": "15px", height: "20px"
-            }), new WCssClass("w-table input:active, w-table input:focus", {
-                "border-bottom": "2px solid #0099cc", outline: "none",
-            }), new WCssClass("w-table input[type=button]", {
-                cursor: "pointer", width: "calc(100% - 0px)", height: "initial"
-            }),
-            //FIN ESTILO TABLA BASICAA------------------------------
-            //flexcajones TABLA DINAMICA----------------------------
-            new WCssClass("w-table .TContainer", {
-                padding: "0px",
-                display: "flex",
-                "flex-grow": 1,
-            }), new WCssClass("w-table .TContainerBlock", {
-                width: "100%"
-            }), new WCssClass(" w-table .TContainerBlockL", {
-                display: "flex",
-                "flex-direction": "column",
-                "justify-content": "flex-end",
-                "background-color": "rgb(236, 235, 235)",
-                "font-weight": "bold",
-            }), new WCssClass(" w-table .TContainerBlockData", {
-                width: "100%"
-            }), new WCssClass("w-table  Tlabel", {
-                display: "block",
-                //padding: "5px",
-                "border-bottom": "1px solid #000",
-                //height: "30px",
-                "overflow-y": "hidden",
-                "white-space": "nowrap",
-                "overflow": "hidden",
-                "text-overflow": "ellipsis",
-                "min-width": "60px",
-                "background-color": "#d4d4d4",
-                color: "#000",
-                padding: "0.5rem",
-                "text-align": "left",
-                "font-weight": "bold",
-                border: "1px rgb(185, 185, 185) solid",
-            }), new WCssClass("w-table .TContainerBlockData .Cajon", {
-                overflow: "hidden",
-                display: "flex",
-                "flex-direction": "column",
-            }), new WCssClass("w-table .flexChild", {
-                padding: "0px",
-                width: "100%"
-            }), new WCssClass("w-table TData", {
-                //padding: "5px",
-                //height: "30px",
-                "overflow-y": "hidden",
-                "white-space": "nowrap",
-                "overflow": "hidden",
-                "text-overflow": "ellipsis",
-                "min-width": "60px",
-                padding: "0.5rem",
-                "text-align": "left",
-                border: "1px #ccc solid"
-            }), new WCssClass("w-table TDataTotal", {
-                "overflow-y": "hidden",
-                "white-space": "nowrap",
-                "overflow": "hidden",
-                "text-overflow": "ellipsis",
-                "min-width": "60px",
-                "border-top": "solid 1px #000",
-                "border-bottom": "solid 1px #000",
-                padding: "0.5rem",
-                "text-align": "left",
-                "font-weight": "bold",
-                border: "1px #ccc solid",
-            }), new WCssClass("w-table .Cajon", {
-                display: "flex"
-            }),
-            //tABLA DINAMICA OPCIONES ------------------------------
-            new WCssClass("w-table .TableOptions", {
-                display: "flex",
-                transition: "all 1s",
-                "max-height": "38px",
-                overflow: "hidden",
-            }), new WCssClass("w-table .TableOptionsAtribs", {
-                display: "flex",
-                width: "100%",
-                "flex-direction": "column",
-                "padding-bottom": "20px",
-                "background-color": "#efefef"
-            }), new WCssClass("w-table .titleParam", {
-                display: "block",
-                padding: "10px",
-                "border-bottom": "1px solid #000",
-                "margin-bottom": "10px",
-                cursor: "pointer",
-                "font-size": "16px",
-                "text-align": "center",
-                position: "relative"
-            }), new WCssClass("w-table select.titleParam, w-table select.titleParam:focus, w-table select.titleParam:active", {
-                cursor: "pointer",
-                "background-color": "#efefef",
-                border: "none",
-                "border-bottom": "1px solid #000",
-                outline: "none",
-                "outline-width": "0",
-                height: "40px"
-            }), new WCssClass("w-table .labelParam", {
-                display: "block",
-                padding: "10px",
-                "background-color": "#fff",
-                cursor: "pointer",
-                border: "solid 3px #efefef"
-            }), new WCssClass("w-table .btn", {
-                "margin-left": "10px",
-                cursor: "pointer",
-                display: "inline-block",
-                "font-weight": "bold",
-                position: "absolute",
-                transform: "rotate(90deg)"
-            }), new WCssClass("w-table .txtControl", {
-                "display": "block",
-                "width": "100%",
-                "padding": ".375rem .75rem",
-                "font-size": "1rem",
-                "line-height": "1.5",
-                "color": "#495057",
-                "background-color": "#fff",
-                "background-clip": "padding-box",
-                "border": "1px solid #ced4da !important",
-                "border-radius": ".25rem",
-                "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-            }),
-            //PAGINACIONM
-            new WCssClass("w-table .paginateBTN", {
-                display: "inline-block",
-                padding: "8px",
-                "background-color": "#09f",
-                color: "#fff",
-                "margin": "5px",
-                cursor: "pointer",
-                "border-radius": "0.2cm",
-                "font-weight": "bold",
-                transition: "all 0.6s"
-            }), new WCssClass("w-table .pagBTN", {
-                display: "inline-block",
-                padding: "8px",
-                "background-color": "rgb(3, 106, 175)",
-                color: "#fff",
-                "margin": "5px",
-                cursor: "pointer",
-                "border-radius": "0.2cm",
-                "font-weight": "bold",
-                transition: "all 0.6s",
-                width: "80px",
-                "text-align": "center",
-            }), new WCssClass("w-table .paginateBTNActive", {
-                "background-color": "rgb(3, 106, 175)",
-            }), new WCssClass("w-table .tfooter", {
-                display: "flex",
-                border: "1px rgb(185, 185, 185) solid",
-                "justify-content": "flex-end",
-                "padding-left": "20px",
-                "padding-right": "20px",
-            }), new WCssClass("w-table h5", {
-                padding: "0.25rem",
-                "padding-left": "20px",
-                "padding-right": "20px",
-                margin: "0px",
-            }), new WCssClass("w-table .BtnTable, .BtnTableA, .BtnTableS", {
-                "font-weight": "bold",
-                "border": "none",
-                "padding": "10px",
-                "text-align": "center",
-                "display": "inline-block",
-                "min-width": "50px",
-                "cursor": "pointer",
-                "background-color": "#09f",
-                "color": "#fff",
-                "border-right": "rgb(3, 106, 175) 5px solid",
-            }), new WCssClass("w-table .BtnTableS", {
-                "background-color": "#106705",
-                "border-right": "#0a3e03 5px solid"
-            }), new WCssClass("w-table .BtnTableA", {
-                "background-color": "#af0909",
-                "border-right": "#670505 5px solid"
-            }),
-        ], MediaQuery: {
-            condicion: "max-width: 600px", ClassList: [
-                new WCssClass("w-table divForm div", {
-                    width: "calc(100% - 10px)", margin: "5px"
-                }), new WCssClass("w-table .WTable", {
-                    display: "block !important", //width: "100%"
-                }), new WCssClass("w-table .WTable tbody", {
-                    display: "block !important", //width: "100%"
-                }), new WCssClass("w-table .WTable thead", {
-                    display: "none !important", //width: "100%"
-                }), new WCssClass("w-table .WTable tr", {
-                    display: "block !important", border: "5px solid #808080"
-                }), new WCssClass("w-table .WTable td", {
-                    display: "flex !important",
-                    //width: "100%"
-                }), new WCssClass("w-table .WTable .tdAction", {
-                    display: "flex !important", width: "calc(98% - 0.25rem)", "justify-content": "center", "align-items": "center"
-                }),
+    TableStyle() {
+        const WTableStyle = {
+            type: "w-style",
+            props: {
+                ClassList: [
+                    //ESTILOS GENERALES-----------------------------------
+                    new WCssClass(`#${this.id}`, {
+                        border: "#999999 2px solid",
+                        overflow: "hidden",
+                        display: "block",
+                        "border-radius": "0.2cm",
+                        "min-height": "50px",
+                    }),
+                    //ESTILO DE LA TABLA BASICA----------------------------tableContainer
+                    new WCssClass(`#${this.id} .tableContainer`, {
+                        overflow: "auto"
+                    }), new WCssClass(`#${this.id} .WTable`, {
+                        "font-family": "Verdana, sans-serif",
+                        width: "100%",
+                        "border-collapse": "collapse",
+                        "border-top": "solid 1px #999999",
+                        position: "relative"
+                    }), new WCssClass(`#${this.id} .WTable th`, {
+                        padding: "0.5rem",
+                        "text-align": "left",
+                        border: "1px #ccc solid"
+                    }), new WCssClass(`#${this.id} .WTable td`, {
+                        padding: "0.25rem",
+                        "text-align": "left",
+                        border: "1px #ccc solid"
+                    }), new WCssClass(`#${this.id} .WTable .tdAction`, {
+                        "text-align": "center",
+                        "width": "250px",
+                    }), new WCssClass(`#${this.id} .WTable tbody tr:nth-child(odd)`, {
+                        "background-color": "#eee"
+                    }), new WCssClass(`#${this.id} .thOptions`, {
+                        display: "flex",
+                        width: "100%", overflow: "hidden"
+                    }), new WCssClass(`#${this.id} input[type=text], #${this.id} input[type=string], #${this.id} input[type=number], #${this.id} input[type=date]`, {
+                        padding: "8px", border: "none", "border-bottom": "2px solid #999999",
+                        width: "calc(100% - 16px)", "font-size": "15px", height: "20px"
+                    }), new WCssClass(`#${this.id} input:active, #${this.id} input:focus`, {
+                        "border-bottom": "2px solid #0099cc", outline: "none",
+                    }), new WCssClass(`#${this.id} input[type=button]`, {
+                        cursor: "pointer", width: "calc(100% - 0px)", height: "initial"
+                    }),
+                    //FIN ESTILO TABLA BASICAA------------------------------
+                    //flexcajones TABLA DINAMICA----------------------------
+                    new WCssClass(`#${this.id} .TContainer`, {
+                        padding: "0px",
+                        display: "flex",
+                        "flex-grow": 1,
+                    }), new WCssClass(`#${this.id} .TContainerBlock`, {
+                        width: "100%"
+                    }), new WCssClass(" #${this.id} .TContainerBlockL", {
+                        display: "flex",
+                        "flex-direction": "column",
+                        "justify-content": "flex-end",
+                        "background-color": "rgb(236, 235, 235)",
+                        "font-weight": "bold",
+                    }), new WCssClass(" #${this.id} .TContainerBlockData", {
+                        width: "100%"
+                    }), new WCssClass(`#${this.id}  Tlabel`, {
+                        display: "block",
+                        //padding: "5px",
+                        "border-bottom": "1px solid #000",
+                        //height: "30px",
+                        "overflow-y": "hidden",
+                        "white-space": "nowrap",
+                        "overflow": "hidden",
+                        "text-overflow": "ellipsis",
+                        "min-width": "60px",
+                        "background-color": "#d4d4d4",
+                        color: "#000",
+                        padding: "0.5rem",
+                        "text-align": "left",
+                        "font-weight": "bold",
+                        border: "1px rgb(185, 185, 185) solid",
+                    }), new WCssClass(`#${this.id} .TContainerBlockData .Cajon`, {
+                        overflow: "hidden",
+                        display: "flex",
+                        "flex-direction": "column",
+                    }), new WCssClass(`#${this.id} .flexChild`, {
+                        padding: "0px",
+                        width: "100%"
+                    }), new WCssClass(`#${this.id} TData`, {
+                        //padding: "5px",
+                        //height: "30px",
+                        "overflow-y": "hidden",
+                        "white-space": "nowrap",
+                        "overflow": "hidden",
+                        "text-overflow": "ellipsis",
+                        "min-width": "60px",
+                        padding: "0.5rem",
+                        "text-align": "left",
+                        border: "1px #ccc solid"
+                    }), new WCssClass(`#${this.id} TDataTotal`, {
+                        "overflow-y": "hidden",
+                        "white-space": "nowrap",
+                        "overflow": "hidden",
+                        "text-overflow": "ellipsis",
+                        "min-width": "60px",
+                        "border-top": "solid 1px #000",
+                        "border-bottom": "solid 1px #000",
+                        padding: "0.5rem",
+                        "text-align": "left",
+                        "font-weight": "bold",
+                        border: "1px #ccc solid",
+                    }), new WCssClass(`#${this.id} .Cajon`, {
+                        display: "flex"
+                    }),
+                    //tABLA DINAMICA OPCIONES ------------------------------
+                    new WCssClass(`#${this.id} .TableOptions`, {
+                        display: "flex",
+                        transition: "all 1s",
+                        "max-height": "38px",
+                        overflow: "hidden",
+                    }), new WCssClass(`#${this.id} .TableOptionsAtribs`, {
+                        display: "flex",
+                        width: "100%",
+                        "flex-direction": "column",
+                        "padding-bottom": "20px",
+                        "background-color": "#efefef"
+                    }), new WCssClass(`#${this.id} .titleParam`, {
+                        display: "block",
+                        padding: "10px",
+                        "border-bottom": "1px solid #000",
+                        "margin-bottom": "10px",
+                        cursor: "pointer",
+                        "font-size": "16px",
+                        "text-align": "center",
+                        position: "relative"
+                    }), new WCssClass(`#${this.id} select.titleParam, #${this.id} select.titleParam:focus, #${this.id} select.titleParam:active`, {
+                        cursor: "pointer",
+                        "background-color": "#efefef",
+                        border: "none",
+                        "border-bottom": "1px solid #000",
+                        outline: "none",
+                        "outline-width": "0",
+                        height: "40px"
+                    }), new WCssClass(`#${this.id} .labelParam`, {
+                        display: "block",
+                        padding: "10px",
+                        "background-color": "#fff",
+                        cursor: "pointer",
+                        border: "solid 3px #efefef"
+                    }), new WCssClass(`#${this.id} .btn`, {
+                        "margin-left": "10px",
+                        cursor: "pointer",
+                        display: "inline-block",
+                        "font-weight": "bold",
+                        position: "absolute",
+                        transform: "rotate(90deg)"
+                    }), new WCssClass(`#${this.id} .txtControl`, {
+                        "display": "block",
+                        "width": "100%",
+                        "padding": ".375rem .75rem",
+                        "font-size": "1rem",
+                        "line-height": "1.5",
+                        "color": "#495057",
+                        "background-color": "#fff",
+                        "background-clip": "padding-box",
+                        "border": "1px solid #ced4da !important",
+                        "border-radius": ".25rem",
+                        "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    }),                    
+                    //PAGINACIONM
+                    new WCssClass(`#${this.id} .paginateBTN`, {
+                        display: "inline-block",
+                        padding: "8px",
+                        "background-color": "#09f",
+                        color: "#fff",
+                        "margin": "5px",
+                        cursor: "pointer",
+                        "border-radius": "0.2cm",
+                        "font-weight": "bold",
+                        transition: "all 0.6s"
+                    }), new WCssClass(`#${this.id} .pagBTN`, {
+                        display: "inline-block",
+                        padding: "8px",
+                        "background-color": "rgb(3, 106, 175)",
+                        color: "#fff",
+                        "margin": "5px",
+                        cursor: "pointer",
+                        "border-radius": "0.2cm",
+                        "font-weight": "bold",
+                        transition: "all 0.6s",
+                        width: "80px",
+                        "text-align": "center",
+                    }), new WCssClass(`#${this.id} .paginateBTNActive`, {
+                        "background-color": "rgb(3, 106, 175)",
+                    }), new WCssClass(`#${this.id} .tfooter`, {
+                        display: "flex",
+                        border: "1px rgb(185, 185, 185) solid",
+                        "justify-content": "flex-end",
+                        "padding-left": "20px",
+                        "padding-right": "20px",
+                    }), new WCssClass(`#${this.id} h5`, {
+                        padding: "0.25rem",
+                        "padding-left": "20px",
+                        "padding-right": "20px",
+                        margin: "0px",
+                    }), new WCssClass(`#${this.id} .BtnTable, .BtnTableA, .BtnTableS`, {
+                        "font-weight": "bold",
+                        "border": "none",
+                        "padding": "10px",
+                        "text-align": "center",
+                        "display": "inline-block",
+                        "min-width": "50px",
+                        "cursor": "pointer",
+                        "background-color": "#09f",
+                        "color": "#fff",
+                        "border-right": "rgb(3, 106, 175) 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnTableS`, {
+                        "background-color": "#106705",
+                        "border-right": "#0a3e03 5px solid"
+                    }), new WCssClass(`#${this.id} .BtnTableA`, {
+                        "background-color": "#af0909",
+                        "border-right": "#670505 5px solid"
+                    }),
+                ], MediaQuery: {
+                    condicion: "max-width: 600px", ClassList: [
+                        new WCssClass(`#${this.id} divForm div`, {
+                            width: "calc(100% - 10px)", margin: "5px"
+                        }), new WCssClass(`#${this.id} .WTable`, {
+                            display: "block !important", //width: "100%"
+                        }), new WCssClass(`#${this.id} .WTable tbody`, {
+                            display: "block !important", //width: "100%"
+                        }), new WCssClass(`#${this.id} .WTable thead`, {
+                            display: "none !important", //width: "100%"
+                        }), new WCssClass(`#${this.id} .WTable tr`, {
+                            display: "block !important", border: "5px solid #808080"
+                        }), new WCssClass(`#${this.id} .WTable td`, {
+                            display: "flex !important",
+                            //width: "100%"
+                        }), new WCssClass(`#${this.id} .WTable .tdAction`, {
+                            display: "flex !important", width: "calc(98% - 0.25rem)", "justify-content": "center", "align-items": "center"
+                        }),
 
-            ]
+                    ]
+                }
+            }
         }
+        return WTableStyle;
+    }
+    TableCardStyle() {
+        const WTableStyle = {
+            type: "w-style",
+            props: {
+                ClassList: [
+                    new WCssClass(`#${this.id} .tableContainer`, {
+                        overflow: "auto"
+                    }), new WCssClass(`#${this.id} .WTable`, {
+                        "font-family": "Verdana, sans-serif",
+                        width: "100%",
+                        "border-collapse": "collapse",
+                        "border-top": "solid 1px #999999",
+                        position: "relative",
+                        display: "flex !important","flex-direction": "column"
+                    }), new WCssClass(`#${this.id} .tableContainer thead`, {
+                       display: "none",
+                    }), new WCssClass(`#${this.id} .tableContainer tbody`, {
+                        display: "block",
+                    }), 
+                    new WCssClass(`#${this.id} .tableContainer tbody tr`, {
+                        display: "inline-block !important",
+                        overflow: "hidden",
+                        width: "270px", border: "solid 1px #999", "border-radius": "0.2cm",
+                        height: "300px",
+                        padding: "10px", margin: "5px"
+                    }), new WCssClass(`#${this.id} .tableContainer td`, {
+                        display: "block",
+                    }),   new WCssClass(`#${this.id} .paginateBTN`, {
+                        display: "inline-block",
+                        padding: "8px",
+                        "background-color": "#09f",
+                        color: "#fff",
+                        "margin": "5px",
+                        cursor: "pointer",
+                        "border-radius": "0.2cm",
+                        "font-weight": "bold",
+                        transition: "all 0.6s"
+                    }), new WCssClass(`#${this.id} .pagBTN`, {
+                        display: "inline-block",
+                        padding: "8px",
+                        "background-color": "rgb(3, 106, 175)",
+                        color: "#fff",
+                        "margin": "5px",
+                        cursor: "pointer",
+                        "border-radius": "0.2cm",
+                        "font-weight": "bold",
+                        transition: "all 0.6s",
+                        width: "80px",
+                        "text-align": "center",
+                    }), 
+                    //TOPCION
+                    new WCssClass(`#${this.id} .thOptions`, {
+                        display: "flex",
+                        width: "100%", overflow: "hidden"
+                    }), new WCssClass(`#${this.id} input[type=text], #${this.id} input[type=string], #${this.id} input[type=number], #${this.id} input[type=date]`, {
+                        padding: "8px", border: "none", "border-bottom": "2px solid #999999",
+                        width: "calc(100% - 16px)", "font-size": "15px", height: "20px"
+                    }), new WCssClass(`#${this.id} input:active, #${this.id} input:focus`, {
+                        "border-bottom": "2px solid #0099cc", outline: "none",
+                    }), new WCssClass(`#${this.id} input[type=button]`, {
+                        cursor: "pointer", width: "calc(100% - 0px)", height: "initial"
+                    }),
+                    //PAGINACION****************************************************
+                    new WCssClass(`#${this.id} .paginateBTNActive`, {
+                        "background-color": "rgb(3, 106, 175)",
+                    }), new WCssClass(`#${this.id} .tfooter`, {
+                        display: "flex",
+                        border: "1px rgb(185, 185, 185) solid",
+                        "justify-content": "flex-end",
+                        "padding-left": "20px",
+                        "padding-right": "20px",
+                    }), new WCssClass(`#${this.id} h5`, {
+                        padding: "0.25rem",
+                        "padding-left": "20px",
+                        "padding-right": "20px",
+                        margin: "0px",
+                    }), new WCssClass(`#${this.id} .BtnTable, .BtnTableA, .BtnTableS`, {
+                        "font-weight": "bold",
+                        "border": "none",
+                        "padding": "10px",
+                        "text-align": "center",
+                        "display": "inline-block",
+                        "min-width": "50px",
+                        "cursor": "pointer",
+                        "background-color": "#09f",
+                        "color": "#fff",
+                        "border-right": "rgb(3, 106, 175) 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnTableS`, {
+                        "background-color": "#106705",
+                        "border-right": "#0a3e03 5px solid"
+                    }), new WCssClass(`#${this.id} .BtnTableA`, {
+                        "background-color": "#af0909",
+                        "border-right": "#670505 5px solid"
+                    }),
+                ], MediaQuery: {
+                    condicion: "max-width: 600px", ClassList: []
+                }
+            }
+        }
+        return WTableStyle;
     }
 }
+
 customElements.define("w-table", WTableComponent);
