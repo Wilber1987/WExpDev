@@ -283,10 +283,14 @@ class WTableComponent extends HTMLElement {
                     value = element[prop].toString();
                 }
                 //DEFINICION DE VALORES-------------
-                if (prop.includes("img") || prop.includes("pic")) {
+                console.log(prop.includes("Photo"))
+                if (prop.includes("img") || prop.includes("pic") 
+                || prop.includes("Pict") || prop.includes("image")
+                || prop.includes("Photo")) {
+                    console.log("heare")
                     tr.children.push({ type: "td",  children: [{type: "img", props: {
                         src: "data:image/png;base64," + value,
-                        class: "imgPhoto" 
+                        class: "imgPhoto",height: 100, width: 100
                     }}]});
                 }else{
                     tr.children.push({ type: "td",  children: [value]});

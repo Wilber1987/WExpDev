@@ -40,7 +40,7 @@ class WModalForm extends HTMLElement {
             } else {
                 this.Modal.children.push(this.SaveOptions(this.EditObject));
             }
-        }        
+        }
         this.append(WRender.createElement(this.Modal));
         DomComponent.modalFunction(this.id)
     }
@@ -72,19 +72,19 @@ class WModalForm extends HTMLElement {
         return Form;
     }
     CrudForm(Object = {}, ObjectOptions) {
-        if (this.AddItemsFromApi != undefined) {            
+        if (this.AddItemsFromApi != undefined) {
             var Config = {
-                MasterDetailTable : true,
+                MasterDetailTable: true,
                 SearchItemsFromApi: this.AddItemsFromApi,
                 selectedItems: this.Dataset,
                 Options: {
-                    Search: true, Select: true, 
+                    Search: true, Select: true,
                 }
             }
             return {
                 type: "w-table",
                 props: {
-                    id: "SearchTable"+this.id,
+                    id: "SearchTable" + this.id,
                     TableConfig: Config
                 }
             };
@@ -95,18 +95,14 @@ class WModalForm extends HTMLElement {
                 type: "div", props: { class: "ModalElement" }, children: [prop]
             }
             let ControlTagName = "input";
-            if (typeof Object[prop] === "string" && Object[prop].length >= 50) {
-                ControlTagName = "textarea";
-            } else if (typeof Object[prop] === "object" && Object[prop] != null) {
-                ControlTagName = "select";
-            }
-            const InputControl = {
-                type: ControlTagName, props: {
-                    id: "ControlValue" + prop, value: null
-                }, children: []
-            }
             let InputType = typeof Object[prop];
             let InputValue = "";
+            if (typeof Object[prop] === "string" && Object[prop].length >= 50) {
+                ControlTagName = "textarea";
+                InputType = "";
+            } else if (typeof Object[prop] === "object" && Object[prop] != null) {
+                ControlTagName = "select";
+            }           
             if (ObjectOptions.AddObject == true) {
                 InputValue = "";
             } else {
@@ -133,8 +129,22 @@ class WModalForm extends HTMLElement {
                 }
             } else if (prop.includes("date") || prop.includes("fecha") || prop.includes("time")) {
                 InputType = "date";
-            } else if (prop.includes("image") || prop.includes("img") || prop.includes("Pict")) {
+            } else if (prop.includes("img") || prop.includes("pic")
+                || prop.includes("Pict") || prop.includes("image")
+                || prop.includes("Photo")) {
+                ControlContainer.children.push({
+                    type: "img", props: {
+                        src: "data:image/png;base64," + InputValue,
+                        class: "imgPhoto", height: 100, width: 100
+                    }
+                })
                 InputType = "file";
+                ControlTagName = "input";
+            }
+            const InputControl = {
+                type: ControlTagName, props: {
+                    id: "ControlValue" + prop, value: null
+                }, children: []
             }
             if (InputType != "") {
                 InputControl.props.type = InputType;
@@ -158,21 +168,21 @@ class WModalForm extends HTMLElement {
                             }
                             if (ControlValue.type == "date") {
                                 Object[prop] = ControlValue.value;
-                            }else if (ControlValue.type == "file") {
+                            } else if (ControlValue.type == "file") {
                                 await this.SelectedFile(ControlValue.files[0]);
                                 await setTimeout(() => {
-                                   // Object[prop] = ControlValue.value;
+                                    // Object[prop] = ControlValue.value;
                                     Object[prop] = photoB64.toString();
                                     //console.log(this.MyLoginData);
-                                }, 1000);                                
-                                
+                                }, 1000);
+
                             } else if (parseFloat(ControlValue.value).toString() != "NaN") {
                                 Object[prop] = parseFloat(ControlValue.value);
                             } else {
                                 Object[prop] = ControlValue.value;
                             }
                         }
-                    }                    
+                    }
                     if (this.ObjectOptions.SaveFunction != undefined) {
                         this.ObjectOptions.SaveFunction(Object);
                     }
@@ -213,13 +223,13 @@ class WModalForm extends HTMLElement {
                                         w-modal-form select:focus`, {
                         "border-bottom": "3px solid #0099cc", outline: "none",
                     }), new WCssClass(`w-modal-form .DivSaveOptions`, {
-                         "margin-top": "10px",
-                         "margin-bottom": "10px",
-                    }),new WCssClass(`w-modal-form h1, 
+                        "margin-top": "10px",
+                        "margin-bottom": "10px",
+                    }), new WCssClass(`w-modal-form h1, 
                             w-modal-form h3,
                             w-modal-form h4,w-modal-form h5`, {
                         display: "block", padding: "10px", "text-align": "center"
-                   }),
+                    }),
                 ]
             }
         }
