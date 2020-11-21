@@ -12,9 +12,9 @@ class ForosView {
             Options: {
                 Search: true,
                 Show: true,
-                Edit: true, //UrlUpdate: "",
+                Edit: true, UrlUpdate: "http://localhost:6601/" + 'api/User/PostUpdateUser',
                 Select: true,
-                Add: true,                
+                Add: true, UrlAdd: "http://localhost:6601/" + 'api/User/PostRegister'           
             },
         };
         this.children.push({
@@ -27,6 +27,7 @@ class ForosView {
     }
     StartModuleList = () => {
         //let response = await AjaxTools.PostRequest(Url_Path + 'api/User/PostRegister', this.MyLoginData);
+        //"http://localhost:6601/" + 'api/User/PostTakeUsers'
     }
 }
 export { ForosView }
