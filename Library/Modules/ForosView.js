@@ -9,6 +9,7 @@ class ForosView {
         })
         var Config = {
             Datasets: props.Users, /*DATOS DE LA TABLA*/
+            //StyleType: "Cards"  ,
             Options: {
                 Search: true,
                 Show: true,

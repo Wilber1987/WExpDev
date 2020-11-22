@@ -12,13 +12,13 @@ class WTableComponent extends HTMLElement {
         this.paginate = true;
     }
     connectedCallback() {
-        this.innerHTML = "";
+        //this.innerHTML = "";
         if (this.TableConfig.StyleType == "Cards") {
             this.append(WRender.createElement(this.TableCardStyle()));
         } else {
             this.append(WRender.createElement(this.TableStyle()));
         }
-        this.append(WRender.createElement(this.PaginateTOptionsStyle()));        
+        this.append(WRender.createElement(this.PaginateTOptionsStyle()));
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
         if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
@@ -85,8 +85,14 @@ class WTableComponent extends HTMLElement {
             this.append(WRender.createElement(this.TableOptions()));
             this.DrawTable();
             if (this.TableConfig.AddChart == true) {
-                let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
-                this.append(WRender.createElement(ChartContainer));
+                if (this.querySelector("#Chart" + this.id)) {
+                    let ChartContainer = this.querySelector("#Chart" + this.id);
+                    ChartContainer.innerHTML = "";
+                    ChartContainer.append(WRender.createElement(this.DrawChart()));
+                } else {
+                    let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                    this.append(WRender.createElement(ChartContainer));
+                }
             }
             return;
         }
@@ -104,8 +110,14 @@ class WTableComponent extends HTMLElement {
             if (this.groupParams.length > 0 && this.AttNameEval !== undefined && this.EvalValue !== undefined) {
                 this.DrawGroupTable();
                 if (this.TableConfig.AddChart == true) {
-                    let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
-                    this.append(WRender.createElement(ChartContainer));
+                    if (this.querySelector("#Chart" + this.id)) {
+                        let ChartContainer = this.querySelector("#Chart" + this.id);
+                        ChartContainer.innerHTML = "";
+                        ChartContainer.append(WRender.createElement(this.DrawChart()));
+                    } else {
+                        let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                        this.append(WRender.createElement(ChartContainer));
+                    }
                 }
             } else {
                 this.DrawTable();
@@ -595,6 +607,9 @@ class WTableComponent extends HTMLElement {
         }
     }
     TableOptions = () => {
+        if (this.querySelector("#TableOptionstable")) {
+            return "";
+        }
         const drop = (ev) => {
             ev.preventDefault();
             var data = ev.dataTransfer.getData("text");
@@ -731,6 +746,9 @@ class WTableComponent extends HTMLElement {
         };
     }
     DrawChart() {
+        /*if (this.querySelector("#TableOptionstable")) {
+            return "";
+        }*/
         if (this.groupParams.length > 0 && this.EvalArray != null) {
             let GroupLabelsData = [];
             this.EvalArray.forEach(element => {
@@ -794,10 +812,15 @@ class WTableComponent extends HTMLElement {
         const ClassList = [];
         let index = 1;
         for (const prop in this.ModelObject) {
-            ClassList.push(new WCssClass(`#${this.id} td:nth-of-type(${index}):before`, {
-                content: `"${prop}:"`,
-                "margin-right": "10px"
-            }))
+            if (!prop.includes("Photo")
+                && !prop.includes("img")
+                && !prop.includes("imagen")
+                && !prop.includes("Pict")) {
+                ClassList.push(new WCssClass(`#${this.id} td:nth-of-type(${index}):before`, {
+                    content: `"${prop}:"`,
+                    "margin-right": "10px"
+                }))
+            }
             index++;
         }
         if (this.TableConfig.StyleType == "Cards") {
@@ -817,9 +840,14 @@ class WTableComponent extends HTMLElement {
         }
     }
     TableStyle() {
+        const style = this.querySelector("#TableStyle" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
         const WTableStyle = {
             type: "w-style",
             props: {
+                id: "TableStyle" + this.id,
                 ClassList: [
                     //ESTILOS GENERALES-----------------------------------
                     new WCssClass(`#${this.id}`, {
@@ -851,7 +879,7 @@ class WTableComponent extends HTMLElement {
                         "width": "250px",
                     }), new WCssClass(`#${this.id} .WTable tbody tr:nth-child(odd)`, {
                         "background-color": "#eee"
-                    }), 
+                    }),
                     //FIN ESTILO TABLA BASICAA------------------------------
                     //flexcajones TABLA DINAMICA----------------------------
                     new WCssClass(`#${this.id} .TContainer`, {
@@ -972,7 +1000,7 @@ class WTableComponent extends HTMLElement {
                         "border-radius": ".25rem",
                         "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
                     }),
-                    
+
                 ], MediaQuery: {
                     condicion: "max-width: 600px", ClassList: [
                         new WCssClass(`#${this.id} divForm div`, {
@@ -999,10 +1027,23 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     TableCardStyle() {
+        const style = this.querySelector("#TableCardStyle" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
         const WTableStyle = {
             type: "w-style",
             props: {
+                id: "TableCardStyle" + this.id,
                 ClassList: [
+                    //ESTILOS GENERALES-----------------------------------
+                    new WCssClass(`#${this.id}`, {
+                        border: "#999999 2px solid",
+                        overflow: "hidden",
+                        display: "block",
+                        "border-radius": "0.2cm",
+                        "min-height": "50px",
+                    }),
                     new WCssClass(`#${this.id} .tableContainer`, {
                         overflow: "auto"
                     }), new WCssClass(`#${this.id} .WTable`, {
@@ -1022,31 +1063,19 @@ class WTableComponent extends HTMLElement {
                         overflow: "hidden",
                         width: "270px", border: "solid 1px #999", "border-radius": "0.2cm",
                         height: "300px",
-                        padding: "10px", margin: "5px", "min-width": "300px"
+                        padding: "10px", margin: "5px", "min-width": "300px", position: "relative"
                     }), new WCssClass(`#${this.id} .tableContainer td`, {
                         display: "block",
-                    }), new WCssClass(`#${this.id} .paginateBTN`, {
-                        display: "inline-block",
-                        padding: "8px",
-                        "background-color": "#09f",
-                        color: "#fff",
-                        "margin": "5px",
-                        cursor: "pointer",
-                        "border-radius": "0.2cm",
-                        "font-weight": "bold",
-                        transition: "all 0.6s"
-                    }), new WCssClass(`#${this.id} .pagBTN`, {
-                        display: "inline-block",
-                        padding: "8px",
-                        "background-color": "rgb(3, 106, 175)",
-                        color: "#fff",
-                        "margin": "5px",
-                        cursor: "pointer",
-                        "border-radius": "0.2cm",
-                        "font-weight": "bold",
-                        transition: "all 0.6s",
-                        width: "80px",
+                    }), new WCssClass(`#${this.id} .tableContainer .tdAction`, {
+                        display: "block",
+                        position: "absolute",
+                        bottom: 0,
+                        padding: "10px 0px",
                         "text-align": "center",
+                        "width": "100%",
+                        "left": "0",
+                        "background-color": "#eee",
+                        "border-top": "solid 3px #999999"
                     }),
                     //TOPCION
 
@@ -1058,11 +1087,15 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     PaginateTOptionsStyle() {
+        const style = this.querySelector("#PaginateTOptionsStyle" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
         const WTableStyle = {
             type: "w-style",
             props: {
+                id: "PaginateTOptionsStyle" + this.id,
                 ClassList: [
-                    
                     new WCssClass(`#${this.id} .thOptions`, {
                         display: "flex",
                         width: "100%", overflow: "hidden"
@@ -1077,43 +1110,104 @@ class WTableComponent extends HTMLElement {
                     }), new WCssClass(`#${this.id} input[type=button]`, {
                         cursor: "pointer", width: "calc(100% - 0px)", height: "initial"
                     }),
-                        //PAGINACION****************************************************
-                        new WCssClass(`#${this.id} .paginateBTNActive`, {
-                            "background-color": "rgb(3, 106, 175)",
-                        }), new WCssClass(`#${this.id} .tfooter`, {
-                            display: "flex",
-                            border: "1px rgb(185, 185, 185) solid",
-                            "justify-content": "flex-end",
-                            "padding-left": "20px",
-                            "padding-right": "20px",
-                        }), new WCssClass(`#${this.id} h5`, {
-                            padding: "0.25rem",
-                            "padding-left": "20px",
-                            "padding-right": "20px",
-                            margin: "0px",
-                        }), new WCssClass(`#${this.id} .BtnTable, .BtnTableA, .BtnTableS`, {
-                            "font-weight": "bold",
-                            "border": "none",
-                            "padding": "10px",
-                            "text-align": "center",
-                            "display": "inline-block",
-                            "min-width": "50px",
-                            "cursor": "pointer",
-                            "background-color": "#09f",
-                            "color": "#fff",
-                            "border-right": "rgb(3, 106, 175) 5px solid",
-                        }), new WCssClass(`#${this.id} .BtnTableS`, {
-                            "background-color": "#106705",
-                            "border-right": "#0a3e03 5px solid"
-                        }), new WCssClass(`#${this.id} .BtnTableA`, {
-                            "background-color": "#af0909",
-                            "border-right": "#670505 5px solid"
-                        }),
+                    //PAGINACION****************************************************
+                    new WCssClass(`#${this.id} .paginateBTN`, {
+                        display: "inline-block",
+                        padding: "8px",
+                        "background-color": "#09f",
+                        color: "#fff",
+                        "margin": "5px",
+                        cursor: "pointer",
+                        "border-radius": "0.2cm",
+                        "font-weight": "bold",
+                        transition: "all 0.6s"
+                    }), new WCssClass(`#${this.id} .paginateBTNActive`, {
+                        "background-color": "rgb(3, 106, 175)",
+                    }), new WCssClass(`#${this.id} .pagBTN`, {
+                        display: "inline-block",
+                        padding: "8px",
+                        "background-color": "rgb(3, 106, 175)",
+                        color: "#fff",
+                        "margin": "5px",
+                        cursor: "pointer",
+                        "border-radius": "0.2cm",
+                        "font-weight": "bold",
+                        transition: "all 0.6s",
+                        width: "80px",
+                        "text-align": "center",
+                    }), new WCssClass(`#${this.id} .tfooter`, {
+                        display: "flex",
+                        "border-bottom": "1px rgb(185, 185, 185) solid",
+                        "justify-content": "flex-end",
+                        "padding-left": "20px",
+                        "padding-right": "20px",
+                    }), new WCssClass(`#${this.id} h5`, {
+                        padding: "0.25rem",
+                        "padding-left": "20px",
+                        "padding-right": "20px",
+                        margin: "0px",
+                    }), new WCssClass(`#${this.id} .BtnTable, .BtnTableA, .BtnTableS`, {
+                        "font-weight": "bold",
+                        "border": "none",
+                        "padding": "10px",
+                        "text-align": "center",
+                        "display": "inline-block",
+                        "min-width": "50px",
+                        "cursor": "pointer",
+                        "background-color": "#09f",
+                        "color": "#fff",
+                        "border-right": "rgb(3, 106, 175) 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnTableS`, {
+                        "background-color": "#106705",
+                        "border-right": "#0a3e03 5px solid"
+                    }), new WCssClass(`#${this.id} .BtnTableA`, {
+                        "background-color": "#af0909",
+                        "border-right": "#670505 5px solid"
+                    }),
+                    //BOTONES
+                    new WCssClass(`#${this.id} .BtnAlert,#${this.id} .BtnPrimary,#${this.id} 
+                                    .BtnSuccess,#${this.id} .BtnSecundary,#${this.id} .Btn`, {
+                        "font-weight": "bold",
+                        "border": "none",
+                        "padding": "10px",
+                        "text-align": "center",
+                        "display": "inline-block",
+                        "min-width": "100px",
+                        "cursor": "pointer",
+                        "background-color": "#09f",
+                        "color": "#fff",
+                        "border-right": "rgb(3, 106, 175) 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnPrimary`, {
+                        "color": "#fff",
+                        "background-color": "007bff",
+                        "border-right": "rgb(3, 106, 175) 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnAlert`, {
+                        "color": "#fff",
+                        "background-color": "#dc3545",
+                        "border-right": "#7e1b25 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnSuccess`, {
+                        "color": "#fff",
+                        "background-color": "#28a745",
+                        "border-right": "#165c26 5px solid",
+                    }), new WCssClass(`#${this.id} .BtnSecundary`, {
+                        "color": "#fff",
+                        "background-color": "#17a2b8",
+                        "border-right": "#0f5964 5px solid",
+                    }), new WCssClass(`#${this.id} .Btn[type=checkbox]`, {
+                        "height": "20px",
+                        "min-width": "20px",
+                        "margin": "5px",
+                    }), new WCssClass(`#${this.id} .imgPhoto`, {
+                        "width": "100%",
+                        "height": "auto",
+                        "border-radius": "0.2cm",
+                        "box-shadow": "0 0px 2px 0px #000",
+                    })
                 ]
             }
         }
         return WTableStyle;
-        
+
     }
     //#endregion FIN ESTILOS-----------------------------------------------------------------------------------
 }
