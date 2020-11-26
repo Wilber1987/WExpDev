@@ -23,10 +23,13 @@ class WStyledRender extends HTMLElement {
             styleFrag.children.push(this.DrawClassList(this.ClassList));
         }
         if (this.MediaQuery) {
-            let MediaQuery = `@media(${this.MediaQuery.condicion}){
-                ${this.DrawClassList(this.MediaQuery.ClassList)}
-            }`;
-            styleFrag.children.push(MediaQuery);
+            this.MediaQuery.forEach(MediaQ => {
+                //console.log(MediaQ)
+                let MediaQuery = `@media(${MediaQ.condicion}){
+                    ${this.DrawClassList(MediaQ.ClassList)}
+                }`;
+                styleFrag.children.push(MediaQuery);                
+            });            
         }
         if (this.KeyFrame) {
             let KeyFrame = `@keyframes ${this.KeyFrame.animate} {

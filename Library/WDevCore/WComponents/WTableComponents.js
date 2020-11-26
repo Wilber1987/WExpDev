@@ -12,20 +12,28 @@ class WTableComponent extends HTMLElement {
         this.paginate = true;
     }
     connectedCallback() {
-        //this.innerHTML = "";
+        //this.innerHTML = "";        
+        this.append(WRender.createElement(this.PaginateTOptionsStyle()));
         if (this.TableConfig.StyleType == "Cards") {
             this.append(WRender.createElement(this.TableCardStyle()));
+        } else if (this.TableConfig.StyleType == "Grid") {
+            this.append(WRender.createElement(this.TableGridStyle()));
         } else {
             this.append(WRender.createElement(this.TableStyle()));
         }
-        this.append(WRender.createElement(this.PaginateTOptionsStyle()));
+        //PAGINACION
+        if (this.TableConfig.maxElementByPage == undefined) {
+            this.maxElementByPage = 5;
+        } else {
+            this.maxElementByPage = this.TableConfig.maxElementByPage;
+        }
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
         if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
             this.Dataset = [];
             if (this.TableConfig.Options) {
                 this.Options = this.TableConfig.Options;
-            } else {
+            } {
                 this.Options = {
                     //TH OPTIONS
                     Search: true,
@@ -140,7 +148,6 @@ class WTableComponent extends HTMLElement {
         this.DefineObjectModel(Dataset);
         let table = this.querySelector("#MainTable" + this.id);
         this.append(WRender.createElement(this.DrawHeadOptions()));
-        this.maxElementByPage = 5;
         if (typeof table === "undefined" || table == null) {
             table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
             table.children.push(this.DrawTHead());
@@ -259,10 +266,12 @@ class WTableComponent extends HTMLElement {
         //const element = this.Dataset[0];
         let tr = { type: "tr", children: [] }
         for (const prop in element) {
-            tr.children.push({
-                type: "th",
-                children: [prop]
-            });
+            if (!prop.includes("_hidden")) {
+                tr.children.push({
+                    type: "th",
+                    children: [prop]
+                });
+            }
         }
         if (this.Options != undefined) {
             const Options = { type: "th", props: { class: "" }, children: ["Options"] };
@@ -277,41 +286,53 @@ class WTableComponent extends HTMLElement {
     }
     DrawTBody = (Dataset = this.Dataset) => {
         let tbody = { type: "tbody", props: {}, children: [] };
-        this.numPage = 1;
         if (this.paginate == true && Dataset.length > this.maxElementByPage) {
             this.numPage = Dataset.length / this.maxElementByPage;
             for (let index = 0; index < this.numPage; index++) {
                 let tBodyStyle = "display:none";
                 if (index == 0) {
-                    tBodyStyle = "display:table-row-group";
+                    //tBodyStyle = "display:table-row-group";
+                    if (this.TableConfig.StyleType == "Cards") {
+                        tBodyStyle = "display:flex";
+                    } else if (this.TableConfig.StyleType == "Grid") {
+                        tBodyStyle = "display:grid";
+                    } else {
+                        tBodyStyle = "display:table-row-group";
+                    }
                 }
                 tbody.children.push({ type: "tbody", props: { class: "tbodyChild", style: tBodyStyle }, children: [] });
             }
         }
         let page = 0;
         Dataset.forEach((element) => {
-            let tr = { type: "tr", children: [] };
+            let tr = { type: "tr", props: {}, children: [] };
             for (const prop in element) {
-                let value = "";
-                if (element[prop] != null) {
-                    value = element[prop].toString();
+                if (!prop.includes("_hidden")) {
+                    let value = "";
+                    if (element[prop] != null) {
+                        value = element[prop].toString();
+                    }
+                    //DEFINICION DE VALORES-------------
+                    if (prop.includes("img") || prop.includes("pic")
+                        || prop.includes("Pict") || prop.includes("image")
+                        || prop.includes("Photo")) {
+                        let cadenaB64 = "";
+                        var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                        if (base64regex.test(value)) {
+                            cadenaB64 = "data:image/png;base64,";
+                        }
+                        tr.children.push({
+                            type: "td", props: { class: "tdImage" }, children: [{
+                                type: "img", props: {
+                                    src: cadenaB64 + value,
+                                    class: "imgPhoto", height: 100, width: 100
+                                }
+                            }]
+                        });
+                    } else {
+                        tr.children.push({ type: "td", children: [value] });
+                    }
                 }
-                //DEFINICION DE VALORES-------------
-                if (prop.includes("img") || prop.includes("pic")
-                    || prop.includes("Pict") || prop.includes("image")
-                    || prop.includes("Photo")) {
-                    tr.children.push({
-                        type: "td", children: [{
-                            type: "img", props: {
-                                src: "data:image/png;base64," + value,
-                                class: "imgPhoto", height: 100, width: 100
-                            }
-                        }]
-                    });
-                } else {
-                    tr.children.push({ type: "td", children: [value] });
-                }
-
             }
             if (this.Options != undefined) {
                 const Options = { type: "td", props: { class: "tdAction" }, children: [] };
@@ -401,8 +422,8 @@ class WTableComponent extends HTMLElement {
                         Options.children.push({
                             type: "button", props: {
                                 class: "BtnTableA", type: "button", innerText: Action.name,
-                                onclick: async () => {
-                                    Action.Function(element);
+                                onclick: async (ev) => {
+                                    Action.Function(element, ev.target);
                                 }
                             }
                         })
@@ -432,7 +453,14 @@ class WTableComponent extends HTMLElement {
             let bodys = this.querySelectorAll("#MainTable" + this.id + " tbody");
             bodys.forEach((body, indexBody) => {
                 if (indexBody == index) {
-                    body.style.display = "table-row-group";
+                    if (this.TableConfig.StyleType == "Cards") {
+                        body.style.display = "flex";
+                    } else if (this.TableConfig.StyleType == "Grid") {
+                        body.style.display = "grid";
+                    } else {
+                        body.style.display = "table-row-group";
+                    }
+                    //body.style.display = "table-row-group";
                 } else {
                     body.style.display = "none";
                 }
@@ -452,7 +480,7 @@ class WTableComponent extends HTMLElement {
         tfooter.push({
             type: "label",
             props: {
-                innerText: "Previous", class: "pagBTN", onclick: () => {
+                innerText: "<<", class: "pagBTN", onclick: () => {
                     this.ActualPage = this.ActualPage - 1;
                     if (this.ActualPage < 0) {
                         this.ActualPage = tbody.length - 1;
@@ -478,7 +506,7 @@ class WTableComponent extends HTMLElement {
         tfooter.push({
             type: "label",
             props: {
-                innerText: "Next", class: "pagBTN", onclick: () => {
+                innerText: ">>", class: "pagBTN", onclick: () => {
                     this.ActualPage = this.ActualPage + 1;
                     if (this.ActualPage > tbody.length - 1) {
                         this.ActualPage = 0;
@@ -814,7 +842,7 @@ class WTableComponent extends HTMLElement {
         for (const prop in this.ModelObject) {
             if (!prop.includes("Photo")
                 && !prop.includes("img")
-                && !prop.includes("imagen")
+                && !prop.includes("image")
                 && !prop.includes("Pict")) {
                 ClassList.push(new WCssClass(`#${this.id} td:nth-of-type(${index}):before`, {
                     content: `"${prop}:"`,
@@ -833,9 +861,9 @@ class WTableComponent extends HTMLElement {
             type: "w-style",
             props: {
                 id: "MediaStyleResponsive" + this.id,
-                MediaQuery: {
+                MediaQuery: [{
                     condicion: "max-width: 600px", ClassList: ClassList
-                }
+                }]
             }
         }
     }
@@ -1001,7 +1029,7 @@ class WTableComponent extends HTMLElement {
                         "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
                     }),
 
-                ], MediaQuery: {
+                ], MediaQuery: [{
                     condicion: "max-width: 600px", ClassList: [
                         new WCssClass(`#${this.id} divForm div`, {
                             width: "calc(100% - 10px)", margin: "5px"
@@ -1021,7 +1049,7 @@ class WTableComponent extends HTMLElement {
                         }),
 
                     ]
-                }
+                }]
             }
         }
         return WTableStyle;
@@ -1056,14 +1084,14 @@ class WTableComponent extends HTMLElement {
                     }), new WCssClass(`#${this.id} .tableContainer thead`, {
                         display: "none",
                     }), new WCssClass(`#${this.id} .tableContainer tbody`, {
-                        display: "flex",
+                        display: "flex", padding: "20px"
                     }),
                     new WCssClass(`#${this.id} .tableContainer tbody tr`, {
                         display: "inline-block !important",
                         overflow: "hidden",
-                        width: "270px", border: "solid 1px #999", "border-radius": "0.2cm",
-                        height: "300px",
-                        padding: "10px", margin: "5px", "min-width": "300px", position: "relative"
+                        width: "200px", border: "solid 1px #999", "border-radius": "0.2cm",
+                        height: "250px",
+                        padding: "10px", margin: "10px", "min-width": "200px", position: "relative"
                     }), new WCssClass(`#${this.id} .tableContainer td`, {
                         display: "block",
                     }), new WCssClass(`#${this.id} .tableContainer .tdAction`, {
@@ -1079,9 +1107,106 @@ class WTableComponent extends HTMLElement {
                     }),
                     //TOPCION
 
-                ], MediaQuery: {
-                    condicion: "max-width: 600px", ClassList: []
-                }
+                ],
+            }
+        }
+        return WTableStyle;
+    }
+    TableGridStyle() {
+        const style = this.querySelector("#TableGridStyle" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
+        const WTableStyle = {
+            type: "w-style",
+            props: {
+                id: "TableGridStyle" + this.id,
+                ClassList: [
+                    //ESTILOS GENERALES-----------------------------------
+                    new WCssClass(`#${this.id}`, {
+                       // border: "#999999 2px solid",
+                        overflow: "hidden",
+                        display: "block",
+                        //"border-radius": "0.2cm",
+                        "min-height": "50px",
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer`, {
+                        overflow: "auto",                       
+                    }), new WCssClass(`#${this.id} .WTable`, {
+                        "font-family": "Verdana, sans-serif",
+                        width: "100%",
+                        "border-collapse": "collapse",
+                        position: "relative",
+                        display: "flex !important", "flex-direction": "column"
+                    }), new WCssClass(`#${this.id} .tableContainer thead`, {
+                        display: "none",
+                    }), new WCssClass(`#${this.id} .tableContainer tbody`, {
+                        display: "grid",
+                        "grid-template-columns": "auto auto auto auto",                        
+                        "grid-gap": "20px",
+                        padding: "20px"
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer tbody tr`, {
+                        display: "inline-block !important",
+                        overflow: "hidden",
+                        width: "100%",
+                        height: "250px",
+                        position: "relative",
+                    }), new WCssClass(`#${this.id} .firstTR`, {
+                        "grid-row": "1/3", "grid-column": "1/3", height: "100% !important",
+                        "min-height": "400px"
+                    }), new WCssClass(`#${this.id} .tbodyChild tr:nth-of-type(1)`, {
+                        "grid-row": "1/3", "grid-column": "1/3", height: "100% !important",
+                        "min-height": "400px"
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer td`, {
+                        display: "block",
+                        "z-index": 2,
+                        position: "absolute",
+                        "background-color": "rgba(0,0,0,0.5)",
+                        color: "#fff",
+                        padding: "10px",
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer tr .tdImage`, {
+                        position: "absolute", top: 0, left: 0, right: 0, bottom: 0, "z-index": 0,
+                        //display: "block",
+                        padding: "0px"
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer .tdAction`, {
+                        display: "block",
+                        position: "absolute",
+                        bottom: 0,
+                        padding: "10px 0px",
+                        "text-align": "center",
+                        "width": "100%",
+                        "left": "0",
+                        "background-color": "rgba(0,0,0,0.5)",
+                        //"border-top": "solid 3px #999999"
+                    }), new WCssClass(`#${this.id} .imgPhoto`, {
+                        "width": "100%",
+                        "height": "100%",
+                        "border-radius": "0cm",
+                        "box-shadow": "0 0px 2px 0px #000",
+                    })
+                    //TOPCION
+
+                ], MediaQuery: [
+                    {
+                        condicion: "max-width: 1100px", ClassList: [
+                            new WCssClass(`#${this.id} .tableContainer tbody`, {
+                                display: "grid",
+                                "grid-template-columns": "auto auto auto"
+                            }),
+                        ]
+                    }, {
+                        condicion: "max-width: 700px", ClassList: [
+                            new WCssClass(`#${this.id} .tableContainer tbody`, {
+                                display: "grid",
+                                "grid-template-columns": "auto auto"
+                            }),
+                        ]
+                    },
+                ]
             }
         }
         return WTableStyle;
@@ -1113,27 +1238,29 @@ class WTableComponent extends HTMLElement {
                     //PAGINACION****************************************************
                     new WCssClass(`#${this.id} .paginateBTN`, {
                         display: "inline-block",
-                        padding: "8px",
-                        "background-color": "#09f",
-                        color: "#fff",
+                        padding: "5px",
+                        //"background-color": "#09f",
+                        color: "#888888",
                         "margin": "5px",
                         cursor: "pointer",
                         "border-radius": "0.2cm",
-                        "font-weight": "bold",
+                        //"font-weight": "bold",
                         transition: "all 0.6s"
                     }), new WCssClass(`#${this.id} .paginateBTNActive`, {
-                        "background-color": "rgb(3, 106, 175)",
+                        //"background-color": "rgb(3, 106, 175)",
+                        "font-weight": "bold",
+                        color: "#444444",
                     }), new WCssClass(`#${this.id} .pagBTN`, {
                         display: "inline-block",
-                        padding: "8px",
-                        "background-color": "rgb(3, 106, 175)",
-                        color: "#fff",
+                        padding: "5px",
+                        //"background-color": "rgb(3, 106, 175)",
+                        color: "#888888",
                         "margin": "5px",
                         cursor: "pointer",
                         "border-radius": "0.2cm",
                         "font-weight": "bold",
                         transition: "all 0.6s",
-                        width: "80px",
+                        //width: "80px",
                         "text-align": "center",
                     }), new WCssClass(`#${this.id} .tfooter`, {
                         display: "flex",

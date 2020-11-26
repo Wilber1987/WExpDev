@@ -18,7 +18,8 @@ class ArticleContainer extends HTMLElement {
         inputText.placeholder = "Buscar...";
         inputText.onchange = () => {
             const txt = this.querySelector("#InputSearch" + this.id);
-            const ArticlesF = this.Articles.filter(
+            console.log(this.ArticlesListProp)
+            const ArticlesF = this.ArticlesListProp.filter(
                 A => A.titulo.includes(txt.value)
                     || A.contenido.includes(txt.value)
                     || A.autor == txt.value

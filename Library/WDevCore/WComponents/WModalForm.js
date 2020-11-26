@@ -25,8 +25,10 @@ class WModalForm extends HTMLElement {
         this.Modal.children.push(this.DrawModalHead());
         if (this.ObjectModal) {//AGREGA UN OBJETO AL MODAL ENVIDO DESDE LA CONFIGURACION
             this.Modal.children.push(this.ObjectModal);
-            if (this.ObjectOptions.SaveFunction != undefined) {
-                this.Modal.children.push(this.SaveOptions());
+            if (this.ObjectOptions != undefined) {
+                if (this.ObjectOptions.SaveFunction != undefined) {
+                    this.Modal.children.push(this.SaveOptions());
+                }
             }
         } else if (this.ObjectDetail) {// MUESTRA EL DETALLE DE UN OBJETO EN UNA LISTA
             this.Modal.children.push(this.ShowFormDetail());

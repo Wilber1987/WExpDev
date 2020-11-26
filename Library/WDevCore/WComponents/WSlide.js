@@ -420,7 +420,7 @@ class WSlide extends HTMLElement {
                         "z-index": 1,
                     }),
 
-                ], MediaQuery: {
+                ], MediaQuery: [{
                     condicion: "max-width: 700px", ClassList: [
                         new WCssClass(Id + "w-slide .videoSlide", {
                             display: "flex",
@@ -437,7 +437,7 @@ class WSlide extends HTMLElement {
                             "background-color": "rgba(255,255,255,0.3)"
                         }),
                     ]
-                }, KeyFrame: {
+                }], KeyFrame: {
                     animate: "slide", ClassList: [
                         new WCssClass("0%", {
                             transform: "translateX(-25%)"

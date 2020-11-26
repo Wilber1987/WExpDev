@@ -15,7 +15,7 @@ class Modules {
             //  Ritch     
             new RichText(),
             //  SLIDE           
-            //new Slide(),
+            new Slide(),
             {
                 type: 'h2',
                 props: {
