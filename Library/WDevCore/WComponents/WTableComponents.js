@@ -16,6 +16,8 @@ class WTableComponent extends HTMLElement {
         this.append(WRender.createElement(this.PaginateTOptionsStyle()));
         if (this.TableConfig.StyleType == "Cards") {
             this.append(WRender.createElement(this.TableCardStyle()));
+        } else if (this.TableConfig.StyleType == "Cards2") {
+            this.append(WRender.createElement(this.TableCardStyle2()));
         } else if (this.TableConfig.StyleType == "Grid") {
             this.append(WRender.createElement(this.TableGridStyle()));
         } else {
@@ -314,7 +316,7 @@ class WTableComponent extends HTMLElement {
                     }
                     //DEFINICION DE VALORES-------------
                     if (prop.includes("img") || prop.includes("pic")
-                        || prop.includes("Pict") || prop.includes("image")
+                        || prop.includes("Pict") || prop.includes("image") || prop.includes("Image")
                         || prop.includes("Photo")) {
                         let cadenaB64 = "";
                         var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -330,7 +332,7 @@ class WTableComponent extends HTMLElement {
                             }]
                         });
                     } else {
-                        tr.children.push({ type: "td", children: [value] });
+                        tr.children.push({ type: "td", props:{innerHTML: value}});
                     }
                 }
             }
@@ -843,6 +845,7 @@ class WTableComponent extends HTMLElement {
             if (!prop.includes("Photo")
                 && !prop.includes("img")
                 && !prop.includes("image")
+                && !prop.includes("Image")
                 && !prop.includes("Pict")) {
                 ClassList.push(new WCssClass(`#${this.id} td:nth-of-type(${index}):before`, {
                     content: `"${prop}:"`,
@@ -1066,11 +1069,11 @@ class WTableComponent extends HTMLElement {
                 ClassList: [
                     //ESTILOS GENERALES-----------------------------------
                     new WCssClass(`#${this.id}`, {
-                        border: "#999999 2px solid",
+                        //border: "#999999 2px solid",
                         overflow: "hidden",
                         display: "block",
                         "border-radius": "0.2cm",
-                        "min-height": "50px",
+                        "min-height": "50px",                        
                     }),
                     new WCssClass(`#${this.id} .tableContainer`, {
                         overflow: "auto"
@@ -1089,8 +1092,8 @@ class WTableComponent extends HTMLElement {
                     new WCssClass(`#${this.id} .tableContainer tbody tr`, {
                         display: "inline-block !important",
                         overflow: "hidden",
-                        width: "200px", border: "solid 1px #999", "border-radius": "0.2cm",
-                        height: "250px",
+                        width: "250px", border: "solid 1px #999", "border-radius": "0.2cm",
+                        height: "300px",
                         padding: "10px", margin: "10px", "min-width": "200px", position: "relative"
                     }), new WCssClass(`#${this.id} .tableContainer td`, {
                         display: "block",
@@ -1104,6 +1107,72 @@ class WTableComponent extends HTMLElement {
                         "left": "0",
                         "background-color": "#eee",
                         "border-top": "solid 3px #999999"
+                    }),
+                    //TOPCION
+
+                ],
+            }
+        }
+        return WTableStyle;
+    }
+    TableCardStyle2() {
+        const style = this.querySelector("#TableCardStyle2" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
+        const WTableStyle = {
+            type: "w-style",
+            props: {
+                id: "TableCardStyle2" + this.id,
+                ClassList: [
+                    //ESTILOS GENERALES-----------------------------------
+                    new WCssClass(`#${this.id}`, {
+                        //border: "#999999 2px solid",
+                        overflow: "hidden",
+                        display: "block",
+                        "border-radius": "0.2cm",
+                        "min-height": "50px",                        
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer`, {
+                        overflow: "auto"
+                    }), new WCssClass(`#${this.id} .WTable`, {
+                        "font-family": "Verdana, sans-serif",
+                        width: "100%",
+                        "border-collapse": "collapse",
+                        "border-top": "solid 1px #999999",
+                        position: "relative",
+                        display: "flex !important", "flex-direction": "column"
+                    }), new WCssClass(`#${this.id} .tableContainer thead`, {
+                        display: "none",
+                    }), new WCssClass(`#${this.id} .tableContainer tbody`, {
+                        display: "grid", padding: "20px"
+                    }),
+                    new WCssClass(`#${this.id} .tableContainer tbody tr`, {
+                        display: "grid !important",
+                        overflow: "hidden",
+                        "grid-template-columns": "25% 25% 25% 25%",
+                        "grid-template-rows": "auto",
+                        //width: "250px", 
+                        border: "solid 1px #999", "border-radius": "0.2cm",
+                        //height: "360px",
+                        padding: "10px", margin: "10px", "min-width": "200px", position: "relative"
+                    }), new WCssClass(`#${this.id} .tableContainer td`, {                        
+                        display: "block",
+                        "grid-column": "2/5", 
+                        padding: "8px",
+                        "text-align": "justify",
+                    }), new WCssClass(`#${this.id} .tableContainer .tdAction`, {
+                        padding: "10px 0px",
+                        "text-align": "center",                       
+                        "background-color": "#eee",
+                        "border-top": "solid 3px #999999",
+                        "grid-column": "1/5",                         
+                    }),  new WCssClass(`#${this.id} .tableContainer tr .tdImage`, {
+                        "grid-row": "1/6", 
+                        "grid-column": "1/2", 
+                        height: "100% !important",
+                        //"min-height": "400px"
+                        padding: "0px"
                     }),
                     //TOPCION
 

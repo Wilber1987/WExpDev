@@ -140,7 +140,7 @@ class WModalForm extends HTMLElement {
             } else if (prop.includes("date") || prop.includes("fecha") || prop.includes("time")) {
                 InputType = "date";
             } else if (prop.includes("img") || prop.includes("pic")
-                || prop.includes("Pict") || prop.includes("image")
+                || prop.includes("Pict") || prop.includes("image") || prop.includes("Image")
                 || prop.includes("Photo")) {
                 ControlContainer.children.push({
                     type: "img", props: {

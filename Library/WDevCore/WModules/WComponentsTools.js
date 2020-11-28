@@ -41,13 +41,19 @@ function type (value) {
 }
 class WAjaxTools {
     constructor() { }
-    static PostRequest = async (Url, Data = {}) => {
+    static PostRequest = async (Url, Data = {}, typeHeader) => {
         try {
+            let ContentType = "application/json; charset=utf-8";
+            let Accept = "*/*";
+            if (typeHeader == "form") {
+                ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                Accept = "*/*";
+            }
             let response = await fetch(Url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Content-Type': ContentType,
+                    'Accept': Accept
                 },
                 body: JSON.stringify(Data)
             });
