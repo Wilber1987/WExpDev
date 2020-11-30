@@ -16,7 +16,6 @@ class WImports {
         s.rel = "stylesheet";
         document.querySelector("head").appendChild(s);
     }
-
     static awaitFunction = async() => {
         return new Promise(resolve => {
             setTimeout(() => {
