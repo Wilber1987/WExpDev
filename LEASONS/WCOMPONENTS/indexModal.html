@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>    
+    <script src="./ModalComponent.js"></script> 
+    <script>
+        const Onload = ()=>{
+            btnAlert.addEventListener("click", ()=>{
+                const modal1 = document.createElement("w-modal-form");
+                modal1.title = "My modal 1";
+                modal1.contain = "Componente conectado";
+                modal1.Function = (data)=>{
+                    console.log(data);
+                    console.log("ejecutando mi funcion");
+                }
+                BodyApp.append(modal1);
+            });
+            btnAlert2.addEventListener("click", ()=>{
+                const modal2 = document.createElement("w-modal-form");
+                modal2.title = "My modal 2";
+                const embed = document.createElement("embed");
+                embed.src = "https://www.youtube.com/embed/nKC8O874QpI";
+                modal2.contain = embed;
+                modal2.Function = (data)=>{
+                    console.log(data);
+                    console.log("ejecutando mi funcion");
+                }
+                BodyApp.append(modal2);
+            });
+        }
+        window.onload = Onload;
+    </script>   
+</head>
+<body id="BodyApp">
+    <button id="btnAlert">Alert</button>
+    <button id="btnAlert2">Alert 2</button>
+</body>
+</html>
