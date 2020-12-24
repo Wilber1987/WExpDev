@@ -16,10 +16,10 @@ class WTableComponent extends HTMLElement {
         this.append(WRender.createElement(this.PaginateTOptionsStyle()));
         if (this.TableConfig.StyleType == "Cards") {
             this.append(WRender.createElement(this.TableCardStyle()));
-        } else if (this.TableConfig.StyleType == "Cards2") {            
-            this.append(WRender.createElement(this.TableCardStyle2()));            
-        } else if (this.TableConfig.StyleType == "Cards2-ColumnX2") {            
-            this.append(WRender.createElement(this.TableCardStyle2()));  
+        } else if (this.TableConfig.StyleType == "Cards2") {
+            this.append(WRender.createElement(this.TableCardStyle2()));
+        } else if (this.TableConfig.StyleType == "Cards2-ColumnX2") {
+            this.append(WRender.createElement(this.TableCardStyle2()));
             this.append(WRender.createElement(this.TableCardStyle2ColumnX2()));
         } else if (this.TableConfig.StyleType == "Grid") {
             this.append(WRender.createElement(this.TableGridStyle()));
@@ -279,10 +279,12 @@ class WTableComponent extends HTMLElement {
             }
         }
         if (this.Options != undefined) {
-            const Options = { type: "th", props: { class: "" }, children: ["Options"] };
-            if (this.Options.Show != undefined
+            if (this.Options.Select != undefined
                 || this.Options.Show != undefined
-                || this.Options.Show != undefined) {
+                || this.Options.Edit != undefined
+                || this.Options.Delete != undefined
+                || this.Options.UserActions != undefined) {
+                const Options = { type: "th", props: { class: "" }, children: ["Options"] };
                 tr.children.push(Options);
             }
         }
@@ -307,6 +309,8 @@ class WTableComponent extends HTMLElement {
                 }
                 tbody.children.push({ type: "tbody", props: { class: "tbodyChild", style: tBodyStyle }, children: [] });
             }
+        }else {
+            this.numPage = 1;
         }
         let page = 0;
         Dataset.forEach((element) => {
@@ -335,108 +339,115 @@ class WTableComponent extends HTMLElement {
                             }]
                         });
                     } else {
-                        tr.children.push({ type: "td", props:{innerHTML: value}});
+                        tr.children.push({ type: "td", props: { innerHTML: value } });
                     }
                 }
             }
             if (this.Options != undefined) {
-                const Options = { type: "td", props: { class: "tdAction" }, children: [] };
-                if (this.Options.Select != undefined && this.Options.Select == true) {
-                    let Checked = WArrayF.FindInArray(element, this.selectedItems);
-                    Options.children.push({
-                        type: "input", props: {
-                            class: "Btn", type: "checkbox", innerText: "Select", checked: Checked,
-                            onclick: async (ev) => {
-                                const control = ev.target;
-                                const index = this.selectedItems.indexOf(element);
-                                if (index == -1 && control.checked == true) {
-                                    if (WArrayF.FindInArray(element, this.selectedItems) == false) {
-                                        this.selectedItems.push(element)
-                                    } else {
-                                        console.log("Item Existente")
-                                    }
-                                }
-                                else {
-                                    this.selectedItems.splice(index, 1)
-                                }
-                            }
-                        }
-                    })
-                }
-                if (this.Options.Show != undefined && this.Options.Show == true) {
-                    Options.children.push({
-                        type: "button", props: {
-                            class: "BtnTable", type: "button", innerText: "Show", onclick: async () => {
-                                this.append(WRender.createElement({
-                                    type: "w-modal-form", props: {
-                                        ObjectDetail: element
-                                    }
-                                }));
-                            }
-                        }
-                    })
-                }
-                if (this.Options.Edit != undefined && this.Options.Edit == true) {
-                    Options.children.push({
-                        type: "button", props: {
-                            class: "BtnTableS", type: "button", innerText: "Edit", onclick: async () => {
-                                this.append(WRender.createElement({
-                                    type: "w-modal-form", props: {
-                                        ObjectModel: this.ModelObject,
-                                        EditObject: element,
-                                        ObjectOptions: {
-                                            Url: this.Options.UrlUpdate,
-                                            SaveFunction: () => {
-                                                this.DrawTable();
-                                            }
-                                        }
-                                    }
-                                }));
-                            }
-                        }
-                    })
-                }
-                if (this.Options.Delete != undefined && this.Options.Delete == true) {
-                    Options.children.push({
-                        type: "button", props: {
-                            class: "BtnTableA", type: "button", innerText: "Delete",
-                            onclick: async () => {
-                                this.append(WRender.createElement({
-                                    type: "w-modal-form", props: {
-                                        id: "Alert" + this.id,
-                                        ObjectModal: { type: "h5", children: ["¿Esta seguro de eliminar este elemento?"] },
-                                        ObjectOptions: {
-                                            Url: this.Options.UrlDelete,
-                                            SaveFunction: () => {
-                                                const index = Dataset.indexOf(element);
-                                                if (WArrayF.FindInArray(element, Dataset) == true) {
-                                                    ;
-                                                    Dataset.splice(index, 1);
-                                                    this.DrawTable();
-                                                } else { console.log("No Object") }
-                                            }
-                                        }
-                                    }
-                                }));
-                            }
-                        }
-                    })
-                }
-                if (this.Options.UserActions != undefined) {
-                    this.Options.UserActions.forEach(Action => {
+                if (this.Options.Select != undefined
+                    || this.Options.Show != undefined
+                    || this.Options.Edit != undefined
+                    || this.Options.Delete != undefined
+                    || this.Options.UserActions != undefined) {
+                    const Options = { type: "td", props: { class: "tdAction" }, children: [] };
+                    if (this.Options.Select != undefined && this.Options.Select == true) {
+                        let Checked = WArrayF.FindInArray(element, this.selectedItems);
                         Options.children.push({
-                            type: "button", props: {
-                                class: "BtnTableA", type: "button", innerText: Action.name,
+                            type: "input", props: {
+                                class: "Btn", type: "checkbox", innerText: "Select", checked: Checked,
                                 onclick: async (ev) => {
-                                    Action.Function(element, ev.target);
+                                    const control = ev.target;
+                                    const index = this.selectedItems.indexOf(element);
+                                    if (index == -1 && control.checked == true) {
+                                        if (WArrayF.FindInArray(element, this.selectedItems) == false) {
+                                            this.selectedItems.push(element)
+                                        } else {
+                                            console.log("Item Existente")
+                                        }
+                                    }
+                                    else {
+                                        this.selectedItems.splice(index, 1)
+                                    }
                                 }
                             }
                         })
-                    });
+                    }
+                    if (this.Options.Show != undefined && this.Options.Show == true) {
+                        Options.children.push({
+                            type: "button", props: {
+                                class: "BtnTable", type: "button", innerText: "Show", onclick: async () => {
+                                    this.append(WRender.createElement({
+                                        type: "w-modal-form", props: {
+                                            ObjectDetail: element
+                                        }
+                                    }));
+                                }
+                            }
+                        })
+                    }
+                    if (this.Options.Edit != undefined && this.Options.Edit == true) {
+                        Options.children.push({
+                            type: "button", props: {
+                                class: "BtnTableS", type: "button", innerText: "Edit", onclick: async () => {
+                                    this.append(WRender.createElement({
+                                        type: "w-modal-form", props: {
+                                            ObjectModel: this.ModelObject,
+                                            EditObject: element,
+                                            ObjectOptions: {
+                                                Url: this.Options.UrlUpdate,
+                                                SaveFunction: () => {
+                                                    this.DrawTable();
+                                                }
+                                            }
+                                        }
+                                    }));
+                                }
+                            }
+                        })
+                    }
+                    if (this.Options.Delete != undefined && this.Options.Delete == true) {
+                        Options.children.push({
+                            type: "button", props: {
+                                class: "BtnTableA", type: "button", innerText: "Delete",
+                                onclick: async () => {
+                                    this.append(WRender.createElement({
+                                        type: "w-modal-form", props: {
+                                            id: "Alert" + this.id,
+                                            ObjectModal: { type: "h5", children: ["¿Esta seguro de eliminar este elemento?"] },
+                                            ObjectOptions: {
+                                                Url: this.Options.UrlDelete,
+                                                SaveFunction: () => {
+                                                    const index = Dataset.indexOf(element);
+                                                    if (WArrayF.FindInArray(element, Dataset) == true) {
+                                                        ;
+                                                        Dataset.splice(index, 1);
+                                                        this.DrawTable();
+                                                    } else { console.log("No Object") }
+                                                }
+                                            }
+                                        }
+                                    }));
+                                }
+                            }
+                        })
+                    }
+                    if (this.Options.UserActions != undefined) {
+                        this.Options.UserActions.forEach(Action => {
+                            Options.children.push({
+                                type: "button", props: {
+                                    class: "BtnTableA", type: "button", innerText: Action.name,
+                                    onclick: async (ev) => {
+                                        Action.Function(element, ev.target);
+                                    }
+                                }
+                            })
+                        });
+                    }
+                    tr.children.push(Options);
                 }
-                tr.children.push(Options);
             }
-            if (this.numPage > 1 && tbody.children[page]) {
+            if (this.numPage > 1 && tbody.children[page] && 
+                (this.paginate == true && Dataset.length > this.maxElementByPage)) {
                 tbody.children[page].children.push(tr);
                 if (tbody.children[page].children.length == this.maxElementByPage) {
                     page++;
@@ -444,7 +455,7 @@ class WTableComponent extends HTMLElement {
             } else {
                 tbody.children.push(tr);
             }
-        });
+        });        
         if (tbody.children.length == 0) {
             tbody.children.push({ type: "h5", props: { innerText: "No hay elementos en la tabla" } });
         }
@@ -1076,7 +1087,7 @@ class WTableComponent extends HTMLElement {
                         overflow: "hidden",
                         display: "block",
                         "border-radius": "0.2cm",
-                        "min-height": "50px",                        
+                        "min-height": "50px",
                     }),
                     new WCssClass(`#${this.id} .tableContainer`, {
                         overflow: "auto"
@@ -1134,7 +1145,7 @@ class WTableComponent extends HTMLElement {
                         overflow: "hidden",
                         display: "block",
                         "border-radius": "0.2cm",
-                        "min-height": "50px",                        
+                        "min-height": "50px",
                     }),
                     new WCssClass(`#${this.id} .tableContainer`, {
                         overflow: "auto"
@@ -1159,20 +1170,20 @@ class WTableComponent extends HTMLElement {
                         border: "solid 1px #999", "border-radius": "0.2cm",
                         //height: "360px",
                         padding: "10px", margin: "10px", "min-width": "200px", position: "relative"
-                    }), new WCssClass(`#${this.id} .tableContainer td`, {                        
+                    }), new WCssClass(`#${this.id} .tableContainer td`, {
                         display: "block",
-                        "grid-column": "2/5", 
+                        "grid-column": "2/5",
                         padding: "8px",
                         "text-align": "justify",
                     }), new WCssClass(`#${this.id} .tableContainer .tdAction`, {
                         padding: "10px 0px",
-                        "text-align": "center",                       
+                        "text-align": "center",
                         "background-color": "#eee",
                         "border-top": "solid 3px #999999",
-                        "grid-column": "1/5",                         
-                    }),  new WCssClass(`#${this.id} .tableContainer tr .tdImage`, {
-                        "grid-row": "1/6", 
-                        "grid-column": "1/2", 
+                        "grid-column": "1/5",
+                    }), new WCssClass(`#${this.id} .tableContainer tr .tdImage`, {
+                        "grid-row": "1/6",
+                        "grid-column": "1/2",
                         height: "100% !important",
                         //"min-height": "400px"
                         padding: "0px"
@@ -1217,14 +1228,14 @@ class WTableComponent extends HTMLElement {
                 ClassList: [
                     //ESTILOS GENERALES-----------------------------------
                     new WCssClass(`#${this.id}`, {
-                       // border: "#999999 2px solid",
+                        // border: "#999999 2px solid",
                         overflow: "hidden",
                         display: "block",
                         //"border-radius": "0.2cm",
                         "min-height": "50px",
                     }),
                     new WCssClass(`#${this.id} .tableContainer`, {
-                        overflow: "auto",                       
+                        overflow: "auto",
                     }), new WCssClass(`#${this.id} .WTable`, {
                         "font-family": "Verdana, sans-serif",
                         width: "100%",
@@ -1235,7 +1246,7 @@ class WTableComponent extends HTMLElement {
                         display: "none",
                     }), new WCssClass(`#${this.id} .tableContainer tbody`, {
                         display: "grid",
-                        "grid-template-columns": "auto auto auto auto",                        
+                        "grid-template-columns": "auto auto auto auto",
                         "grid-gap": "20px",
                         padding: "20px"
                     }),

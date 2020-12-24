@@ -13,8 +13,8 @@ const Foros = [{
 class MasterDomClass extends DomComponent {
     constructor() {
         super();
-        this.MainComponent = new Modules({ class: "DivContainer", id: "Modules", Foros: Foros });
         this.header = new headerClass();
+        this.MainComponent = new Modules({ class: "DivContainer", id: "Modules", Foros: Foros });
         this.children = [
             this.header,
             {

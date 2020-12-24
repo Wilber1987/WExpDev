@@ -2,89 +2,238 @@ import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
 import "../WDevCore/WComponents/WSlide.js";
 import "../WDevCore/WComponents/WRichText.js";
 import "../WDevCore/WComponents/WTableComponents.js";
-import { WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
-
-class Modules {
+import "../WDevCore/WComponents/WAppNavigator.js";
+import { DomComponent, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
+//DEFINICION DE TABLAS
+const Data = [
+    { id: 1, Category: "Category 3", Type: "Type 1", Time: "2020-01-01", Value: 35 },
+    { id: 2, Category: "Category 1", Type: "Type 2", Time: "2020-03-01", Value: 200 },
+    { id: 3, Category: "Category 2", Type: "Type 2", Time: "2020-02-01", Value: 50 },
+    { id: 4, Category: "Category 1", Type: "Type 3", Time: "2020-01-01", Value: 105 },
+    { id: 5, Category: "Category 1", Type: "Type 3", Time: "2020-01-01", Value: 39 },
+    { id: 6, Category: "Category 2", Type: "Type 4", Time: "2020-02-01", Value: 180 },
+    { id: 7, Category: "Category 1", Type: "Type 4", Time: "2020-01-01", Value: 100 },
+    { id: 8, Category: "Category 2", Type: "Type 1", Time: "2020-02-01", Value: 70 },
+    { id: 9, Category: "Category 1", Type: "Type 1", Time: "2020-01-01", Value: 35 },
+    { id: 10, Category: "Category 3", Type: "Type 5", Time: "2020-03-01", Value: 98 },
+    { id: 11, Category: "Category 1", Type: "Type 3", Time: "2020-02-01", Value: 40 },
+];
+class Modules extends DomComponent {
     constructor(props) {
+        super();
         this.type = "div";
         this.props = props;
         this.props.style = "padding: 10px";
-        this.children = [
-            //{ type: "w-slidev" },
-            new TableCont(),
-            //  Ritch     
-            //new RichText(),
-            //  SLIDE           
-            //new Slide(),
-            /*{
-                type: 'h2',
-                props: {
-                    id: "",
-                    class: ""
-                },
-                children: ["Noticias"]
-            },
+        const NavigateElements = [
             {
-                type: 'section',
-                props: {
-                    id: "",
-                    class: ""
-                },
-                children: this.DisplayForos(this.props.Foros)
-            },*/
+                name: "Basic Table", action: () => {
+                    this.NavigateFunction("BasicTable", new BasicTable(), "ModulesDetail");
+                }
+            }, {
+                name: "Actions Table", action: () => {
+                    this.NavigateFunction("BasicTable", new ActionsTable(), "ModulesDetail");
+                }
+            }, {
+                name: "Dinamic Table", action: () => {
+                    this.NavigateFunction("BasicTable", new DinamicTable(), "ModulesDetail");
+                }
+            }
+        ];
+        const Nav = {
+            type: "w-app-navigator",
+            props: {
+                id: "TableNav", Elements: NavigateElements
+            }
+        };
+        const DivContainer = {
+            type: "div",
+            props: { id: "ModulesDetail" }
+        };
+        this.children = [
+            { type: "h2", props: { innerText: "Table Component" } }, Nav, DivContainer
         ]
     }
-    DisplayForos = (Foros) => {
-        let ForosElements = [];
-        Foros.forEach(foro => {
-            //console.log(foro)
-            ForosElements.push({
-                type: "article",
-                props: {
-                    class: "Articles"
-                },
-                children: [{
-                    type: "label",
-                    props: {
-                        innerText: foro.title
-                    }
-                },
-                //{type: "label", props: {innerText: foro.date}},
-                {
-                    type: "a",
-                    props: {
-                        innerText: "ver...",
-                        href: "#"
+}
+
+class BasicTable {
+    constructor() {
+        this.type = "div";
+        this.children = [];
+        this.children.push({
+            type: 'h3',
+            props: { innerText: "Basic Table" },
+        })
+        //#region TABLA BASICA
+        //DOCUMENTACION
+        this.children.push({
+            type: "div", props: {
+                style: "padding: 10px",
+                innerHTML: `
+                <style>
+                    .codeSection {padding: 10px; background: eee; font-size: 12px }
+                </style>
+                Para la implementacion del componente w-table se debe crear
+                el elemento html w-table. <br>
+                <section class="codeSection">               
+                    <hr>
+                    //vanilla js <br>                    
+                    const Wtable = document.createElement("w-table");<br>
+                    <hr>
+                    //Datos JSON <br> 
+                    const Data = ${JSON.stringify(Data)}<br>
+                    <hr>
+                    //Definicion de la configuracion de la tabla<br>  
+                    Wtable.TableConfig = {
+                        Datasets: Data, /*DATOS DE LA TABLA*/ 
+                    }<br>
+                </section>
+            `
+            }
+        });
+        //FIN DOCUMENTACION  
+        var Config = {
+            Datasets: Data, /*DATOS DE LA TABLA*/
+        };
+        this.children.push({
+            type: "w-table",
+            props: {
+                id: "table",
+                TableConfig: Config
+            }
+        })
+        //#endregion  
+        //#region TABLA BASICA CON BUSQUEDA
+        //DOCUMENTACION
+        this.children.push({
+            type: "div", props: {
+                style: "padding: 10px",
+                innerHTML: `
+                <style>
+                    .codeSection {padding: 10px; background: eee; font-size: 12px }
+                </style>
+               Es posible implementar opciones de busqueda. <br>
+                <section class="codeSection">               
+                    <hr>
+                    //vanilla js <br>    
+                    Wtable.TableConfig = {
+                        Datasets: Data,
+                        Options: {
+                            Search: true,
+                        }  
+                    };<br>
+                </section>
+            `
+            }
+        });
+        //FIN DOCUMENTACION 
+        this.children.push({
+            type: "w-table",
+            props: {
+                id: "tableSearch",
+                TableConfig: {
+                    Datasets: Data, /*DATOS DE LA TABLA*/
+                    Options: {
+                        Search: true,
                     }
                 }
-                ]
-            })
-        });
-        ForosElements.push(this.Styles());
-        return ForosElements;
-    }
-    Styles = () => {
-        const Style = {
-            type: "w-style",
-            props: {
-                ClassList: [
-                    new WCssClass(`#${this.props.id} .Articles`, {
-                        display: "flex",
-                        border: "1px solid #808080",
-                        "border-radius": "0.2cm",
-                        "align-items": "center",
-                        padding: "15px",
-                        margin: "5px"
-                    }),
-                    new WCssClass(`#${this.props.id} .Articles label`, {
-                        width: "100%",
-                    })
-                ]
             }
-        }
-        return Style;
+        })
+        //#endregion       
+        //#region TABLA BASICA CON BUSQUEDA SIN PAGINACION 
+        //DOCUMENTACION
+        this.children.push({
+            type: "div", props: {
+                style: "padding: 10px",
+                innerHTML: `
+                <style>
+                    .codeSection {padding: 10px; background: eee; font-size: 12px }
+                </style>
+               En caso de no querer tener a disposición las opciones de paginación 
+               es posible deshabilitarla usando el atributo paginate dentro de TableConfig<br>
+                <section class="codeSection">               
+                    <hr>
+                    //vanilla js <br>    
+                    Wtable.TableConfig = {
+                        Datasets: Data,
+                        paginate: false,
+                        Options: {
+                            Search: true,
+                        }  
+                    };<br>
+                </section>
+            `
+            }
+        });
+        //FIN DOCUMENTACION 
+        this.children.push({
+            type: "w-table",
+            props: {
+                id: "tableNoPaginate",
+                TableConfig: {
+                    Datasets: Data, /*DATOS DE LA TABLA*/
+                    paginate: false,
+                    Options: {
+                        Search: true,
+                    }
+                }
+            }
+        })
+        //#endregion    
+         //#region TABLA BASICA CON  EDICIÓN 
+        //DOCUMENTACION
+        this.children.push({
+            type: "div", props: {
+                style: "padding: 10px",
+                innerHTML: `
+                <style>
+                    .codeSection {padding: 10px; background: eee; font-size: 12px }
+                </style>
+               Para habilitar las opciones de edicion de registro usar la
+                 propiedad Edit=true dentro de TableConfig<br>
+                <section class="codeSection">               
+                    <hr>
+                    //vanilla js <br>    
+                    Wtable.TableConfig = {
+                        Datasets: Data,
+                        Options: {
+                            Edit: true,
+                        }  
+                    };<br>
+                </section>
+                Para habilitar la actualización por medio de una Api usar la propiedad 
+                UrlUpdate junto a la propiedad Edit=true<br>
+                <section class="codeSection">               
+                    <hr>
+                    //vanilla js <br>    
+                    Wtable.TableConfig = {
+                        Datasets: Data,
+                        Options: {
+                            Edit: true,
+                            UrlUpdate: "https//url....."
+                        }  
+                    };<br>
+                </section>
+            `
+            }
+        });
+        //FIN DOCUMENTACION 
+        this.children.push({
+            type: "w-table",
+            props: {
+                id: "tableNoPaginate",
+                TableConfig: {
+                    Datasets: Data, /*DATOS DE LA TABLA*/
+                    Options: {
+                        Edit: true,
+                    }
+                }
+            }
+        })
+        //#endregion      
+
     }
 }
+
 class SlideVideos extends HTMLElement {
     constructor() {
         super();
@@ -326,21 +475,23 @@ class TableCont {
             ],
         };
         var ConfigCards = {
-            Datasets: result.datos, /*DATOS DE LA TABLA*/  
-            paginate: false,   
+            Datasets: result.datos, /*DATOS DE LA TABLA*/
+            paginate: false,
             Options: {
                 Search: true,
                 Show: true,
                 Edit: true, //UrlUpdate: "",
-                Select: true,                          
-               // Add: true,
+                Select: true,
+                // Add: true,
                 Delete: true,
-                UserActions: [{name: "Reservar", Function: (Param)=>{
-                    alert("reserva");
-                    console.log(Param)
-                }}]
-            }, 
-            StyleType: "Cards"           
+                UserActions: [{
+                    name: "Reservar", Function: (Param) => {
+                        alert("reserva");
+                        console.log(Param)
+                    }
+                }]
+            },
+            StyleType: "Cards"
         };
         /*
         this.children.push({
@@ -378,10 +529,10 @@ class TableCont {
                 Select: true,
                 Add: true,
                 Delete: true,
-               /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                    alert("reserva");
-                    console.log(Param)
-                }}]*/
+                /* UserActions: [{name: "Reservar", Function: (Param)=>{
+                     alert("reserva");
+                     console.log(Param)
+                 }}]*/
             },
         };
         this.children.push({
