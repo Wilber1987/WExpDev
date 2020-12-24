@@ -1,5 +1,6 @@
-import { WRender, WAjaxTools, DomComponent } from "../WModules/WComponentsTools.js";
+﻿import { WRender, WAjaxTools, DomComponent } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
+import "../WComponents/WModalForm.js";
 let photoB64;
 class WLoginTemplate extends HTMLElement {
     constructor() {
@@ -13,6 +14,7 @@ class WLoginTemplate extends HTMLElement {
     connectedCallback() {
         this.#LoginData.username = sessionStorage.getItem(this.id + "username");
         this.#LoginData.token = sessionStorage.getItem(this.id + "token");
+        
         this.innerHTML = "";
         this.childsContainer = WRender.createElement({ type: "div" });
         this.append(WRender.createElement(this.StyleLoginTemplate()));
@@ -50,8 +52,8 @@ class WLoginTemplate extends HTMLElement {
                                             const response = await this.LoginFuncion(LoginObject);
                                             this.#LoginData.username = response.username;
                                             this.#LoginData.token = response.token;
-                                            sessionStorage.setItem("username", this.#LoginData.username);
-                                            sessionStorage.setItem("token", this.#LoginData.token);
+                                            sessionStorage.setItem(this.id + "username", this.#LoginData.username);
+                                            sessionStorage.setItem(this.id + "token", this.#LoginData.token);
                                             this.DrawComponent();
 
                                         }
@@ -77,7 +79,7 @@ class WLoginTemplate extends HTMLElement {
                                 ObjectOptions: {
                                     AddObject: true,
                                     SaveFunction: async (LoginObject) => {
-                                        if (this.LoginFuncion == undefined) {
+                                        if (this.RegisterFuncion == undefined) {
                                             alert("Debe definir una funcion asyncrona de registro");
                                         } else {
                                             const response = await this.RegisterFuncion(LoginObject);
@@ -86,7 +88,6 @@ class WLoginTemplate extends HTMLElement {
                                             sessionStorage.setItem("username", this.#LoginData.username);
                                             sessionStorage.setItem("token", this.#LoginData.token);  */
                                             this.DrawComponent();
-
                                         }
                                     }
                                 }
@@ -107,19 +108,19 @@ class WLoginTemplate extends HTMLElement {
     LogoutOptions() {
         const InputLogin = {
             type: 'button', props: {
-                class: 'Btn', type: "button", onclick: async () => {
+                class: 'BtnRadio', type: "button", onclick: async () => {
                     if (this.LogoutFuncion) {
                         this.LoginFuncion();
                     } else {
                         console.log("no ha definido un funcion de cierre de sesion");
                     }
-                    this.#LoginData.username = null;
-                    this.#LoginData.token = null;
-                    sessionStorage.removeItem("username");
-                    sessionStorage.removeItem("token");
-                    this.DrawComponent();
+                    //this.#LoginData.username = null;
+                    //this.#LoginData.token = null;
+                    //sessionStorage.removeItem(this.id + "username");
+                    //sessionStorage.removeItem(this.id + "token");
+                    //this.DrawComponent();
                 }
-            }, children: ['Logout']
+            }, children: ['▼']
         };
         this.childsContainer.append(WRender.createElement(InputLogin));
     }
@@ -130,9 +131,16 @@ class WLoginTemplate extends HTMLElement {
                 id: "StyleLoginTemplate",
                 ClassList: [
                     new WCssClass(`#${this.id} label`, {
-                        "font-weight": "bold",
+                        //"font-weight": "bold",
                         color: "#808080",
-                        padding: "10px"
+                        padding: "10px", 
+                    }), new WCssClass(`#${this.id} .BtnRadio`, {
+                        //"font-weight": "bold",
+                        color: "#808080",
+                        padding: "5px 7px",
+                        "border-radius": "50%",
+                        border: "none",
+                        cursor: "pointer"
                     }), new WCssClass(`#${this.id} .BtnAlert,#${this.id} .BtnPrimary,#${this.id} 
                     .BtnSuccess,#${this.id} .BtnSecundary,#${this.id} .Btn`, {
                         "font-weight": "bold",

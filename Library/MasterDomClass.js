@@ -138,10 +138,10 @@ class FooterNavigator extends DomComponent {
                     onclick: async() => {
                         const { ForosView } = await
                         import("./Modules/ForosView.js");
-                        //let MyModules = await WAjaxTools.PostRequest("http://localhost:6601/" + 'api/User/PostTakeUsers', { IdUsers: 1 });
+                        let MyModules = await WAjaxTools.PostRequest("http://localhost:6601/" + 'api/User/PostTakeUsers', { IdUsers: 1 });
                        // let OModules = await WAjaxTools.PostRequest("http://localhost:6601/" + 'api/module/PostModules', { IdUsers: 1 });
                         this.NavigateFunction("ForosView", new ForosView({
-                            class: "DivContainer DivSection", id: "ForosView", Users: []
+                            class: "DivContainer DivSection", id: "ForosView", Users: MyModules
                         }));
                         //const { ForosView } = await
                         //import ("./Modules/ForosView.js");

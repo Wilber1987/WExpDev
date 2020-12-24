@@ -13,6 +13,10 @@ class WModalForm extends HTMLElement {
         if (this.innerHTML != "") {
             return;
         }
+        //NO MODAL
+        if (this.NoModal == true) {
+            this.append(WRender.createElement(this.StyleNoModal()));
+        }
         this.append(WRender.createElement(this.FormStyle()));
         if (this.StyleForm == "columnX1") {
             this.append(WRender.createElement(this.StyleColumX1()));
@@ -23,8 +27,11 @@ class WModalForm extends HTMLElement {
         } else {
             //---
         }
+        //NO MODAL
+        if (this.NoModal == true) {
+            this.append(WRender.createElement(this.StyleNoModal()));
+        }
         this.DrawComponent();
-
     }
     DrawComponent = async () => {
         if (this.id == undefined || this.id == "") {
@@ -36,12 +43,15 @@ class WModalForm extends HTMLElement {
         if (this.ObjectModal) {//AGREGA UN OBJETO AL MODAL ENVIDO DESDE LA CONFIGURACION
             this.Modal.children.push(this.ObjectModal);
             if (this.ObjectOptions != undefined) {
-                if (this.ObjectOptions.SaveFunction != undefined) {
+                if (this.ObjectOptions.SaveFunction != undefined || this.UserActions != undefined) {
                     this.Modal.children.push(this.SaveOptions());
                 }
             }
         } else if (this.ObjectDetail) {// MUESTRA EL DETALLE DE UN OBJETO EN UNA LISTA
             this.Modal.children.push(this.ShowFormDetail());
+            if (this.UserActions != undefined) {
+                this.Modal.children.push(this.SaveOptions());
+            }
         } else if (this.ObjectModel) {//AGREGA FORMULARIO CRUD A LA VISTA
             if (this.ObjectOptions == undefined) {
                 this.ObjectOptions = { AddObject: false, Url: undefined };
@@ -64,6 +74,9 @@ class WModalForm extends HTMLElement {
         DomComponent.modalFunction(this.id)
     }
     DrawModalHead() {
+        if (this.HeadOptions == false) {
+            return "";
+        }
         const InputClose = {
             type: 'button', props: {
                 class: 'Btn', type: "button", onclick: () => {
@@ -81,12 +94,31 @@ class WModalForm extends HTMLElement {
     ShowFormDetail(Object = this.ObjectDetail) {
         const Form = { type: 'divForm', children: [] };
         for (const prop in Object) {
-            Form.children.push({
-                type: "div", props: { class: "ModalElement" }, children: [
-                    { type: "h3", props: { innerText: prop } },
-                    { type: "p", props: { innerHTML: Object[prop] } }
-                ]
-            });
+            if(prop.includes("_hidden")){
+                
+            }  else if (prop.includes("img") || prop.includes("pic")
+                || prop.includes("Pict") || prop.includes("image") || prop.includes("Image")
+                || prop.includes("Photo")) {
+                let cadenaB64 = "";
+                var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                if (base64regex.test(Object[prop])) {
+                    cadenaB64 = "data:image/png;base64,";
+                }
+                Form.children.push({
+                    type: "img", props: {
+                        src: cadenaB64 + Object[prop],
+                        class: "imgPhotoWModal", id: "imgControl" + prop + this.id,
+                    }
+                })
+            }
+            else {
+                Form.children.push({
+                    type: "div", props: { class: "ModalElement" }, children: [
+                        //{ type: "label", props: { innerText: prop } },
+                        { type: "p", props: { innerHTML: Object[prop] } }
+                    ]
+                });
+            }
         }
         return Form;
     }
@@ -173,7 +205,7 @@ class WModalForm extends HTMLElement {
                 InputType = "file";
                 ControlTagName = "input";
                 ControlContainer.props.class += " imageGridForm";
-            } 
+            }
             const InputControl = {
                 type: ControlTagName, props: {
                     id: "ControlValue" + prop, value: null,
@@ -205,26 +237,42 @@ class WModalForm extends HTMLElement {
         return Form;
     }
     SaveOptions(Object = {}) {
-        const InputSave = {
-            type: 'button', props: {
-                class: 'Btn', type: "button", onclick: async () => {
-                    if (this.ObjectOptions.SaveFunction != undefined) {
-                        this.ObjectOptions.SaveFunction(Object);
+        const DivOptions = { type: 'div', props: { class: "DivSaveOptions" }, children: [] };
+        if (this.ObjectOptions != undefined) {
+            const InputSave = {
+                type: 'button', props: {
+                    class: 'Btn', type: "button", onclick: async () => {
+                        if (this.ObjectOptions.SaveFunction != undefined) {
+                            this.ObjectOptions.SaveFunction(Object);
+                        }
+                        if (this.ObjectOptions.Url != undefined) {
+                            const response = await WAjaxTools.PostRequest(this.ObjectOptions.Url, Object);
+                            console.log(response);
+                        }
+                        //console.log(Object);
+                        DomComponent.modalFunction(this.id);
+                        setTimeout(() => {
+                            this.parentNode.removeChild(this);
+                        }, 1000);
+    
                     }
-                    if (this.ObjectOptions.Url != undefined) {
-                        const response = await WAjaxTools.PostRequest(this.ObjectOptions.Url, Object);
-                        console.log(response);
+                }, children: ['Guardar']
+            };      
+            DivOptions.children.push(InputSave);      
+        }     
+        if (this.UserActions != undefined && this.UserActions != Array) {
+            this.UserActions.forEach(Action => {
+                DivOptions.children.push({
+                    type: "button", props: {
+                        class: "Btn", type: "button", innerText: Action.name,
+                        onclick: async (ev) => {
+                            Action.Function(ev.target);
+                        }
                     }
-                    //console.log(Object);
-                    DomComponent.modalFunction(this.id);
-                    setTimeout(() => {
-                        this.parentNode.removeChild(this);
-                    }, 1000);
-
-                }
-            }, children: ['Guardar']
-        };
-        return { type: 'div', props: { class: "DivSaveOptions" }, children: [InputSave] };
+                });                
+            });
+        }
+        return DivOptions;
     }
     FormStyle() {
         const Style = {
@@ -361,9 +409,58 @@ class WModalForm extends HTMLElement {
                                 padding: "20px",
                                 "display": "grid",
                                 "grid-gap": "1rem",
-                                "grid-template-columns": "calc(100% - 20px)",
+                                "grid-template-columns": "calc(100% - 20px) !important",
                                 "grid-template-rows": "auto",
+                            }), new WCssClass("w-modal-form .ContainerFormWModal", {
+                                "margin-top": "0px",
+                                "width": "100%",
+                                "max-height": "calc(100vh - 0px)",
+                                "height": "calc(100vh - 0px)",
+                                "border-radius": "0cm",
+                            }), new WCssClass("w-modal-form", {
+                                "padding-bottom": "0px",
                             }),
+                        ]
+                    },
+                ]
+            }
+        }
+        return Style;
+    }
+    StyleNoModal() {
+        const Style = {
+            type: "w-style",
+            props: {
+                ClassList: [
+                    new WCssClass(`#${this.id}`, {
+                        "opacity": "1 !important",
+                        display: "block !important",
+                        "background-color": "rgba(0, 0, 0, 0.5) !important",
+                        "width": "100%",
+                        "position": "relative !important",
+                        "transition": "all linear 1s",
+                        "box-shadow": "0 0px 0px 0px #000",
+                        "z-index": "1 !important",
+                        "overflow-y": "auto",
+                        "padding-bottom": "0px",
+                    }), new WCssClass("w-modal-form divForm", {
+                        padding: "20px",
+                        "display": "grid",
+                        "grid-gap": "1rem",
+                        "grid-template-columns": "calc(50% - 10px) calc(50% - 10px)",
+                        "grid-template-rows": "auto",
+                    }), new WCssClass("w-modal-form .ContainerFormWModal", {
+                        "margin-top": "0px",
+                        "width": "100%",
+                        "max-height": "auto !important",
+                        "height": "auto !important",
+                        "border-radius": "0cm",
+                    }), new WCssClass("w-modal-form", {
+                        "padding-bottom": "0px",
+                    }),
+                ], MediaQuery: [
+                    {
+                        condicion: "max-width: 800px", ClassList: [
                         ]
                     },
                 ]
@@ -380,7 +477,7 @@ class WModalForm extends HTMLElement {
                         "width": "50%",
                     }),
                     new WCssClass("w-modal-form divForm", {
-                        "grid-template-columns": "calc(100% - 20px)",
+                        "grid-template-columns": "calc(100% - 20px) !important",
                     }),
                 ], MediaQuery: [
                     {

@@ -2,7 +2,6 @@ import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
 import "../WDevCore/WComponents/WSlide.js";
 import "../WDevCore/WComponents/WRichText.js";
 import "../WDevCore/WComponents/WTableComponents.js";
-import "../WDevCore/WComponents/WLoginTemplate.js";
 import { WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
 
 class Modules {
@@ -11,14 +10,13 @@ class Modules {
         this.props = props;
         this.props.style = "padding: 10px";
         this.children = [
-            new LoginTemp(),
             //{ type: "w-slidev" },
             new TableCont(),
             //  Ritch     
-            new RichText(),
+            //new RichText(),
             //  SLIDE           
-            new Slide(),
-            {
+            //new Slide(),
+            /*{
                 type: 'h2',
                 props: {
                     id: "",
@@ -33,7 +31,7 @@ class Modules {
                     class: ""
                 },
                 children: this.DisplayForos(this.props.Foros)
-            },
+            },*/
         ]
     }
     DisplayForos = (Foros) => {
@@ -87,44 +85,6 @@ class Modules {
         return Style;
     }
 }
-class LoginTemp {
-    constructor() {
-        this.type = "div";
-        this.children = [];
-        this.children.push({
-            type: 'h2',
-            props: {
-                id: "",
-                class: "",
-                innerText: "login template"
-            },
-        })
-        this.children.push({
-            type: "w-login-template",
-            props: {
-                id: "MyLogin",
-                LoginModel: { username: null, password: null },
-                LoginFuncion: async () => {
-                    return { username: "wilber", token: "token" }
-                },
-                RegisterModel: {
-                    Nombrea: null,
-                    Apellidos: null,
-                    Mail: null,
-                    username: null,
-                    password: null, 
-                    Re_password: null,
-                    Photo: null,
-                }, RegisterFuncion: async () => {
-                    return { username: "wilber", token: "token" }
-                },
-
-            }
-        })
-    }
-}
-
-
 class SlideVideos extends HTMLElement {
     constructor() {
         super();
@@ -366,24 +326,23 @@ class TableCont {
             ],
         };
         var ConfigCards = {
-            Datasets: result.datos, /*DATOS DE LA TABLA*/
-            paginate: false,
+            Datasets: result.datos, /*DATOS DE LA TABLA*/  
+            paginate: false,   
             Options: {
                 Search: true,
                 Show: true,
                 Edit: true, //UrlUpdate: "",
-                Select: true,
-                // Add: true,
+                Select: true,                          
+               // Add: true,
                 Delete: true,
-                UserActions: [{
-                    name: "Reservar", Function: (Param) => {
-                        alert("reserva");
-                        console.log(Param)
-                    }
-                }]
-            },
-            StyleType: "Cards"
+                UserActions: [{name: "Reservar", Function: (Param)=>{
+                    alert("reserva");
+                    console.log(Param)
+                }}]
+            }, 
+            StyleType: "Cards"           
         };
+        /*
         this.children.push({
             type: 'h2',
             props: { innerText: "Table CardStyles........" },
@@ -394,7 +353,7 @@ class TableCont {
                 id: "tableConfigCards",
                 TableConfig: ConfigCards
             }
-        })
+        })*/
         this.children.push({
             type: 'h2',
             props: { innerText: "Table DINAMIC MULTIOPTIONS........." },
@@ -419,12 +378,10 @@ class TableCont {
                 Select: true,
                 Add: true,
                 Delete: true,
-                UserActions: [{
-                    name: "Reservar", Function: (Param) => {
-                        alert("reserva");
-                        console.log(Param)
-                    }
-                }]
+               /* UserActions: [{name: "Reservar", Function: (Param)=>{
+                    alert("reserva");
+                    console.log(Param)
+                }}]*/
             },
         };
         this.children.push({
@@ -434,16 +391,17 @@ class TableCont {
                 TableConfig: Config
             }
         })
+        /*
         this.children.push({
             type: 'h2',
             props: { innerText: "Table MDETAIL........." },
-        })
+        })       
         var Config2 = {
             MasterDetailTable: true,
             AddItemsFromApi: {
                 Active: true,
                 ApiUrl: "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetPrueba",
-                Function: async (Param) => {//ESTA FUNCION DEBE SER ASYNCRONA
+                Function: async (Param)=>{//ESTA FUNCION DEBE SER ASYNCRONA
                     // SINO SE DEFINE UNA FUNCION DE RETORNO SE
                     //  EJECUTA UNA FUNCION POST QUE RECIBE UN
                     //  PARAMETRO LLAMADPO "Param" Y SE ENVIA UNA
@@ -474,7 +432,7 @@ class TableCont {
                 id: "table2",
                 TableConfig: Config2
             }
-        })
+        })*/
 
     }
 }

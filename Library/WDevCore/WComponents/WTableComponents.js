@@ -16,8 +16,11 @@ class WTableComponent extends HTMLElement {
         this.append(WRender.createElement(this.PaginateTOptionsStyle()));
         if (this.TableConfig.StyleType == "Cards") {
             this.append(WRender.createElement(this.TableCardStyle()));
-        } else if (this.TableConfig.StyleType == "Cards2") {
-            this.append(WRender.createElement(this.TableCardStyle2()));
+        } else if (this.TableConfig.StyleType == "Cards2") {            
+            this.append(WRender.createElement(this.TableCardStyle2()));            
+        } else if (this.TableConfig.StyleType == "Cards2-ColumnX2") {            
+            this.append(WRender.createElement(this.TableCardStyle2()));  
+            this.append(WRender.createElement(this.TableCardStyle2ColumnX2()));
         } else if (this.TableConfig.StyleType == "Grid") {
             this.append(WRender.createElement(this.TableGridStyle()));
         } else {
@@ -1150,7 +1153,7 @@ class WTableComponent extends HTMLElement {
                     new WCssClass(`#${this.id} .tableContainer tbody tr`, {
                         display: "grid !important",
                         overflow: "hidden",
-                        "grid-template-columns": "25% 25% 25% 25%",
+                        "grid-template-columns": "auto auto auto auto",
                         "grid-template-rows": "auto",
                         //width: "250px", 
                         border: "solid 1px #999", "border-radius": "0.2cm",
@@ -1176,6 +1179,27 @@ class WTableComponent extends HTMLElement {
                     }),
                     //TOPCION
 
+                ],
+            }
+        }
+        return WTableStyle;
+    }
+    TableCardStyle2ColumnX2() {
+        const style = this.querySelector("#TableCardStyle2ColumnX2" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
+        const WTableStyle = {
+            type: "w-style",
+            props: {
+                id: "TableCardStyle2" + this.id,
+                ClassList: [
+                    //ESTILOS GENERALES-----------------------------------
+                    new WCssClass(`#${this.id} .tableContainer tbody`, {
+                        display: "grid", padding: "20px",
+                        "grid-template-columns": "auto auto"
+                    })
+                    //TOPCION
                 ],
             }
         }

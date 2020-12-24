@@ -59,7 +59,7 @@ class WSlide extends HTMLElement {
             const content = {
                 type: "div", props: { class: "content" }, children: [
                     { type: "h3", props: { innerText: element.title } },
-                    { type: "p", props: { innerText: element.description } },
+                   // { type: "p", props: { innerText: element.description } },
                 ]
             }
             const image = { type: "img", props: { class: "embed", src: element.image } }
@@ -68,7 +68,7 @@ class WSlide extends HTMLElement {
                     {
                         type: "input", props: {
                             class: "text", type: "button", value: "Ver Vídeo", onclick: () => {
-                                console.log(this)
+                               // console.log(this)
                                 this.append(WRender.createElement({
                                     type: "w-modal-form", props: {
                                         id: "viewVideo" + this.id,

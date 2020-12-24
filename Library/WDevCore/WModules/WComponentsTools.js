@@ -218,7 +218,9 @@ class DomComponent {
                 ContainerNavigate.append(this.NavForm[IdComponent]);
                 return;
             }
-            ContainerNavigate.append(WRender.createElement(ComponentsInstance));
+            const NewChild = WRender.createElement(ComponentsInstance);
+            this.NavForm[IdComponent] = NewChild;
+            ContainerNavigate.append(NewChild);
             return;
         }
     }
