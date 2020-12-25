@@ -76,7 +76,7 @@ class BasicTable {
                 el elemento html w-table. <br>
                 <section class="codeSection">               
                     <hr>
-                    //vanilla js <br>                    
+                    //vanilla js<br>                    
                     const Wtable = document.createElement("w-table");<br>
                     <hr>
                     //Datos JSON <br> 
