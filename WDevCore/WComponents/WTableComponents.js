@@ -227,6 +227,14 @@ class WTableComponent extends HTMLElement {
                                             }
                                         }
                                     })
+                                    if (Dataset.length == 0 && this.Options.UrlSearch != undefined) {
+                                        const DataUrlSearch = await WAjaxTools.PostRequest(
+                                            this.Options.UrlSearch,
+                                            { Param: ev.target.value }
+                                        );
+                                        this.DrawTable(DataUrlSearch);
+                                        return;
+                                    }
                                     this.DrawTable(Dataset);
                                 }
                             }

@@ -122,6 +122,25 @@ class BasicTable {
                         }  
                     };<br>
                 </section>
+                En caso que se desee implementar opciones de busqueda por medio de una 
+                api, se debe utilizar la propiedad UrlSearch:"api_route" junto a la 
+                propiedad Search dentro del TableConfig.
+                <br>
+                Esto permitira que al momento de hacer el filtrado, de no encontrarse el
+                resultado dentro del arreglo de datos originales, realice una petición a
+                la api en busca de las councidencias. 
+                <section class="codeSection">               
+                <hr>
+                //vanilla js <br>    
+                Wtable.TableConfig = {
+                    Datasets: Data,
+                    Options: {
+                        Search: true,
+                        UrlUpdate: "https://route.....",
+                    }  
+                };<br>
+            </section>
+
             `
             }
         });
@@ -149,7 +168,7 @@ class BasicTable {
                     .codeSection {padding: 10px; background: eee; font-size: 12px }
                 </style>
                En caso de no querer tener a disposición las opciones de paginación 
-               es posible deshabilitarla usando el atributo paginate dentro de TableConfig<br>
+               es posible deshabilitarla usando el atributo paginate:false dentro de TableConfig<br>
                 <section class="codeSection">               
                     <hr>
                     //vanilla js <br>    
@@ -188,7 +207,7 @@ class BasicTable {
                 <style>
                     .codeSection {padding: 10px; background: eee; font-size: 12px }
                 </style>
-               Para habilitar las opciones de edicion de registro usar la
+               Para habilitar las opciones de edición de registro usar la
                  propiedad Edit=true dentro de TableConfig<br>
                 <section class="codeSection">               
                     <hr>
@@ -229,8 +248,7 @@ class BasicTable {
                 }
             }
         })
-        //#endregion      
-
+        //#endregion    
     }
 }
 
@@ -523,12 +541,12 @@ class TableCont {
             AddChart: true,/*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
             //paginate: false,
             Options: {
-                Search: true,
+                Search: true,//UrlSearch
                 Show: true,
                 Edit: true, //UrlUpdate: "",
                 Select: true,
-                Add: true,
-                Delete: true,
+                Add: true,//UrlAdd
+                Delete: true,//UrlDelete
                 /* UserActions: [{name: "Reservar", Function: (Param)=>{
                      alert("reserva");
                      console.log(Param)
