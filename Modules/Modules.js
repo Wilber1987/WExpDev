@@ -20,8 +20,7 @@ const Data = [
 ];
 class Modules extends DomComponent {
     constructor(props) {
-        super();  
-        this.pruef();      
+        super();       
         this.type = "div";
         this.props = props;
         this.props.style = "padding: 10px";
@@ -56,11 +55,7 @@ class Modules extends DomComponent {
             { type: "h2", props: { innerText: "Table Component" } },
             Nav, DivContainer
         ]
-    }
-    pruef = async ()=>{        
-        const res = await WAjaxTools.GetRequest("http://localhost:8820/LEASONS/MYPROYECT/API/ApiCards.php");
-        console.log(res);
-    }
+    }    
 }
 
 

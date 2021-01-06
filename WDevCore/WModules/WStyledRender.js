@@ -196,7 +196,7 @@ class WCssClass {
 }
 class WStyledRender extends HTMLElement {
     constructor() {
-        super();
+        super();       
     }
     attributeChangedCallBack() {
         this.DrawStyle();
@@ -206,6 +206,7 @@ class WStyledRender extends HTMLElement {
             return;
         }
         this.DrawStyle();
+        this.style.display = "none";
     }
     DrawStyle() {
         let styleFrag = {

@@ -1,65 +1,56 @@
 import { DomComponent, WAjaxTools } from "./WDevCore/WModules/WComponentsTools.js";
+import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 import { Modules } from "./Modules/Modules.js";
-const Foros = [{
-    title: "Foro de prueba 1",
-    date: "2020-01-01"
-}, {
-    title: "Foro de prueba 2",
-    date: "2020-01-01"
-}, {
-    title: "Foro de prueba 3",
-    date: "2020-01-01"
-}];
+
 class MasterDomClass extends DomComponent {
     constructor() {
         super();
-        this.header = new headerClass();
-        this.MainComponent = new Modules({ class: "DivContainer", id: "Modules", Foros: Foros });
-        this.children = [
-            this.header,
-            {
-                type: 'nav',
-                props: { id: "NavContainer", class: "Menu" },
-                children: [new MyNavigator({ class: "MyNav", id: "MyLateralNav", style: "opacity: 0; pointer-events: none" })]
-            },
-            {
-                type: 'main',
-                children: [{
-                        type: 'section',
-                        props: { id: "ContainerNavigate" },
-                        children: [this.MainComponent]
-                    },
-                    { type: 'section', props: { id: "Container" } }
-                ]
-            },
-            new FooterNavigator({
-                class: "FooterNav",
-                id: "FooterNav",
-                style: ""
-            })
+        this.props = { className: "App" }   
+        this.children = [ new headerClass(),new AsideClass(), new MainClass(), new FooterClass(), MasterStyle]
+    }
+}
+class headerClass {
+    constructor() {
+        this.type = "header";
+        this.props = { className : "AppHeader"}
+        this.children = [{ type: 'label', props: { innerText: "WExpDev" } }];
+    }    
+}
+class AsideClass {
+    constructor() {
+        this.type = "header";
+        this.props = { className : "AppAside"}
+        this.children = [{ type: 'label', props: { innerText: "WExpDev" } }];
+    }    
+}
+class MainClass {
+    constructor() {
+        this.type = "header";
+        this.props = { className : "AppMain", id: "AppMain"}
+        this.children = [{ type: 'label', props: { innerText: "WExpDev" } }];
+    }    
+}
+class FooterClass {
+    constructor() {
+        this.type = "header";
+        this.props = { className : "AppFooter"}
+        this.children = [{ type: 'label', props: { innerText: "WExpDev" } }];
+    }    
+}
+const MasterStyle = {
+    type: "w-style",
+    props:{
+        ClassList: [
+            new WCssClass(".App", {
+                display: "grid",
+                "grid-template-columns": "200px calc(100% - 200px)",
+                "grid-template-rows": "70px calc(100vh - 120px) 50px"
+            }), new WCssClass(".AppHeader", {
+                "grid-column": "1/3", "background-color": "#eee"
+            }),
         ]
     }
-}
-class headerClass extends DomComponent {
-    constructor() {
-        super();
-        this.type = "header";
-        this.props.class = "";
-    }
-    children = [{
-        type: 'button',
-        props: {
-            id: "ViewMenu",
-            type: "button",
-            class: "btnMenu",
-            onclick: () => {
-                this._DispalNav("MyLateralNav", "SlideLeft")
-            }
-        },
-        children: ['']
-    }, { type: 'label', props: { innerText: "My Inclusive APP" } }];
-
-}
+};
 class MyNavigator extends DomComponent {
     constructor(props) {
         super();
@@ -143,10 +134,7 @@ class FooterNavigator extends DomComponent {
                         this.NavigateFunction("ForosView", new ForosView({
                             class: "DivContainer DivSection", id: "ForosView", Users: MyModules
                         }));
-                        //const { ForosView } = await
-                        //import ("./Modules/ForosView.js");
-                        //this.NavigateFunction("ForosView", new ForosView({ class: "DivContainer DivSection", id: "ForosView" }));
-                    }
+                        }
                 },
                 children: [{
                     type: "button",
