@@ -50,16 +50,18 @@ class WCalendar extends HTMLElement {
         });
         this.append(WRender.createElement(ContainerCalendar));
         this.append(WRender.createElement({
-            type: "div", props: { class: "div" },
+            type: "div",
+            props: { class: "div" },
             children: this.DrawTFooter()
         }));
     }
-    getWeekOfMonth = function (date) {
+    getWeekOfMonth = function(date) {
         var dayOfMonth = date.getDay();
         var month = date.getMonth();
         var year = date.getFullYear();
         var checkDate = new Date(year, month, date.getDate());
-        var checkDateTime = checkDate.getTime(); var currentWeek = 0;
+        var checkDateTime = checkDate.getTime();
+        var currentWeek = 0;
         for (var i = 1; i < 32; i++) {
             var loopDate = new Date(year, month, i);
             if (loopDate.getDay() == dayOfMonth) {
@@ -70,7 +72,7 @@ class WCalendar extends HTMLElement {
     };
     DrawMonth(Month, Days) {
         const ContainerMonth = { type: "div", props: { id: Month + this.id, class: "GridCalendarMonthContainer" }, children: [] };
-        const Title = { type: "div", props: {class: "calendarTitle"}, children: [Month + " " + this.year] };
+        const Title = { type: "div", props: { class: "calendarTitle" }, children: [Month + " " + this.year] };
         //DAYS
         const Monday = { type: "div", props: { class: "GridDayColum" }, children: [] };
         const Tuesday = { type: "div", props: { class: "GridDayColum" }, children: [] };
@@ -83,12 +85,13 @@ class WCalendar extends HTMLElement {
         for (let index = 0; index < Days; index++) {
             const date = new Date(`${this.year}-${Month}-${index + 1}`);
             const CalDay = {
-                type: "article", props: { style: "", class: "CalendarDayDisable" },
+                type: "article",
+                props: { style: "", class: "CalendarDayDisable" },
                 children: [index + 1]
             };
             if (date > this.now) {
                 CalDay.props.class = "CalendarDay";
-                CalDay.props.onclick = async (ev) => {
+                CalDay.props.onclick = async(ev) => {
                     this.SelectedDay = `${this.year}-${Month}-${index + 1}`;
                     console.log("reservando...", this.SelectedDay);
                     const Days = ev.target.parentNode.parentNode.querySelectorAll("article");
@@ -140,7 +143,8 @@ class WCalendar extends HTMLElement {
             }
         }
         const ContainerDays = {
-            type: "div", props: { class: "GridCalendarMonth" },
+            type: "div",
+            props: { class: "GridCalendarMonth" },
             children: [
                 Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday,
             ]
@@ -167,7 +171,9 @@ class WCalendar extends HTMLElement {
         tfooter.push({
             type: "label",
             props: {
-                innerText: "<", class: "pagBTN", onclick: () => {
+                innerText: "<",
+                class: "pagBTN",
+                onclick: () => {
                     this.ActualPage = this.ActualPage - 1;
                     if (this.ActualPage < 0) {
                         this.ActualPage = 11;
@@ -179,7 +185,9 @@ class WCalendar extends HTMLElement {
         tfooter.push({
             type: "label",
             props: {
-                innerText: ">", class: "pagBTN", onclick: () => {
+                innerText: ">",
+                class: "pagBTN",
+                onclick: () => {
                     this.ActualPage = this.ActualPage + 1;
                     if (this.ActualPage > 11) {
                         this.ActualPage = 0;
@@ -200,9 +208,10 @@ class WCalendar extends HTMLElement {
                         "background-color": "#ededed",
                         display: "block",
                         border: "solid 1px #c6c5c5",
-                    }),  new WCssClass(`#${this.id} .calendarTitle`, {
-                        padding: "10px", background: "#d8d8d8"
-                    }),new WCssClass(`#${this.id} .GridCalendarMonth`, {
+                    }), new WCssClass(`#${this.id} .calendarTitle`, {
+                        padding: "10px",
+                        background: "#d8d8d8"
+                    }), new WCssClass(`#${this.id} .GridCalendarMonth`, {
                         display: "grid",
                         "grid-template-columns": "auto auto auto auto auto auto auto",
                     }), new WCssClass(`#${this.id} .GridDayColum`, {
@@ -229,8 +238,8 @@ class WCalendar extends HTMLElement {
                         transition: "all 0.5s",
                         "background-color": "#538cc6",
                         color: "#fff",
-                    }),//PAGINACION
-                     new WCssClass(`#${this.id} .pagBTN`, {
+                    }), //PAGINACION
+                    new WCssClass(`#${this.id} .pagBTN`, {
                         display: "inline-block",
                         padding: "5px",
                         color: "#888888",
@@ -247,13 +256,12 @@ class WCalendar extends HTMLElement {
                         "padding-left": "20px",
                         "padding-right": "20px",
                         background: "#d8d8d8",
-                    }), 
-                ], MediaQuery: [
-                    {
-                        condicion: "max-width: 800px", ClassList: [
-                        ]
-                    },
-                ]
+                    }),
+                ],
+                MediaQuery: [{
+                    condicion: "(max-width: 800px)",
+                    ClassList: []
+                }, ]
             }
         }
         return Style;

@@ -19,28 +19,55 @@ function DisplayAcordeon(value, SectionId, size = null) {
         }
     }
 }
-function type (value) {
+
+function type(value) {
     var r;
     if (typeof value === 'object') {
-      if (value === null) {
-        return 'null';
-      }
-      if (typeof value.constructor === 'function' &&
-          (r = value.constructor.name) !== 'Object')
-      {
-        if (r === '' || r === undefined) {
-          return Function.prototype.toString.call (value.constructor)
-                         .match (/^\n?(function|class)(\w?)/)[ 2 ] || 'anonymous'; }
-        return r;
-      }
-      return Object.prototype.toString.call (value).match (/\s(.*)\]/)[ 1 ];
+        if (value === null) {
+            return 'null';
+        }
+        if (typeof value.constructor === 'function' &&
+            (r = value.constructor.name) !== 'Object') {
+            if (r === '' || r === undefined) {
+                return Function.prototype.toString.call(value.constructor)
+                    .match(/^\n?(function|class)(\w?)/)[2] || 'anonymous';
+            }
+            return r;
+        }
+        return Object.prototype.toString.call(value).match(/\s(.*)\]/)[1];
     } else if (typeof value === 'number') {
-      return isNaN (value) ? 'NaN' : 'number';
+        return isNaN(value) ? 'NaN' : 'number';
     }
     return typeof value;
 }
 class WAjaxTools {
-    constructor() { }
+    static Request = async (Url, typeRequest, Data = {}, typeHeader) => {
+        try {
+            let ContentType = "application/json; charset=utf-8";
+            let Accept = "*/*";
+            if (typeHeader == "form") {
+                ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                Accept = "*/*";
+            }
+            let dataRequest =  {
+                method: typeRequest,
+                headers: {
+                    'Content-Type': ContentType,
+                    'Accept': Accept
+                }               
+            }
+            if (Data != {}) {
+                dataRequest.body = JSON.stringify(Data);
+            }
+            let response = await fetch(Url,);
+            const ProcessRequest = await this.ProcessRequest(response, Url);
+            return ProcessRequest;
+        } catch (error) {
+            if (error == "TypeError: Failed to fetch") {
+                return this.LocalData(Url);
+            }
+        }
+    }
     static PostRequest = async (Url, Data = {}, typeHeader) => {
         try {
             let ContentType = "application/json; charset=utf-8";
@@ -57,18 +84,8 @@ class WAjaxTools {
                 },
                 body: JSON.stringify(Data)
             });
-            if (response.status == 404 || response.status == 500) {
-                console.log("ocurrio un error: " + response.status);
-                if (typeof responseLocal !== "undefined" && typeof responseLocal !== "null" && responseLocal != "") {
-                    return this.LocalData(Url);
-                } else {
-                    return [];
-                }
-            } else {
-                response = response.json();
-                localStorage.setItem(Url, JSON.stringify(response));
-                return response;
-            }
+            const ProcessRequest = await this.ProcessRequest(response, Url);
+            return ProcessRequest;
         } catch (error) {
             if (error == "TypeError: Failed to fetch") {
                 return this.LocalData(Url);
@@ -84,22 +101,27 @@ class WAjaxTools {
                     'Accept': 'application/json'
                 }
             });
-            if (response.status == 404 || response.status == 500) {
-                console.log("ocurrio un error: " + response.status);
-                if (typeof responseLocal !== "undefined" && typeof responseLocal !== "null" && responseLocal != "") {
-                    return this.LocalData(Url);
-                } else {
-                    return [];
-                }
-            } else {
-                response = await response.json();
-                localStorage.setItem(Url, JSON.stringify(response));
-                return response;
-            }
+            const ProcessRequest = await this.ProcessRequest(response, Url);
+            return ProcessRequest;
         } catch (error) {
+            console.log(error)
             if (error == "TypeError: Failed to fetch") {
                 return this.LocalData(Url);
             }
+        }
+    }
+    static ProcessRequest = async (response, Url) => {
+        if (response.status == 404 || response.status == 500) {
+            console.log("ocurrio un error: " + response.status);
+            if (typeof response !== "undefined" && typeof response !== "null" && response != "") {
+                return this.LocalData(Url);
+            } else {
+                return [];
+            }
+        } else {
+            response = await response.json();
+            localStorage.setItem(Url, JSON.stringify(response));
+            return response;
         }
     }
     static LocalData = (Url) => {
@@ -114,83 +136,77 @@ class WRender {
     }
     static createElement = (Node) => {
         try {
-            //console.log(Node)
-            if (typeof Node === "undefined") {
-                return document.createTextNode("");
-            }
-            if (typeof Node === "string" || typeof Node === "number") {
+            if (typeof Node === "undefined" || Node == null) {
+                return document.createTextNode("Nodo nulo o indefinido.");
+            } else if (typeof Node === "string" || typeof Node === "number") {
                 return document.createTextNode(Node);
-            }
-            if (Node.type == "documentFragment") {
-                return CreateStringNode(Node.stringFragment);
-            }
-            if (Node.tagName) {
+            } else if (Node.__proto__.__proto__ === HTMLElement.prototype) {
                 return Node;
-            }
-            const element = document.createElement(Node.type);
-            if (Node.props) {
-                for (const prop in Node.props) {
-                    if (prop == "class") {
-                        element.className = Node.props[prop];
-                    } else {
-                        element[prop] = Node.props[prop];
+            } else {
+                const element = document.createElement(Node.type);
+                if (Node.props != undefined && Node.props.__proto__ == Object.prototype) {
+                    for (const prop in Node.props) {
+                        if (prop == "class") element.className = Node.props[prop];
+                        else element[prop] = Node.props[prop];
                     }
                 }
+                if (Node.children != undefined && Node.children.__proto__ == Array.prototype) {
+                    Node.children.forEach(Child => {
+                        element.appendChild(this.createElement(Child));
+                    });
+                }
+                return element;
             }
-            if (Node.children) {
-                Node.children.forEach(Child => {
-                    element.appendChild(this.createElement(Child));
-                });
+        } catch (error) {
+            console.log(error, Node);
+            return document.createTextNode("Problemas en la construcción del nodo.");
+        }
+    }
+    static createElementNS = (node, uri = "svg") => {
+        try {
+            let URI = null;
+            switch (uri) {
+                case "svg":
+                    URI = "http:\/\/www.w3.org/2000/svg";
+                    break;
+                case "html":
+                    URI = "http://www.w3.org/1999/xhtml";
+                    break;
+                case "xbl":
+                    URI = "http://www.mozilla.org/xbl";
+                    break;
+                case "xul":
+                    URI = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+                    break;
+                default:
+                    URI = null;
+                    break;
             }
-            if (typeof Node.events !== 'undefined' || Node.events != null) {
-                //console.log(Node.events)
-                for (const event in Node.events) {
-                    if (typeof Node.events[event] !== 'undefined') {
-                        if (!event.includes("Params")) {
-                            element.addEventListener(event,
-                                // () => {
-                                //console.log(Node.events)
-                                Node.events[event]//(Node.events[event + "Params"])
-                                //}
-                            );
+            const element = document.createElementNS(URI, node.type)
+            if (node.props) {
+                for (const prop in node.props) {
+                    if (typeof node.props[prop] === "function") {
+                        element[prop] = node.props[prop];
+                    } else if (typeof node.props[prop] === 'object') {
+                        element[prop] = node.props[prop];
+                    } else {
+                        try {
+                            element.setAttributeNS(null, prop, node.props[prop])
+                        } catch (error) {
+                            element.setAttributeNS(URI, prop, node.props[prop]);
                         }
                     }
                 }
             }
+            if (node.children) {
+                node.children
+                    .map(this.createElementNS)
+                    .forEach(child => element.appendChild(child, uri))
+            }
             return element;
         } catch (error) {
-            console.log(error)
-            console.log(Node)
+
         }
-    }
-    static createElementNS = (node) => {
-        if (typeof node === 'string') {
-            return document.createTextNode(node)
-        }
-        const SVGN = "http:\/\/www.w3.org/2000/svg";
-        const element = document.createElementNS(SVGN, node.type)
-        if (node.props) {
-            for (const prop in node.props) {
-                if (typeof node.props[prop] === "function") {
-                    element[prop] = node.props[prop];
-                } else if (typeof node.props[prop] === 'object') {
-                    element[prop] = node.props[prop];
-                } else {
-                    try {
-                        element.setAttributeNS(null, prop, node.props[prop])
-                    } catch (error) {
-                        //console.log(error);
-                        element.setAttributeNS(SVGN, prop, node.props[prop]);
-                    }
-                }
-            }
-        }
-        if (node.children) {
-            node.children
-                .map(this.createElementNS)
-                .forEach(child => element.appendChild(child))
-        }
-        return element;
     }
 }
 class DomComponent {
@@ -280,8 +296,8 @@ class DomComponent {
             }
         }
     }
-    static modalFunction(DivModal) {
-        var ventanaM = document.getElementById(DivModal);
+    static modalFunction(ventanaM) {
+        //var ventanaM = document.getElementById(DivModal);
         //console.log(DivModal)
         if (ventanaM.style.opacity == 0) {
             ventanaM.style.transition = "all ease 1s";
@@ -318,7 +334,7 @@ class DomComponent {
         }
     }
     static DisplayAcorden(elementId, valueSize = 0) {
-        let SectionElement = document.getElementById(elementId);        
+        let SectionElement = document.getElementById(elementId);
         if (SectionElement.offsetHeight == valueSize) {
             SectionElement.style.maxHeight = "800px";
             SectionElement.style.minHeight = "150px";
@@ -327,7 +343,7 @@ class DomComponent {
             SectionElement.style.minHeight = valueSize + "px";
 
         }
-    }  
+    }
 }
 class WArrayF {
     static orderByDate(Arry, type) {
@@ -512,14 +528,14 @@ class WArrayF {
         }
         return Maxvalue;
     }
-    static FindInArray(element, Datasets){
-        let val = false;        
+    static FindInArray(element, Datasets) {
+        let val = false;
         for (let index = 0; index < Datasets.length; index++) {
             const Data = Datasets[index];
             val = this.compareObj(element, Data)
             if (val == true) {
                 break;
-            }             
+            }
         }
         return val;
     }

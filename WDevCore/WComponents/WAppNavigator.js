@@ -3,6 +3,7 @@ import { WCssClass } from "../WModules/WStyledRender.js";
 class WAppNavigator extends HTMLElement {
     constructor() {
         super();
+        this.attachShadow({ mode: "open" });
     }
     attributeChangedCallBack() {
         this.DrawAppNavigator();
@@ -21,16 +22,17 @@ class WAppNavigator extends HTMLElement {
         if (this.Elements == undefined) {
             this.Elements = [];
         }
-        const Nav = { type: "nav", children: [] };       
+        const Nav = { type: "nav", children: [] };
         this.Elements.forEach((element, Index) => {
             if (element.url == undefined) {
-                element.url = "#" + this.id; 
+                element.url = "#" + this.id;
             }
             const elementNav = {
-                type: "a", props: { innerText: element.name, href: element.url }
-            }            
-            if (element.action != undefined) {                
-                elementNav.props.onclick = element.action;           
+                type: "a",
+                props: { innerText: element.name, href: element.url }
+            }
+            if (element.action != undefined) {
+                elementNav.props.onclick = element.action;
             }
             if (element.SubNav != undefined) {
                 elementNav.href = null;
@@ -38,15 +40,18 @@ class WAppNavigator extends HTMLElement {
                 const SubNav = {
                     type: "nav",
                     props: {
-                        id: SubMenuId, innerText: element.name,
-                        href: element.url, className: "UnDisplayMenu"
+                        id: SubMenuId,
+                        innerText: element.name,
+                        href: element.url,
+                        className: "UnDisplayMenu"
                     },
                     children: []
                 }
                 if (element.SubNav.Elements != undefined) {
                     element.SubNav.Elements.forEach(SubElement => {
                         SubNav.children.push({
-                            type: "a", props: { innerText: SubElement.name, href: SubElement.url }
+                            type: "a",
+                            props: { innerText: SubElement.name, href: SubElement.url }
                         });
                     });
                 }
@@ -62,8 +67,8 @@ class WAppNavigator extends HTMLElement {
             }
             Nav.children.push(elementNav);
         });
-        this.append(WRender.createElement(this.Style()));
-        this.append(WRender.createElement(Nav));
+        this.shadowRoot.append(WRender.createElement(this.Style()));
+        this.shadowRoot.append(WRender.createElement(Nav));
     }
     Style() {
         const style = this.querySelector("#NavStyle" + this.id);
@@ -79,26 +84,25 @@ class WAppNavigator extends HTMLElement {
             props: {
                 id: "NavStyle" + this.id,
                 ClassList: [
-                    new WCssClass(`#${this.id}`, {
+                    new WCssClass(`nav`, {
                         display: "flex",
                         "flex-direction": navDirection,
-                    }),new WCssClass(`#${this.id} a`, {
-                       "text-decoration": "none",
-                       color: "#444444",
-                       "font-weight": "bold"
-                    }), new WCssClass(`#${this.id} UnDisplayMenu`, {
+                    }), new WCssClass(` a`, {
+                        "text-decoration": "none",
+                        color: "#444444",
+                        "font-weight": "bold"
+                    }), new WCssClass(` UnDisplayMenu`, {
                         overflow: "hidden",
                         "max-height": "0px"
-                    }), new WCssClass(`#${this.id} DisplayMenu`, {
+                    }), new WCssClass(` DisplayMenu`, {
                         overflow: "hidden",
                         "max-height": "1000px"
                     }),
-                ], MediaQuery: [
-                    {
-                        condicion: "max-width: 800px", ClassList: [
-                        ]
-                    },
-                ]
+                ],
+                MediaQuery: [{
+                    condicion: "(max-width: 800px)",
+                    ClassList: []
+                }, ]
             }
         }
         return Style;

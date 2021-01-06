@@ -20,29 +20,32 @@ const Data = [
 ];
 class Modules extends DomComponent {
     constructor(props) {
-        super();
+        super();  
+        this.pruef();      
         this.type = "div";
         this.props = props;
         this.props.style = "padding: 10px";
-        const NavigateElements = [
-            {
-                name: "Basic Table", action: () => {
-                    this.NavigateFunction("BasicTable", new BasicTable(), "ModulesDetail");
-                }
-            }, {
-                name: "Actions Table", action: () => {
-                    this.NavigateFunction("BasicTable", new ActionsTable(), "ModulesDetail");
-                }
-            }, {
-                name: "Dinamic Table", action: () => {
-                    this.NavigateFunction("BasicTable", new DinamicTable(), "ModulesDetail");
-                }
+        const NavigateElements = [{
+            name: "Basic Table",
+            action: () => {
+                this.NavigateFunction("BasicTable", new BasicTable(), "ModulesDetail");
             }
-        ];
+        }, {
+            name: "Actions Table",
+            action: () => {
+                this.NavigateFunction("BasicTable", new ActionsTable(), "ModulesDetail");
+            }
+        }, {
+            name: "Dinamic Table",
+            action: () => {
+                this.NavigateFunction("BasicTable", new DinamicTable(), "ModulesDetail");
+            }
+        }];
         const Nav = {
             type: "w-app-navigator",
             props: {
-                id: "TableNav", Elements: NavigateElements
+                id: "TableNav",
+                Elements: NavigateElements
             }
         };
         const DivContainer = {
@@ -50,23 +53,30 @@ class Modules extends DomComponent {
             props: { id: "ModulesDetail" }
         };
         this.children = [
-            { type: "h2", props: { innerText: "Table Component" } }, Nav, DivContainer
+            { type: "h2", props: { innerText: "Table Component" } },
+            Nav, DivContainer
         ]
     }
+    pruef = async ()=>{        
+        const res = await WAjaxTools.GetRequest("http://localhost:8820/LEASONS/MYPROYECT/API/ApiCards.php");
+        console.log(res);
+    }
 }
+
 
 class BasicTable {
     constructor() {
         this.type = "div";
         this.children = [];
         this.children.push({
-            type: 'h3',
-            props: { innerText: "Basic Table" },
-        })
-        //#region TABLA BASICA
-        //DOCUMENTACION
+                type: 'h3',
+                props: { innerText: "Basic Table" },
+            })
+            //#region TABLA BASICA
+            //DOCUMENTACION
         this.children.push({
-            type: "div", props: {
+            type: "div",
+            props: {
                 style: "padding: 10px",
                 innerHTML: `
                 <style>
@@ -92,20 +102,22 @@ class BasicTable {
         });
         //FIN DOCUMENTACION  
         var Config = {
-            Datasets: Data, /*DATOS DE LA TABLA*/
+            Datasets: Data,
+            /*DATOS DE LA TABLA*/
         };
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: Config
-            }
-        })
-        //#endregion  
-        //#region TABLA BASICA CON BUSQUEDA
-        //DOCUMENTACION
+                type: "w-table",
+                props: {
+                    id: "table",
+                    TableConfig: Config
+                }
+            })
+            //#endregion  
+            //#region TABLA BASICA CON BUSQUEDA
+            //DOCUMENTACION
         this.children.push({
-            type: "div", props: {
+            type: "div",
+            props: {
                 style: "padding: 10px",
                 innerHTML: `
                 <style>
@@ -140,28 +152,29 @@ class BasicTable {
                     }  
                 };<br>
             </section>
-
             `
             }
         });
         //FIN DOCUMENTACION 
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "tableSearch",
-                TableConfig: {
-                    Datasets: Data, /*DATOS DE LA TABLA*/
-                    Options: {
-                        Search: true,
+                type: "w-table",
+                props: {
+                    id: "tableSearch",
+                    TableConfig: {
+                        Datasets: Data,
+                        /*DATOS DE LA TABLA*/
+                        Options: {
+                            Search: true,
+                        }
                     }
                 }
-            }
-        })
-        //#endregion       
-        //#region TABLA BASICA CON BUSQUEDA SIN PAGINACION 
-        //DOCUMENTACION
+            })
+            //#endregion       
+            //#region TABLA BASICA CON BUSQUEDA SIN PAGINACION 
+            //DOCUMENTACION
         this.children.push({
-            type: "div", props: {
+            type: "div",
+            props: {
                 style: "padding: 10px",
                 innerHTML: `
                 <style>
@@ -185,23 +198,25 @@ class BasicTable {
         });
         //FIN DOCUMENTACION 
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "tableNoPaginate",
-                TableConfig: {
-                    Datasets: Data, /*DATOS DE LA TABLA*/
-                    paginate: false,
-                    Options: {
-                        Search: true,
+                type: "w-table",
+                props: {
+                    id: "tableNoPaginate",
+                    TableConfig: {
+                        Datasets: Data,
+                        /*DATOS DE LA TABLA*/
+                        paginate: false,
+                        Options: {
+                            Search: true,
+                        }
                     }
                 }
-            }
-        })
-        //#endregion    
-         //#region TABLA BASICA CON  EDICIÓN 
-        //DOCUMENTACION
+            })
+            //#endregion    
+            //#region TABLA BASICA CON  EDICIÓN 
+            //DOCUMENTACION
         this.children.push({
-            type: "div", props: {
+            type: "div",
+            props: {
                 style: "padding: 10px",
                 innerHTML: `
                 <style>
@@ -237,18 +252,19 @@ class BasicTable {
         });
         //FIN DOCUMENTACION 
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "tableNoPaginate",
-                TableConfig: {
-                    Datasets: Data, /*DATOS DE LA TABLA*/
-                    Options: {
-                        Edit: true,
+                type: "w-table",
+                props: {
+                    id: "tableNoPaginate",
+                    TableConfig: {
+                        Datasets: Data,
+                        /*DATOS DE LA TABLA*/
+                        Options: {
+                            Edit: true,
+                        }
                     }
                 }
-            }
-        })
-        //#endregion    
+            })
+            //#endregion    
     }
 }
 
@@ -262,7 +278,7 @@ class SlideVideos extends HTMLElement {
         }
         this.DrawStyle();
     }
-    DrawStyle = async () => {
+    DrawStyle = async() => {
         var nextPageToken = "";
         // Resultados por pagina
         var resPorPagina = 5;
@@ -283,26 +299,29 @@ class SlideVideos extends HTMLElement {
             "regionCode": "NI",
             "pageInfo": { "totalResults": 69, "resultsPerPage": 5 },
             "items": [{
-                "kind": "youtube#searchResult", "etag": "BFZh2U7iCDyEgHXOQRE3IoGWc10",
-                "id": { "kind": "youtube#video", "videoId": "z2NUvTg5Hvs" }, "snippet":
-                {
+                "kind": "youtube#searchResult",
+                "etag": "BFZh2U7iCDyEgHXOQRE3IoGWc10",
+                "id": { "kind": "youtube#video", "videoId": "z2NUvTg5Hvs" },
+                "snippet": {
                     "publishedAt": "2020-10-21T16:32:15Z",
                     "channelId": "UCvLhPXU--RrE_hwh9hOmQ6A",
                     "title": "APLICACIONES WEB   INTRODUCCION WEBCOMPONENTS   P15",
                     "description": "",
                     "thumbnails": {
-                        "default":
-                        {
+                        "default": {
                             "url": "https://i.ytimg.com/vi/z2NUvTg5Hvs/default.jpg",
-                            "width": 120, "height": 90
+                            "width": 120,
+                            "height": 90
                         },
                         "medium": {
                             "url": "https://i.ytimg.com/vi/z2NUvTg5Hvs/mqdefault.jpg",
-                            "width": 320, "height": 180
+                            "width": 320,
+                            "height": 180
                         },
                         "high": {
                             "url": "https://i.ytimg.com/vi/z2NUvTg5Hvs/hqdefault.jpg",
-                            "width": 480, "height": 360
+                            "width": 480,
+                            "height": 360
                         }
                     },
                     "channelTitle": "Wilber Jose Matus Gonzalez",
@@ -414,86 +433,87 @@ class TableCont {
         //TABLE CONFIG
         var result = {
             "datos": [{
-                "cantidad": 21,
-                "estado": "Naranja",
-                "time": "julio 2012",
-                "categ2": "Moderado",
-                "categ": "Ekisde",
-            },
-            {
-                "cantidad": 2,
-                "estado": "Naranja",
-                "time": "julio 2019",
-                "categ2": "Severo",
-                "categ": "Nic"
-            },
-            {
-                "cantidad": 14,
-                "estado": "Fresa",
-                "time": "julio 2019",
-                "categ2": "Severo",
-                "categ": "Galaxia"
-            },
-            {
-                "cantidad": 17,
-                "estado": "Fresa",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "Nic2"
-            },
-            {
-                "cantidad": 36,
-                "estado": "Naranja",
-                "time": "julio 2012",
-                "categ2": "Moderado",
-                "categ": "Galaxia"
-            },
-            {
-                "cantidad": 19,
-                "estado": "Naranja",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "Nic2"
-            },
-            {
-                "cantidad": 13,
-                "estado": "Fresa",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "Canal2"
-            },
-            {
-                "cantidad": 16,
-                "estado": "Verde",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "Galaxia"
-            },
-            {
-                "cantidad": 16,
-                "estado": "Fresa",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "Nic3"
-            },
-            {
-                "cantidad": 15,
-                "estado": "Naranja",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "Canal2"
-            },
-            {
-                "cantidad": 31,
-                "estado": "Fresa",
-                "time": "julio 2019",
-                "categ2": "Moderado",
-                "categ": "La Castellana"
-            }
+                    "cantidad": 21,
+                    "estado": "Naranja",
+                    "time": "julio 2012",
+                    "categ2": "Moderado",
+                    "categ": "Ekisde",
+                },
+                {
+                    "cantidad": 2,
+                    "estado": "Naranja",
+                    "time": "julio 2019",
+                    "categ2": "Severo",
+                    "categ": "Nic"
+                },
+                {
+                    "cantidad": 14,
+                    "estado": "Fresa",
+                    "time": "julio 2019",
+                    "categ2": "Severo",
+                    "categ": "Galaxia"
+                },
+                {
+                    "cantidad": 17,
+                    "estado": "Fresa",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "Nic2"
+                },
+                {
+                    "cantidad": 36,
+                    "estado": "Naranja",
+                    "time": "julio 2012",
+                    "categ2": "Moderado",
+                    "categ": "Galaxia"
+                },
+                {
+                    "cantidad": 19,
+                    "estado": "Naranja",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "Nic2"
+                },
+                {
+                    "cantidad": 13,
+                    "estado": "Fresa",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "Canal2"
+                },
+                {
+                    "cantidad": 16,
+                    "estado": "Verde",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "Galaxia"
+                },
+                {
+                    "cantidad": 16,
+                    "estado": "Fresa",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "Nic3"
+                },
+                {
+                    "cantidad": 15,
+                    "estado": "Naranja",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "Canal2"
+                },
+                {
+                    "cantidad": 31,
+                    "estado": "Fresa",
+                    "time": "julio 2019",
+                    "categ2": "Moderado",
+                    "categ": "La Castellana"
+                }
             ],
         };
         var ConfigCards = {
-            Datasets: result.datos, /*DATOS DE LA TABLA*/
+            Datasets: result.datos,
+            /*DATOS DE LA TABLA*/
             paginate: false,
             Options: {
                 Search: true,
@@ -503,7 +523,8 @@ class TableCont {
                 // Add: true,
                 Delete: true,
                 UserActions: [{
-                    name: "Reservar", Function: (Param) => {
+                    name: "Reservar",
+                    Function: (Param) => {
                         alert("reserva");
                         console.log(Param)
                     }
@@ -528,8 +549,10 @@ class TableCont {
             props: { innerText: "Table DINAMIC MULTIOPTIONS........." },
         })
         var Config = {
-            Datasets: result.datos, /*DATOS DE LA TABLA*/
-            Colors: ["#ff6699", "#ffbb99", "#adebad"],/*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
+            Datasets: result.datos,
+            /*DATOS DE LA TABLA*/
+            Colors: ["#ff6699", "#ffbb99", "#adebad"],
+            /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
             //AttNameEval: "estado",
             //AttNameG1: "time",
@@ -537,16 +560,18 @@ class TableCont {
             //AttNameG3: "categ",            
             //EvalValue: "cantidad",
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
-            Dinamic: true,/*DEFINE LA TABLA DINAMICA*/
-            AddChart: true,/*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
+            Dinamic: true,
+            /*DEFINE LA TABLA DINAMICA*/
+            AddChart: true,
+            /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
             //paginate: false,
             Options: {
-                Search: true,//UrlSearch
+                Search: true, //UrlSearch
                 Show: true,
                 Edit: true, //UrlUpdate: "",
                 Select: true,
-                Add: true,//UrlAdd
-                Delete: true,//UrlDelete
+                Add: true, //UrlAdd
+                Delete: true, //UrlDelete
                 /* UserActions: [{name: "Reservar", Function: (Param)=>{
                      alert("reserva");
                      console.log(Param)
@@ -554,54 +579,54 @@ class TableCont {
             },
         };
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: Config
-            }
-        })
-        /*
-        this.children.push({
-            type: 'h2',
-            props: { innerText: "Table MDETAIL........." },
-        })       
-        var Config2 = {
-            MasterDetailTable: true,
-            AddItemsFromApi: {
-                Active: true,
-                ApiUrl: "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetPrueba",
-                Function: async (Param)=>{//ESTA FUNCION DEBE SER ASYNCRONA
-                    // SINO SE DEFINE UNA FUNCION DE RETORNO SE
-                    //  EJECUTA UNA FUNCION POST QUE RECIBE UN
-                    //  PARAMETRO LLAMADPO "Param" Y SE ENVIA UNA
-                    //  PETICION POST 
-                    console.log("function async");
-                    const ApiUrl = "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get";
-                    const Dataset = await WAjaxTools.PostRequest(
-                        ApiUrl,
-                        { tablename: "usuarios", Param: Param }
-                    );
-                    return Dataset.data;
+                type: "w-table",
+                props: {
+                    id: "table",
+                    TableConfig: Config
                 }
-            },
-            ModelObject: {
-                id_: 1,
-                content: "des",
-                cant: 3,
-                AttNameG1: "g1",
-                CATEG: ["value1", "value2"],
-                CATEG2: [{ id: "1", desc: "val1" }, { id: "2", desc: "val2" }],
-                fecha: "2020-01-01"
-            },
+            })
+            /*
+            this.children.push({
+                type: 'h2',
+                props: { innerText: "Table MDETAIL........." },
+            })       
+            var Config2 = {
+                MasterDetailTable: true,
+                AddItemsFromApi: {
+                    Active: true,
+                    ApiUrl: "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=GetPrueba",
+                    Function: async (Param)=>{//ESTA FUNCION DEBE SER ASYNCRONA
+                        // SINO SE DEFINE UNA FUNCION DE RETORNO SE
+                        //  EJECUTA UNA FUNCION POST QUE RECIBE UN
+                        //  PARAMETRO LLAMADPO "Param" Y SE ENVIA UNA
+                        //  PETICION POST 
+                        console.log("function async");
+                        const ApiUrl = "http://localhost:3020/wexpdev/MYPROYECT/Api/CatForm2.php/?function=Get";
+                        const Dataset = await WAjaxTools.PostRequest(
+                            ApiUrl,
+                            { tablename: "usuarios", Param: Param }
+                        );
+                        return Dataset.data;
+                    }
+                },
+                ModelObject: {
+                    id_: 1,
+                    content: "des",
+                    cant: 3,
+                    AttNameG1: "g1",
+                    CATEG: ["value1", "value2"],
+                    CATEG2: [{ id: "1", desc: "val1" }, { id: "2", desc: "val2" }],
+                    fecha: "2020-01-01"
+                },
 
-        }
-        this.children.push({
-            type: "w-table",
-            props: {
-                id: "table2",
-                TableConfig: Config2
             }
-        })*/
+            this.children.push({
+                type: "w-table",
+                props: {
+                    id: "table2",
+                    TableConfig: Config2
+                }
+            })*/
 
     }
 }
