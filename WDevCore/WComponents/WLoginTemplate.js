@@ -14,7 +14,7 @@ class WLoginTemplate extends HTMLElement {
     connectedCallback() {
         this.#LoginData.username = sessionStorage.getItem(this.id + "username");
         this.#LoginData.token = sessionStorage.getItem(this.id + "token");
-        
+
         this.innerHTML = "";
         this.childsContainer = WRender.createElement({ type: "div" });
         this.append(WRender.createElement(this.StyleLoginTemplate()));
@@ -37,10 +37,14 @@ class WLoginTemplate extends HTMLElement {
     LoginOptions() {
         if (this.LoginModel) {
             const InputLogin = {
-                type: 'button', props: {
-                    class: 'Btn', type: "button", onclick: async () => {
+                type: 'button',
+                props: {
+                    class: 'Btn',
+                    type: "button",
+                    onclick: async () => {
                         this.append(WRender.createElement({
-                            type: "w-modal-form", props: {
+                            type: "w-modal-form",
+                            props: {
                                 StyleForm: "columnX1",
                                 ObjectModel: this.LoginModel,
                                 ObjectOptions: {
@@ -62,7 +66,8 @@ class WLoginTemplate extends HTMLElement {
                             }
                         }));
                     }
-                }, children: ['Login In']
+                },
+                children: ['Login In']
             };
             this.childsContainer.append(WRender.createElement(InputLogin));
         }
@@ -70,10 +75,14 @@ class WLoginTemplate extends HTMLElement {
     RegisterOptions() {
         if (this.RegisterModel) {
             const InputRegister = {
-                type: 'button', props: {
-                    class: 'BtnSecundary', type: "button", onclick: async () => {
+                type: 'button',
+                props: {
+                    class: 'BtnSecundary',
+                    type: "button",
+                    onclick: async () => {
                         this.append(WRender.createElement({
-                            type: "w-modal-form", props: {
+                            type: "w-modal-form",
+                            props: {
                                 StyleForm: "columnX1",
                                 ObjectModel: this.RegisterModel,
                                 ObjectOptions: {
@@ -94,21 +103,23 @@ class WLoginTemplate extends HTMLElement {
                             }
                         }));
                     }
-                }, children: ['Register']
+                },
+                children: ['Register']
             };
             this.childsContainer.append(WRender.createElement(InputRegister));
         }
     }
     ////#endregion-------------------------------------------------------------------------
     DataLogin() {
-        this.childsContainer.append(WRender.createElement(
-            { type: "label", props: { innerText: this.#LoginData.username } }
-        ))
+        this.childsContainer.append(WRender.createElement({ type: "label", props: { innerText: this.#LoginData.username } }))
     }
     LogoutOptions() {
         const InputLogin = {
-            type: 'button', props: {
-                class: 'BtnRadio', type: "button", onclick: async () => {
+            type: 'button',
+            props: {
+                class: 'BtnRadio',
+                type: "button",
+                onclick: async () => {
                     if (this.LogoutFuncion) {
                         this.LoginFuncion();
                     } else {
@@ -120,7 +131,8 @@ class WLoginTemplate extends HTMLElement {
                     //sessionStorage.removeItem(this.id + "token");
                     //this.DrawComponent();
                 }
-            }, children: ['▼']
+            },
+            children: ['▼']
         };
         this.childsContainer.append(WRender.createElement(InputLogin));
     }
@@ -133,7 +145,7 @@ class WLoginTemplate extends HTMLElement {
                     new WCssClass(`#${this.id} label`, {
                         //"font-weight": "bold",
                         color: "#808080",
-                        padding: "10px", 
+                        padding: "10px",
                     }), new WCssClass(`#${this.id} .BtnRadio`, {
                         //"font-weight": "bold",
                         color: "#808080",
@@ -174,12 +186,11 @@ class WLoginTemplate extends HTMLElement {
                         "min-width": "20px",
                         "margin": "5px",
                     })
-                ], MediaQuery: [
-                    {
-                        condicion: "max-width: 800px", ClassList: [
-                        ]
-                    },
-                ]
+                ],
+                MediaQuery: [{
+                    condicion: "(max-width: 800px)",
+                    ClassList: []
+                },]
             }
         }
         return Style;

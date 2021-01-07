@@ -1,5 +1,5 @@
 //getAbsolutePath();
-WImports.importarStyle("Styles/AppStyles.css", Url_Path);
+//WImports.importarStyle("Styles/AppStyles.css", Url_Path);
 
 //var modules = null;
 function name() {

@@ -46,7 +46,9 @@ class WSlide extends HTMLElement {
     }
     TakeSlide = (element) => {
         const slide = {
-            type: "div", props: {}, children: []
+            type: "div",
+            props: {},
+            children: []
         }
         if (this.slideType == "videos") {
             const embed = { type: "div", props: {}, children: [] }
@@ -57,40 +59,50 @@ class WSlide extends HTMLElement {
             embed.props.class = "ModalVideo";
             slide.props.class = "videoSlide";
             const content = {
-                type: "div", props: { class: "content" }, children: [
+                type: "div",
+                props: { class: "content" },
+                children: [
                     { type: "h3", props: { innerText: element.title } },
-                   // { type: "p", props: { innerText: element.description } },
+                    // { type: "p", props: { innerText: element.description } },
                 ]
             }
             const image = { type: "img", props: { class: "embed", src: element.image } }
             const midlee = {
-                type: "div", props: { class: "middle" }, children: [
-                    {
-                        type: "input", props: {
-                            class: "text", type: "button", value: "Ver Vídeo", onclick: () => {
-                               // console.log(this)
-                                this.append(WRender.createElement({
-                                    type: "w-modal-form", props: {
-                                        id: "viewVideo" + this.id,
-                                        ObjectModal: embed
-                                    }
-                                }));
-                                /*
-                                setTimeout(() => {
-                                    DomComponent.modalFunction("viewVideo" + this.id)
-                                }, 100);
-                                */
-                            }
+                type: "div",
+                props: { class: "middle" },
+                children: [{
+                    type: "input",
+                    props: {
+                        class: "text",
+                        type: "button",
+                        value: "Ver Vídeo",
+                        onclick: () => {
+                            // console.log(this)
+                            this.append(WRender.createElement({
+                                type: "w-modal-form",
+                                props: {
+                                    id: "viewVideo" + this.id,
+                                    ObjectModal: embed
+                                }
+                            }));
+                            /*
+                            setTimeout(() => {
+                                DomComponent.modalFunction("viewVideo" + this.id)
+                            }, 100);
+                            */
                         }
-                    },
-                ]
+                    }
+                }, ]
             }
             slide.children.push({
-                type: "div", props: { class: "embed" }, children: [image, midlee]
-            })
-            //slide.children.push(image);
+                    type: "div",
+                    props: { class: "embed" },
+                    children: [image, midlee]
+                })
+                //slide.children.push(image);
             slide.children.push({
-                type: "div", props: { class: "videoSlideInfo" },
+                type: "div",
+                props: { class: "videoSlideInfo" },
                 children: [
                     content,
                     { type: "div", props: { class: "bg" } },
@@ -112,7 +124,7 @@ class WSlide extends HTMLElement {
     VideoViewer(url) {
 
     }
-    DrawSlide = async () => {
+    DrawSlide = async() => {
         let frag = { type: "div", props: { class: "slideshow-container" }, children: [] }
         let dotContainer = { type: "div", props: { class: "dot-container" }, children: [] }
         let Slides = this.TakeArray();
@@ -147,7 +159,7 @@ class WSlide extends HTMLElement {
         });
         this.append(WRender.createElement(frag), WRender.createElement(dotContainer));
     }
-    DrawForm = async () => {
+    DrawForm = async() => {
         const url = Url_Path + 'api/Form/GetForm?idform=' + this.idform[0];
         this.data = await GetRequest(url);
         let frag = { type: "div", props: { class: "slideshow-container" }, children: [FormStyle] }
@@ -176,21 +188,21 @@ class WSlide extends HTMLElement {
                     type: "div",
                     props: { class: "divOption" },
                     children: [{
-                        type: "label",
-                        props: {
-                            for: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`
+                            type: "label",
+                            props: {
+                                for: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`
+                            },
+                            children: [pregOption.OptionDesc]
                         },
-                        children: [pregOption.OptionDesc]
-                    },
-                    {
-                        type: "input",
-                        props: {
-                            type: typeOption,
-                            id: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`,
-                            name: `preg${preg.IdQuestion}`,
-                            value: pregOption.Value
+                        {
+                            type: "input",
+                            props: {
+                                type: typeOption,
+                                id: `preg${preg.IdQuestion}_${pregOption.IdQuestionOption}`,
+                                name: `preg${preg.IdQuestion}`,
+                                value: pregOption.Value
+                            }
                         }
-                    }
                     ]
                 })
             });
@@ -420,15 +432,20 @@ class WSlide extends HTMLElement {
                         "z-index": 1,
                     }),
 
-                ], MediaQuery: [{
-                    condicion: "max-width: 700px", ClassList: [
+                ],
+                MediaQuery: [{
+                    condicion: "max-width: 700px",
+                    ClassList: [
                         new WCssClass(Id + "w-slide .videoSlide", {
                             display: "flex",
                             "flex-direction": "column",
                         }),
                         new WCssClass(Id + "w-slide .videoSlideInfo", {
-                            height: "100px", "z-index": 1, position: "absolute"
-                            , bottom: 0, display: "none"
+                            height: "100px",
+                            "z-index": 1,
+                            position: "absolute",
+                            bottom: 0,
+                            display: "none"
                         }),
                         new WCssClass(Id + "w-slide .embed", {
                             "max-width": "100%"
@@ -437,15 +454,17 @@ class WSlide extends HTMLElement {
                             "background-color": "rgba(255,255,255,0.3)"
                         }),
                     ]
-                }], KeyFrame: {
-                    animate: "slide", ClassList: [
+                }],
+                KeyFrame: [{
+                    animate: "slide",
+                    ClassList: [
                         new WCssClass("0%", {
                             transform: "translateX(-25%)"
                         }), new WCssClass("100%", {
                             transform: "translateX(25%)"
                         })
                     ]
-                }
+                }]
             }
         }
         return WSlideStyle;

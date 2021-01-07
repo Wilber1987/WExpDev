@@ -1,65 +1,4 @@
 import { WRender } from "./WComponentsTools.js";
-
-class WStyledRender extends HTMLElement {
-    constructor() {
-        super();
-    }
-    attributeChangedCallBack() {
-        this.DrawStyle();
-    }
-    connectedCallback() {
-        if (this.innerHTML != "") {
-            return;
-        }
-        this.DrawStyle();
-    }
-    DrawStyle() {
-        let styleFrag = {
-            type: "style",
-            props: {},
-            children: []
-        }
-        if (this.ClassList) {
-            styleFrag.children.push(this.DrawClassList(this.ClassList));
-        }
-        if (this.MediaQuery) {
-            this.MediaQuery.forEach(MediaQ => {
-                //console.log(MediaQ)
-                let MediaQuery = `@media(${MediaQ.condicion}){
-                    ${this.DrawClassList(MediaQ.ClassList)}
-                }`;
-                styleFrag.children.push(MediaQuery);                
-            });            
-        }
-        if (this.KeyFrame) {
-            let KeyFrame = `@keyframes ${this.KeyFrame.animate} {
-                ${this.DrawClassList(this.KeyFrame.ClassList)}
-            }`;
-            styleFrag.children.push(KeyFrame);
-        }
-        this.append(WRender.createElement(styleFrag));
-    }
-    DrawClassList(ClassList) {
-        let bodyStyle = "";
-        ClassList.forEach(Class => {
-            let bodyClass = ""
-            let index = 0;
-            for (const prop in Class.CSSProps) {
-                bodyClass = bodyClass + `${prop}: ${Class.CSSProps[prop]};`;
-                index++;
-            }
-            bodyClass = `${Class.Name} {${bodyClass}}`;
-            bodyStyle = bodyStyle + bodyClass;
-        });
-        return bodyStyle;
-    }
-}
-class WCssClass {
-    constructor(ClassName, PropsList = (new CSSProps())) {
-        this.Name = ClassName;
-        this.CSSProps = PropsList;
-    }
-}
 class CSSProps {
     "align-content" = null;
     "align-items" = null;
@@ -249,5 +188,67 @@ class CSSProps {
     "border-bottom" = null;
     "box-shadow" = "";
 }
+class WCssClass {
+    constructor(ClassName, PropsList = (new CSSProps())) {
+        this.Name = ClassName;
+        this.CSSProps = PropsList;
+    }
+}
+class WStyledRender extends HTMLElement {
+    constructor() {
+        super();       
+    }
+    attributeChangedCallBack() {
+        this.DrawStyle();
+    }
+    connectedCallback() {
+        if (this.innerHTML != "") {
+            return;
+        }
+        this.DrawStyle();
+        this.style.display = "none";
+    }
+    DrawStyle() {
+        let styleFrag = {
+            type: "style",
+            props: {},
+            children: []
+        }
+        if (this.ClassList != undefined && this.ClassList.__proto__ == Array.prototype) {
+            styleFrag.children.push(this.DrawClassList(this.ClassList));
+        }
+        if (this.MediaQuery != undefined && this.MediaQuery.__proto__ == Array.prototype) {
+            this.MediaQuery.forEach(MediaQ => {
+                let MediaQuery = `@media ${MediaQ.condicion}{
+                    ${this.DrawClassList(MediaQ.ClassList)}
+                }`;
+                styleFrag.children.push(MediaQuery);
+            });
+        }
+        if (this.KeyFrame != undefined && this.KeyFrame.__proto__ == Array.prototype) {
+            this.KeyFrame.forEach(KeyF => {
+                let KeyFrame = `@keyframes ${KeyF.animate} {
+                    ${this.DrawClassList(KeyF.ClassList)}
+                }`;
+                styleFrag.children.push(KeyFrame);
+            });
+        }
+        this.append(WRender.createElement(styleFrag));
+    }
+    DrawClassList(ClassList) {
+        let bodyStyle = "";
+        ClassList.forEach(Class => {
+            let bodyClass = "";
+            if (Class.__proto__ == WCssClass.prototype) {
+                for (const prop in Class.CSSProps) {
+                    bodyClass = bodyClass + `${prop}: ${Class.CSSProps[prop]};`;
+                }
+                bodyClass = `${Class.Name} {${bodyClass}}`;
+                bodyStyle = bodyStyle + bodyClass;
+            }
+        });
+        return bodyStyle;
+    }
+}
 customElements.define("w-style", WStyledRender);
-export { WCssClass, CSSProps };
+export { WCssClass };

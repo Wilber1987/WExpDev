@@ -57,6 +57,7 @@ main {
   overflow-y: auto;
   bottom: 50px;
   background-color: #f8f9fb;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .DivSection{
   padding: 15px;

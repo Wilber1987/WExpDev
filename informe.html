@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="./informe.js" type="module"></script>  
-   
+    <title>Document</title>   
+    <script>
+        document.onload = ()=>{
+            const h1 = document.createElement("h1");
+            h1.innerText = "HOLA MUNDO";
+            App.append(h1);
+        }
+    </script>
 </head>
-<body id="root">    
+<body id="App">        
 </body>
 </html>
