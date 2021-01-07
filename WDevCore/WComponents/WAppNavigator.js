@@ -29,11 +29,17 @@ class WAppNavigator extends HTMLElement {
             }
             const elementNav = {
                 type: "a",
-                props: { innerText: element.name, href: element.url }
+                props: {class: "elementNav", innerText: element.name, href: element.url }
             }
-            if (element.action != undefined) {
-                elementNav.props.onclick = element.action;
-            }
+            elementNav.props.onclick = (ev)=>{               
+                this.shadowRoot.querySelectorAll(".elementNavActive").forEach(elementNavActive => {
+                    elementNavActive.className = "elementNav";
+                });
+                ev.target.className = "elementNavActive";
+                if (element.action != undefined) {
+                    element.action(ev);
+                }
+            }             
             if (element.SubNav != undefined) {
                 elementNav.href = null;
                 const SubMenuId = "SubMenu" + Index + this.id;
@@ -87,11 +93,24 @@ class WAppNavigator extends HTMLElement {
                     new WCssClass(`nav`, {
                         display: "flex",
                         "flex-direction": navDirection,
-                    }), new WCssClass(` a`, {
+                        padding: "10px",
+                    }), new WCssClass(`.elementNav`, {
                         "text-decoration": "none",
                         color: "#444444",
-                        "font-weight": "bold"
-                    }), new WCssClass(` UnDisplayMenu`, {
+                        padding: "10px",
+                        "border-bottom": "solid 1px #eee",
+                        transition: "all 0.6s"
+                    }),  new WCssClass(`.elementNavActive`, {                        
+                        "text-decoration": "none",
+                        color: "#444444",
+                        padding: "10px",
+                        "border-bottom": "solid 1px #4da6ff",
+                        transition: "all 0.6s"
+                    }), new WCssClass(`.elementNav:hover`, {
+                        "border-bottom": "solid 1px #444444"                     
+                    }), 
+                    //Estilos de submenu
+                    new WCssClass(` UnDisplayMenu`, {
                         overflow: "hidden",
                         "max-height": "0px"
                     }), new WCssClass(` DisplayMenu`, {

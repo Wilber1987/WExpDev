@@ -218,10 +218,8 @@ class DomComponent {
         };
     }
     NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
-        //console.log(this.NavForm);
         const ContainerNavigate = document.querySelector("#" + ContainerName);
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
-        console.log(Nodes)
         Nodes.forEach((node) => {
             if (node.id != IdComponent) {
                 this.NavForm[node.id] = node;

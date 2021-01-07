@@ -1,7 +1,7 @@
-import { DomComponent, WAjaxTools } from "./WDevCore/WModules/WComponentsTools.js";
+import { DomComponent, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 import { Modules } from "./Modules/Modules.js";
-import  DocumentView  from "./Modules/DocumentView.js";
+import DocumentView from "./Modules/DocumentView.js";
 const DOMManager = new DomComponent();
 class MasterDomClass extends DomComponent {
     constructor() {
@@ -12,16 +12,63 @@ class MasterDomClass extends DomComponent {
             new AsideClass(),
             new MainClass(),
             new FooterClass(),
-            MasterStyle
+            this.MasterStyle
         ];
     }
+    MasterStyle = {
+        type: "w-style",
+        props: {
+            ClassList: [
+                new WCssClass(".App", {
+                    display: "grid",
+                    "grid-template-columns": "250px calc(100% - 250px)",
+                    "grid-template-rows": "70px calc(100vh - 120px) 50px"
+                }), new WCssClass(".AppHeader", {
+                    "grid-column": "1/3",
+                    "background-color": "#eee",
+                    "border-bottom": "solid #4da6ff 10px"
+                }), new WCssClass(".AppAside", {
+                    "border-right": "solid #999999 1px"
+                }), new WCssClass(".AppMain", {
+                }), new WCssClass(".AppFooter", {
+                    "grid-column": "1/3",
+                    "background-color": "#eee",
+                    "border-top": "solid #999999 5px"
+                }), new WCssClass("body", {
+                    padding: "0px",
+                    margin: "0px",
+                    "font-family": "Arial, Helvetica, sans-serif"
+                }),
+            ]
+        }
+    };
 }
 class headerClass {
     constructor() {
         this.type = "header";
         this.props = { className: "AppHeader" }
-        this.children = [{ type: 'label', props: { innerText: "WExpDev" } }];
+        this.children = [
+            this.Style,
+            { type: 'img', props: { src: "./Media/logo.png" } },
+            //{ type: 'label', props: { innerText: "WEXPDEV" } },
+        ];
     }
+    Style = {
+        type: "w-style",
+        props: {
+            ClassList: [
+                new WCssClass(".AppHeader", {
+                    display: "flex",
+                    "justify-content": "right",
+                    "align-items": "center",
+                    padding: "0px 40px"
+                }), new WCssClass(".AppHeader img", {
+                    display: "block",
+                    height: "100%"
+                }),
+            ]
+        }
+    };
 }
 class AsideClass {
     constructor() {
@@ -36,46 +83,62 @@ class AsideClass {
             Elements: [
                 {
                     name: "Intro", url: "#",
-                    action: () => { this.Navigate("Intro") }
+                    action: (ev) => { this.Navigate("Intro", "1_WExpDev_intro.pdf", ev.target.innerText) }
                 },
                 {
                     name: "Estructrura del Proyecto", url: "#",
-                    action: () => { this.Navigate("Estructura") }
+                    action: (ev) => { this.Navigate("Estructura", "2_WExpDev_estructura.pdf", ev.target.innerText) }
                 },
                 {
                     name: "WebComponents", url: "#",
-                    action: () => { this.Navigate("WebComponents") }
+                    action: (ev) => { this.Navigate("WebComponents", "3_WExpDev_webcomponents.pdf", ev.target.innerText) }
                 },
                 {
                     name: "Renderizado Estructurado", url: "#",
-                    action: () => { this.Navigate("Renderizado") }
+                    action: (ev) => { this.Navigate("Renderizado", "4_WExpDev_renderizadoestructurado.pdf", ev.target.innerText) }
+                },
+                {
+                    name: "ES6 Modules", url: "#",
+                    action: (ev) => { this.Navigate("ES6", "5_WExpDev_es6modules.pdf", ev.target.innerText) }
+                },
+                {
+                    name: "CSS in JS", url: "#",
+                    action: (ev) => { this.Navigate("css_in_js", "6_WExpDev_css_js.pdf", ev.target.innerText) }
+                },
+                {
+                    name: "Peticiones con FETCH", url: "#",
+                    action: (ev) => { this.Navigate("fetch", "7_WExpDev_peticionesAjax.pdf", ev.target.innerText) }
                 },
             ]
         }
     }
-    Navigate = (name = "Intro") => {
-        let pdf = "1_intro.pdf";
-        switch (name) {
-            case "Intro":
-                pdf = "1_intro.pdf";
-                break;
-            case "Estructura":
-                pdf = "1_intro.pdf";
-                break;
-            case "WebComponents":
-                pdf = "1_intro.pdf";
-                break;
-            case "Renderizado":
-                pdf = "1_intro.pdf";
-                break;
-            case "Intro":
-                pdf = "1_intro.pdf";
-                break;
-            default:
-                break;
-        }
-        const DocURL = "" + pdf;
-        DOMManager.NavigateFunction(name, new DocumentView({id: name, docUrl: DocURL }), "AppMain");
+    Navigate = async (name = "Intro", pdf, title) => {
+        const DocURL = "./Media/DOCS/" + pdf;
+        const PDF2 = WRender.createElement({
+            type: "object", props: {
+                type: "application/pdf",
+                data: DocURL
+            }
+        });
+        //console.log(PDF2.data)
+        //let blob = await fetch(DocURL).then(r => r.blob());
+        //console.log(blob)
+        //this.convertToBase64(blob);
+        DOMManager.NavigateFunction(name, new DocumentView({ id: name }, PDF2, title), "AppMain");
+    }
+    convertToBase64(PDF) {
+        var fileToLoad = PDF;
+        // FileReader function for read the file.
+        var fileReader = new FileReader();
+        var base64;
+        // Onload of file read the file content
+        fileReader.onload = function (fileLoadedEvent) {
+            base64 = fileLoadedEvent.target.result;
+            // Print data in console
+            console.log(base64);
+        };
+        // Convert data to base64
+        fileReader.readAsDataURL(fileToLoad);
     }
 }
 class MainClass {
@@ -89,32 +152,22 @@ class FooterClass {
     constructor() {
         this.type = "footer";
         this.props = { className: "AppFooter" }
-        this.children = [{ type: 'label', props: { innerText: "WExpDev" } }];
+        this.children = [this.Style, { type: 'label', 
+        props: { innerText: "Derechos reservados" } }];
     }
+    Style = {
+        type: "w-style",
+        props: {
+            ClassList: [
+                new WCssClass(".AppFooter", {
+                    display: "flex",
+                    "justify-content": "center",
+                    "align-items": "center",
+                })
+            ]
+        }
+    };
 }
-const MasterStyle = {
-    type: "w-style",
-    props: {
-        ClassList: [
-            new WCssClass(".App", {
-                display: "grid",
-                "grid-template-columns": "200px calc(100% - 200px)",
-                "grid-template-rows": "70px calc(100vh - 120px) 50px"
-            }), new WCssClass(".AppHeader", {
-                "grid-column": "1/3", "background-color": "#eee"
-            }), new WCssClass(".AppAside", {
-                "background-color": "#eee"
-            }), new WCssClass(".AppMain", {
-                "background-color": "#eee"
-            }), new WCssClass(".AppFooter", {
-                "grid-column": "1/3", "background-color": "#eee"
-            }), new WCssClass("body", {
-                padding: "0px",
-                margin: "0px"
-            }),
-        ]
-    }
-};
 class MyNavigator extends DomComponent {
     constructor(props) {
         super();
