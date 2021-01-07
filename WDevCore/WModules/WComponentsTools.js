@@ -221,6 +221,7 @@ class DomComponent {
         //console.log(this.NavForm);
         const ContainerNavigate = document.querySelector("#" + ContainerName);
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
+        console.log(Nodes)
         Nodes.forEach((node) => {
             if (node.id != IdComponent) {
                 this.NavForm[node.id] = node;
@@ -235,6 +236,7 @@ class DomComponent {
                 return;
             }
             const NewChild = WRender.createElement(ComponentsInstance);
+            NewChild.className = NewChild.className + " DivContainer";
             this.NavForm[IdComponent] = NewChild;
             ContainerNavigate.append(NewChild);
             return;
