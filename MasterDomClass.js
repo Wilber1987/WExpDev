@@ -104,30 +104,27 @@ class AsideClass {
                 {
                     name: "Inicio", url: "#",
                     action: (ev) => { this.Navigate("Inicio", "1_WExpDev_intro.pdf", ev.target.innerText) }
-                },
-                {
+                }, {
                     name: "Estructrura del Proyecto", url: "#",
                     action: (ev) => { this.Navigate("Estructura", "2_WExpDev_estructura.pdf", ev.target.innerText) }
-                },
-                {
+                }, {
                     name: "WebComponents", url: "#",
                     action: (ev) => { this.Navigate("WebComponents", "3_WExpDev_webcomponents.pdf", ev.target.innerText) }
-                },
-                {
+                }, {
                     name: "Renderizado Estructurado", url: "#",
                     action: (ev) => { this.Navigate("Renderizado", "4_WExpDev_renderizadoestructurado.pdf", ev.target.innerText) }
-                },
-                {
+                }, {
                     name: "ES6 Modules", url: "#",
                     action: (ev) => { this.Navigate("ES6", "5_WExpDev_es6modules.pdf", ev.target.innerText) }
-                },
-                {
+                }, {
                     name: "CSS in JS", url: "#",
                     action: (ev) => { this.Navigate("css_in_js", "6_WExpDev_css_js.pdf", ev.target.innerText) }
-                },
-                {
+                }, {
                     name: "Peticiones con FETCH", url: "#",
                     action: (ev) => { this.Navigate("fetch", "7_WExpDev_peticionesAjax.pdf", ev.target.innerText) }
+                }, {
+                    name: "Interfaces dinámicas OPA", url: "#",
+                    action: (ev) => { this.Navigate("opa", "8_WExpDev_opApp.pdf", ev.target.innerText) }
                 },
             ]
         }
