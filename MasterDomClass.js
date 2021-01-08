@@ -1,9 +1,9 @@
-import { DomComponent, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
+import { ComponentsManager, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 import { Modules } from "./Modules/Modules.js";
 import DocumentView from "./Modules/DocumentView.js";
-const DOMManager = new DomComponent();
-class MasterDomClass extends DomComponent {
+const DOMManager = new ComponentsManager();
+class MasterDomClass extends ComponentsManager {
     constructor() {
         super();
         this.props = { className: "App" }
@@ -98,7 +98,7 @@ class AsideClass {
     #WNav = {
         type: "w-app-navigator",
         props: {
-            Direction: "column",
+            Direction: "column", id: "AppNav",
             title: "Documentación",
             Elements: [
                 {
@@ -213,7 +213,7 @@ class FooterClass {
         }
     };
 }
-class MyNavigator extends DomComponent {
+class MyNavigator extends ComponentsManager {
     constructor(props) {
         super();
         this.props = props;
@@ -260,7 +260,7 @@ class MyNavigator extends DomComponent {
         ]
     }];
 }
-class FooterNavigator extends DomComponent {
+class FooterNavigator extends ComponentsManager {
     constructor(props) {
         super();
         this.props = props;

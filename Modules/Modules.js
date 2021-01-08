@@ -3,7 +3,7 @@ import "../WDevCore/WComponents/WSlide.js";
 import "../WDevCore/WComponents/WRichText.js";
 import "../WDevCore/WComponents/WTableComponents.js";
 import "../WDevCore/WComponents/WAppNavigator.js";
-import { DomComponent, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
+import { ComponentsManager, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
 //DEFINICION DE TABLAS
 const Data = [
     { id: 1, Category: "Category 3", Type: "Type 1", Time: "2020-01-01", Value: 35 },
@@ -18,7 +18,7 @@ const Data = [
     { id: 10, Category: "Category 3", Type: "Type 5", Time: "2020-03-01", Value: 98 },
     { id: 11, Category: "Category 1", Type: "Type 3", Time: "2020-02-01", Value: 40 },
 ];
-class Modules extends DomComponent {
+class Modules extends ComponentsManager {
     constructor(props) {
         super();       
         this.type = "div";

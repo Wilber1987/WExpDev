@@ -1,4 +1,4 @@
-import { WRender, DomComponent } from "../WModules/WComponentsTools.js";
+import { WRender, ComponentsManager } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import "./WModalForm.js"
 class WSlide extends HTMLElement {
@@ -87,7 +87,7 @@ class WSlide extends HTMLElement {
                             }));
                             /*
                             setTimeout(() => {
-                                DomComponent.modalFunction("viewVideo" + this.id)
+                                ComponentsManager.modalFunction("viewVideo" + this.id)
                             }, 100);
                             */
                         }

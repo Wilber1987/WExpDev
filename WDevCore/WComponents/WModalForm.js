@@ -1,4 +1,4 @@
-import { WRender, WAjaxTools, DomComponent } from "../WModules/WComponentsTools.js";
+import { WRender, WAjaxTools, ComponentsManager } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 let photoB64;
 class WModalForm extends HTMLElement {
@@ -71,7 +71,7 @@ class WModalForm extends HTMLElement {
             }
         }
         this.append(WRender.createElement(this.Modal));
-        DomComponent.modalFunction(this)
+        ComponentsManager.modalFunction(this)
     }
     DrawModalHead() {
         if (this.HeadOptions == false) {
@@ -83,7 +83,7 @@ class WModalForm extends HTMLElement {
                 class: 'Btn',
                 type: "button",
                 onclick: () => {
-                    DomComponent.modalFunction(this);
+                    ComponentsManager.modalFunction(this);
                     setTimeout(() => {
                         this.parentNode.removeChild(this);
                     }, 1000);
@@ -269,7 +269,7 @@ class WModalForm extends HTMLElement {
                             console.log(response);
                         }
                         //console.log(Object);
-                        DomComponent.modalFunction(this);
+                        ComponentsManager.modalFunction(this);
                         setTimeout(() => {
                             this.parentNode.removeChild(this);
                         }, 1000);
