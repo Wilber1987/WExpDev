@@ -1,4 +1,4 @@
-import { WRender, WArrayF, DomComponent, WAjaxTools } from "../WModules/WComponentsTools.js";
+import { WRender, WArrayF, ComponentsManager, WAjaxTools } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import "./WChartJSComponent.js";
 import "./WModalForm.js";
@@ -843,7 +843,7 @@ class WTableComponent extends HTMLElement {
                         innerText: "»",
                         class: "btn",
                         onclick: () => {
-                            DomComponent.DisplayAcorden("TableOptions" + this.id, 38);
+                            ComponentsManager.DisplayAcorden("TableOptions" + this.id, 38);
                         }
                     }
                 }]

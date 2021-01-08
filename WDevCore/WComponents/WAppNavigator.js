@@ -1,4 +1,4 @@
-import { WRender, DomComponent } from "../WModules/WComponentsTools.js";
+import { WRender, ComponentsManager } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 class WAppNavigator extends HTMLElement {
     constructor() {
@@ -9,7 +9,7 @@ class WAppNavigator extends HTMLElement {
         this.DrawAppNavigator();
     }
     connectedCallback() {
-        if (this.innerHTML != "") {
+        if (this.shadowRoot.innerHTML != "") {
             return;
         }
         if (this.id == undefined) {
@@ -20,18 +20,18 @@ class WAppNavigator extends HTMLElement {
     }
     DrawAppNavigator() {
         const header = {
-            type: "header", children: [{
+            type: "header", props: { onclick: () => {
+                const nav = this.shadowRoot.querySelector("#MainNav");
+                if (nav.className == "navActive") {
+                    nav.className = "";
+                } else {
+                    nav.className = "navActive";
+                }
+            }}, children: [{
                 type: "label", props: {
                     //innerText: "☰",
                     innerText: "⮟",
-                    class: "DisplayBtn", onclick: () => {
-                        const nav = this.shadowRoot.querySelector("#MainNav");
-                        if (nav.className == "navActive") {
-                            nav.className = "";
-                        } else {
-                            nav.className = "navActive";
-                        }
-                    }
+                    class: "DisplayBtn",
                 }, children: []
             }]
         }

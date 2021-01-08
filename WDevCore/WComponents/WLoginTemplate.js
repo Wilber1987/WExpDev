@@ -1,4 +1,4 @@
-﻿import { WRender, WAjaxTools, DomComponent } from "../WModules/WComponentsTools.js";
+﻿import { WRender, WAjaxTools, ComponentsManager } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import "../WComponents/WModalForm.js";
 let photoB64;

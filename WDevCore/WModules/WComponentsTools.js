@@ -129,10 +129,12 @@ class WAjaxTools {
         return JSON.parse(responseLocal);
     }
 }
+
+
 class WRender {
     static CreateStringNode = (string) => {
-        let node = document.createRange().createContextualFragment(string);
-        return node;
+        let node = document.createRange().createContextualFragment(string);        
+        return node.childNodes[0];
     }
     static createElement = (Node) => {
         try {
@@ -140,7 +142,8 @@ class WRender {
                 return document.createTextNode("Nodo nulo o indefinido.");
             } else if (typeof Node === "string" || typeof Node === "number") {
                 return document.createTextNode(Node);
-            } else if (Node.__proto__.__proto__ === HTMLElement.prototype) {
+            } else if (Node.__proto__ === HTMLElement.prototype 
+                || Node.__proto__.__proto__ === HTMLElement.prototype) {
                 return Node;
             } else {
                 const element = document.createElement(Node.type);
@@ -209,90 +212,57 @@ class WRender {
         }
     }
 }
-class DomComponent {
+
+class ComponentsManager {
     constructor() {
-        this.NavForm = [];
+        this.DomComponents = [];
         this.type = "div";
         this.props = {
             class: "MyForm"
         };
     }
-    NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
+    NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName) => {
         const ContainerNavigate = document.querySelector("#" + ContainerName);
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
+        console.log(Nodes)
         Nodes.forEach((node) => {
             if (node.id != IdComponent) {
-                this.NavForm[node.id] = node;
+                console.log(node)
+                this.DomComponents[node.id] = node;
                 if (ContainerNavigate.querySelector("#" + node.id)) {
                     ContainerNavigate.removeChild(node);
                 }
             }
         });
         if (!ContainerNavigate.querySelector("#" + IdComponent)) {
-            if (typeof this.NavForm[IdComponent] != "undefined") {
-                ContainerNavigate.append(this.NavForm[IdComponent]);
+            if (typeof this.DomComponents[IdComponent] != "undefined") {
+                ContainerNavigate.append(this.DomComponents[IdComponent]);
                 return;
-            }
-            const NewChild = WRender.createElement(ComponentsInstance);
-            NewChild.className = NewChild.className + " DivContainer";
-            this.NavForm[IdComponent] = NewChild;
-            ContainerNavigate.append(NewChild);
-            return;
+            } else {               
+                const NewChild = WRender.createElement(ComponentsInstance);
+                NewChild.id = IdComponent;
+                NewChild.className = NewChild.className + " DivContainer";
+                this.DomComponents[IdComponent] = NewChild;
+                ContainerNavigate.append(NewChild);
+                return;
+            }            
         }
     }
-    ModalNavigateFunction = async (IdComponent, ComponentsInstance, ContainerName = "ContainerNavigate") => {
+    AddComponent = async(IdComponent, ComponentsInstance, ContainerName, order = "last") => {
         const ContainerNavigate = document.querySelector("#" + ContainerName);
-        if (!ContainerNavigate.querySelector("#" + IdComponent)) {
-            if (typeof this.NavForm[IdComponent] != "undefined") {
-                ContainerNavigate.append(this.NavForm[IdComponent]);
-                setTimeout(
-                    () => {
-                        this.modalFunction(this.NavForm[IdComponent].id);
-                    }, 100
-                );
-                return;
-            }
-            this.NavForm[IdComponent] = WRender.createElement(ComponentsInstance);
-            ContainerNavigate.append(this.NavForm[IdComponent]);
-            setTimeout(
-                () => {
-                    this.modalFunction(this.NavForm[IdComponent].id);
-                }, 100
-            );
+        if (ContainerNavigate.querySelector("#" + IdComponent)) {
+            window.location = "#" + IdComponent;
             return;
         } else {
-            this.NavForm[IdComponent] = ContainerNavigate.querySelector("#" + IdComponent);
-            this.modalFunction(this.NavForm[IdComponent].id);
-            setTimeout(
-                () => {
-                    ContainerNavigate.removeChild(this.NavForm[IdComponent]);
-                }, 1000
-            );
-        }
-    }
-    _DispalNav(NavContainerId, NavAnimation) {
-        let NavContainer = document.querySelector("#" + NavContainerId);
-        let Nav = NavContainer.querySelector("ul");
-        NavContainer.style.transition = "all 1s";
-        Nav.style.transition = "all 1s";
-        Nav.style.webkitTransform = "translateX(-100%)";
-        if (NavContainer.style.opacity == 0) {
-            NavContainer.style.pointerEvents = "all";
-            NavContainer.style.opacity = 1;
-            if (NavAnimation == "SlideLeft") {
-                Nav.style.webkitTransform = "translateX(0%)";
-            }
-            if (NavAnimation == "SlideRight") {
-                Nav.style.webkitTransform = "translateX(0%)";
-            }
-        } else {
-            NavContainer.style.pointerEvents = "none";
-            NavContainer.style.opacity = 0;
-            if (NavAnimation == "SlideLeft") {
-                Nav.style.webkitTransform = "translateX(-100%)";
-            }
-            if (NavAnimation == "SlideRight") {
-                Nav.style.webkitTransform = "translateX(+100%)";
+            const NewChild = WRender.createElement(ComponentsInstance);
+            NewChild.className = NewChild.className + " AddComponent";
+            NewChild.id = IdComponent;
+            this.DomComponents[IdComponent] = NewChild;
+            if (order == "last") {
+                ContainerNavigate.append(NewChild);
+                return;
+            } else if (order == "first") {
+                ContainerNavigate.insertBefore(NewChild, ContainerNavigate.firstElementChild);
             }
         }
     }
@@ -345,6 +315,8 @@ class DomComponent {
         }
     }
 }
+
+
 class WArrayF {
     static orderByDate(Arry, type) {
         var meses = [
@@ -552,4 +524,60 @@ class WArrayF {
 
 }
 
-export { WAjaxTools, WRender, DomComponent, WArrayF, type }
+function _DispalNav(NavContainerId, NavAnimation) {
+    let NavContainer = document.querySelector("#" + NavContainerId);
+    let Nav = NavContainer.querySelector("ul");
+    NavContainer.style.transition = "all 1s";
+    Nav.style.transition = "all 1s";
+    Nav.style.webkitTransform = "translateX(-100%)";
+    if (NavContainer.style.opacity == 0) {
+        NavContainer.style.pointerEvents = "all";
+        NavContainer.style.opacity = 1;
+        if (NavAnimation == "SlideLeft") {
+            Nav.style.webkitTransform = "translateX(0%)";
+        }
+        if (NavAnimation == "SlideRight") {
+            Nav.style.webkitTransform = "translateX(0%)";
+        }
+    } else {
+        NavContainer.style.pointerEvents = "none";
+        NavContainer.style.opacity = 0;
+        if (NavAnimation == "SlideLeft") {
+            Nav.style.webkitTransform = "translateX(-100%)";
+        }
+        if (NavAnimation == "SlideRight") {
+            Nav.style.webkitTransform = "translateX(+100%)";
+        }
+    }
+}
+const ModalNavigateFunction = async (IdComponent, ComponentsInstance, ContainerName) => {
+    const ContainerNavigate = document.querySelector("#" + ContainerName);
+    if (!ContainerNavigate.querySelector("#" + IdComponent)) {
+        if (typeof this.DomComponents[IdComponent] != "undefined") {
+            ContainerNavigate.append(this.DomComponents[IdComponent]);
+            setTimeout(
+                () => {
+                    this.modalFunction(this.DomComponents[IdComponent].id);
+                }, 100
+            );
+            return;
+        }
+        this.DomComponents[IdComponent] = WRender.createElement(ComponentsInstance);
+        ContainerNavigate.append(this.DomComponents[IdComponent]);
+        setTimeout(
+            () => {
+                this.modalFunction(this.DomComponents[IdComponent].id);
+            }, 100
+        );
+        return;
+    } else {
+        this.DomComponents[IdComponent] = ContainerNavigate.querySelector("#" + IdComponent);
+        this.modalFunction(this.DomComponents[IdComponent].id);
+        setTimeout(
+            () => {
+                ContainerNavigate.removeChild(this.DomComponents[IdComponent]);
+            }, 1000
+        );
+    }
+}  
+export { WAjaxTools, WRender, ComponentsManager, WArrayF, type }
