@@ -30,15 +30,34 @@ class MasterDomClass extends DomComponent {
                 }), new WCssClass(".AppAside", {
                     "border-right": "solid #999999 1px"
                 }), new WCssClass(".AppMain", {
+                    overflow: "auto"
                 }), new WCssClass(".AppFooter", {
                     "grid-column": "1/3",
                     "background-color": "#eee",
-                    "border-top": "solid #999999 5px"
+                    "border-top": "solid #4da6ff 5px"
                 }), new WCssClass("body", {
                     padding: "0px",
                     margin: "0px",
                     "font-family": "Arial, Helvetica, sans-serif"
                 }),
+            ], MediaQuery: [{
+                condicion: "(max-width: 600px)",
+                ClassList: [
+                    new WCssClass(`.App`, {
+                        display: "grid",
+                        "grid-template-columns": "100%",
+                        "grid-template-rows": "70px auto calc(100vh - 120px) 50px"
+                    }), new WCssClass(".AppHeader", {
+                        "grid-column": "1/auto",
+                        "background-color": "#eee",
+                        "border-bottom": "solid #4da6ff 10px",
+                    }), new WCssClass(".AppFooter", {
+                        "grid-column": "1/auto",
+                        "background-color": "#eee",
+                        "border-top": "solid #4da6ff 5px"
+                    }),
+                ]
+            }
             ]
         }
     };
@@ -74,16 +93,17 @@ class AsideClass {
     constructor() {
         this.type = "aside";
         this.props = { className: "AppAside" }
-        this.children = [this.#WNav];
+        this.children = [this.#WNav, this.WNavComponents];
     }
     #WNav = {
         type: "w-app-navigator",
         props: {
             Direction: "column",
+            title: "Documentación",
             Elements: [
                 {
-                    name: "Intro", url: "#",
-                    action: (ev) => { this.Navigate("Intro", "1_WExpDev_intro.pdf", ev.target.innerText) }
+                    name: "Inicio", url: "#",
+                    action: (ev) => { this.Navigate("Inicio", "1_WExpDev_intro.pdf", ev.target.innerText) }
                 },
                 {
                     name: "Estructrura del Proyecto", url: "#",
@@ -115,9 +135,9 @@ class AsideClass {
     Navigate = async (name = "Intro", pdf, title) => {
         const DocURL = "./Media/DOCS/" + pdf;
         const PDF2 = WRender.createElement({
-            type: "object", props: {
-                type: "application/pdf",
-                data: DocURL
+            type: "embed", props: {
+                //type: "application/pdf",
+                src: DocURL
             }
         });
         //console.log(PDF2.data)
@@ -140,6 +160,29 @@ class AsideClass {
         // Convert data to base64
         fileReader.readAsDataURL(fileToLoad);
     }
+    //NAV COMPONENTS
+    //NAV TABLES
+    WNavTables = [{
+        name: "Tablas Básica", url: "#",
+        action: (ev) => {
+            DOMManager.NavigateFunction("BasicTables", new Modules({ id: "BasicTables" }), "AppMain");
+        }
+    }, {
+        name: "Tablas Dinámica", url: "#",
+        action: (ev) => { }
+    }];
+    WNavComponents = {
+        type: "w-app-navigator",
+        props: {
+            Direction: "column",
+            title: "Componentes",
+            Elements: [{
+                name: "Tablas", url: "#", SubNav: {
+                    Elements: this.WNavTables
+                }
+            }]
+        }
+    }
 }
 class MainClass {
     constructor() {
@@ -152,8 +195,10 @@ class FooterClass {
     constructor() {
         this.type = "footer";
         this.props = { className: "AppFooter" }
-        this.children = [this.Style, { type: 'label', 
-        props: { innerText: "Derechos reservados" } }];
+        this.children = [this.Style, {
+            type: 'label',
+            props: { innerText: "Derechos reservados" }
+        }];
     }
     Style = {
         type: "w-style",
