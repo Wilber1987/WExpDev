@@ -99,8 +99,8 @@ class WTableComponent extends HTMLElement {
                 this.shadowRoot.append(WRender.createElement(this.TableOptions()));
                 this.DrawTable();
                 if (this.TableConfig.AddChart == true) {
-                    if (this.querySelector("#Chart" + this.id)) {
-                        let ChartContainer = this.querySelector("#Chart" + this.id);
+                    if (this.shadowRoot.querySelector("#Chart" + this.id)) {
+                        let ChartContainer = this.shadowRoot.querySelector("#Chart" + this.id);
                         ChartContainer.innerHTML = "";
                         ChartContainer.append(WRender.createElement(this.DrawChart()));
                     } else {
@@ -124,8 +124,8 @@ class WTableComponent extends HTMLElement {
                 if (this.groupParams.length > 0 && this.AttNameEval !== undefined && this.EvalValue !== undefined) {
                     this.DrawGroupTable();
                     if (this.TableConfig.AddChart == true) {
-                        if (this.querySelector("#Chart" + this.id)) {
-                            let ChartContainer = this.querySelector("#Chart" + this.id);
+                        if (this.shadowRoot.querySelector("#Chart" + this.id)) {
+                            let ChartContainer = this.shadowRoot.querySelector("#Chart" + this.id);
                             ChartContainer.innerHTML = "";
                             ChartContainer.append(WRender.createElement(this.DrawChart()));
                         } else {
@@ -152,7 +152,7 @@ class WTableComponent extends HTMLElement {
     }
     DrawTable(Dataset = this.Dataset) {
         this.DefineObjectModel(Dataset);
-        let table = this.querySelector("#MainTable" + this.id);
+        let table = this.shadowRoot.querySelector("#MainTable" + this.id);
         this.shadowRoot.append(WRender.createElement(this.DrawHeadOptions()));
         if (typeof table === "undefined" || table == null) {
             table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
@@ -186,7 +186,7 @@ class WTableComponent extends HTMLElement {
             } else {
                 table.append(WRender.createElement(tbody));
             }
-            let footer = this.querySelector(".tfooter");
+            let footer = this.shadowRoot.querySelector(".tfooter");
             if (typeof footer !== "undefined" && footer != null) {
                 footer.innerHTML = "";
                 if (this.paginate == true) {
@@ -198,8 +198,8 @@ class WTableComponent extends HTMLElement {
         }
     }
     DrawHeadOptions() {
-        if (this.querySelector(".thOptions")) {
-            this.querySelector(".thOptions").style.display = "flex";
+        if (this.shadowRoot.querySelector(".thOptions")) {
+            this.shadowRoot.querySelector(".thOptions").style.display = "flex";
             return "";
         }
         if (this.Options != undefined) {
@@ -505,7 +505,7 @@ class WTableComponent extends HTMLElement {
             let tfooter = [];
             this.ActualPage = 0;
             const SelectPage = (index) => {
-                    let bodys = this.querySelectorAll("#MainTable" + this.id + " tbody");
+                    let bodys = this.shadowRoot.querySelectorAll("#MainTable" + this.id + " tbody");
                     bodys.forEach((body, indexBody) => {
                         if (indexBody == index) {
                             if (this.TableConfig.StyleType == "Cards") {
@@ -520,7 +520,7 @@ class WTableComponent extends HTMLElement {
                             body.style.display = "none";
                         }
                     });
-                    let buttons = this.querySelectorAll(".tfooter a");
+                    let buttons = this.shadowRoot.querySelectorAll(".tfooter a");
                     buttons.forEach((button, indexBtn) => {
                         if (indexBtn == index) {
                             button.className = "paginateBTN paginateBTNActive";
@@ -665,12 +665,12 @@ class WTableComponent extends HTMLElement {
     }
     DefineTable(Dataset = this.Dataset) {
         this.ProcessData = [];
-        let table = this.querySelector("#MainTable" + this.id);
-        let footer = this.querySelector(".tfooter");
+        let table = this.shadowRoot.querySelector("#MainTable" + this.id);
+        let footer = this.shadowRoot.querySelector(".tfooter");
         if (typeof footer !== "undefined" && footer != null) {
             footer.innerHTML = "";
         }
-        let thOptions = this.querySelector(".thOptions");
+        let thOptions = this.shadowRoot.querySelector(".thOptions");
         if (typeof thOptions !== "undefined" && thOptions != null) {
             thOptions.style.display = "none"
         }
@@ -690,20 +690,20 @@ class WTableComponent extends HTMLElement {
             table.append(WRender.createElement(div));
         }
         if (this.TableConfig.AddChart == true && this.EvalValue != null) {
-            let ChartContainer = this.querySelector("#Chart" + this.id);
+            let ChartContainer = this.shadowRoot.querySelector("#Chart" + this.id);
             ChartContainer.innerHTML = "";
             ChartContainer.append(WRender.createElement(this.DrawChart()));
         }
     }
     TableOptions = () => {
-        if (this.querySelector("#TableOptionstable")) {
+        if (this.shadowRoot.querySelector("#TableOptionstable")) {
             return "";
         }
         const drop = (ev) => {
             ev.preventDefault();
             var data = ev.dataTransfer.getData("text");
             let target = ev.target;
-            let control = this.querySelector("#" + data);
+            let control = this.shadowRoot.querySelector("#" + data);
             //console.log(control.parentNode);
             const OriginalParent = control.parentNode.id;
             if (control == null) {
@@ -753,7 +753,7 @@ class WTableComponent extends HTMLElement {
                 }
                 if (OriginalParent.includes("ListGroups")) {
                     this.groupParams = [];
-                    const Parent = this.querySelector("#" + OriginalParent);
+                    const Parent = this.shadowRoot.querySelector("#" + OriginalParent);
                     Parent.querySelectorAll(".labelParam").forEach(element => {
                         this.groupParams.push(element.innerText);
                     });
@@ -856,7 +856,7 @@ class WTableComponent extends HTMLElement {
         };
     }
     DrawChart() {
-        /*if (this.querySelector("#TableOptionstable")) {
+        /*if (this.shadowRoot.querySelector("#TableOptionstable")) {
             return "";
         }*/
         if (this.groupParams.length > 0 && this.EvalArray != null) {
@@ -896,7 +896,7 @@ class WTableComponent extends HTMLElement {
                 }
             });
             if (nodes.length != []) {
-                let Operations = this.querySelector("#Select" + this.id);
+                let Operations = this.shadowRoot.querySelector("#Select" + this.id);
                 let value = "fail!";
                 if (Operations != null) {
                     if (Operations.value == "sum") {
@@ -916,8 +916,8 @@ class WTableComponent extends HTMLElement {
         //ESTILOS-------------------------------------------------------###################
         //#region ESTILOS-------------------------------------------------------------------------------------------
     MediaStyleResponsive() {
-        if (this.querySelector("MediaStyleResponsive" + this.id)) {
-            this.removeChild(this.querySelector("MediaStyleResponsive" + this.id));
+        if (this.shadowRoot.querySelector("MediaStyleResponsive" + this.id)) {
+            this.removeChild(this.shadowRoot.querySelector("MediaStyleResponsive" + this.id));
         }
         const ClassList = [];
         let index = 1;
@@ -952,7 +952,7 @@ class WTableComponent extends HTMLElement {
         }
     }
     TableStyle() {
-        const style = this.querySelector("#TableStyle" + this.id);
+        const style = this.shadowRoot.querySelector("#TableStyle" + this.id);
         if (style) {
             style.parentNode.removeChild(style);
         }
@@ -1146,7 +1146,7 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     TableCardStyle() {
-        const style = this.querySelector("#TableCardStyle" + this.id);
+        const style = this.shadowRoot.querySelector("#TableCardStyle" + this.id);
         if (style) {
             style.parentNode.removeChild(style);
         }
@@ -1211,7 +1211,7 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     TableCardStyle2() {
-        const style = this.querySelector("#TableCardStyle2" + this.id);
+        const style = this.shadowRoot.querySelector("#TableCardStyle2" + this.id);
         if (style) {
             style.parentNode.removeChild(style);
         }
@@ -1283,7 +1283,7 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     TableCardStyle2ColumnX2() {
-        const style = this.querySelector("#TableCardStyle2ColumnX2" + this.id);
+        const style = this.shadowRoot.querySelector("#TableCardStyle2ColumnX2" + this.id);
         if (style) {
             style.parentNode.removeChild(style);
         }
@@ -1305,7 +1305,7 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     TableGridStyle() {
-        const style = this.querySelector("#TableGridStyle" + this.id);
+        const style = this.shadowRoot.querySelector("#TableGridStyle" + this.id);
         if (style) {
             style.parentNode.removeChild(style);
         }
@@ -1415,7 +1415,7 @@ class WTableComponent extends HTMLElement {
         return WTableStyle;
     }
     PaginateTOptionsStyle() {
-            const style = this.querySelector("#PaginateTOptionsStyle" + this.id);
+            const style = this.shadowRoot.querySelector("#PaginateTOptionsStyle" + this.id);
             if (style) {
                 style.parentNode.removeChild(style);
             }

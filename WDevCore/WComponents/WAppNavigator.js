@@ -19,19 +19,40 @@ class WAppNavigator extends HTMLElement {
         this.DrawAppNavigator();
     }
     DrawAppNavigator() {
+        const header = {
+            type: "header", children: [{
+                type: "label", props: {
+                    //innerText: "☰",
+                    innerText: "⮟",
+                    class: "DisplayBtn", onclick: () => {
+                        const nav = this.shadowRoot.querySelector("#MainNav");
+                        if (nav.className == "navActive") {
+                            nav.className = "";
+                        } else {
+                            nav.className = "navActive";
+                        }
+                    }
+                }, children: []
+            }]
+        }
+        if (typeof this.title === "string") {
+            header.children.push({
+                type: "label", props: { class: "title", innerText: this.title }
+            });
+        }
         if (this.Elements == undefined) {
             this.Elements = [];
         }
-        const Nav = { type: "nav", children: [] };
+        const Nav = { type: "nav", props: { id: "MainNav" }, children: [] };
         this.Elements.forEach((element, Index) => {
             if (element.url == undefined) {
                 element.url = "#" + this.id;
             }
             const elementNav = {
                 type: "a",
-                props: {class: "elementNav", innerText: element.name, href: element.url }
+                props: { class: "elementNav", innerText: element.name, href: element.url }
             }
-            elementNav.props.onclick = (ev)=>{               
+            elementNav.props.onclick = async (ev) => {
                 this.shadowRoot.querySelectorAll(".elementNavActive").forEach(elementNavActive => {
                     elementNavActive.className = "elementNav";
                 });
@@ -39,41 +60,47 @@ class WAppNavigator extends HTMLElement {
                 if (element.action != undefined) {
                     element.action(ev);
                 }
-            }             
+            }
+            Nav.children.push(elementNav);
             if (element.SubNav != undefined) {
                 elementNav.href = null;
                 const SubMenuId = "SubMenu" + Index + this.id;
                 const SubNav = {
-                    type: "nav",
+                    type: "section",
                     props: {
                         id: SubMenuId,
-                        innerText: element.name,
+                        //innerText: element.name,
                         href: element.url,
                         className: "UnDisplayMenu"
                     },
                     children: []
-                }
-                if (element.SubNav.Elements != undefined) {
+                }             
+                if (element.SubNav.Elements != undefined) {                    
                     element.SubNav.Elements.forEach(SubElement => {
                         SubNav.children.push({
                             type: "a",
-                            props: { innerText: SubElement.name, href: SubElement.url }
+                            props: { innerText: SubElement.name, href: SubElement.url,
+                                 onclick: async (ev) => {                                  
+                                    if (SubElement.action != undefined) {
+                                        SubElement.action(ev);
+                                    }
+                                }}
                         });
                     });
-                }
-                elementNav.props.onclick = () => {
-                    const MenuSelected = this.querySelector("#" + SubMenuId);
-                    if (MenuSelected.className == "UnDisplayMenu") {
-                        MenuSelected.className == "DisplayMenu"
-                    } else {
-                        MenuSelected.className == "UnDisplayMenu"
+                    elementNav.props.onclick = () => {
+                        const MenuSelected = this.shadowRoot.querySelector("#" + SubMenuId);
+                        if (MenuSelected.className == "UnDisplayMenu") {
+                            MenuSelected.className = "DisplayMenu"
+                        } else {
+                            MenuSelected.className = "UnDisplayMenu"
+                        }
                     }
-                }
-                Nav.children.push(SubNav);
-            }
-            Nav.children.push(elementNav);
+                    Nav.children.push(SubNav);
+                }                
+            }            
         });
         this.shadowRoot.append(WRender.createElement(this.Style()));
+        this.shadowRoot.appendChild(WRender.createElement(header));
         this.shadowRoot.append(WRender.createElement(Nav));
     }
     Style() {
@@ -94,34 +121,74 @@ class WAppNavigator extends HTMLElement {
                         display: "flex",
                         "flex-direction": navDirection,
                         padding: "10px",
+                        transition: "all 1s",
                     }), new WCssClass(`.elementNav`, {
                         "text-decoration": "none",
                         color: "#444444",
                         padding: "10px",
                         "border-bottom": "solid 1px #eee",
                         transition: "all 0.6s"
-                    }),  new WCssClass(`.elementNavActive`, {                        
+                    }), new WCssClass(`.elementNavActive`, {
                         "text-decoration": "none",
                         color: "#444444",
                         padding: "10px",
                         "border-bottom": "solid 1px #4da6ff",
                         transition: "all 0.6s"
                     }), new WCssClass(`.elementNav:hover`, {
-                        "border-bottom": "solid 1px #444444"                     
-                    }), 
+                        "border-bottom": "solid 1px #444444"
+                    }),  new WCssClass(`header`, {
+                        display: "flex",
+                        "align-items": "center",
+                        "justify-content":"left",
+                        "box-shadow": "0 1px 1px 0 rgba(0,0,0,0.3)"
+                    }),
+                    new WCssClass(`.title`, {
+                        "font-size": "1.1rem",
+                        padding: "10px",
+                        color: "#888888"
+                    }),
                     //Estilos de submenu
-                    new WCssClass(` UnDisplayMenu`, {
+                    new WCssClass(` .UnDisplayMenu`, {
                         overflow: "hidden",
-                        "max-height": "0px"
-                    }), new WCssClass(` DisplayMenu`, {
+                        "max-height": "0px",                        
+                    }), new WCssClass(` .DisplayMenu`, {
                         overflow: "hidden",
-                        "max-height": "1000px"
+                        "padding-left": "10px",
+                        "max-height": "1000px",                        
+                        "background-color": "#eee", 
+                        display: "flex",
+                        "flex-direction": "column"                    
+                    }), new WCssClass(`.DisplayMenu a`, {
+                        "text-decoration": "none",
+                        color: "#444444",
+                        padding: "10px",
+                        "border-bottom": "solid 1px #999",
+                    }), 
+                    //ocultacion. 
+                    new WCssClass(`.DisplayBtn`, {
+                        "font-weight": "bold",
+                        "font-size": "1.3rem",
+                        padding: "10px",
+                        display: "none",
+                    }),new WCssClass(`.navActive`, {
+                        overflow: "hidden",
+                        "max-height": "5000px"
                     }),
                 ],
                 MediaQuery: [{
                     condicion: "(max-width: 800px)",
-                    ClassList: []
-                }, ]
+                    ClassList: [
+                        new WCssClass(`.DisplayBtn`, {
+                            display: "initial",
+                        }), new WCssClass(`nav`, {
+                            overflow: "hidden",
+                            "max-height": "0px"
+                        }), new WCssClass(`.navActive`, {
+                            overflow: "hidden",
+                            "max-height": "5000px"
+                        }),
+                    ]
+                },]
             }
         }
         return Style;
