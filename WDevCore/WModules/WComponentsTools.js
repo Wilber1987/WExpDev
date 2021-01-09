@@ -223,11 +223,9 @@ class ComponentsManager {
     }
     NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName) => {
         const ContainerNavigate = document.querySelector("#" + ContainerName);
-        let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
-        console.log(Nodes)
+        let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");        
         Nodes.forEach((node) => {
-            if (node.id != IdComponent) {
-                console.log(node)
+            if (node.id != IdComponent) {               
                 this.DomComponents[node.id] = node;
                 if (ContainerNavigate.querySelector("#" + node.id)) {
                     ContainerNavigate.removeChild(node);
