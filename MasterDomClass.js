@@ -1,6 +1,6 @@
 import { ComponentsManager, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
-import { Modules } from "./Modules/Modules.js";
+import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 import DocumentView from "./Modules/DocumentView.js";
 const DOMManager = new ComponentsManager();
 class MasterDomClass extends ComponentsManager {
@@ -69,7 +69,6 @@ class headerClass {
         this.children = [
             this.Style,
             { type: 'img', props: { src: "./Media/logo.png" } },
-            //{ type: 'label', props: { innerText: "WEXPDEV" } },
         ];
     }
     Style = {
@@ -132,8 +131,13 @@ class AsideClass {
     Navigate = async (name = "Intro", pdf, title) => {
         const DocURL = "./Media/DOCS/" + pdf;
         const PDF2 = WRender.createElement({
-            type: "embed", props: {
-                //type: "application/pdf",
+            type: "object", props: {
+                type: "application/pdf",
+                data: DocURL
+            }
+        });
+        const iframe = WRender.createElement({
+            type: "iframe", props: {
                 src: DocURL
             }
         });
@@ -162,7 +166,7 @@ class AsideClass {
     WNavTables = [{
         name: "Tablas Básica", url: "#",
         action: (ev) => {
-            DOMManager.NavigateFunction("BasicTables", new Modules({ id: "BasicTables" }), "AppMain");
+            DOMManager.NavigateFunction("BasicTables", new BasicTableDoc({ id: "BasicTables" }), "AppMain");
         }
     }, {
         name: "Tablas Dinámica", url: "#",
@@ -192,10 +196,13 @@ class FooterClass {
     constructor() {
         this.type = "footer";
         this.props = { className: "AppFooter" }
-        this.children = [this.Style, {
-            type: 'label',
-            props: { innerText: "Derechos reservados" }
-        }];
+        this.children = [this.Style, 
+            {  type: 'label', props: { innerText: "Derechos reservados - " } },
+            {  type: 'a', props: { 
+                innerText: "- https://github.com/Wilber1987/WExpDev.git", 
+                href: "https://github.com/Wilber1987/WExpDev.git", target: "_blank"
+            }}
+        ];
     }
     Style = {
         type: "w-style",
