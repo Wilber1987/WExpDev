@@ -171,17 +171,22 @@ class AsideClass {
     }, {
         name: "Tablas Dinámica", url: "#",
         action: (ev) => { }
-    }];
+    }];    
     WNavComponents = {
         type: "w-app-navigator",
         props: {
             Direction: "column",
             title: "Componentes",
             Elements: [{
+                name: "Modal / POP-UP", url: "#", action: async (ev)=>{
+                    const {ModalDocs}  = await import("./Modules/ModalDoc.js"); 
+                    DOMManager.NavigateFunction("ModalDocs", new ModalDocs({ id: "ModalDocs" }), "AppMain");       
+                }
+            }, {
                 name: "Tablas", url: "#", SubNav: {
                     Elements: this.WNavTables
                 }
-            }]
+            },]
         }
     }
 }

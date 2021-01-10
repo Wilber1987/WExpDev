@@ -566,7 +566,7 @@ class TableCont {
                 Edit: true, //UrlUpdate: "",
                 Select: true,
                 Add: true, //UrlAdd
-                Delete: true, //UrlDelete
+                Delete: true,// UrlDelete
                 /* UserActions: [{name: "Reservar", Function: (Param)=>{
                      alert("reserva");
                      console.log(Param)
