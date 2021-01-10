@@ -120,22 +120,24 @@ class WAppNavigator extends HTMLElement {
                     new WCssClass(`nav`, {
                         display: "flex",
                         "flex-direction": navDirection,
-                        padding: "10px",
+                        padding: "0px 10px",
                         transition: "all 1s",
                     }), new WCssClass(`.elementNav`, {
                         "text-decoration": "none",
                         color: "#444444",
                         padding: "10px",
-                        "border-bottom": "solid 1px #eee",
-                        transition: "all 0.6s"
+                        "border-bottom": "solid 2px #eee",
+                        transition: "all 0.6s", 
+                        display: "flex", "align-items": "center",                       
                     }), new WCssClass(`.elementNavActive`, {
                         "text-decoration": "none",
                         color: "#444444",
                         padding: "10px",
-                        "border-bottom": "solid 1px #4da6ff",
-                        transition: "all 0.6s"
+                        "border-bottom": "solid 2px #4da6ff",
+                        transition: "all 0.6s",
+                        display: "flex", "align-items": "center",   
                     }), new WCssClass(`.elementNav:hover`, {
-                        "border-bottom": "solid 1px #444444"
+                        "border-bottom": "solid 2px #444444"
                     }),  new WCssClass(`header`, {
                         display: "flex",
                         "align-items": "center",
