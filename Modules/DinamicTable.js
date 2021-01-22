@@ -63,3 +63,57 @@ const Data = [
         })
     );
 
+
+
+    this.shadowRoot.append(WRender.createElement({
+        type: "w-modal-form",
+        props: {
+            ObjectModel: this.ModelObject,
+            AddItemsFromApi: this.AddItemsFromApi,
+            Dataset: this.Dataset,
+            ObjectOptions: {
+                Url: this.Options.UrlAdd,
+                AddObject: true,
+                SaveFunction: (NewObject) => {
+                    if (this.AddItemsFromApi == null) {
+                        this.Dataset.push(NewObject);
+                    }
+                    this.DrawTable();
+                }
+            }
+        }
+    }));
+    this.shadowRoot.append(WRender.createElement({
+        type: "w-modal-form",
+        props: {
+            ObjectModel: this.ModelObject,
+            EditObject: element,
+            ObjectOptions: {
+                Url: this.Options.UrlUpdate,
+                SaveFunction: () => {
+                    this.DrawTable();
+                }
+            }
+        }
+    }));
+    const ObjModel = {
+        id: 1,
+        Category: [{id: 1, desc: "value 1"}, {id: 2, desc: "value 2"}],
+        Type: "Type 1",
+        Time: "2020-01-01",
+        Value: 35
+    };
+    document.querySelector("body").append(
+        WRender.createElement({
+            type: "w-modal-form",
+            props: {
+                EditObject: MyObject,
+                ObjectModel: ObjModel,
+                ObjectOptions: {
+                    SaveFunction: (obj) => {
+                        console.log(obj);                        
+                    }
+                }
+            }
+        })
+    );

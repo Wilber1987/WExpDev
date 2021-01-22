@@ -68,7 +68,7 @@ class WModalForm extends HTMLElement {
             if (this.UserActions != undefined) {
                 this.Modal.children.push(this.SaveOptions());
             }
-        } else if (this.ObjectModel) { //AGREGA FORMULARIO CRUD A LA VISTA
+        } else { //AGREGA FORMULARIO CRUD A LA VISTA
             if (this.ObjectOptions == undefined) {
                 this.ObjectOptions = { AddObject: false, Url: undefined };
             }
@@ -76,7 +76,7 @@ class WModalForm extends HTMLElement {
                 const NewObject = {};
                 this.Modal.children.push(this.CrudForm(NewObject, this.ObjectOptions));
                 this.Modal.children.push(this.SaveOptions(NewObject));
-            } else { //EDITA UN OBJETO EXISTENTE
+            } else { //EDITA UN OBJETO EXISTENTE               
                 if (this.ObjectModel == undefined) {
                     //verifica que el modelo exista,
                     //sino es asi le asigna el valor de un objeto existente
@@ -174,6 +174,7 @@ class WModalForm extends HTMLElement {
             let ControlTagName = "input";
             let InputType = typeof Model[prop];
             let InputValue = "";
+            let Options = [];
             if (prop.toUpperCase().includes("PASS") || prop.toUpperCase().includes("PASSWORD")) {
                 InputType = "password";
             } else if (prop.toUpperCase().includes("DATE") || prop.toUpperCase().includes("FECHA") || prop.toUpperCase().includes("TIME")) {
@@ -199,26 +200,35 @@ class WModalForm extends HTMLElement {
                 InputType = "file";
                 ControlTagName = "input";
                 ControlContainer.props.class += " imageGridForm";
-            } else if (Model[prop] != null && Model[prop].__proto__ == Object.prototype) {
+            } else if (Model[prop] != null && Model[prop].__proto__ == Array.prototype) {
                 ControlTagName = "select";
-                InputType = "";
-                for (const key in ObjectF[prop]) {
+                InputType = "";                
+                for (const key in Model[prop]) {
                     let OValue, ODisplay;
-                    if (typeof ObjectF[prop][key] === "object") {
-                        OValue = ObjectF[prop][key]["id"];
-                        ODisplay = ObjectF[prop][key]["desc"];
+                    if (typeof Model[prop][key] === "object"
+                     &&  Model[prop][key].__proto__ == Object.prototype) {
+                        OValue = Model[prop][key]["id"];
+                        ODisplay = Model[prop][key]["desc"];
                     } else {
-                        OValue = ObjectF[prop][key];
-                        ODisplay = ObjectF[prop][key];
+                        OValue = Model[prop][key];
+                        ODisplay = Model[prop][key];
                     }
-                    InputControl.children.push({
+                    const Option = {
                         type: "option",
                         props: {
                             value: OValue,
                             innerText: ODisplay
                         }
-                    })
-                }
+                    };
+                    if (key == 0 && ObjectOptions.AddObject == true) {
+                         ObjectF[prop] =  OValue;
+                    }else {
+                        if (ObjectF[prop].toString() == OValue.toString()) {                           
+                            Option.props.selected = "true";
+                        }                        
+                    } 
+                    Options.push(Option)                  
+                }                
             } else if (typeof Model[prop] === "string" && Model[prop].length >= 50) {
                 ControlTagName = "textarea";
                 InputType = "";
@@ -247,6 +257,7 @@ class WModalForm extends HTMLElement {
                                 this.querySelector("#imgControl" + prop + this.id).src = "data:image/png;base64," + ObjectF[prop];
                             }, 1000);
                         } else {
+                            console.log( ev.target.value )
                             ObjectF[prop] = ev.target.value;
                         }
                     }
@@ -256,11 +267,12 @@ class WModalForm extends HTMLElement {
             if (InputType != "") {
                 InputControl.props.type = InputType;
                 InputControl.props.placeholder = prop + "..."
-            }
-            if (InputType == "file") {
+            } else if (InputType == "file") {
                 InputControl.props.style = "display: none";
+            } else if (ControlTagName == "select") {
+                InputControl.children = Options;
             }
-            InputControl.props.value = InputValue;
+            InputControl.props.value = InputValue;            
             ControlContainer.children.push(InputControl)
             Form.children.push(ControlContainer);
         }
