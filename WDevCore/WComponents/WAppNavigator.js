@@ -18,19 +18,26 @@ class WAppNavigator extends HTMLElement {
         }
         this.DrawAppNavigator();
     }
+    ActiveMenu = (ev) => {
+        this.shadowRoot.querySelectorAll(".elementNavActive").forEach(elementNavActive => {
+            elementNavActive.className = "elementNav";
+        });
+        ev.target.className = "elementNavActive";
+    }
     DrawAppNavigator() {
         const header = {
-            type: "header", props: { onclick: () => {
-                const nav = this.shadowRoot.querySelector("#MainNav");
-                if (nav.className == "navActive") {
-                    nav.className = "";
-                } else {
-                    nav.className = "navActive";
+            type: "header", props: {
+                onclick: () => {
+                    const nav = this.shadowRoot.querySelector("#MainNav");
+                    if (nav.className == "navActive") {
+                        nav.className = "";
+                    } else {
+                        nav.className = "navActive";
+                    }
                 }
-            }}, children: [{
+            }, children: [{
                 type: "label", props: {
-                    //innerText: "☰",
-                    innerText: "⮟",
+                    innerText: " ",
                     class: "DisplayBtn",
                 }, children: []
             }]
@@ -53,10 +60,7 @@ class WAppNavigator extends HTMLElement {
                 props: { class: "elementNav", innerText: element.name, href: element.url }
             }
             elementNav.props.onclick = async (ev) => {
-                this.shadowRoot.querySelectorAll(".elementNavActive").forEach(elementNavActive => {
-                    elementNavActive.className = "elementNav";
-                });
-                ev.target.className = "elementNavActive";
+                this.ActiveMenu(ev);
                 if (element.action != undefined) {
                     element.action(ev);
                 }
@@ -68,26 +72,26 @@ class WAppNavigator extends HTMLElement {
                 const SubNav = {
                     type: "section",
                     props: {
-                        id: SubMenuId,
-                        //innerText: element.name,
-                        href: element.url,
-                        className: "UnDisplayMenu"
+                        id: SubMenuId,  href: element.url,  className: "UnDisplayMenu"
                     },
                     children: []
-                }             
-                if (element.SubNav.Elements != undefined) {                    
+                }
+                if (element.SubNav.Elements != undefined) {
                     element.SubNav.Elements.forEach(SubElement => {
                         SubNav.children.push({
                             type: "a",
-                            props: { innerText: SubElement.name, href: SubElement.url,
-                                 onclick: async (ev) => {                                  
+                            props: {
+                                innerText: SubElement.name, href: SubElement.url,
+                                onclick: async (ev) => {
                                     if (SubElement.action != undefined) {
                                         SubElement.action(ev);
                                     }
-                                }}
+                                }
+                            }
                         });
                     });
-                    elementNav.props.onclick = () => {
+                    elementNav.props.onclick = (ev) => {
+                        this.ActiveMenu(ev);
                         const MenuSelected = this.shadowRoot.querySelector("#" + SubMenuId);
                         if (MenuSelected.className == "UnDisplayMenu") {
                             MenuSelected.className = "DisplayMenu"
@@ -96,8 +100,8 @@ class WAppNavigator extends HTMLElement {
                         }
                     }
                     Nav.children.push(SubNav);
-                }                
-            }            
+                }
+            }
         });
         this.shadowRoot.append(WRender.createElement(this.Style()));
         this.shadowRoot.appendChild(WRender.createElement(header));
@@ -127,52 +131,56 @@ class WAppNavigator extends HTMLElement {
                         color: "#444444",
                         padding: "10px",
                         "border-bottom": "solid 2px #eee",
-                        transition: "all 0.6s", 
-                        display: "flex", "align-items": "center",                       
+                        transition: "all 0.6s",
+                        display: "flex", "align-items": "center",
                     }), new WCssClass(`.elementNavActive`, {
                         "text-decoration": "none",
                         color: "#444444",
                         padding: "10px",
                         "border-bottom": "solid 2px #4da6ff",
                         transition: "all 0.6s",
-                        display: "flex", "align-items": "center",   
+                        display: "flex", "align-items": "center",
                     }), new WCssClass(`.elementNav:hover`, {
                         "border-bottom": "solid 2px #444444"
-                    }),  new WCssClass(`header`, {
+                    }), new WCssClass(`header`, {
                         display: "flex",
                         "align-items": "center",
-                        "justify-content":"left",
+                        "justify-content": "left",
                         "box-shadow": "0 1px 1px 0 rgba(0,0,0,0.3)"
                     }),
                     new WCssClass(`.title`, {
                         "font-size": "1.1rem",
                         padding: "10px",
-                        color: "#888888"
+                        color: "#888888",
+                        cursor: "pointer"
                     }),
                     //Estilos de submenu
                     new WCssClass(` .UnDisplayMenu`, {
                         overflow: "hidden",
-                        "max-height": "0px",                        
+                        "max-height": "0px",
                     }), new WCssClass(` .DisplayMenu`, {
                         overflow: "hidden",
                         "padding-left": "10px",
-                        "max-height": "1000px",                        
-                        "background-color": "#eee", 
+                        "max-height": "1000px",
                         display: "flex",
-                        "flex-direction": "column"                    
+                        "flex-direction": "column"
                     }), new WCssClass(`.DisplayMenu a`, {
                         "text-decoration": "none",
                         color: "#444444",
                         padding: "10px",
                         "border-bottom": "solid 1px #999",
-                    }), 
+                    }),
                     //ocultacion. 
                     new WCssClass(`.DisplayBtn`, {
                         "font-weight": "bold",
                         "font-size": "1.3rem",
-                        padding: "10px",
-                        display: "none",
-                    }),new WCssClass(`.navActive`, {
+                        margin: "10px",
+                        display: "none", 
+                        "border-radius": "50%",
+                        "background-color": "#888888",    
+                        height: "15px", width:  "15px", 
+                        cursor: "pointer"
+                    }), new WCssClass(`.navActive`, {
                         overflow: "hidden",
                         "max-height": "5000px"
                     }),
@@ -182,6 +190,8 @@ class WAppNavigator extends HTMLElement {
                     ClassList: [
                         new WCssClass(`.DisplayBtn`, {
                             display: "initial",
+                        }),new WCssClass(`nav`, {
+                            "flex-direction": "column"
                         }), new WCssClass(`nav`, {
                             overflow: "hidden",
                             "max-height": "0px"

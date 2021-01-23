@@ -68,9 +68,10 @@ class BasicTableDoc extends ComponentsManager {
             }
         }];
         const Nav = {
-            type: "w-app-navigator",
+            type: "w-app-navigator",            
             props: {
                 id: "TableNav",
+                title: "Tabla Básica",
                 Elements: NavigateElements
             }
         };
