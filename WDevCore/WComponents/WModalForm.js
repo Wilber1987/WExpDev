@@ -4,12 +4,13 @@ let photoB64;
 class WModalForm extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });        
+        this.attachShadow({ mode: "open" });
+        this.DataRequire = true;
     }
     attributeChangedCallBack() {
         this.DrawSlide();
     }
-    connectedCallback() { 
+    connectedCallback() {
         if (this.innerHTML != "") {
             return;
         }//NO MODAL        
@@ -20,10 +21,45 @@ class WModalForm extends HTMLElement {
             this.shadowRoot.append(WRender.createElement(this.StyleColumX2()));
         } else if (this.StyleForm == "columnX3") {
             this.shadowRoot.append(WRender.createElement(this.StyleColumX3()));
-        } 
+        }
         //NO MODAL
         if (this.NoModal == true) {
             this.append(WRender.createElement(this.StyleNoModal()));
+            this.shadowRoot.append(WRender.createElement({
+                type: "w-style", props: {
+                    ClassList: [
+                        new WCssClass(" .ContainerFormWModal", {
+                            "margin-top": "0px",
+                            "width": "100% !important",
+                            "max-height": "auto !important",
+                            "height": "auto !important",
+                            "border-radius": "0cm",
+                        })]
+                }
+            }))
+        } else {
+            this.append(WRender.createElement({
+                type: "w-style",
+                props: {
+                    ClassList: [
+                        new WCssClass(".ModalContentWModal", {
+                            "opacity": "0",
+                            display: "none",
+                            "background-color": "rgba(0, 0, 0, 0.5) !important",
+                            "width": "100%",
+                            "position": "fixed !important",
+                            "top": "0px !important",
+                            "left": "0px !important",
+                            "bottom": "0px !important",
+                            "transition": "all linear 1s",
+                            "box-shadow": "0 0px 1px 0px #000",
+                            "z-index": "200 !important",
+                            "overflow-y": "auto",
+                            "padding-bottom": "50px",
+                        })
+                    ]
+                }
+            }))
         }
         this.DrawComponent();
     }
@@ -32,28 +68,6 @@ class WModalForm extends HTMLElement {
             this.id = "TempModal";
         }
         this.className = "ModalContentWModal";
-        this.append(WRender.createElement({
-            type: "w-style",
-            props: {
-                ClassList: [
-                    new WCssClass(".ModalContentWModal", {
-                        "opacity": "0",
-                        display: "none",
-                        "background-color": "rgba(0, 0, 0, 0.5) !important",
-                        "width": "100%",
-                        "position": "fixed !important",
-                        "top": "0px !important",
-                        "left": "0px !important",
-                        "bottom": "0px !important",
-                        "transition": "all linear 1s",
-                        "box-shadow": "0 0px 1px 0px #000",
-                        "z-index": "200 !important",
-                        "overflow-y": "auto",
-                        "padding-bottom": "50px",
-                    })
-                ]
-            }
-        }))
         this.Modal = { type: "div", props: { class: "ContainerFormWModal" }, children: [] };
         this.Modal.children.push(this.DrawModalHead());
         if (this.ObjectModal) { //AGREGA UN OBJETO AL MODAL ENVIDO DESDE LA CONFIGURACION
@@ -174,6 +188,12 @@ class WModalForm extends HTMLElement {
             let ControlTagName = "input";
             let InputType = typeof Model[prop];
             let InputValue = "";
+            //--------------------------------
+            if (ObjectOptions.AddObject == true) {
+                InputValue = "";
+            } else {
+                InputValue = this.EditObject[prop];
+            }
             let Options = [];
             if (prop.toUpperCase().includes("PASS") || prop.toUpperCase().includes("PASSWORD")) {
                 InputType = "password";
@@ -181,10 +201,15 @@ class WModalForm extends HTMLElement {
                 InputType = "date";
             } else if (prop.toUpperCase().includes("IMG") || prop.toUpperCase().includes("PICT")
                 || prop.toUpperCase().includes("IMAGE") || prop.toUpperCase().includes("PHOTO")) {
+                let cadenaB64 = "";
+                let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                if (base64regex.test(InputValue)) {
+                    cadenaB64 = "data:image/png;base64,";
+                }
                 ControlContainer.children.push({
                     type: "img",
                     props: {
-                        src: "data:image/png;base64," + InputValue,
+                        src: cadenaB64 + InputValue,
                         class: "imgPhotoWModal",
                         id: "imgControl" + prop + this.id,
                     }
@@ -202,11 +227,11 @@ class WModalForm extends HTMLElement {
                 ControlContainer.props.class += " imageGridForm";
             } else if (Model[prop] != null && Model[prop].__proto__ == Array.prototype) {
                 ControlTagName = "select";
-                InputType = "";                
+                InputType = "";
                 for (const key in Model[prop]) {
                     let OValue, ODisplay;
                     if (typeof Model[prop][key] === "object"
-                     &&  Model[prop][key].__proto__ == Object.prototype) {
+                        && Model[prop][key].__proto__ == Object.prototype) {
                         OValue = Model[prop][key]["id"];
                         ODisplay = Model[prop][key]["desc"];
                     } else {
@@ -221,14 +246,14 @@ class WModalForm extends HTMLElement {
                         }
                     };
                     if (key == 0 && ObjectOptions.AddObject == true) {
-                         ObjectF[prop] =  OValue;
-                    }else {
-                        if (ObjectF[prop].toString() == OValue.toString()) {                           
+                        ObjectF[prop] = OValue;
+                    } else {
+                        if (ObjectF[prop].toString() == OValue.toString()) {
                             Option.props.selected = "true";
-                        }                        
-                    } 
-                    Options.push(Option)                  
-                }                
+                        }
+                    }
+                    Options.push(Option)
+                }
             } else if (typeof Model[prop] === "string" && Model[prop].length >= 50) {
                 ControlTagName = "textarea";
                 InputType = "";
@@ -237,42 +262,38 @@ class WModalForm extends HTMLElement {
             } else {
                 InputType = "text";
             }
-            //--------------------------------
-            if (ObjectOptions.AddObject == true) {
-                InputValue = "";
-            } else {
-                InputValue = this.EditObject[prop];
-            }
             //DEFINICION DE TIPO            
             const InputControl = {
                 type: ControlTagName,
                 props: {
                     id: "ControlValue" + prop,
+                    class: prop,
                     value: null,
                     onchange: async (ev) => { //evento de actualizacion del componente
                         if (ev.target.type == "file") {
                             await this.SelectedFile(ev.target.files[0]);
                             await setTimeout(() => {
                                 ObjectF[prop] = photoB64.toString();
-                                this.querySelector("#imgControl" + prop + this.id).src = "data:image/png;base64," + ObjectF[prop];
+                                this.shadowRoot.querySelector("#imgControl" + prop + this.id).src = "data:image/png;base64," + ObjectF[prop];
                             }, 1000);
                         } else {
-                            console.log( ev.target.value )
+                            ev.target.style = "";
                             ObjectF[prop] = ev.target.value;
                         }
                     }
                 },
                 children: []
             }
-            if (InputType != "") {
+            if (InputType != "" && InputType != "file") {
                 InputControl.props.type = InputType;
                 InputControl.props.placeholder = prop + "..."
             } else if (InputType == "file") {
+                InputControl.props.type = InputType;
                 InputControl.props.style = "display: none";
             } else if (ControlTagName == "select") {
                 InputControl.children = Options;
             }
-            InputControl.props.value = InputValue;            
+            InputControl.props.value = InputValue;
             ControlContainer.children.push(InputControl)
             Form.children.push(ControlContainer);
         }
@@ -287,6 +308,16 @@ class WModalForm extends HTMLElement {
                     class: 'Btn',
                     type: "button",
                     onclick: async () => {
+                        if (this.DataRequire == true) {
+                            for (const prop in ObjectF) {
+                                if (ObjectF[prop] == null || ObjectF[prop] == "") {
+                                    const control = this.shadowRoot.querySelector("." + prop);
+                                    control.style = "border-bottom:3px solid #ef4d00";
+                                    console.log("none")
+                                    return;
+                                }
+                            }
+                        }
                         if (this.ObjectOptions.SaveFunction != undefined) {
                             this.ObjectOptions.SaveFunction(ObjectF);
                         }
@@ -294,12 +325,10 @@ class WModalForm extends HTMLElement {
                             const response = await WAjaxTools.PostRequest(this.ObjectOptions.Url, ObjectF);
                             console.log(response);
                         }
-                        //console.log(Object);
                         ComponentsManager.modalFunction(this);
                         setTimeout(() => {
                             this.parentNode.removeChild(this);
                         }, 1000);
-
                     }
                 },
                 children: ['Guardar']
@@ -489,21 +518,7 @@ class WModalForm extends HTMLElement {
                         "z-index": "1 !important",
                         "overflow-y": "auto",
                         "padding-bottom": "0px",
-                    }), new WCssClass(" divForm", {
-                        padding: "20px",
-                        "display": "grid",
-                        "grid-gap": "1rem",
-                        "grid-template-columns": "calc(50% - 10px) calc(50% - 10px)",
-                        "grid-template-rows": "auto",
-                    }), new WCssClass(" .ContainerFormWModal", {
-                        "margin-top": "0px",
-                        "width": "100%",
-                        "max-height": "auto !important",
-                        "height": "auto !important",
-                        "border-radius": "0cm",
-                    }), new WCssClass("", {
-                        "padding-bottom": "0px",
-                    }),
+                    })
                 ],
             }
         }
