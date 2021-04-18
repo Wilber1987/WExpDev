@@ -19,7 +19,6 @@ function DisplayAcordeon(value, SectionId, size = null) {
         }
     }
 }
-
 function type(value) {
     var r;
     if (typeof value === 'object') {
@@ -129,8 +128,6 @@ class WAjaxTools {
         return JSON.parse(responseLocal);
     }
 }
-
-
 class WRender {
     static CreateStringNode = (string) => {
         let node = document.createRange().createContextualFragment(string);        
@@ -212,7 +209,6 @@ class WRender {
         }
     }
 }
-
 class ComponentsManager {
     constructor() {
         this.DomComponents = [];
@@ -301,8 +297,8 @@ class ComponentsManager {
             }, 1000);
         }
     }
-    static DisplayAcorden(elementId, valueSize = 0) {
-        let SectionElement = document.getElementById(elementId);
+    static DisplayAcorden(SectionElement, valueSize = 0) {
+        //let SectionElement = document.getElementById(elementId);
         if (SectionElement.offsetHeight == valueSize) {
             SectionElement.style.maxHeight = "800px";
             SectionElement.style.minHeight = "150px";
@@ -313,8 +309,6 @@ class ComponentsManager {
         }
     }
 }
-
-
 class WArrayF {
     static orderByDate(Arry, type) {
         var meses = [
@@ -521,7 +515,6 @@ class WArrayF {
     }
 
 }
-
 function _DispalNav(NavContainerId, NavAnimation) {
     let NavContainer = document.querySelector("#" + NavContainerId);
     let Nav = NavContainer.querySelector("ul");

@@ -21,6 +21,7 @@ class ChartConfig {
 class ColumChart extends HTMLElement {
     constructor(props) {
         super();
+        this.attachShadow({ mode: "open" });
     }
     /*
         PARA CONVERTIRLO EN GRAFICO DE BARRAS NO STAKED
@@ -32,10 +33,10 @@ class ColumChart extends HTMLElement {
         this.DrawChart();
     }
     connectedCallback() {
-        if (this.innerHTML != "") {
+        if (this.shadowRoot.innerHTML != "") {
             return;
         }
-        this.append(WRender.createElement(WChartStyle))
+        this.shadowRoot.append(WRender.createElement(WChartStyle))
         this.DrawChart();
     }
     DrawChart() {
@@ -57,7 +58,7 @@ class ColumChart extends HTMLElement {
         ];
         ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
         ChartFragment.append(this._AddSectionLabelsGroups(this.ChartInstance));
-        this.append(ChartFragment);
+        this.shadowRoot.append(ChartFragment);
     }
     _AddSectionTitle(Title) {
         // var Title = 
@@ -85,7 +86,7 @@ class ColumChart extends HTMLElement {
                 </span>${element.Descripcion}</label>`
             ));
             index++;
-        })
+        })     
         return SectionLabels;
     }
     _AddSectionBars(Groups, Config) {
@@ -141,8 +142,7 @@ class ColumChart extends HTMLElement {
                             this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup, elementThreeGroup);
                             groupBars.append(ContainerBars);
                             groupBars.append(this._DrawBackgroundLine(this.MaxVal, null, Config.ColumnLabelDisplay));
-                            groupLabelsThree.append(WRender.CreateStringNode(`       
-                                <label class="">
+                            groupLabelsThree.append(WRender.CreateStringNode(`<label class="">
                                     ${elementThreeGroup[Config.AttNameG3]}
                                 </label>`));
                         });
@@ -154,8 +154,7 @@ class ColumChart extends HTMLElement {
                         groupBars.append(ContainerBars);
                         groupBars.append(this._DrawBackgroundLine(this.MaxVal, null, Config.ColumnLabelDisplay));
                     }
-                    groupLabelsTwo.append(WRender.CreateStringNode(`       
-                            <label class="">
+                    groupLabelsTwo.append(WRender.CreateStringNode(`<label class="">
                                 ${elementSecondGroup[Config.AttNameG2]}
                             </label>`));
                 })
@@ -166,13 +165,11 @@ class ColumChart extends HTMLElement {
                 groupBars.append(ContainerBars);
                 groupBars.append(this._DrawBackgroundLine(this.MaxVal, null, Config.ColumnLabelDisplay));
             }
-            groupLabels.append(WRender.CreateStringNode(`       
-                <label class="">
+            groupLabels.append(WRender.CreateStringNode(`<label class="">
                     ${elementGroup[Config.AttNameG1]}
                 </labe>`));
             count++;
             GroupSection.append(groupBars, groupLabelsThree, groupLabelsTwo, groupLabels);
-
             SectionBars.append(GroupSection);
         })
         SectionBars.append(this._DrawBackgroundChart(this.MaxVal, null, Config.ColumnLabelDisplay));
@@ -273,6 +270,7 @@ class ColumChart extends HTMLElement {
         return ContainerLine;
     }
     _DrawBar(element, Config, index) {
+        //console.log(element)
         var Size = Config.ContainerSize;
         var Size = 220;
         var BarSize = (element[Config.EvalValue] / this.MaxVal); //% de tamaño
@@ -287,12 +285,11 @@ class ColumChart extends HTMLElement {
             number = Math.round(number * multiplier) / multiplier
             labelCol = number + '%';
         }
-        var Bars = WRender.CreateStringNode(`
-            <Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
+        var Bars = WRender.CreateStringNode(`<Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
                 <label>
                     ${labelCol}
                 </labe>
-            </Bars>`);
+            </Bars>`);           
         return Bars;
     }
     _AddSectionLabelsGroups(Config) {
@@ -357,7 +354,7 @@ class RadialChart extends HTMLElement {
             )
         );
         ChartFragment.append(this._AddSectionData(this.ChartInstance, WRender.createElementNS));
-        this.append(ChartFragment);
+        this.shadowRoot.append(ChartFragment);
     }
     _AddSectionTitle(Title) {
         var SectionTitle = WRender.CreateStringNode(
@@ -480,9 +477,9 @@ const WChartStyle = {
             new WCssClass(".WChartContainer ",{
                 "padding-left":" 30px",
                 "font-size":" 12px",
-                //"border":" #d4d4d4 solid 4px",
+                "border":" #d4d4d4 solid 1px",
                 "padding":" 20px",
-                "border-radius":" .4cm",
+                //"border-radius":" .4cm",
                 "max-height":" 500px !important",
                 "min-height":" 400px !important",
                 "overflow":" hidden",

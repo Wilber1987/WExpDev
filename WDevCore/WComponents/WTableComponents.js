@@ -13,7 +13,9 @@ class WTableComponent extends HTMLElement {
         this.attachShadow({ mode: "open" });
     }
     connectedCallback() {
-        //this.innerHTML = "";        
+        if (this.shadowRoot.innerHTML != "") {
+            return;
+        }      
         this.shadowRoot.append(WRender.createElement(this.PaginateTOptionsStyle()));
         switch (this.TableConfig.StyleType) {
             case "Cards":
@@ -46,7 +48,7 @@ class WTableComponent extends HTMLElement {
             if (this.TableConfig.Options) {
                 this.Options = this.TableConfig.Options;
             } else {
-                this.Options = {                   
+                this.Options = {
                     Search: true,
                     Add: true,
                     Edit: true,
@@ -517,8 +519,8 @@ class WTableComponent extends HTMLElement {
                     } else if (this.TableConfig.StyleType == "Grid") {
                         body.style.display = "grid";
                     } else {
-                        body.style.display = "contents";                        
-                    }                   
+                        body.style.display = "contents";
+                    }
                 } else {
                     body.style.display = "none";
                 }
@@ -718,34 +720,34 @@ class WTableComponent extends HTMLElement {
                         console.log("entro1");
                         return;
                     }
-                    this.AttNameEval = document.getElementById(data).innerText;
+                    this.AttNameEval = this.shadowRoot.querySelector("#" + data).innerText;
                     this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
-                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (find) {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);
                     }
                 } else if (target.id.includes("ListValue")) {
                     if (target.children.length == 2) {
-                        console.log("entro1");
+                        //console.log("entro1");
                         return;
                     }
-                    this.EvalValue = document.getElementById(data).innerText;
-                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    this.EvalValue = this.shadowRoot.querySelector("#" + data).innerText;
+                    let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (find) {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);
                     }
                 } else if (target.id.includes("ListGroups")) {
-                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (!find) {
-                        this.groupParams.push(document.getElementById(data).innerText);
+                        this.groupParams.push(this.shadowRoot.querySelector("#" + data).innerText);
                     }
                 } else if (target.id.includes("ListAtribs")) {
-                    let find = this.groupParams.find(a => a == document.getElementById(data).innerText);
+                    let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (find) {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);
                     }
                 }
-                target.appendChild(document.getElementById(data));
+                target.appendChild(this.shadowRoot.querySelector("#" + data));
                 if (OriginalParent.includes("ListEval")) {
                     this.AttNameEval = null;
                     this.EvalArray = null;
@@ -845,7 +847,8 @@ class WTableComponent extends HTMLElement {
                         innerText: "»",
                         class: "btn",
                         onclick: () => {
-                            ComponentsManager.DisplayAcorden("TableOptions" + this.id, 38);
+                            const elementS = this.shadowRoot.querySelector("#TableOptions" + this.id)
+                            ComponentsManager.DisplayAcorden(elementS, 38);
                         }
                     }
                 }]

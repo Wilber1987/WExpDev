@@ -128,7 +128,7 @@ class WSlide extends HTMLElement {
         let frag = { type: "div", props: { class: "slideshow-container" }, children: [] }
         let dotContainer = { type: "div", props: { class: "dot-container" }, children: [] }
         let Slides = this.TakeArray();
-
+        console.log(Slides)
         Slides.forEach((element, index = 1) => {
             const slide = this.TakeSlide(element);
             frag.children.push({
