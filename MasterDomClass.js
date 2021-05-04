@@ -1,6 +1,9 @@
 import { ComponentsManager, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
+import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
+import { SlideDoc } from "./Modules/SlideDoc.js";
+import { ChartDocs } from "./Modules/ChartDocs.js";
 import DocumentView from "./Modules/DocumentView.js";
 const DOMManager = new ComponentsManager();
 class MasterDomClass extends ComponentsManager {
@@ -170,8 +173,11 @@ class AsideClass {
         }
     }, {
         name: "Tablas Dinámica", url: "#",
-        action: (ev) => { }
-    }];    
+        action: (ev) => {
+            DOMManager.NavigateFunction("DinamicTableDoc", new DinamicTableDoc({ id: "DinamicTableDoc" }), "AppMain");
+         }
+    }];   
+       
     WNavComponents = {
         type: "w-app-navigator",
         props: {
@@ -185,6 +191,14 @@ class AsideClass {
             }, {
                 name: "Tablas", url: "#", SubNav: {
                     Elements: this.WNavTables
+                }
+            },{
+                name: "Chart", url: "#", action: async (ev)=>{
+                    DOMManager.NavigateFunction("ChartDocs", new ChartDocs({ id: "ChartDocs" }), "AppMain");       
+                }
+            },{
+                name: "Slide", url: "#", action: async (ev)=>{
+                    DOMManager.NavigateFunction("SlideDoc", new SlideDoc({ id: "SlideDoc" }), "AppMain");       
                 }
             },]
         }
