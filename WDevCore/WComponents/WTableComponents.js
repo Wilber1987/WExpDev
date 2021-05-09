@@ -346,9 +346,12 @@ class WTableComponent extends HTMLElement {
                         prop.includes("Pict") || prop.includes("image") || prop.includes("Image") ||
                         prop.includes("Photo")) {
                         let cadenaB64 = "";
+                        //console.log(this.TableConfig)
                         var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
                         if (base64regex.test(value)) {
                             cadenaB64 = "data:image/png;base64,";
+                        }else if(this.TableConfig.ImageUrlPath != undefined){
+                            cadenaB64 = this.TableConfig.ImageUrlPath + "/";
                         }
                         tr.children.push({
                             type: "td",
@@ -478,7 +481,7 @@ class WTableComponent extends HTMLElement {
                             Options.children.push({
                                 type: "button",
                                 props: {
-                                    class: "BtnTableA",
+                                    class: "BtnTableSR",
                                     type: "button",
                                     innerText: Action.name,
                                     onclick: async (ev) => {
@@ -605,6 +608,7 @@ class WTableComponent extends HTMLElement {
             groupParam: this.groupParams[inicio],
             children: this.ChargeGroup(Groups, inicio + 1)
         }
+        console.log(ObjGroup);
         return ObjGroup;
     }
     AttEval = () => {
@@ -982,7 +986,7 @@ class WTableComponent extends HTMLElement {
                         "font-family": "Verdana, sans-serif",
                         width: "100%",
                         "border-collapse": "collapse",
-                        "border-top": "solid 1px #999999",
+                        //"border-top": "solid 1px #999999",
                         position: "relative"
                     }), new WCssClass(`.WTable th`, {
                         padding: "0.5rem",
@@ -1175,7 +1179,7 @@ class WTableComponent extends HTMLElement {
                         "font-family": "Verdana, sans-serif",
                         width: "100%",
                         "border-collapse": "collapse",
-                        "border-top": "solid 1px #999999",
+                        //"border-top": "solid 1px #999999",
                         position: "relative",
                         display: "flex !important",
                         "flex-direction": "column"
@@ -1186,31 +1190,41 @@ class WTableComponent extends HTMLElement {
                         padding: "20px"
                     }),
                     new WCssClass(`.tableContainer tbody tr`, {
-                        display: "inline-block !important",
+                        //display: "inline-block !important",
+                        display: "grid !important",
+                        "grid-template-rows": "auto",
                         overflow: "hidden",
                         width: "250px",
-                        border: "solid 1px #999",
+                        border: "solid 1px #cbcbcb",
                         "border-radius": "0.2cm",
                         height: "300px",
                         padding: "10px",
                         margin: "10px",
-                        "min-width": "200px",
-                        position: "relative"
+                        "min-width": "220px",
+                        position: "relative",
+                        "box-shadow": "1px 2px 3px 0px rgb(0 0 0 / 10%)",
                     }), new WCssClass(`.tableContainer td`, {
-                        display: "block",
+                        "white-space": "nowrap",
+                        "overflow": "hidden",
+                        "text-overflow": "ellipsis",
+                        //display: "block",
+                    }), new WCssClass(`.tableContainer .tdImage`, {
+                        "width": "100%",
+                        "overflow": "hidden",
+                        "grid-row": "1/2", 
                     }), new WCssClass(`.tableContainer .tdAction`, {
                         display: "block",
-                        position: "absolute",
+                        //position: "absolute",
                         bottom: 0,
                         padding: "10px 0px",
                         "text-align": "center",
                         "width": "100%",
                         "left": "0",
                         "background-color": "#eee",
-                        "border-top": "solid 3px #999999"
-                    }),
+                        "border-top": "solid 3px #cbcbcb",
+                        //height: "35px"
+                    })
                     //TOPCION
-
                 ],
             }
         }
@@ -1390,11 +1404,12 @@ class WTableComponent extends HTMLElement {
                         "left": "0",
                         "background-color": "rgba(0,0,0,0.5)",
                         //"border-top": "solid 3px #999999"
-                    }), new WCssClass(`.imgPhoto`, {
-                        "width": "100%",
-                        "height": "100%",
-                        "border-radius": "0cm",
-                        "box-shadow": "0 0px 2px 0px #000",
+                    }), new WCssClass(`.imgPhoto`, {                        
+                        "width": "120px",
+                        "border-radius": "0.2cm",
+                        "height": "120px",
+                        "size": "100%",
+                        "object-fit": "cover",
                     })
                     //TOPCION
 
@@ -1490,7 +1505,7 @@ class WTableComponent extends HTMLElement {
                         "padding-left": "20px",
                         "padding-right": "20px",
                         margin: "0px",
-                    }), new WCssClass(`.BtnTable, .BtnTableA, .BtnTableS`, {
+                    }), new WCssClass(`.BtnTable, .BtnTableA, .BtnTableS, .BtnTableSR`, {
                         "font-weight": "bold",
                         "border": "none",
                         "padding": "10px",
@@ -1504,6 +1519,9 @@ class WTableComponent extends HTMLElement {
                     }), new WCssClass(`.BtnTableS`, {
                         "background-color": "#106705",
                         "border-right": "#0a3e03 5px solid"
+                    }),new WCssClass(`.BtnTableSR`, {
+                        "background-color": "#ff8080",
+                        "border-right": "#d86060 5px solid"
                     }), new WCssClass(`.BtnTableA`, {
                         "background-color": "#af0909",
                         "border-right": "#670505 5px solid"
@@ -1542,11 +1560,43 @@ class WTableComponent extends HTMLElement {
                         "min-width": "20px",
                         "margin": "5px",
                     }), new WCssClass(`.imgPhoto`, {
-                        "width": "100%",
-                        "height": "auto",
-                        "border-radius": "0.2cm",
-                        "box-shadow": "0 0px 2px 0px #000",
-                    })
+                        "width": "140px",
+                        "border-radius": "50%",
+                        "height": "140px",
+                        "size": "100%",
+                        display: "block",
+                        margin: "auto",
+                        "object-fit": "cover",                        
+                        "box-shadow": "0 2px 5px 0 rgb(0 0 0 / 30%)",
+                    }),
+                    //SCROLLLLSSSSSSSSSS
+                    new WCssClass("*::-webkit-scrollbar-thumb",{
+                        "background":" #ccc",
+                        "border-radius":" 4px",
+                    }),            
+                    new WCssClass("*::-webkit-scrollbar-thumb:hover",{
+                        "background":" #b3b3b3",
+                        "box-shadow":" 0 0 3px 2px rgba(0, 0, 0, 0.2)",
+                    }),            
+                    new WCssClass("*::-webkit-scrollbar-thumb:active ",{
+                        "background-color":" #999999",
+                    }),
+                    
+                    new WCssClass("*::-webkit-scrollbar ",{
+                        "width":" 8px",
+                        "height":" 10px",
+                        "margin":" 10px",
+                    }),
+                    
+                    new WCssClass("*::-webkit-scrollbar-track ",{
+                        "background":" #e1e1e1",
+                        "border-radius":" 4px",
+                    }),            
+                    
+                    new WCssClass("*::-webkit-scrollbar-track:active ,*::-webkit-scrollbar-track:hover",{
+                        "background":" #d4d4d4",
+                    }),            
+                    
                 ]
             }
         }

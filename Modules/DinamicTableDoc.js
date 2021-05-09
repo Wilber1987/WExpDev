@@ -400,7 +400,7 @@ class DinamicTable {
         this.children.push({
             type: "w-table",
             props: {
-                id: "table",
+                id: "table1",
                 TableConfig: ConfigG3
             }
         })
@@ -446,7 +446,7 @@ class DinamicTable {
         this.children.push({
             type: "w-table",
             props: {
-                id: "table",
+                id: "table2",
                 TableConfig: ConfigG3
             }
         })

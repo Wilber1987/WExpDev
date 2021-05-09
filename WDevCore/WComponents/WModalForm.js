@@ -177,125 +177,134 @@ class WModalForm extends HTMLElement {
                 }
             };
         }
-        const Model = this.ObjectModel;
+        const Model = this.ObjectModel;        
         const Form = { type: 'divForm', children: [] };
-        for (const prop in Model) {
-            const ControlContainer = {
-                type: "div",
-                props: { class: "ModalElement" },
-                children: []
-            }
-            let ControlTagName = "input";
-            let InputType = typeof Model[prop];
-            let InputValue = "";
-            //--------------------------------
-            if (ObjectOptions.AddObject == true) {
-                InputValue = "";
-            } else {
-                InputValue = this.EditObject[prop];
-            }
-            let Options = [];
-            if (prop.toUpperCase().includes("PASS") || prop.toUpperCase().includes("PASSWORD")) {
-                InputType = "password";
-            } else if (prop.toUpperCase().includes("DATE") || prop.toUpperCase().includes("FECHA") || prop.toUpperCase().includes("TIME")) {
-                InputType = "date";
-            } else if (prop.toUpperCase().includes("IMG") || prop.toUpperCase().includes("PICT")
-                || prop.toUpperCase().includes("IMAGE") || prop.toUpperCase().includes("PHOTO")) {
-                let cadenaB64 = "";
-                let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-                if (base64regex.test(InputValue)) {
-                    cadenaB64 = "data:image/png;base64,";
+        for (const prop in Model) {                        
+            if (!prop.includes("_hidden")) {
+                const ControlContainer = {
+                    type: "div",
+                    props: { class: "ModalElement" },
+                    children: []
                 }
-                ControlContainer.children.push({
-                    type: "img",
-                    props: {
-                        src: cadenaB64 + InputValue,
-                        class: "imgPhotoWModal",
-                        id: "imgControl" + prop + this.id,
+                let ControlTagName = "input";
+                let InputType = typeof Model[prop];
+                let InputValue = "";
+                //--------------------------------
+                if (ObjectOptions.AddObject == true) {
+                    InputValue = "";
+                } else {
+                    InputValue = this.EditObject[prop];
+                }
+                let Options = [];
+                if (prop.toUpperCase().includes("PASS") || prop.toUpperCase().includes("PASSWORD")) {
+                    InputType = "password";
+                } else if (prop.toUpperCase().includes("DATE") || prop.toUpperCase().includes("FECHA") || prop.toUpperCase().includes("TIME")) {
+                    InputType = "date";
+                } else if (prop.toUpperCase().includes("HORA") || prop.toUpperCase().includes("HOUR")) {
+                    InputType = "time";
+                } else if (prop.toUpperCase().includes("IMG") || prop.toUpperCase().includes("PICT")
+                    || prop.toUpperCase().includes("IMAGE") || prop.toUpperCase().includes("PHOTO")) {
+                    let cadenaB64 = "";
+                    let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                    if (base64regex.test(InputValue)) {
+                        cadenaB64 = "data:image/png;base64,";
                     }
-                })
-                ControlContainer.children.push({
-                    type: "label",
-                    props: {
-                        class: "LabelFile",
-                        innerText: "Seleccionar Archivo ⇪",
-                        htmlFor: "ControlValue" + prop
-                    }
-                })
-                InputType = "file";
-                ControlTagName = "input";
-                ControlContainer.props.class += " imageGridForm";
-            } else if (Model[prop] != null && Model[prop].__proto__ == Array.prototype) {
-                ControlTagName = "select";
-                InputType = "";
-                for (const key in Model[prop]) {
-                    let OValue, ODisplay;
-                    if (typeof Model[prop][key] === "object"
-                        && Model[prop][key].__proto__ == Object.prototype) {
-                        OValue = Model[prop][key]["id"];
-                        ODisplay = Model[prop][key]["desc"];
-                    } else {
-                        OValue = Model[prop][key];
-                        ODisplay = Model[prop][key];
-                    }
-                    const Option = {
-                        type: "option",
+                    ControlContainer.children.push({
+                        type: "img",
                         props: {
-                            value: OValue,
-                            innerText: ODisplay
+                            src: cadenaB64 + InputValue,
+                            class: "imgPhotoWModal",
+                            id: "imgControl" + prop + this.id,
                         }
-                    };
-                    if (key == 0 && ObjectOptions.AddObject == true) {
-                        ObjectF[prop] = OValue;
-                    } else {
-                        if (ObjectF[prop].toString() == OValue.toString()) {
-                            Option.props.selected = "true";
+                    })
+                    ControlContainer.children.push({
+                        type: "label",
+                        props: {
+                            class: "LabelFile",
+                            innerText: "Seleccionar Archivo ⇪",
+                            htmlFor: "ControlValue" + prop
                         }
-                    }
-                    Options.push(Option)
-                }
-            } else if (typeof Model[prop] === "string" && Model[prop].length >= 50) {
-                ControlTagName = "textarea";
-                InputType = "";
-            } else if (parseFloat(Model[prop]).toString() != "NaN") {
-                InputType = "number";
-            } else {
-                InputType = "text";
-            }
-            //DEFINICION DE TIPO            
-            const InputControl = {
-                type: ControlTagName,
-                props: {
-                    id: "ControlValue" + prop,
-                    class: prop,
-                    value: null,
-                    onchange: async (ev) => { //evento de actualizacion del componente
-                        if (ev.target.type == "file") {
-                            await this.SelectedFile(ev.target.files[0]);
-                            await setTimeout(() => {
-                                ObjectF[prop] = photoB64.toString();
-                                this.shadowRoot.querySelector("#imgControl" + prop + this.id).src = "data:image/png;base64," + ObjectF[prop];
-                            }, 1000);
+                    })
+                    InputType = "file";
+                    ControlTagName = "input";
+                    ControlContainer.props.class += " imageGridForm";
+                } else if (Model[prop] != null && Model[prop].__proto__ == Array.prototype) {
+                    ControlTagName = "select";
+                    InputType = "";
+                    for (const key in Model[prop]) {
+                        let OValue, ODisplay;
+                        if (typeof Model[prop][key] === "object"
+                            && Model[prop][key].__proto__ == Object.prototype) {
+                            OValue = Model[prop][key]["id"];
+                            ODisplay = Model[prop][key]["desc"];
                         } else {
-                            ev.target.style = "";
-                            ObjectF[prop] = ev.target.value;
+                            OValue = Model[prop][key];
+                            ODisplay = Model[prop][key];
                         }
+                        const Option = {
+                            type: "option",
+                            props: {
+                                value: OValue,
+                                innerText: ODisplay
+                            }
+                        };
+                        if (key == 0 && ObjectOptions.AddObject == true) {
+                            ObjectF[prop] = OValue;
+                        } else {
+                            if (ObjectF[prop].toString() == OValue.toString()) {
+                                Option.props.selected = "true";
+                            }
+                        }
+                        Options.push(Option)
                     }
-                },
-                children: []
-            }
-            if (InputType != "" && InputType != "file") {
-                InputControl.props.type = InputType;
-                InputControl.props.placeholder = prop + "..."
-            } else if (InputType == "file") {
-                InputControl.props.type = InputType;
-                InputControl.props.style = "display: none";
-            } else if (ControlTagName == "select") {
-                InputControl.children = Options;
-            }
-            InputControl.props.value = InputValue;
-            ControlContainer.children.push(InputControl)
-            Form.children.push(ControlContainer);
+                } else if (typeof Model[prop] === "string" && Model[prop].length >= 50) {
+                    ControlTagName = "textarea";
+                    InputType = "";
+                } else if (parseFloat(Model[prop]).toString() != "NaN") {
+                    InputType = "number";
+                } else {
+                    InputType = "text";
+                }
+                //DEFINICION DE TIPO            
+                const InputControl = {
+                    type: ControlTagName,
+                    props: {
+                        id: "ControlValue" + prop,
+                        class: prop,
+                        value: null,
+                        onchange: async (ev) => { //evento de actualizacion del componente
+                            if (ev.target.type == "file") {
+                                await this.SelectedFile(ev.target.files[0]);
+                                await setTimeout(() => {
+                                    ObjectF[prop] = photoB64.toString();
+                                    this.shadowRoot.querySelector("#imgControl" + prop + this.id).src = "data:image/png;base64," + ObjectF[prop];
+                                }, 1000);
+                            } else {
+                                ev.target.style = "";
+                                ObjectF[prop] = ev.target.value;
+                            }
+                        }
+                    },
+                    children: []
+                }
+                if (InputType != "" && InputType != "file") {
+                    InputControl.props.type = InputType;
+                    InputControl.props.placeholder = prop + "..."
+                } else if (InputType == "file") {
+                    InputControl.props.type = InputType;
+                    InputControl.props.style = "display: none";
+                } else if (ControlTagName == "select") {
+                    InputControl.children = Options;
+                }
+                InputControl.props.value = InputValue;
+                const label = { type: "label", props: {class: "inputTitle", innerText: prop.replaceAll("_"," ")}}         
+                ControlContainer.children.push(label,InputControl);
+                Form.children.push(ControlContainer);                
+            }  else {
+                if (ObjectOptions.AddObject == true) {
+                    ObjectF[prop] = Model[prop];
+                } 
+            }          
         }
         return Form;
     }
@@ -310,12 +319,16 @@ class WModalForm extends HTMLElement {
                     onclick: async () => {
                         if (this.DataRequire == true) {
                             for (const prop in ObjectF) {
-                                if (ObjectF[prop] == null || ObjectF[prop] == "") {
-                                    const control = this.shadowRoot.querySelector("." + prop);
-                                    control.style = "border-bottom:3px solid #ef4d00";
-                                    console.log("none")
-                                    return;
-                                }
+                                if (!prop.includes("_hidden")) {
+                                   if (ObjectF[prop] == null || ObjectF[prop] == "") {
+                                        const control = this.shadowRoot.querySelector("." + prop);
+                                        console.log(prop)
+                                        console.log(control)
+                                        control.style = "border-bottom:3px solid #ef4d00";
+                                        console.log("none")
+                                        return;
+                                    }
+                                }                                
                             }
                         }
                         if (this.ObjectOptions.SaveFunction != undefined) {
@@ -389,6 +402,7 @@ class WModalForm extends HTMLElement {
                                          input[type=number], 
                                          input[type=date],
                                          input[type=password],
+                                         input[type=time],
                                          select`, {
                         padding: "8px",
                         border: "none",
@@ -442,6 +456,13 @@ class WModalForm extends HTMLElement {
                         color: "#fff",
                         "text-align": "center",
                         //"font-weight": "bold"
+                    }),new WCssClass(` .inputTitle`, {
+                        //code---
+                        padding: "2px",
+                        display: "block",
+                        "text-align": "center",
+                        "font-weight": "bold",
+                        "text-transform": "capitalize"
                     }),
                     //BORONES
                     new WCssClass(` .BtnAlert, .BtnPrimary, 

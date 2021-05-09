@@ -1,3 +1,4 @@
+import  "./Modules/ForosView.js";
 const OnLoad = async() => {
     const { WRender } = await import ("./WDevCore/WModules/WComponentsTools.js");
     const modules = await import ("./MasterDomClass.js");

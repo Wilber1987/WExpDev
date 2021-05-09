@@ -2,6 +2,7 @@ import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
 import "../WDevCore/WComponents/WChartJSComponent.js";
 import "../WDevCore/WComponents/WAppNavigator.js";
 import { ComponentsManager, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
+import "../WDevCore/WComponents/WCalendar.js";
 
 const Data = [
     { id: 1, Category: "Category 3", Stock: "Stock 2", Type: "Type 1", Time: "2020-01-01", Value: 35 },
@@ -69,7 +70,8 @@ class ChartDocs extends ComponentsManager {
         this.children = [
             Nav,
             DivContainer,
-            Style
+            Style,
+
         ]
     }
 }
@@ -81,113 +83,115 @@ class GroupCharts {
             type: 'h3',
             props: { innerText: "Group Chart" },
         })
-        this.children.push({
-            type: "div",
-            props: {
-                style: "padding: 10px",
-                innerHTML:`
-                `
-            }
-        }
-        );        
-        var CharConfig = {
-            ContainerName: "MyChart",
-            Title: "MyChart",
-            GroupLabelsData: GroupLabelsData,
-            GroupDataset: this.EvalArray,
-            Datasets: Data,
-            Colors:["#ff6699", "#ffbb99", "#adebad"],
-            ContainerSize: 400,
-            ColumnLabelDisplay: 0,
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            AttNameG2: "Time",
-            AttNameG3: "Stock",
-            EvalValue: "Value",
-        };
-        this.children.push(  { type: 'w-colum-chart', props: { data: CharConfig } })
-        this.children.push({
-            type: 'h3',
-            props: { innerText: "Double Group Chart" },
-        })
-        var ConfigG2 = {
-            Datasets: Data,
-            /*DATOS DE LA TABLA*/
-            Colors: ["#ff6699", "#ffbb99", "#adebad"],
-            /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
-            /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            AttNameG2: "Time",
-            //AttNameG3: "categ",            
-            EvalValue: "Value",
-            /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
-            //Dinamic: true,
-            /*DEFINE LA TABLA DINAMICA*/
-            //AddChart: true,
-            /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
-        };
+        // this.children.push({
+        //     type: "div",
+        //     props: {
+        //         style: "padding: 10px",
+        //         innerHTML:`
+        //         `
+        //     }
+        // }
+        // );        
+        // var CharConfig = {
+        //     ContainerName: "MyChart",
+        //     Title: "MyChart",
+        //     GroupLabelsData: GroupLabelsData,
+        //     GroupDataset: this.EvalArray,
+        //     Datasets: Data,
+        //     Colors:["#ff6699", "#ffbb99", "#adebad"],
+        //     ContainerSize: 400,
+        //     ColumnLabelDisplay: 0,
+        //     AttNameEval: "Type",
+        //     AttNameG1: "Category",
+        //     AttNameG2: "Time",
+        //     AttNameG3: "Stock",
+        //     EvalValue: "Value",
+        // };
+        // this.children.push(  { type: 'w-colum-chart', props: { data: CharConfig } })
+        // this.children.push({
+        //     type: 'h3',
+        //     props: { innerText: "Double Group Chart" },
+        // })
+        // var ConfigG2 = {
+        //     Datasets: Data,
+        //     /*DATOS DE LA TABLA*/
+        //     Colors: ["#ff6699", "#ffbb99", "#adebad"],
+        //     /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
+        //     /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
+        //     AttNameEval: "Type",
+        //     AttNameG1: "Category",
+        //     AttNameG2: "Time",
+        //     //AttNameG3: "categ",            
+        //     EvalValue: "Value",
+        //     /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
+        //     //Dinamic: true,
+        //     /*DEFINE LA TABLA DINAMICA*/
+        //     //AddChart: true,
+        //     /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
+        //     //paginate: false,
+        //     Options: {
+        //         Search: true, //UrlSearch
+        //         Show: true,
+        //         Edit: true, //UrlUpdate: "",
+        //         Select: true,
+        //         Add: true, //UrlAdd
+        //         Delete: true,// UrlDelete
+        //         /* UserActions: [{name: "Reservar", Function: (Param)=>{
+        //              alert("reserva");
+        //              console.log(Param)
+        //          }}]*/
+        //     },
+        // };
+
+        // this.children.push({
+        //     type: "w-Chart",
+        //     props: {
+        //         id: "Chart",
+        //         ChartConfig: ConfigG2
+        //     }
+        // })
+        // this.children.push({
+        //     type: 'h3',
+        //     props: { innerText: "3 Group Chart" },
+        // })
+        // var ConfigG3 = {
+        //     Datasets: Data,
+        //     /*DATOS DE LA TABLA*/
+        //     Colors: ["#ff6699", "#ffbb99", "#adebad"],
+        //     /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
+        //     /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
+        //     AttNameEval: "Type",
+        //     AttNameG1: "Category",
+        //     AttNameG2: "Time",
+        //     AttNameG3: "Stock",            
+        //     EvalValue: "Value",
+        //     /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
+        //     //Dinamic: true,
+        //     /*DEFINE LA TABLA DINAMICA*/
+        //     //AddChart: true,
+        //     /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
+        //     //paginate: false,
+        //     Options: {
+        //         Search: true, //UrlSearch
+        //         Show: true,
+        //         Edit: true, //UrlUpdate: "",
+        //         Select: true,
+        //         Add: true, //UrlAdd
+        //         Delete: true,// UrlDelete
+        //         /* UserActions: [{name: "Reservar", Function: (Param)=>{
+        //              alert("reserva");
+        //              console.log(Param)
+        //          }}]*/
+        //     },
+        // };
 
         this.children.push({
-            type: "w-Chart",
+            type: "w-calendar",
             props: {
-                id: "Chart",
-                ChartConfig: ConfigG2
-            }
-        })
-        this.children.push({
-            type: 'h3',
-            props: { innerText: "3 Group Chart" },
-        })
-        var ConfigG3 = {
-            Datasets: Data,
-            /*DATOS DE LA TABLA*/
-            Colors: ["#ff6699", "#ffbb99", "#adebad"],
-            /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
-            /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            AttNameG2: "Time",
-            AttNameG3: "Stock",            
-            EvalValue: "Value",
-            /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
-            //Dinamic: true,
-            /*DEFINE LA TABLA DINAMICA*/
-            //AddChart: true,
-            /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
-        };
-
-        this.children.push({
-            type: "w-Chart",
-            props: {
-                id: "Chart",
-                ChartConfig: ConfigG3
+                id: "MyCalendar",
+                Function: async (Date) => {
+                    console.log(Date);
+                }
             }
         })
     }
