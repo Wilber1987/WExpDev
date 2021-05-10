@@ -30,9 +30,27 @@ class WCalendar extends HTMLElement {
         ];
         this.now = new Date();
         this.year = this.now.getFullYear();
+        this.attachShadow({ mode: "open" });
     }
     connectedCallback() {
-        this.append(WRender.createElement(this.StyleCalendar()));
+        if (this.shadowRoot.innerHTML != "") {
+            return;
+        }
+        this.shadowRoot.append(WRender.createElement(this.StyleCalendar()));
+        this.append(WRender.createElement({
+            type: "w-style",
+            props: {
+                ClassList: [
+                    new WCssClass("#"+this.id, {
+                        //"background-color": "#ededed",
+                        overflow: "hidden",
+                        "border-radius": "0.2cm",
+                        display: "block",
+                        border: "solid 1px #e9e9e9",
+                    })
+                ]
+            }
+        }))
         this.DrawComponent();
     }
     async DrawComponent() {
@@ -48,8 +66,8 @@ class WCalendar extends HTMLElement {
                 Month.props.style = "display: none";
             }
         });
-        this.append(WRender.createElement(ContainerCalendar));
-        this.append(WRender.createElement({
+        this.shadowRoot.append(WRender.createElement(ContainerCalendar));
+        this.shadowRoot.append(WRender.createElement({
             type: "div",
             props: { class: "div" },
             children: this.DrawTFooter()
@@ -159,7 +177,7 @@ class WCalendar extends HTMLElement {
         let tfooter = [];
         this.ActualPage = selectMonth;
         const SelectPage = (index) => {
-            let Months = this.querySelectorAll("#" + this.id + " .GridCalendarMonthContainer");
+            let Months = this.shadowRoot.querySelectorAll(".GridCalendarMonthContainer");
             Months.forEach((Month, indexMonth) => {
                 if (indexMonth == index) {
                     Month.style.display = "grid";
@@ -204,34 +222,30 @@ class WCalendar extends HTMLElement {
             props: {
                 id: "StyleCalendarTemplate",
                 ClassList: [
-                    new WCssClass(`#${this.id}`, {
-                        "background-color": "#ededed",
-                        display: "block",
-                        border: "solid 1px #c6c5c5",
-                    }), new WCssClass(`#${this.id} .calendarTitle`, {
+                    new WCssClass(`.calendarTitle`, {
                         padding: "10px",
                         background: "#d8d8d8"
-                    }), new WCssClass(`#${this.id} .GridCalendarMonth`, {
+                    }), new WCssClass(`.GridCalendarMonth`, {
                         display: "grid",
                         "grid-template-columns": "auto auto auto auto auto auto auto",
-                    }), new WCssClass(`#${this.id} .GridDayColum`, {
+                    }), new WCssClass(`.GridDayColum`, {
                         display: "grid",
                         "grid-template-rows": "60px 60px 60px 60px 60px 60px",
-                    }), new WCssClass(`#${this.id} .CalendarDayDisable`, {
+                    }), new WCssClass(`.CalendarDayDisable`, {
                         padding: "20px",
                         border: "solid 1px #999",
                         "background-color": "#bebebe",
-                    }), new WCssClass(`#${this.id} .CalendarDay`, {
+                    }), new WCssClass(`.CalendarDay`, {
                         padding: "20px",
                         border: "solid 1px #c6c5c5",
                         cursor: "pointer",
                         transition: "all 0.5s"
-                    }), new WCssClass(`#${this.id} .CalendarDay:hover`, {
+                    }), new WCssClass(`.CalendarDay:hover`, {
                         padding: "20px",
                         border: "solid 1px #c6c5c5",
                         cursor: "pointer",
                         "background-color": "#79a6d2"
-                    }), new WCssClass(`#${this.id} .CalendarDayActive`, {
+                    }), new WCssClass(`.CalendarDayActive`, {
                         padding: "20px",
                         border: "solid 1px #2d5986",
                         cursor: "pointer",
@@ -239,9 +253,9 @@ class WCalendar extends HTMLElement {
                         "background-color": "#538cc6",
                         color: "#fff",
                     }), //PAGINACION
-                    new WCssClass(`#${this.id} .pagBTN`, {
+                    new WCssClass(`.pagBTN`, {
                         display: "inline-block",
-                        padding: "5px",
+                        padding: "10px",
                         color: "#888888",
                         "margin": "5px",
                         cursor: "pointer",
@@ -249,7 +263,7 @@ class WCalendar extends HTMLElement {
                         "font-weight": "bold",
                         transition: "all 0.6s",
                         "text-align": "center",
-                    }), new WCssClass(`#${this.id} .div`, {
+                    }), new WCssClass(`.div`, {
                         display: "flex",
                         "border-bottom": "1px rgb(185, 185, 185) solid",
                         "justify-content": "flex-end",
