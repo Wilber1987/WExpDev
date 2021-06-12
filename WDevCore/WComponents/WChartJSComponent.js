@@ -329,7 +329,6 @@ class ColumChart extends HTMLElement {
 class RadialChart extends HTMLElement {
     constructor(props) {
         super();
-        this.attachShadow({ mode: "open" });
     }
     attributeChangedCallBack() {
         this.DrawChart();
@@ -338,7 +337,6 @@ class RadialChart extends HTMLElement {
         if (this.innerHTML != "") {
             return;
         }
-        this.shadowRoot.append(WRender.createElement(WChartStyle));
         this.DrawChart();
     }
     // DrawChart() {
