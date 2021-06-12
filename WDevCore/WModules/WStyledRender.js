@@ -211,18 +211,19 @@ class WStyledRender extends HTMLElement {
     DrawStyle() {
         let styleFrag = {
             type: "style",
-            props: {},
-            children: []
+            props: {
+                innerHTML : "",
+            },
         }
         if (this.ClassList != undefined && this.ClassList.__proto__ == Array.prototype) {
-            styleFrag.children.push(this.DrawClassList(this.ClassList));
+            styleFrag.props.innerHTML =  styleFrag.props.innerHTML + " " + this.DrawClassList(this.ClassList);
         }
         if (this.MediaQuery != undefined && this.MediaQuery.__proto__ == Array.prototype) {
             this.MediaQuery.forEach(MediaQ => {
                 let MediaQuery = `@media ${MediaQ.condicion}{
                     ${this.DrawClassList(MediaQ.ClassList)}
                 }`;
-                styleFrag.children.push(MediaQuery);
+                styleFrag.props.innerHTML =  styleFrag.props.innerHTML + " " + MediaQuery;
             });
         }
         if (this.KeyFrame != undefined && this.KeyFrame.__proto__ == Array.prototype) {
@@ -230,7 +231,7 @@ class WStyledRender extends HTMLElement {
                 let KeyFrame = `@keyframes ${KeyF.animate} {
                     ${this.DrawClassList(KeyF.ClassList)}
                 }`;
-                styleFrag.children.push(KeyFrame);
+                styleFrag.props.innerHTML =  styleFrag.props.innerHTML + " " + KeyFrame;
             });
         }
         this.append(WRender.createElement(styleFrag));

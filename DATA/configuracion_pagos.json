@@ -1,0 +1,60 @@
+{
+    "RECORDS": [
+        {
+            "id": "1",
+            "nombre": "Stripe",
+            "descripcion": "Pago a la plataforma Stripe",
+            "porcentaje": "1.40",
+            "monto_fijo": "0.25",
+            "tipo_cuenta": "debita",
+            "estado": "inac",
+            "id_usuario_crea": "1",
+            "fecha_crea": "14/5/2021 00:00:00",
+            "id_usuario_edita": "",
+            "fecha_edita": "",
+            "tipo": "Costo Operativo"
+        },
+        {
+            "id": "2",
+            "nombre": "Twilio",
+            "descripcion": "Pago a la plataforma de Twilio",
+            "porcentaje": "0.00",
+            "monto_fijo": "1.00",
+            "tipo_cuenta": "debita",
+            "estado": "act",
+            "id_usuario_crea": "1",
+            "fecha_crea": "14/5/2021 00:00:00",
+            "id_usuario_edita": "",
+            "fecha_edita": "",
+            "tipo": "Detalle"
+        },
+        {
+            "id": "3",
+            "nombre": "Impuesto sobre la renta",
+            "descripcion": "Pago de impuesto sobre la renta",
+            "porcentaje": "21.00",
+            "monto_fijo": "0.00",
+            "tipo_cuenta": "debita",
+            "estado": "act",
+            "id_usuario_crea": "1",
+            "fecha_crea": "14/5/2021 00:00:00",
+            "id_usuario_edita": "",
+            "fecha_edita": "",
+            "tipo": "Impuesto"
+        },
+        {
+            "id": "4",
+            "nombre": "Servicios ",
+            "descripcion": "cobro de servicios de psicovitalem",
+            "porcentaje": "0.00",
+            "monto_fijo": "99.00",
+            "tipo_cuenta": "acredita",
+            "estado": "act",
+            "id_usuario_crea": "1",
+            "fecha_crea": "",
+            "id_usuario_edita": "",
+            "fecha_edita": "",
+            "tipo": "Detalle"
+        }
+    ]
+}

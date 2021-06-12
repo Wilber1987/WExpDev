@@ -67,22 +67,29 @@ class WAjaxTools {
             }
         }
     }
-    static PostRequest = async (Url, Data = {}, typeHeader) => {
+    static PostRequest = async (Url, Data = {}, PostConfig = {}) => {
+        //console.log(Data)
         try {
             let ContentType = "application/json; charset=utf-8";
             let Accept = "*/*";
-            if (typeHeader == "form") {
+            if (PostConfig.typeHeader != undefined && PostConfig.typeHeader == "form") {
                 ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
                 Accept = "*/*";
             }
-            let response = await fetch(Url, {
+            const ConfigRequest = {
                 method: 'POST',
+                //credentials: "same-origin",
                 headers: {
                     'Content-Type': ContentType,
-                    'Accept': Accept
+                    'Accept': Accept,
+                    //"X-Requested-With": "XMLHttpRequest",
                 },
                 body: JSON.stringify(Data)
-            });
+            }
+            if (PostConfig.token != undefined && PostConfig.token != "") {
+                ConfigRequest.headers['X-CSRF-TOKEN'] = PostConfig.token
+            }
+            let response = await fetch(Url, ConfigRequest);
             const ProcessRequest = await this.ProcessRequest(response, Url);
             return ProcessRequest;
         } catch (error) {
@@ -138,11 +145,17 @@ class WRender {
             if (typeof Node === "undefined" || Node == null) {
                 return document.createTextNode("Nodo nulo o indefinido.");
             } else if (typeof Node === "string" || typeof Node === "number") {
-                return document.createTextNode(Node);
+                if (Node.length > 100) {
+                    return this.CreateStringNode(`<p>${Node}</p>`);
+                }
+                return this.CreateStringNode(`<label>${Node}</label>`);
             } else if (Node.__proto__ === HTMLElement.prototype 
                 || Node.__proto__.__proto__ === HTMLElement.prototype) {
                 return Node;
-            } else {
+            } else {   
+                if (Node.__proto__ == Array.prototype) {
+                    Node = { type: "div", children: Node }
+                }
                 const element = document.createElement(Node.type);
                 if (Node.props != undefined && Node.props.__proto__ == Object.prototype) {
                     for (const prop in Node.props) {
@@ -310,6 +323,9 @@ class ComponentsManager {
     }
 }
 class WArrayF {
+    static JSONParse(param){
+        return JSON.parse((param).replace(/&quot;/gi, '"'));
+    }
     static orderByDate(Arry, type) {
         var meses = [
             "enero", "febrero", "marzo",

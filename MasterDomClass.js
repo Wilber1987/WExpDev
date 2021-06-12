@@ -4,7 +4,9 @@ import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 import { SlideDoc } from "./Modules/SlideDoc.js";
 import { ChartDocs } from "./Modules/ChartDocs.js";
-import DocumentView from "./Modules/DocumentView.js";
+import  DocumentView  from "./Modules/DocumentView.js";
+//REPORTS 
+import { ReportView } from "./Modules/ReportsView.js";
 const DOMManager = new ComponentsManager();
 class MasterDomClass extends ComponentsManager {
     constructor() {
@@ -208,7 +210,7 @@ class MainClass {
     constructor() {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
-        this.children = [];
+        this.children = [new ReportView()];
     }
 }
 class FooterClass {

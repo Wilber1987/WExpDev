@@ -1,0 +1,24 @@
+{
+	"WObject": {
+		"prefix": ["wobj", "WObject"],
+		"body": ["{type:'div', props: {id: ''}, children:[]}"],
+		"description": "Objeto para WREnder."
+	},
+	"WInput": {
+		"prefix": ["winp", "winput"],
+		"body": ["{type:'input', props: {id: '', type:'text'}}"],
+		"description": "Objeto para WREnder."
+	},
+	"WBTN": {
+		"prefix": ["wbtn", "wbtn"],
+		"body": ["{type:'input', props: {id: '', type:'button', value: 'Ok', onclick: async ()=>{",
+			"\t//code.....","}}}"],
+		"description": "Objeto para WREnder."
+	},"WSelect": {
+		"prefix": ["wsel", "wselect"],
+		"body": ["{type:'select', props: {id: ''}, children:[",
+			"\t{type:'option', props: {innerText:'Select Option', value: 'Select Option'}}",
+			"]}"],
+		"description": "Objeto para WREnder."
+	}
+}
