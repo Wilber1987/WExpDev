@@ -611,7 +611,6 @@ class WTableComponent extends HTMLElement {
             groupParam: this.groupParams[inicio],
             children: this.ChargeGroup(Groups, inicio + 1)
         }
-        console.log(ObjGroup);
         return ObjGroup;
     }
     AttEval = () => {
@@ -744,6 +743,10 @@ class WTableComponent extends HTMLElement {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);
                     }
                 } else if (target.id.includes("ListGroups")) {
+                    if (target.children.length == 4) {
+                        console.log("Grupos excedidos");
+                        return;
+                    }
                     let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (!find) {
                         this.groupParams.push(this.shadowRoot.querySelector("#" + data).innerText);
@@ -878,22 +881,27 @@ class WTableComponent extends HTMLElement {
                     id_: element[this.AttNameEval],
                     Descripcion: element[this.AttNameEval]
                 });
-            });
+            });            
+            if (this.TableConfig.TypeChart == undefined) {// bar or staked
+                this.TableConfig.TypeChart = "bar";
+            }
             var CharConfig = {
                 ContainerName: "MyChart",
                 Title: "MyChart",
+                TypeChart: this.TableConfig.TypeChart ,
                 GroupLabelsData: GroupLabelsData,
                 GroupDataset: this.EvalArray,
                 Datasets: this.ProcessData,
                 Colors: this.Colors,
                 ContainerSize: 400,
-                ColumnLabelDisplay: 0,
+                ColumnLabelDisplay: 0,                
                 AttNameEval: this.AttNameEval,
                 AttNameG1: this.groupParams[0],
                 AttNameG2: this.groupParams[1],
                 AttNameG3: this.groupParams[2],
                 EvalValue: this.EvalValue,
             };
+            
             return { type: 'w-colum-chart', props: { data: CharConfig } };
         }
         return "No hay agrupaciones";

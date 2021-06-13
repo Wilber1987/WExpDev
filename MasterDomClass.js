@@ -210,7 +210,7 @@ class MainClass {
     constructor() {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
-        this.children = [new ReportView()];
+        this.children = [new ReportView({id:"TestReport"})];
     }
 }
 class FooterClass {

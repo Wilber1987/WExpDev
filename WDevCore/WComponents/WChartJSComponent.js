@@ -16,6 +16,7 @@ class ChartConfig {
         this.GroupDataTotals = Config.GroupDataTotals;
         this.ContainerSize = Config.ContainerSize;
         this.ColumnLabelDisplay = Config.ColumnLabelDisplay;
+        this.TypeChart = Config.TypeChart;
     }
 }
 class ColumChart extends HTMLElement {
@@ -36,13 +37,18 @@ class ColumChart extends HTMLElement {
         if (this.shadowRoot.innerHTML != "") {
             return;
         }
-        this.shadowRoot.append(WRender.createElement(WChartStyle))
+        this.ChartInstance = new ChartConfig(this.data);
+        if (this.ChartInstance.TypeChart == undefined) {// bar or staked
+            this.ChartInstance.TypeChart = "row";
+        }else if (this.ChartInstance.TypeChart == "staked"){
+            this.ChartInstance.TypeChart = "column";
+        }else {
+            this.ChartInstance.TypeChart = "row";
+        }
+        this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
         this.DrawChart();
     }
     DrawChart() {
-        this.ChartInstance = new ChartConfig(this.data);
-        // this.ChartInstance.GroupDataset =  orderByDate(this.ChartInstance.GroupDataset,
-        //  sessionStorage.getItem('type'));        
         this.Totals = WArrayF.DataTotals(this.ChartInstance);
         this.MaxVal = WArrayF.MaxValue(this.Totals, this.ChartInstance);
         let ChartFragment = document.createElement("div");
@@ -86,7 +92,7 @@ class ColumChart extends HTMLElement {
                 </span>${element.Descripcion}</label>`
             ));
             index++;
-        })     
+        })
         return SectionLabels;
     }
     _AddSectionBars(Groups, Config) {
@@ -289,7 +295,7 @@ class ColumChart extends HTMLElement {
                 <label>
                     ${labelCol}
                 </labe>
-            </Bars>`);           
+            </Bars>`);
         return Bars;
     }
     _AddSectionLabelsGroups(Config) {
@@ -329,6 +335,7 @@ class ColumChart extends HTMLElement {
 class RadialChart extends HTMLElement {
     constructor(props) {
         super();
+        this.attachShadow({ mode: "open" });
     }
     attributeChangedCallBack() {
         this.DrawChart();
@@ -337,6 +344,7 @@ class RadialChart extends HTMLElement {
         if (this.innerHTML != "") {
             return;
         }
+        this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
         this.DrawChart();
     }
     // DrawChart() {
@@ -470,311 +478,315 @@ class RadialChart extends HTMLElement {
         circle.style.strokeDashoffset = dashoffset;
     }
 }
-const WChartStyle = {
-    type: "w-style",
-    props: {
-        ClassList: [           
-            new WCssClass(".WChartContainer ",{
-                "padding-left":" 30px",
-                "font-size":" 12px",
-                "border":" #d4d4d4 solid 1px",
-                "padding":" 20px",
-                //"border-radius":" .4cm",
-                "max-height":" 500px !important",
-                "min-height":" 400px !important",
-                "overflow":" hidden",
-            }),            
-            new WCssClass(".WChartContainer h3 ",{
-                "height":" 30px",
-                "text-align":" center",
-                "display":" block",
-                "font-size":" 20px",
-            }),    
-            new WCssClass(".SectionLabels, .SectionLabelGroup ",{
-                "display":" flex",
-                "justify-content":" center",
-                "align-items":" center",
-                "padding-top":" 10px",
-                "padding-bottom":" 10px",
-                "flex-wrap":" wrap",
-            }),                        
-            new WCssClass(".SectionLabels label, .SectionLabelGroup label ",{
-                "display":" flex",
-                "height":" 20px",
-                "justify-content":" center",
-                "align-items":" center",
-                "font-size":" 9px",
-            }),            
-            new WCssClass(".SectionLabels label span, .SectionLabelGroup label span ",{
-                "min-height":" 20px",
-                "width":" 20px",
-                "content":'" "',
-                "border-radius":" 50%",
-                "display":" inline-flex",
-                "margin":" 5px",
-            }),            
-            new WCssClass(".SectionBars ",{
-                "display":" flex",
-                "align-items":" flex-end",
-                "overflow-y":" hidden",
-                "padding-left":" 30px",
-                "position":" relative",
-                "overflow-x":" scroll",
-                "min-height":" 270px",
-            }),            
-            new WCssClass(".GroupSection ",{
-                "display":" flex",
-                "align-items":" flex-end",
-                "height":" 80%",
-                "border-bottom":" 3px rgb(155, 155, 155) solid",
-                "position":" relative",
-                "flex-direction":" column",
-                "flex-grow":" 1",
-            }),            
-            new WCssClass(".groupBars ",{
-                "width":" 100%",
-                "height":" 220px",
-                "display":" flex",
-                "flex-grow":" 1",
-                "border":" solid 1px #d4d4d4",
-            }),            
-            new WCssClass(".groupLabels ",{
-                "display":" flex",
-                "width":" 100%",
-                "border":" solid 1px #d4d4d4",
-                "align-items":" stretch",
-                "background-color":" #fff",
-            }),            
-            new WCssClass(".groupLabels label ",{
-                "padding":" 5px",
-                "flex-grow":" 1",
-                "width":" 80px",               
-                "text-align":" center",
-                "margin-bottom":" 0px !important",
-                "white-space":" nowrap",
-                "overflow":" hidden",
-                "text-overflow":" ellipsis",
-            }),
-            
-            new WCssClass(".ContainerBars ",{
-                "display":" flex",
-                "width":" 100%",  
-                "padding-left":" 10px",
-                "padding-right":" 10px",
-                "flex-direction":" column",
-                "align-items":" flex-end",
-                "justify-content":" flex-end",
-            }),
-            
-            new WCssClass(".ContainerBars .Bars ",{
-                "display":" block",
-                "margin":" 0 auto",
-                "margin-top":" 0px",
-                "z-index":" 1",
-                "width":" 60px",
-                "min-height":" 20PX",
-                "background":" rgb(177, 177, 177)",
-                "background":" linear-gradient(0deg, rgba(177, 177, 177, 1) 0%, rgba(209, 209, 209, 1) 53%)",               
-            }),            
-            new WCssClass(".Bars label ",{
-                "width":" 100%",
-                "text-align":" center",
-                "display":" block",
-                "font-size":" 11px",
-                "margin-top":" 5px",
-                "font-weight":" bold",
-                "overflow":" hidden",
-            }),            
-            new WCssClass(".BackGrounLineX ",{
-                "display":" flex",
-                "position":" absolute",
-                "flex-direction":" column-reverse",
-                "width":" 100%",
-                "height":" 100%",
-                "left":" 0px",
-                "top":" 0px",
-                "height":" 220px",
-                "right":" 0px",
-            }),
-            
-            new WCssClass(".CharLineX ",{
-                "position":" relative",
-                "border-top":" rgb(190, 190, 190) solid 1px",
-                "height":" 100%",
-                "display":" block",
-                "align-items":" flex-start",
-                "display":" flex",
-                "padding-left":" 5PX",
-            }),
-            
-            new WCssClass(".CharLineXNumber ",{
-                "position":" relative",
-                "border-top":" rgba(190, 190, 190, 0) solid 1px",
-                "height":" 100%",
-                "align-items":" flex-start",
-                "display":" flex",
-                "font-size":" 9px",
-            }),
-            
-            new WCssClass(".ElementG1::before",{
-                "height":" 25px",
-                "width":" 25px",
-                "background-color":" #70ad47",
-                "content":'" "',
-                "position":" absolute",
-                "left":" -30px",
-                "border-radius":" 0.15cm",
-            }),
-            
-            new WCssClass(".ElementG2::before",{
-                "height":" 25px",
-                "width":" 25px",
-                "background-color":" #5b9bd5",
-                "content":'" "',
-                "position":" absolute",
-                "left":" -30px",
-                "border-radius":" 0.15cm",
-            }),            
-            new WCssClass(".ElementG3::before ",{
-                "height":" 25px",
-                "width":" 25px",
-                "background-color":" #ffc000",
-                "content":'" "',
-                "position":"absolute",
-                "left":" -30px",
-                "border-radius":" 0.15cm",
-            }),            
-            new WCssClass(".SectionBars::-webkit-scrollbar-thumb",{
-                "background":" #ccc",
-                "border-radius":" 4px",
-            }),            
-            new WCssClass(".SectionBars::-webkit-scrollbar-thumb:hover",{
-                "background":" #b3b3b3",
-                "box-shadow":" 0 0 3px 2px rgba(0, 0, 0, 0.2)",
-            }),            
-            new WCssClass(".SectionBars::-webkit-scrollbar-thumb:active ",{
-                "background-color":" #999999",
-            }),
-            
-            new WCssClass(".SectionBars::-webkit-scrollbar ",{
-                "width":" 8px",
-                "height":" 15px",
-                "margin":" 10px",
-            }),
-            
-            new WCssClass(".SectionBars::-webkit-scrollbar-track ",{
-                "background":" #e1e1e1",
-                "border-radius":" 4px",
-            }),            
-            
-            new WCssClass(".SectionBars::-webkit-scrollbar-track:active ,.SectionBars::-webkit-scrollbar-track:hover",{
-                "background":" #d4d4d4",
-            }),            
-            
-            new WCssClass(".Contenedor, .ContenedorPregs ",{
-                "display":" block",
-                "overflow":" initial",
-                "margin":" auto",
-                "margin-top":" 50px",
-                "background-color":" #fff",
-                "width":" 70%",
-                "max-height":" 800px",
-                "overflow-y":" initial",
-                "padding":" 20px",
-                "min-height":" 200px",
-                "border-radius":" 5px",
-            }),
-            
-            
-            /*RADIALLLLL------------------------------------------------------------------------------------------------------*/
-            
-            new WCssClass(".SectionRadialChart ",{
-                "position":" relative",
-                "text-align":" center",
-                "display":" block",
-                "width":" 100%",
-                "height":" 300px",
-            }),
-            
-            new WCssClass(".RadialDataBackground ",{
-                "transform":" rotate(-90deg)",
-            }),            
-            new WCssClass(".RadialDataBackground:first-child ",{
-                "margin-bottom":" 20px",
-            }),            
-            new WCssClass(".RadialData ",{
-                "height":" 200px",
-                "width":" 200px",
-                "border-radius":" 50%",
-                "display":" block",
-                "position":" absolute",
-                "top":" 0",
-                "left":" calc(50% - 100px)",
-                "margin":" auto",
-            }),
-            
-            new WCssClass(".RadialData::before ",{
-                "content":'" "',
-                "color":" #fff",
-                "height":" 200px",
-                "width":" 200px",
-                "border-radius":" 50%",
-                "display":" block",
-                "position":" absolute",
-                "top":" 0",
-                "left":" calc(50% - 100px)",
-                "margin":" auto",
-                "background":" linear-gradient( 90deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
-            }),
-            
-            new WCssClass(".RadialData::after ",{
-                "content":'" "',
-                "color":" #fff",
-                "height":" 200px",
-                "width":" 200px",
-                "border-radius":" 50%",
-                "display":" block",
-                "position":" absolute",
-                "top":" 0",
-                "left":" calc(50% - 100px)",
-                "margin":" auto",
-                "background":" linear-gradient( 180deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
-            }),
-            
-            new WCssClass(".RadialChart ",{
-                "height":" 100%",
-            }),
-            
-            new WCssClass(".circle ",{
-                "transition":" all 0.5s",
-                "transform-origin":" 50% 50%",
-                "fill":" none",
-                "cursor":" pointer",
-                "clip-path":" circle(50% at 50% 50%)",
-            }),
-            
-            new WCssClass(".circleText ",{
-                "transition":" all 0.5s",
-                "height":" 100%",
-                "width":" 100%",
-                "transform-origin":" 50% 50%",
-            }),
-            
-            new WCssClass(".circle:hover",{
-                "background-color":" #999999",
-                "background-blend-mode":" screen",
-                "z-index":" 5",
-                "clip-path":" circle(52% at 50% 50%)",
-            }),    
-            new WCssClass(".progress__meter,.progress__value ",{
-                "fill":" none",
-            }),
-            
-            new WCssClass(".progress__meter ",{
-                "stroke":" #e6e6e6",
-            }), 
-        ]
-    }
+const WChartStyle = (ChartInstance) => {
+    return {
+        type: "w-style",
+        props: {
+            ClassList: [
+                new WCssClass(".WChartContainer ", {
+                    "padding-left": " 30px",
+                    "font-size": " 12px",
+                    "border": " #d4d4d4 solid 1px",
+                    "padding": " 20px",
+                    //"border-radius":" .4cm",
+                    "max-height": " 500px !important",
+                    "min-height": " 400px !important",
+                    "overflow": " hidden",
+                }),
+                new WCssClass(".WChartContainer h3 ", {
+                    "height": " 30px",
+                    "text-align": " center",
+                    "display": " block",
+                    "font-size": " 20px",
+                }),
+                new WCssClass(".SectionLabels, .SectionLabelGroup ", {
+                    "display": " flex",
+                    "justify-content": " center",
+                    "align-items": " center",
+                    "padding-top": " 10px",
+                    "padding-bottom": " 10px",
+                    "flex-wrap": " wrap",
+                }),
+                new WCssClass(".SectionLabels label, .SectionLabelGroup label ", {
+                    "display": " flex",
+                    "height": " 20px",
+                    "justify-content": " center",
+                    "align-items": " center",
+                    "font-size": " 9px",
+                }),
+                new WCssClass(".SectionLabels label span, .SectionLabelGroup label span ", {
+                    "min-height": " 20px",
+                    "width": " 20px",
+                    "content": '" "',
+                    "border-radius": " 50%",
+                    "display": " inline-flex",
+                    "margin": " 5px",
+                }),
+                new WCssClass(".SectionBars ", {
+                    "display": " flex",
+                    "align-items": " flex-end",
+                    "overflow-y": " hidden",
+                    "padding-left": " 30px",
+                    "position": " relative",
+                    "overflow-x": " scroll",
+                    "min-height": " 270px",
+                }),
+                new WCssClass(".GroupSection ", {
+                    "display": " flex",
+                    "align-items": " flex-end",
+                    "height": " 80%",
+                    "border-bottom": " 3px rgb(155, 155, 155) solid",
+                    "position": " relative",
+                    "flex-direction": " column",
+                    "flex-grow": " 1",
+                }),
+                new WCssClass(".groupBars ", {
+                    "width": " 100%",
+                    "height": " 220px",
+                    "display": " flex",
+                    "flex-grow": " 1",
+                    "border": " solid 1px #d4d4d4",
+                }),
+                new WCssClass(".groupLabels ", {
+                    "display": " flex",
+                    "width": " 100%",
+                    "border": " solid 1px #d4d4d4",
+                    "align-items": " stretch",
+                    "background-color": " #fff",
+                }),
+                new WCssClass(".groupLabels label ", {
+                    "padding": " 5px",
+                    "flex-grow": " 1",
+                    "width": " 80px",
+                    "text-align": " center",
+                    "margin-bottom": " 0px !important",
+                    "white-space": " nowrap",
+                    "overflow": " hidden",
+                    "text-overflow": " ellipsis",
+                }),
+
+                new WCssClass(".ContainerBars ", {
+                    "display": " flex",
+                    "width": " 100%",
+                    "padding-left": " 10px",
+                    "padding-right": " 10px",
+                    "flex-direction": ChartInstance.TypeChart,
+                    "align-items": " flex-end",
+                    "justify-content": " flex-end",
+                    overflow: "hidden",
+                    "border-right": "1px solid #BFBFBF"
+                }),
+
+                new WCssClass(".ContainerBars .Bars ", {
+                    "display": " block",
+                    "margin": " 0 auto",
+                    "margin-top": " 0px",
+                    "z-index": " 1",
+                    "width": " 60px",
+                    "min-height": " 20PX",
+                    "background": " rgb(177, 177, 177)",
+                    "background": " linear-gradient(0deg, rgba(177, 177, 177, 1) 0%, rgba(209, 209, 209, 1) 53%)",
+                }),
+                new WCssClass(".Bars label ", {
+                    "width": " 100%",
+                    "text-align": " center",
+                    "display": " block",
+                    "font-size": " 11px",
+                    "margin-top": " 5px",
+                    "font-weight": " bold",
+                    "overflow": " hidden",
+                }),
+                new WCssClass(".BackGrounLineX ", {
+                    "display": " flex",
+                    "position": " absolute",
+                    "flex-direction": " column-reverse",
+                    "width": " 100%",
+                    "height": " 100%",
+                    "left": " 0px",
+                    "top": " 0px",
+                    "height": " 220px",
+                    "right": " 0px",
+                }),
+
+                new WCssClass(".CharLineX ", {
+                    "position": " relative",
+                    "border-top": " rgb(190, 190, 190) solid 1px",
+                    "height": " 100%",
+                    "display": " block",
+                    "align-items": " flex-start",
+                    "display": " flex",
+                    "padding-left": " 5PX",
+                }),
+
+                new WCssClass(".CharLineXNumber ", {
+                    "position": " relative",
+                    "border-top": " rgba(190, 190, 190, 0) solid 1px",
+                    "height": " 100%",
+                    "align-items": " flex-start",
+                    "display": " flex",
+                    "font-size": " 9px",
+                }),
+
+                new WCssClass(".ElementG1::before", {
+                    "height": " 25px",
+                    "width": " 25px",
+                    "background-color": " #70ad47",
+                    "content": '" "',
+                    "position": " absolute",
+                    "left": " -30px",
+                    "border-radius": " 0.15cm",
+                }),
+
+                new WCssClass(".ElementG2::before", {
+                    "height": " 25px",
+                    "width": " 25px",
+                    "background-color": " #5b9bd5",
+                    "content": '" "',
+                    "position": " absolute",
+                    "left": " -30px",
+                    "border-radius": " 0.15cm",
+                }),
+                new WCssClass(".ElementG3::before ", {
+                    "height": " 25px",
+                    "width": " 25px",
+                    "background-color": " #ffc000",
+                    "content": '" "',
+                    "position": "absolute",
+                    "left": " -30px",
+                    "border-radius": " 0.15cm",
+                }),
+                new WCssClass(".SectionBars::-webkit-scrollbar-thumb", {
+                    "background": " #ccc",
+                    "border-radius": " 4px",
+                }),
+                new WCssClass(".SectionBars::-webkit-scrollbar-thumb:hover", {
+                    "background": " #b3b3b3",
+                    "box-shadow": " 0 0 3px 2px rgba(0, 0, 0, 0.2)",
+                }),
+                new WCssClass(".SectionBars::-webkit-scrollbar-thumb:active ", {
+                    "background-color": " #999999",
+                }),
+
+                new WCssClass(".SectionBars::-webkit-scrollbar ", {
+                    "width": " 8px",
+                    "height": " 15px",
+                    "margin": " 10px",
+                }),
+
+                new WCssClass(".SectionBars::-webkit-scrollbar-track ", {
+                    "background": " #e1e1e1",
+                    "border-radius": " 4px",
+                }),
+
+                new WCssClass(".SectionBars::-webkit-scrollbar-track:active ,.SectionBars::-webkit-scrollbar-track:hover", {
+                    "background": " #d4d4d4",
+                }),
+
+                new WCssClass(".Contenedor, .ContenedorPregs ", {
+                    "display": " block",
+                    "overflow": " initial",
+                    "margin": " auto",
+                    "margin-top": " 50px",
+                    "background-color": " #fff",
+                    "width": " 70%",
+                    "max-height": " 800px",
+                    "overflow-y": " initial",
+                    "padding": " 20px",
+                    "min-height": " 200px",
+                    "border-radius": " 5px",
+                }),
+
+
+                /*RADIALLLLL------------------------------------------------------------------------------------------------------*/
+
+                new WCssClass(".SectionRadialChart ", {
+                    "position": " relative",
+                    "text-align": " center",
+                    "display": " block",
+                    "width": " 100%",
+                    "height": " 300px",
+                }),
+
+                new WCssClass(".RadialDataBackground ", {
+                    "transform": " rotate(-90deg)",
+                }),
+                new WCssClass(".RadialDataBackground:first-child ", {
+                    "margin-bottom": " 20px",
+                }),
+                new WCssClass(".RadialData ", {
+                    "height": " 200px",
+                    "width": " 200px",
+                    "border-radius": " 50%",
+                    "display": " block",
+                    "position": " absolute",
+                    "top": " 0",
+                    "left": " calc(50% - 100px)",
+                    "margin": " auto",
+                }),
+
+                new WCssClass(".RadialData::before ", {
+                    "content": '" "',
+                    "color": " #fff",
+                    "height": " 200px",
+                    "width": " 200px",
+                    "border-radius": " 50%",
+                    "display": " block",
+                    "position": " absolute",
+                    "top": " 0",
+                    "left": " calc(50% - 100px)",
+                    "margin": " auto",
+                    "background": " linear-gradient( 90deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
+                }),
+
+                new WCssClass(".RadialData::after ", {
+                    "content": '" "',
+                    "color": " #fff",
+                    "height": " 200px",
+                    "width": " 200px",
+                    "border-radius": " 50%",
+                    "display": " block",
+                    "position": " absolute",
+                    "top": " 0",
+                    "left": " calc(50% - 100px)",
+                    "margin": " auto",
+                    "background": " linear-gradient( 180deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
+                }),
+
+                new WCssClass(".RadialChart ", {
+                    "height": " 100%",
+                }),
+
+                new WCssClass(".circle ", {
+                    "transition": " all 0.5s",
+                    "transform-origin": " 50% 50%",
+                    "fill": " none",
+                    "cursor": " pointer",
+                    "clip-path": " circle(50% at 50% 50%)",
+                }),
+
+                new WCssClass(".circleText ", {
+                    "transition": " all 0.5s",
+                    "height": " 100%",
+                    "width": " 100%",
+                    "transform-origin": " 50% 50%",
+                }),
+
+                new WCssClass(".circle:hover", {
+                    "background-color": " #999999",
+                    "background-blend-mode": " screen",
+                    "z-index": " 5",
+                    "clip-path": " circle(52% at 50% 50%)",
+                }),
+                new WCssClass(".progress__meter,.progress__value ", {
+                    "fill": " none",
+                }),
+
+                new WCssClass(".progress__meter ", {
+                    "stroke": " #e6e6e6",
+                }),
+            ]
+        }
+    };
 }
 customElements.define("w-radial-chart", RadialChart);
 customElements.define("w-colum-chart", ColumChart);
