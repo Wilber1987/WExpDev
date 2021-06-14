@@ -4,9 +4,10 @@ import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 import { SlideDoc } from "./Modules/SlideDoc.js";
 import { ChartDocs } from "./Modules/ChartDocs.js";
-import  DocumentView  from "./Modules/DocumentView.js";
+import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
-import { ReportView } from "./Modules/ReportsView.js";
+import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
+import { dataTestFact } from './DATA/data.js'
 const DOMManager = new ComponentsManager();
 class MasterDomClass extends ComponentsManager {
     constructor() {
@@ -46,6 +47,17 @@ class MasterDomClass extends ComponentsManager {
                     "font-family": "Arial, Helvetica, sans-serif"
                 }),
             ], MediaQuery: [{
+                condicion: "(max-width: 1400px)",
+                ClassList: [
+                    new WCssClass(`.App`, {
+                        display: "grid",
+                        "grid-template-columns": "0px calc(100% - 0px)",
+                        "grid-template-rows": "70px calc(100vh - 120px) 50px"
+                    }), new WCssClass(".AppAside", {
+                        overflow: "hidden"
+                    }),
+                ]
+            }, {
                 condicion: "(max-width: 600px)",
                 ClassList: [
                     new WCssClass(`.App`, {
@@ -62,8 +74,7 @@ class MasterDomClass extends ComponentsManager {
                         "border-top": "solid #4da6ff 5px"
                     }),
                 ]
-            }
-            ]
+            }]
         }
     };
 }
@@ -177,30 +188,30 @@ class AsideClass {
         name: "Tablas Dinámica", url: "#",
         action: (ev) => {
             DOMManager.NavigateFunction("DinamicTableDoc", new DinamicTableDoc({ id: "DinamicTableDoc" }), "AppMain");
-         }
-    }];   
-       
+        }
+    }];
+
     WNavComponents = {
         type: "w-app-navigator",
         props: {
             Direction: "column",
             title: "Componentes",
             Elements: [{
-                name: "Modal / POP-UP", url: "#", action: async (ev)=>{
-                    const {ModalDocs}  = await import("./Modules/ModalDoc.js"); 
-                    DOMManager.NavigateFunction("ModalDocs", new ModalDocs({ id: "ModalDocs" }), "AppMain");       
+                name: "Modal / POP-UP", url: "#", action: async (ev) => {
+                    const { ModalDocs } = await import("./Modules/ModalDoc.js");
+                    DOMManager.NavigateFunction("ModalDocs", new ModalDocs({ id: "ModalDocs" }), "AppMain");
                 }
             }, {
                 name: "Tablas", url: "#", SubNav: {
                     Elements: this.WNavTables
                 }
-            },{
-                name: "Chart", url: "#", action: async (ev)=>{
-                    DOMManager.NavigateFunction("ChartDocs", new ChartDocs({ id: "ChartDocs" }), "AppMain");       
+            }, {
+                name: "Chart", url: "#", action: async (ev) => {
+                    DOMManager.NavigateFunction("ChartDocs", new ChartDocs({ id: "ChartDocs" }), "AppMain");
                 }
-            },{
-                name: "Slide", url: "#", action: async (ev)=>{
-                    DOMManager.NavigateFunction("SlideDoc", new SlideDoc({ id: "SlideDoc" }), "AppMain");       
+            }, {
+                name: "Slide", url: "#", action: async (ev) => {
+                    DOMManager.NavigateFunction("SlideDoc", new SlideDoc({ id: "SlideDoc" }), "AppMain");
                 }
             },]
         }
@@ -210,19 +221,29 @@ class MainClass {
     constructor() {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
-        this.children = [new ReportView({id:"TestReport"})];
+        this.children = [
+            new WReportView({ id: "TestReport" },
+                {
+                    Dataset: dataTestFact,
+                    GroupParam: "id",
+                    headerGroup: ["id", "estado", "mes", "año", "metodo_pago"],
+                    bodyGroup: [{ leyend: "tipo", value: "value" }]
+                })
+        ];
     }
 }
 class FooterClass {
     constructor() {
         this.type = "footer";
         this.props = { className: "AppFooter" }
-        this.children = [this.Style, 
-            {  type: 'label', props: { innerText: "Derechos reservados - " } },
-            {  type: 'a', props: { 
-                innerText: "- https://github.com/Wilber1987/WExpDev.git", 
+        this.children = [this.Style,
+        { type: 'label', props: { innerText: "Derechos reservados - " } },
+        {
+            type: 'a', props: {
+                innerText: "- https://github.com/Wilber1987/WExpDev.git",
                 href: "https://github.com/Wilber1987/WExpDev.git", target: "_blank"
-            }}
+            }
+        }
         ];
     }
     Style = {
