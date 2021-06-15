@@ -168,22 +168,31 @@ class WReportView {
             const PrintHeader = "<h1>hola</h1>";
             const WStyles = WTable.shadowRoot.querySelectorAll("w-style");
             const Table = WTable.shadowRoot.querySelector("#MainTable" + WTable.id); 
-            Table.append(WRender.CreateStringNode(`<style>* {
+            const GeneralStyle = `<style>* {
                 -webkit-print-color-adjust: exact !important;
-              }</style>`));    
+            }</style>`;
+            Table.append(WRender.CreateStringNode(GeneralStyle));    
             WStyles.forEach(style => {
                 Table.append(style.cloneNode(true));
             });       
             const Chart = WTable.shadowRoot.querySelector("w-colum-chart").shadowRoot;
-            Chart.append(WRender.CreateStringNode(`<style>* {
-                -webkit-print-color-adjust: exact !important;
-              }</style>`));
-            console.log(ficha);
-            const ventimp = window.open(' ', 'popimpr');
+            Chart.append(WRender.CreateStringNode(GeneralStyle));  
+            this.Export2Doc(WRender.CreateStringNode(`<div>${PrintHeader + Table.innerHTML + Chart.innerHTML}</div>` ));          
+            const ventimp = window.open(' ', 'popimpr');           
+            //console.log(PrintHeader + Table.innerHTML + Chart.innerHTML );
+            // encoding the string
+            //const result = window.btoa(PrintHeader + Table.innerHTML + Chart.innerHTML);
+            //console.log(result);
+            // const link = WRender.createElement({ type:'a', 
+            // props: {  href:  "data:application/pdf;base64,"+ result }});
+            // link.download = 'file.pdf';
+            // link.dispatchEvent(new MouseEvent('click'));
+            
             ventimp.document.write( PrintHeader + Table.innerHTML + Chart.innerHTML );
             ventimp.document.close();
             ventimp.print();
             ventimp.close();
+           
         }}}])    
         this.children = [ControlOptions];
         var ConfigG3 = {
@@ -230,6 +239,41 @@ class WReportView {
             ClassList: []},
         ]}
     };
+    Export2Doc(element, filename = 'file'){
+        var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+        var postHtml = "</body></html>";
+        var html = preHtml+element.innerHTML+postHtml;
+    
+        var blob = new Blob(['ufeff', html], {
+            type: 'application/msword'
+        });
+        
+        // Specify link url
+        var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+        
+        // Specify file name
+        filename = filename?filename+'.doc':'document.doc';
+        
+        // Create download link element
+        var downloadLink = document.createElement("a");
+    
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob ){
+            navigator.msSaveOrOpenBlob(blob, filename);
+        }else{
+            // Create a link to the file
+            downloadLink.href = url;
+            
+            // Setting the file name
+            downloadLink.download = filename;
+            
+            //triggering the function
+            downloadLink.click();
+        }
+        
+        document.body.removeChild(downloadLink);
+    }
 }
 const MasterStyle = {
     type: "w-style",
