@@ -160,20 +160,37 @@ class WReportView {
                 }
                 ControlOptions.children.push([prop, select]);
             }
-        }        
+        }    
+        ControlOptions.children.push([{ type:'input', 
+        props: { id: '', type:'button', class: 'className', value: 'Imprimir', onclick: async ()=>{
+            const ficha = document.getElementById(this.props.id);
+            const WTable = document.querySelector("w-table");
+            const PrintHeader = "<h1>hola</h1>";
+            const WStyles = WTable.shadowRoot.querySelectorAll("w-style");
+            const Table = WTable.shadowRoot.querySelector("#MainTable" + WTable.id); 
+            Table.append(WRender.CreateStringNode(`<style>* {
+                -webkit-print-color-adjust: exact !important;
+              }</style>`));    
+            WStyles.forEach(style => {
+                Table.append(style.cloneNode(true));
+            });       
+            const Chart = WTable.shadowRoot.querySelector("w-colum-chart").shadowRoot;
+            Chart.append(WRender.CreateStringNode(`<style>* {
+                -webkit-print-color-adjust: exact !important;
+              }</style>`));
+            console.log(ficha);
+            const ventimp = window.open(' ', 'popimpr');
+            ventimp.document.write( PrintHeader + Table.innerHTML + Chart.innerHTML );
+            ventimp.document.close();
+            ventimp.print();
+            ventimp.close();
+        }}}])    
         this.children = [ControlOptions];
         var ConfigG3 = {
-            Datasets: Config.Dataset,
-            //TypeChart: "staked",            
-            /*DATOS DE LA TABLA*/
+            Datasets: Config.Dataset,            
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
-            /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*
-            /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             Dinamic: true,
-            /*DEFINE LA TABLA DINAMICA*/
             AddChart: true,
-            /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
         };
         this.children.push({
             type: "w-table",
@@ -195,12 +212,14 @@ class WReportView {
                 margin: '10px',
             }), new WCssClass( `.OptionContainer`, {
                 display: "flex",
-                "flex-wrap": "wrap"
+                "flex-wrap": "wrap",
+                "margin-bottom": "10px"
             }),new WCssClass(`.OptionContainer div`, {               
                 display: "grid",
-                "grid-template-rows": "20px 35px",
-                "grid-template-columns": "220px",
-                margin: "10px",
+                "grid-template-rows": "20px 30px",
+                "grid-template-columns": "200px",
+                margin: "5px",
+                "font-size": "12px",
             }), new WCssClass(
                 `.OptionContainer input, .OptionContainer select`, {
                     "grid-row": "2/3",
