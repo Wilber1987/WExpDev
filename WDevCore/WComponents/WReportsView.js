@@ -94,6 +94,7 @@ class WReportList extends HTMLElement {
                     border: 'solid 1px #999',
                     "border-radius": "0.2cm",
                     margin: "10px",
+                    overflow: "hidden"
                 }),new WCssClass(`.header`, {
                     display: "flex",
                     "flex-wrap": "wrap",
@@ -181,6 +182,10 @@ class WReportView {
         ControlOptions.children.push([{ type:'input', 
         props: { id: '', type:'button', class: 'className', value: 'Imprimir', onclick: async ()=>{
             const ficha = document.getElementById(this.props.id);
+            const GeneralStyle = `<style>* {
+                -webkit-print-color-adjust: exact !important;
+                font-size: 12px;
+            } </style>`;
             const WTable = document.querySelector("w-table");
             const PrintHeader = "<h1>hola</h1>";
             const WStyles = WTable.shadowRoot.querySelectorAll("w-style");
@@ -192,23 +197,25 @@ class WReportView {
             const RepStyles = ReportView.shadowRoot.querySelectorAll("w-style");
             const RepPage = ReportView.shadowRoot.querySelectorAll(".pageA4");
             const ReportPageContainer = WRender.createElement({ type:'div' });
+            const FirstPage = WRender.createElement({ type:'div', props: { class: "pageA4"}});
+            Table.append(WRender.CreateStringNode(GeneralStyle));                      
+            const Chart = WTable.shadowRoot.querySelector("w-colum-chart").shadowRoot;
+            Chart.append(WRender.CreateStringNode(GeneralStyle)); 
+            FirstPage.innerHTML = PrintHeader + Table.innerHTML + Chart.innerHTML;
+            ReportPageContainer.append(FirstPage)
             RepStyles.forEach(style => {
                 ReportPageContainer.append(style.cloneNode(true));
             }); 
             RepPage.forEach(page => {
                 ReportPageContainer.append(page.cloneNode(true));
-            });             
-            const GeneralStyle = `<style>* {
-                -webkit-print-color-adjust: exact !important;
-                font-size: 12px;
-            }</style>`;
-            Table.append(WRender.CreateStringNode(GeneralStyle));    
-                  
-            const Chart = WTable.shadowRoot.querySelector("w-colum-chart").shadowRoot;
-            Chart.append(WRender.CreateStringNode(GeneralStyle));  
-            //this.Export2Doc(WRender.CreateStringNode(`<div>${PrintHeader + Table.innerHTML + Chart.innerHTML}</div>` ));          
-            const ventimp = window.open(' ', 'popimpr');
-            ventimp.document.write(PrintHeader + Table.innerHTML + Chart.innerHTML + ReportPageContainer.innerHTML);
+            });     
+           
+            RepStyles.forEach(style => {
+                FirstPage.append(style.cloneNode(true));
+            }); 
+            console.log(FirstPage);
+            const ventimp =  window.open(' ', 'popimpr');
+            ventimp.document.write( ReportPageContainer.innerHTML );
             ventimp.document.close();
             ventimp.print();
             ventimp.close();
@@ -355,12 +362,12 @@ const PrintStyle = { type: 'w-style', props: {id: '', ClassList: [
     ], MediaQuery: [ {condicion: 'print',
         ClassList: [ new WCssClass(".pageA4", {
             "width": "210mm",
-            "height": "297mm",
+            "height": "307mm",
             "padding": "0px 0px",
             "border": "none",
             "background": "#fff",
             "margin": " 0PX auto",
-            "box-shadow": "none"
+            "box-shadow": "none",
         }),  ]},
     ]}
 };
