@@ -1,5 +1,5 @@
 import { WRender, WArrayF } from "../WModules/WComponentsTools.js";
-import { WCssClass } from "../WModules/WStyledRender.js"
+import { WCssClass } from "../WModules/WStyledRender.js";
 
 class ChartConfig {
     constructor(Config) {
@@ -278,7 +278,7 @@ class ColumChart extends HTMLElement {
     _DrawBar(element, Config, index) {
         //console.log(element)
         var Size = Config.ContainerSize;
-        var Size = 220;
+        var Size = 180;
         var BarSize = (element[Config.EvalValue] / this.MaxVal); //% de tamaño
         var labelCol = element[Config.EvalValue];
         var styleP = "";
@@ -493,18 +493,17 @@ const WChartStyle = (ChartInstance) => {
                     "min-height": " 400px !important",
                     "overflow": " hidden",
                 }),
-                new WCssClass(".WChartContainer h3 ", {
-                    "height": " 30px",
+                new WCssClass(".WChartContainer h3 ", {                    
                     "text-align": " center",
                     "display": " block",
-                    "font-size": " 20px",
+                    "font-size": " 16px",
                 }),
                 new WCssClass(".SectionLabels, .SectionLabelGroup ", {
                     "display": " flex",
                     "justify-content": " center",
                     "align-items": " center",
-                    "padding-top": " 10px",
-                    "padding-bottom": " 10px",
+                    "padding-top": " 5px",
+                    "padding-bottom": " 5px",
                     "flex-wrap": " wrap",
                 }),
                 new WCssClass(".SectionLabels label, .SectionLabelGroup label ", {
@@ -529,7 +528,7 @@ const WChartStyle = (ChartInstance) => {
                     "padding-left": " 30px",
                     "position": " relative",
                     "overflow-x": " scroll",
-                    "min-height": " 270px",
+                    //"min-height": " 270px",
                 }),
                 new WCssClass(".GroupSection ", {
                     "display": " flex",
@@ -542,7 +541,7 @@ const WChartStyle = (ChartInstance) => {
                 }),
                 new WCssClass(".groupBars ", {
                     "width": " 100%",
-                    "height": " 220px",
+                    "height": " 180px",
                     "display": " flex",
                     "flex-grow": " 1",
                     "border": " solid 1px #d4d4d4",
@@ -604,7 +603,7 @@ const WChartStyle = (ChartInstance) => {
                     "height": " 100%",
                     "left": " 0px",
                     "top": " 0px",
-                    "height": " 220px",
+                    "height": " 180px",
                     "right": " 0px",
                 }),
 
@@ -669,7 +668,7 @@ const WChartStyle = (ChartInstance) => {
 
                 new WCssClass(".SectionBars::-webkit-scrollbar ", {
                     "width": " 8px",
-                    "height": " 15px",
+                    "height": " 10px",
                     "margin": " 10px",
                 }),
 

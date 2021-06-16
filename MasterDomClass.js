@@ -7,131 +7,11 @@ import { ChartDocs } from "./Modules/ChartDocs.js";
 import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
 import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
+
+import { dataTestFact } from './DATA/data.js'
+
 const DOMManager = new ComponentsManager();
-const dataTestFact = [
-    {
-        id: 1, servicio: "llamadas", estado: "cancelada",
-        value: 200, empresa: "psico", tipo: "subtotal",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 1, servicio: "llamadas", estado: "cancelada",
-        value: 20, empresa: "psico", tipo: "impuesto",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 1, servicio: "llamadas", estado: "cancelada",
-        value: 220, empresa: "psico", tipo: "total",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 1, servicio: "llamadas", estado: "cancelada",
-        value: 120, empresa: "psico", tipo: "costo operativo",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 1, servicio: "llamadas", estado: "cancelada",
-        value: 80, empresa: "psico", tipo: "beneficio",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 2, servicio: "llamadas", estado: "cancelada",
-        value: 200, empresa: "renfe", tipo: "subtotal",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
-    }, {
-        id: 2, servicio: "llamadas", estado: "cancelada",
-        value: 20, empresa: "renfe", tipo: "impuesto",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
-    }, {
-        id: 2, servicio: "llamadas", estado: "cancelada",
-        value: 220, empresa: "renfe", tipo: "total",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
-    }, {
-        id: 2, servicio: "llamadas", estado: "cancelada",
-        value: 120, empresa: "renfe", tipo: "costo operativo",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
-    }, {
-        id: 2, servicio: "llamadas", estado: "cancelada",
-        value: 80, empresa: "renfe", tipo: "beneficio",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
-    },
-    {
-        id: 3, servicio: "llamadas", estado: "cancelada",
-        value: 200, empresa: "c24", tipo: "subtotal",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 3, servicio: "llamadas", estado: "cancelada",
-        value: 20, empresa: "c24", tipo: "impuesto",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 3, servicio: "llamadas", estado: "cancelada",
-        value: 220, empresa: "c24", tipo: "total",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 3, servicio: "llamadas", estado: "cancelada",
-        value: 120, empresa: "c24", tipo: "costo operativo",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 3, servicio: "llamadas", estado: "cancelada",
-        value: 80, empresa: "c24", tipo: "beneficio",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 4, servicio: "llamadas", estado: "cancelada",
-        value: 200, empresa: "psico", tipo: "subtotal",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 4, servicio: "llamadas", estado: "cancelada",
-        value: 20, empresa: "psico", tipo: "impuesto",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 4, servicio: "llamadas", estado: "cancelada",
-        value: 220, empresa: "psico", tipo: "total",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 4, servicio: "llamadas", estado: "cancelada",
-        value: 120, empresa: "psico", tipo: "costo operativo",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 4, servicio: "llamadas", estado: "cancelada",
-        value: 80, empresa: "psico", tipo: "beneficio",
-        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 5, servicio: "llamadas", estado: "cancelada",
-        value: 200, empresa: "psico", tipo: "subtotal",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 5, servicio: "llamadas", estado: "cancelada",
-        value: 20, empresa: "psico", tipo: "impuesto",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 5, servicio: "llamadas", estado: "cancelada",
-        value: 220, empresa: "psico", tipo: "total",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 5, servicio: "llamadas", estado: "cancelada",
-        value: 120, empresa: "psico", tipo: "costo operativo",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 5, servicio: "llamadas", estado: "cancelada",
-        value: 80, empresa: "psico", tipo: "beneficio",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 6, servicio: "llamadas", estado: "cancelada",
-        value: 200, empresa: "psico", tipo: "subtotal",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 6, servicio: "llamadas", estado: "cancelada",
-        value: 20, empresa: "psico", tipo: "impuesto",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 6, servicio: "llamadas", estado: "cancelada",
-        value: 220, empresa: "psico", tipo: "total",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 6, servicio: "llamadas", estado: "cancelada",
-        value: 120, empresa: "psico", tipo: "costo operativo",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    }, {
-        id: 6, servicio: "llamadas", estado: "cancelada",
-        value: 80, empresa: "psico", tipo: "beneficio",
-        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
-    },
-];
+
 class MasterDomClass extends ComponentsManager {
     constructor() {
         super();
@@ -170,6 +50,17 @@ class MasterDomClass extends ComponentsManager {
                     "font-family": "Arial, Helvetica, sans-serif"
                 }),
             ], MediaQuery: [{
+                condicion: "(max-width: 1400px)",
+                ClassList: [
+                    new WCssClass(`.App`, {
+                        display: "grid",
+                        "grid-template-columns": "0px calc(100% - 0px)",
+                        "grid-template-rows": "70px calc(100vh - 120px) 50px"
+                    }), new WCssClass(".AppAside", {
+                        overflow: "hidden"
+                    }),
+                ]
+            }, {
                 condicion: "(max-width: 600px)",
                 ClassList: [
                     new WCssClass(`.App`, {
@@ -186,8 +77,7 @@ class MasterDomClass extends ComponentsManager {
                         "border-top": "solid #4da6ff 5px"
                     }),
                 ]
-            }
-            ]
+            }]
         }
     };
 }
@@ -334,7 +224,16 @@ class MainClass {
     constructor() {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
-        this.children = [new WReportView({ id: "TestReport" }, dataTestFact)];
+
+        this.children = [
+            new WReportView({ id: "TestReport" },
+                {
+                    Dataset: dataTestFact,
+                    GroupParam: "id",
+                    headerGroup: ["id", "estado", "mes", "año", "metodo_pago"],
+                    bodyGroup: [{ leyend: "tipo", value: "value" }]
+                })
+        ];
     }
 }
 class FooterClass {

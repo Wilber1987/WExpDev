@@ -2065,4 +2065,337 @@ const detfact = [
         "total": "12"
     }
 ]
-export { cpagos, fact, detfact, psi}
+const dataTestFact = [{
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 300,
+    empresa: "renfe",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 20,
+    empresa: "renfe",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 220,
+    empresa: "renfe",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 120,
+    empresa: "renfe",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 80,
+    empresa: "renfe",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "cheque"
+},
+{
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 200,
+    empresa: "c24",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 20,
+    empresa: "c24",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 220,
+    empresa: "c24",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 120,
+    empresa: "c24",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 80,
+    empresa: "c24",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    value: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2020,
+    metodo_pago: "stripe"
+},
+];
+export { cpagos, fact, detfact, psi , dataTestFact }

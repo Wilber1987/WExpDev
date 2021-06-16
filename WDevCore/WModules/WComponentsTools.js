@@ -459,11 +459,22 @@ class WArrayF {
     }
     static MaxValue(DataArry, Config) {
         var Maxvalue = 0;
-        for (let index = 0; index < DataArry.length; index++) {
-            if (parseInt(DataArry[index][Config.EvalValue]) > Maxvalue) {
-                Maxvalue = DataArry[index][Config.EvalValue];
+        //Config.TypeChart = "row";
+        //Config.TypeChart = "column"; 
+        let Data = [];   
+        if (Config.TypeChart == "column") {
+            Data = DataArry;
+        } else {
+            console.log(Config.Datasets);
+            Data = Config.Datasets;
+        }    
+        console.log(Data);
+        for (let index = 0; index < Data.length; index++) {
+            if (parseInt(Data[index][Config.EvalValue]) > Maxvalue) {
+                Maxvalue = Data[index][Config.EvalValue];
             }
         }
+        console.log(Maxvalue);
         return Maxvalue;
     }
     static FindInTotal(Elemento, list, Config) {

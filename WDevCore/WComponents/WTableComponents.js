@@ -99,10 +99,23 @@ class WTableComponent extends HTMLElement {
         this.ProcessData = [];
         this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Datasets, this.AttNameEval);
         if (this.TableConfig.Dinamic == true) {
+            this.className = "DinamicContainer";
+            this.append(WRender.createElement({ type:'w-style', props: {id: '', ClassList: [
+                new WCssClass(`.DinamicContainer`, {
+                    overflow: "hidden",
+                    height: "700px",
+                    display:"grid",
+                    border: "solid 1px #999",
+                    "grid-template-columns": "calc(100% - 250px) 250px",
+                    "grid-template-rows": "280px 40px calc(100% - 320px)",
+                    "font-size": "12px",
+                }),
+            ]}}))            
             this.AttNameEval = null;
             this.EvalValue = null;
             this.groupParams = [];
             this.EvalArray = [];
+            this.shadowRoot.append(WRender.createElement(this.TableStyleDinamic()));
             this.shadowRoot.append(WRender.createElement(this.TableOptions()));
             this.DrawTable();
             if (this.TableConfig.AddChart == true) {
@@ -111,7 +124,8 @@ class WTableComponent extends HTMLElement {
                     ChartContainer.innerHTML = "";
                     ChartContainer.append(WRender.createElement(this.DrawChart()));
                 } else {
-                    let ChartContainer = { type: "div", props: { id: "Chart" + this.id }, children: [this.DrawChart()] }
+                    let ChartContainer = { type: "div", 
+                    props: { id: "Chart" + this.id , className: "CharttableReport"}, children: [this.DrawChart()] }
                     this.shadowRoot.append(WRender.createElement(ChartContainer));
                 }
             }
@@ -158,9 +172,16 @@ class WTableComponent extends HTMLElement {
         }
     }
     DrawTable(Dataset = this.Dataset) {
+        let ChartContainer = this.shadowRoot.querySelector("#Chart" + this.id);
+        if (ChartContainer) {
+            ChartContainer.innerHTML = "";
+        }        
         this.DefineObjectModel(Dataset);
         let table = this.shadowRoot.querySelector("#MainTable" + this.id);
-        this.shadowRoot.append(WRender.createElement(this.DrawHeadOptions()));
+        const TOptions = this.DrawHeadOptions();
+        if (TOptions != null) {
+            this.shadowRoot.append(WRender.createElement());
+        }
         if (typeof table === "undefined" || table == null) {
             table = { type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] };
             table.children.push(this.DrawTHead());
@@ -286,7 +307,7 @@ class WTableComponent extends HTMLElement {
                 return trOptions;
             }
         }
-        return "";
+        return null;
     }
     DrawTHead = (element = this.ModelObject) => {
         const thead = { type: "thead", props: {}, children: [] };
@@ -296,7 +317,7 @@ class WTableComponent extends HTMLElement {
             if (!prop.includes("_hidden")) {
                 tr.children.push({
                     type: "th",
-                    children: [prop]
+                    children: [prop.replaceAll("_", " ")]
                 });
             }
         }
@@ -673,8 +694,9 @@ class WTableComponent extends HTMLElement {
         });
         return div;
     }
-    DefineTable(Dataset = this.Dataset) {
+    DefineTable(Dataset = this.Dataset) {        
         this.ProcessData = [];
+        this.TableConfig.Datasets = Dataset;
         let table = this.shadowRoot.querySelector("#MainTable" + this.id);
         let footer = this.shadowRoot.querySelector(".tfooter");
         if (typeof footer !== "undefined" && footer != null) {
@@ -687,7 +709,8 @@ class WTableComponent extends HTMLElement {
         if (this.EvalValue == null) {
             //table.innerHTML = "Agregue un Value";
             this.DrawTable(Dataset);
-        } else {
+        } else {            
+            this.EvalArray = WArrayF.ArrayUnique(Dataset, this.AttNameEval);
             table.innerHTML = "";
             this.GroupsData = [];
             table.style.display = "flex";
@@ -851,7 +874,7 @@ class WTableComponent extends HTMLElement {
             children: [{
                 type: "label",
                 props: { innerText: "Agrupaciones", class: "titleParam" },
-                children: [{
+                children: [/*{
                     type: "label",
                     props: {
                         innerText: "»",
@@ -861,7 +884,7 @@ class WTableComponent extends HTMLElement {
                             ComponentsManager.DisplayAcorden(elementS, 38);
                         }
                     }
-                }]
+                }*/]
             }]
         };
         return {
@@ -1011,7 +1034,75 @@ class WTableComponent extends HTMLElement {
                         "text-align": "center",
                         "width": "250px",
                     }), new WCssClass(`.WTable tbody tr:nth-child(odd)`, {
-                        "background-color": "#eee"
+                        "background-color": "#f5f4f4"
+                    })                   
+
+                ],
+                MediaQuery: [{
+                    condicion: "(max-width: 600px)",
+                    ClassList: [
+                        new WCssClass(`divForm div`, {
+                            width: "calc(100% - 10px)",
+                            margin: "5px"
+                        }), new WCssClass(`.WTable`, {
+                            display: "block ", //width: "100%"
+                        }), new WCssClass(`.WTable tbody`, {
+                            display: "block ", //width: "100%"
+                        }), new WCssClass(`.WTable thead`, {
+                            display: "none ", //width: "100%"
+                        }), new WCssClass(`.WTable tr`, {
+                            display: "block ",
+                            border: "5px solid #808080"
+                        }), new WCssClass(`.WTable td`, {
+                            display: "flex ",
+                            //width: "100%"
+                        }), new WCssClass(`.WTable .tdAction`, {
+                            display: "flex ",
+                            width: "calc(98% - 0.25rem)",
+                            "justify-content": "center",
+                            "align-items": "center"
+                        }),
+
+                    ]
+                }]
+            }
+        }
+        return WTableStyle;
+    }
+    TableStyleDinamic() {
+        const style = this.shadowRoot.querySelector("#TableStyleDinamic" + this.id);
+        if (style) {
+            style.parentNode.removeChild(style);
+        }
+        const WTableStyle = {
+            type: "w-style",
+            props: {
+                id: "TableStyleDinamic" + this.id,
+                ClassList: [                    
+                    //ESTILO DE LA TABLA BASICA----------------------------tableContainer
+                    new WCssClass(`.tableContainer`, {
+                        overflow: "auto",
+                        "grid-row": "1/2",
+                        
+                    }), new WCssClass(`.WTable`, {
+                        "font-family": "Verdana, sans-serif",
+                        width: "100%",
+                        "border-collapse": "collapse",
+                        // "border-top": "solid 1px #999999",
+                        position: "relative"
+                    }), new WCssClass(`.WTable th`, {
+                        padding: "0.5rem",
+                        "text-align": "left",
+                        border: "1px #ccc solid"
+                    }), new WCssClass(`.WTable td`, {
+                        padding: "0.25rem",
+                        "text-align": "left",
+                        border: "1px #ccc solid"
+                    }), new WCssClass(`.WTable .tdAction`, {
+                        "text-align": "center",
+                        "width": "250px",
+                    }), new WCssClass(`.WTable tbody tr:nth-child(odd)`, {
+                        "background-color": "#f5f4f4"
                     }),
                     //FIN ESTILO TABLA BASICAA------------------------------
                     //flexcajones TABLA DINAMICA----------------------------
@@ -1080,10 +1171,13 @@ class WTableComponent extends HTMLElement {
                     }),
                     //tABLA DINAMICA OPCIONES ------------------------------
                     new WCssClass(`.TableOptions`, {
-                        display: "flex",
+                        display: "grid",
                         transition: "all 1s",
-                        "max-height": "38px",
                         overflow: "hidden",
+                        "grid-column": "2/3",
+                        "grid-row": "1/4",
+                        "grid-template-columns": "50% 50%",
+                        "grid-template-rows":"50% 50%",
                     }), new WCssClass(`.TableOptionsAtribs`, {
                         display: "flex",
                         width: "100%",
@@ -1091,25 +1185,31 @@ class WTableComponent extends HTMLElement {
                         "padding-bottom": "20px",
                         "background-color": "#efefef"
                     }), new WCssClass(`.titleParam`, {
-                        display: "block",
-                        padding: "10px",
-                        "border-bottom": "1px solid #000",
+                        display: "flex",                        
+                        "background-color": "#4da6ff",
+                        color: "#fff",
                         "margin-bottom": "10px",
                         cursor: "pointer",
-                        "font-size": "16px",
                         "text-align": "center",
-                        position: "relative"
+                        position: "relative",
+                        height: "30px",
+                        "min-height": "30px",
+                        "max-height": "30px",
+                        "align-items": "center",
+                        "justify-content": "center",                        
                     }), new WCssClass(`select.titleParam, select.titleParam:focus, select.titleParam:active`, {
                         cursor: "pointer",
-                        "background-color": "#efefef",
+                        "background-color": "#4da6ff",
                         border: "none",
-                        "border-bottom": "1px solid #000",
-                        outline: "none",
+                        color: "#fff",
+                        outline: "none",padding: "5px",
                         "outline-width": "0",
-                        height: "40px"
+                        margin: "0px",
+                        font: "400 12px Arial",
+                        "margin-bottom": "10px",
                     }), new WCssClass(`.labelParam`, {
                         display: "block",
-                        padding: "10px",
+                        padding: "5px",
                         "background-color": "#fff",
                         cursor: "pointer",
                         border: "solid 3px #efefef"
@@ -1132,6 +1232,11 @@ class WTableComponent extends HTMLElement {
                         "border": "1px solid #ced4da !important",
                         "border-radius": ".25rem",
                         "transition": "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    }), new WCssClass(`.tfooter`, {                       
+                        "grid-row": "2/3",
+                        height: "40px"
+                    }),new WCssClass(`.CharttableReport`, {                       
+                        "grid-row": "3/4",
                     }),
 
                 ],
