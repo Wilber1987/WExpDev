@@ -58,9 +58,9 @@ class ColumChart extends HTMLElement {
 
         let GroupsData = [
             this.ChartInstance.Datasets,
-            WArrayF.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG1),
-            WArrayF.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG2),
-            WArrayF.ArryUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
+            WArrayF.ArrayUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG1),
+            WArrayF.ArrayUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG2),
+            WArrayF.ArrayUnique(this.ChartInstance.Datasets, this.ChartInstance.AttNameG3)
         ];
         ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
         ChartFragment.append(this._AddSectionLabelsGroups(this.ChartInstance));

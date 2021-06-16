@@ -97,7 +97,7 @@ class WTableComponent extends HTMLElement {
     RunTable() {
         this.GroupsData = [];
         this.ProcessData = [];
-        this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
+        this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Datasets, this.AttNameEval);
         if (this.TableConfig.Dinamic == true) {
             this.AttNameEval = null;
             this.EvalValue = null;
@@ -594,7 +594,7 @@ class WTableComponent extends HTMLElement {
     //#region TABLA DINAMICA-------------------------------------------------------------
     DrawGroupTable() {
         this.groupParams.forEach(groupParam => {
-            this.GroupsData.push(WArrayF.ArryUnique(this.TableConfig.Datasets, groupParam))
+            this.GroupsData.push(WArrayF.ArrayUnique(this.TableConfig.Datasets, groupParam))
         });
         this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
@@ -694,7 +694,7 @@ class WTableComponent extends HTMLElement {
             //console.log(Dataset)
             //console.log(this.Dataset)
             this.groupParams.forEach(groupParam => {
-                this.GroupsData.push(WArrayF.ArryUnique(Dataset, groupParam))
+                this.GroupsData.push(WArrayF.ArrayUnique(Dataset, groupParam))
             });
             let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
             table.append(WRender.createElement(div));
@@ -727,7 +727,7 @@ class WTableComponent extends HTMLElement {
                         return;
                     }
                     this.AttNameEval = this.shadowRoot.querySelector("#" + data).innerText;
-                    this.EvalArray = WArrayF.ArryUnique(this.TableConfig.Datasets, this.AttNameEval);
+                    this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Datasets, this.AttNameEval);
                     let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (find) {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);

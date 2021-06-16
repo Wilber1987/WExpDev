@@ -371,7 +371,7 @@ class WArrayF {
         }
         return Arry;
     }
-    static ArryUnique(DataArray, param, param2 = null, param3 = null) {
+    static ArrayUnique(DataArray, param, param2 = null, param3 = null) {
         if (typeof param3 !== 'undefined' && param3 != null && param3 != "") {
             let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) => {
                 return Array.findIndex(ArryValue =>
@@ -404,7 +404,7 @@ class WArrayF {
         return null;
     }
     static DataTotals(Config) {
-        let UniqueTotals = this.ArryUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);
+        let UniqueTotals = this.ArrayUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);
         let Totals = [];
         if (typeof Config.AttNameG3 !== 'undefined' && Config.AttNameG3 != null && Config.AttNameG3 != "") {
             UniqueTotals.forEach(element => {

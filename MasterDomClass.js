@@ -4,10 +4,134 @@ import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 import { SlideDoc } from "./Modules/SlideDoc.js";
 import { ChartDocs } from "./Modules/ChartDocs.js";
-import  DocumentView  from "./Modules/DocumentView.js";
+import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
-import { ReportView } from "./Modules/ReportsView.js";
+import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
 const DOMManager = new ComponentsManager();
+const dataTestFact = [
+    {
+        id: 1, servicio: "llamadas", estado: "cancelada",
+        value: 200, empresa: "psico", tipo: "subtotal",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 1, servicio: "llamadas", estado: "cancelada",
+        value: 20, empresa: "psico", tipo: "impuesto",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 1, servicio: "llamadas", estado: "cancelada",
+        value: 220, empresa: "psico", tipo: "total",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 1, servicio: "llamadas", estado: "cancelada",
+        value: 120, empresa: "psico", tipo: "costo operativo",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 1, servicio: "llamadas", estado: "cancelada",
+        value: 80, empresa: "psico", tipo: "beneficio",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 2, servicio: "llamadas", estado: "cancelada",
+        value: 200, empresa: "renfe", tipo: "subtotal",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
+    }, {
+        id: 2, servicio: "llamadas", estado: "cancelada",
+        value: 20, empresa: "renfe", tipo: "impuesto",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
+    }, {
+        id: 2, servicio: "llamadas", estado: "cancelada",
+        value: 220, empresa: "renfe", tipo: "total",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
+    }, {
+        id: 2, servicio: "llamadas", estado: "cancelada",
+        value: 120, empresa: "renfe", tipo: "costo operativo",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
+    }, {
+        id: 2, servicio: "llamadas", estado: "cancelada",
+        value: 80, empresa: "renfe", tipo: "beneficio",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "cheque"
+    },
+    {
+        id: 3, servicio: "llamadas", estado: "cancelada",
+        value: 200, empresa: "c24", tipo: "subtotal",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 3, servicio: "llamadas", estado: "cancelada",
+        value: 20, empresa: "c24", tipo: "impuesto",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 3, servicio: "llamadas", estado: "cancelada",
+        value: 220, empresa: "c24", tipo: "total",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 3, servicio: "llamadas", estado: "cancelada",
+        value: 120, empresa: "c24", tipo: "costo operativo",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 3, servicio: "llamadas", estado: "cancelada",
+        value: 80, empresa: "c24", tipo: "beneficio",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 4, servicio: "llamadas", estado: "cancelada",
+        value: 200, empresa: "psico", tipo: "subtotal",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 4, servicio: "llamadas", estado: "cancelada",
+        value: 20, empresa: "psico", tipo: "impuesto",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 4, servicio: "llamadas", estado: "cancelada",
+        value: 220, empresa: "psico", tipo: "total",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 4, servicio: "llamadas", estado: "cancelada",
+        value: 120, empresa: "psico", tipo: "costo operativo",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 4, servicio: "llamadas", estado: "cancelada",
+        value: 80, empresa: "psico", tipo: "beneficio",
+        mes: "enero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 5, servicio: "llamadas", estado: "cancelada",
+        value: 200, empresa: "psico", tipo: "subtotal",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 5, servicio: "llamadas", estado: "cancelada",
+        value: 20, empresa: "psico", tipo: "impuesto",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 5, servicio: "llamadas", estado: "cancelada",
+        value: 220, empresa: "psico", tipo: "total",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 5, servicio: "llamadas", estado: "cancelada",
+        value: 120, empresa: "psico", tipo: "costo operativo",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 5, servicio: "llamadas", estado: "cancelada",
+        value: 80, empresa: "psico", tipo: "beneficio",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 6, servicio: "llamadas", estado: "cancelada",
+        value: 200, empresa: "psico", tipo: "subtotal",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 6, servicio: "llamadas", estado: "cancelada",
+        value: 20, empresa: "psico", tipo: "impuesto",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 6, servicio: "llamadas", estado: "cancelada",
+        value: 220, empresa: "psico", tipo: "total",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 6, servicio: "llamadas", estado: "cancelada",
+        value: 120, empresa: "psico", tipo: "costo operativo",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    }, {
+        id: 6, servicio: "llamadas", estado: "cancelada",
+        value: 80, empresa: "psico", tipo: "beneficio",
+        mes: "febrero", cuarto: "1er", año: 2020, metodo_pago: "stripe"
+    },
+];
 class MasterDomClass extends ComponentsManager {
     constructor() {
         super();
@@ -177,30 +301,30 @@ class AsideClass {
         name: "Tablas Dinámica", url: "#",
         action: (ev) => {
             DOMManager.NavigateFunction("DinamicTableDoc", new DinamicTableDoc({ id: "DinamicTableDoc" }), "AppMain");
-         }
-    }];   
-       
+        }
+    }];
+
     WNavComponents = {
         type: "w-app-navigator",
         props: {
             Direction: "column",
             title: "Componentes",
             Elements: [{
-                name: "Modal / POP-UP", url: "#", action: async (ev)=>{
-                    const {ModalDocs}  = await import("./Modules/ModalDoc.js"); 
-                    DOMManager.NavigateFunction("ModalDocs", new ModalDocs({ id: "ModalDocs" }), "AppMain");       
+                name: "Modal / POP-UP", url: "#", action: async (ev) => {
+                    const { ModalDocs } = await import("./Modules/ModalDoc.js");
+                    DOMManager.NavigateFunction("ModalDocs", new ModalDocs({ id: "ModalDocs" }), "AppMain");
                 }
             }, {
                 name: "Tablas", url: "#", SubNav: {
                     Elements: this.WNavTables
                 }
-            },{
-                name: "Chart", url: "#", action: async (ev)=>{
-                    DOMManager.NavigateFunction("ChartDocs", new ChartDocs({ id: "ChartDocs" }), "AppMain");       
+            }, {
+                name: "Chart", url: "#", action: async (ev) => {
+                    DOMManager.NavigateFunction("ChartDocs", new ChartDocs({ id: "ChartDocs" }), "AppMain");
                 }
-            },{
-                name: "Slide", url: "#", action: async (ev)=>{
-                    DOMManager.NavigateFunction("SlideDoc", new SlideDoc({ id: "SlideDoc" }), "AppMain");       
+            }, {
+                name: "Slide", url: "#", action: async (ev) => {
+                    DOMManager.NavigateFunction("SlideDoc", new SlideDoc({ id: "SlideDoc" }), "AppMain");
                 }
             },]
         }
@@ -210,19 +334,21 @@ class MainClass {
     constructor() {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
-        this.children = [new ReportView({id:"TestReport"})];
+        this.children = [new WReportView({ id: "TestReport" }, dataTestFact)];
     }
 }
 class FooterClass {
     constructor() {
         this.type = "footer";
         this.props = { className: "AppFooter" }
-        this.children = [this.Style, 
-            {  type: 'label', props: { innerText: "Derechos reservados - " } },
-            {  type: 'a', props: { 
-                innerText: "- https://github.com/Wilber1987/WExpDev.git", 
+        this.children = [this.Style,
+        { type: 'label', props: { innerText: "Derechos reservados - " } },
+        {
+            type: 'a', props: {
+                innerText: "- https://github.com/Wilber1987/WExpDev.git",
                 href: "https://github.com/Wilber1987/WExpDev.git", target: "_blank"
-            }}
+            }
+        }
         ];
     }
     Style = {
