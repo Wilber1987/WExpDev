@@ -19,15 +19,16 @@ class WReportList extends HTMLElement {
         this.shadowRoot.innerHTML = "";
         this.shadowRoot.append(WRender.createElement(this.style));
         if (this.Dataset != undefined && this.Dataset.__proto__ == Array.prototype) {
+            const Pages = { type:'div', props: { id: '', class: 'GFormPrint'}, children:[
+                { type:'div', props: { id: '', class: 'pageA4'}, children:[]}
+            ]} ;
             const codes = WArrayF.ArrayUnique(this.Dataset, this.groupParam);   
             codes.forEach(code => {
                 const header = {
-                    type: 'div', props: { id: '', class: "header" }, children: [
-                    ]
+                    type: 'div', props: { id: '', class: "header" }, children: []
                 };
                 const body = {
-                    type: 'div', props: { id: '', class: "body" }, children: [
-                    ]
+                    type: 'div', props: { id: '', class: "body" }, children: []
                 }; 
                 if (this.header != undefined && this.header.__proto__ == Array.prototype) {                   
                     this.header.forEach(prop => {
@@ -60,12 +61,25 @@ class WReportList extends HTMLElement {
                         }
                     }
                 });
-                this.shadowRoot.append(WRender.createElement({
+                let Size = 0;
+                let page = Pages.children[Pages.children.length - 1];
+                console.log(page);
+                page.children.forEach(element => {
+                    Size = Size + element.offsetHeight + 20;
+                });
+                console.log(Size);
+                if (Size >= 1244) {
+                    Pages.children.push({ type:'div', props: { id: '', class: 'GFormPrint'}, children:[ ]});
+                    page = Pages.children[Pages.children.length - 1];
+                }
+                page.children.push(WRender.createElement({
                     type: 'div', props: { id: '', class: "fact" }, children: [
                         header, body
                     ]
-                }))
+                }));
             });
+            this.shadowRoot.append(WRender.createElement(Pages));
+            this.shadowRoot.append(WRender.createElement(PrintStyle));
         } else {
             this.shadowRoot.innerHTML = "define un array list"
         }
@@ -296,6 +310,45 @@ const MasterStyle = {
         }
         ]
     }
+};
+const PrintStyle = { type: 'w-style', props: {id: '', ClassList: [
+        new WCssClass(".GFormPrint", {
+            "padding": "2% 0",
+            "background-color": "#cecdcd",
+            "border": "solid 1px #c4c4c4",
+            "overflow-x": "scroll"            
+        }),        
+        new WCssClass(".pageA4", {
+            "width": "210mm",
+            "height": "297mm",
+            "padding": "60px 60px",
+            "border": "1px solid #D2D2D2",
+            "background": "#fff",
+            "margin": "auto",
+            "box-shadow": "0 2px 5px 0px rgba(0,0,0,0.3)"
+        }),       
+        new WCssClass(".HeaderPrint", {
+            "margin": "0px",
+            "width": "100%",
+            "height": "10mm",
+            "top": "0px",
+            "color": "#585656",
+            "font-size": "25px",
+            "font-weight": "bold",
+            "text-align": "center",
+            "padding": "10mm",
+        }),        
+        new WCssClass(".FooterPrint", {
+            "margin": "0px",
+            "width": "100%",
+            "height": "20mm",
+            "bottom": "0px",
+            "text-align": "center",
+            "padding": "10mm",
+        }),        
+    ], MediaQuery: [ {condicion: '(max-width: 600px)',
+        ClassList: []},
+    ]}
 };
 
 export { WReportView }

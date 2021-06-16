@@ -105,10 +105,13 @@ class WTableComponent extends HTMLElement {
                     overflow: "hidden",
                     height: "700px",
                     display:"grid",
-                    border: "solid 1px #999",
+                    border: "solid 1px #d1cfcf",
+                    "border-radius": "0.2cm",
                     "grid-template-columns": "calc(100% - 250px) 250px",
                     "grid-template-rows": "280px 40px calc(100% - 320px)",
                     "font-size": "12px",
+                    "grid-gap": "5px",
+                    padding: "10px"
                 }),
             ]}}))            
             this.AttNameEval = null;
@@ -1082,8 +1085,7 @@ class WTableComponent extends HTMLElement {
                     //ESTILO DE LA TABLA BASICA----------------------------tableContainer
                     new WCssClass(`.tableContainer`, {
                         overflow: "auto",
-                        "grid-row": "1/2",
-                        
+                        "grid-row": "1/2",                        
                     }), new WCssClass(`.WTable`, {
                         "font-family": "Verdana, sans-serif",
                         width: "100%",
@@ -1176,14 +1178,15 @@ class WTableComponent extends HTMLElement {
                         overflow: "hidden",
                         "grid-column": "2/3",
                         "grid-row": "1/4",
-                        "grid-template-columns": "50% 50%",
-                        "grid-template-rows":"50% 50%",
+                        "grid-template-columns": "49% 49%",
+                        "grid-template-rows":"49% 49%",
                     }), new WCssClass(`.TableOptionsAtribs`, {
                         display: "flex",
                         width: "100%",
                         "flex-direction": "column",
                         "padding-bottom": "20px",
-                        "background-color": "#efefef"
+                        "background-color": "#efefef",
+                        "border": "1px #cbc9c9 solid"
                     }), new WCssClass(`.titleParam`, {
                         display: "flex",                        
                         "background-color": "#4da6ff",
