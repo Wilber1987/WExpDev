@@ -418,16 +418,20 @@ class WModalForm extends HTMLElement {
                     class: 'Btn',
                     type: "button",
                     onclick: async () => {
+                        if (this.ValidateFunction != undefined 
+                            && this.ValidateFunction.__proto__ == Function.prototype) {
+                            const response = this.ValidateFunction(ObjectF);
+                            if (response.validate == false) {
+                                alert(response.message);
+                                return;  
+                            }                            
+                        }
                         if (this.DataRequire == true) {
-                            console.log(this.DataRequire)
                             for (const prop in ObjectF) {
                                 if (!prop.includes("_hidden")) {
                                     if (ObjectF[prop] == null || ObjectF[prop] == "") {
                                         const control = this.shadowRoot.querySelector("." + prop);
-                                        //console.log(prop)
-                                        //console.log(control)
                                         control.style = "border-bottom:3px solid #ef4d00";
-                                        //console.log("none")
                                         return;
                                     }
                                 }

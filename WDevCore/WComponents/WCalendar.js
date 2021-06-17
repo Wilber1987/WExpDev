@@ -14,6 +14,15 @@ class WCalendar extends HTMLElement {
             'Saturday',
             'Sunday'
         ];
+        this.listOfAllDaysSpanish = [
+            'Lunes',
+            'Martes',
+            'Miércoles',
+            'Jueves',
+            'Viernes',
+            'Sábado',
+            'Domingo'
+        ];
         this.listOfAllMonths = [
             'January',
             'February',
@@ -91,6 +100,7 @@ class WCalendar extends HTMLElement {
     DrawMonth(Month, Days, indexM) {
         const ContainerMonth = { type: "div", props: { id: Month + this.id, class: "GridCalendarMonthContainer" }, children: [] };
         const Title = { type: "div", props: { class: "calendarTitle" }, children: [Month + " " + this.year] };
+        const DaysLabel = { type: "div", props: { class: "ListDays" }, children: this.listOfAllDaysSpanish };
         //DAYS
         const Monday = { type: "div", props: { class: "GridDayColum" }, children: [] };
         const Tuesday = { type: "div", props: { class: "GridDayColum" }, children: [] };
@@ -104,8 +114,7 @@ class WCalendar extends HTMLElement {
             const date = new Date(`${this.year}-${Month}-${index + 1}`);
             const CalDay = {
                 type: "article",
-                props: { style: "", class: "CalendarDayDisable" },
-                children: [index + 1]
+                props: { style: "", class: "CalendarDayDisable", innerText: index + 1 },                
             };
             if (date > this.now) {
                 CalDay.props.class = "CalendarDay";
@@ -172,7 +181,7 @@ class WCalendar extends HTMLElement {
                 Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday,
             ]
         };
-        ContainerMonth.children.push(Title, ContainerDays);
+        ContainerMonth.children.push(Title, DaysLabel, ContainerDays);
         return ContainerMonth;
     }
     TakeDays(month, year) {
@@ -229,11 +238,24 @@ class WCalendar extends HTMLElement {
                 ClassList: [
                     new WCssClass(`.calendarTitle`, {
                         padding: "10px",
-                        background: "#d8d8d8"
+                        background: "#367cc3",
+                        color: "#fff",
+                        "text-align": "center",
+                        "font-size": "16px"
                     }), new WCssClass(`.GridCalendarMonth`, {
                         display: "grid",
                         "grid-template-columns": "auto auto auto auto auto auto auto",
-                    }), new WCssClass(`.GridDayColum`, {
+                    }),new WCssClass(`.ListDays`, {
+                        display: "flex",
+                        "justify-content": "center",
+                        "align-items": "center"
+                    }), new WCssClass(`.ListDays label`, {
+                        width: "100%",     
+                        color: "#367cc3",
+                        padding: "10px",
+                        "font-size": "12px",
+                        "text-align": "center"
+                    }),new WCssClass(`.GridDayColum`, {
                         display: "grid",
                         "grid-template-rows": "60px 60px 60px 60px 60px 60px",
                     }), new WCssClass(`.CalendarDayDisable`, {
