@@ -7,6 +7,7 @@ const TableId = "tableReport"
 class WReportList extends HTMLElement {
     constructor() {
         super();
+      
         this.attachShadow({ mode: "open" });
     }
     connectedCallback() {
@@ -67,7 +68,7 @@ class WReportList extends HTMLElement {
                 page.children.forEach(element => {                   
                     Size = Size + 100;
                 });               
-                if (Size >= 1000) {
+                if (Size >= 900) {
                     Pages.children.push({ type:'div', props: { id: '', class: 'pageA4'}, children:[ ]});
                     page = Pages.children[Pages.children.length - 1];
                 }
@@ -116,17 +117,35 @@ class WReportList extends HTMLElement {
     };
 }
 customElements.define("w-report-list", WReportList);
-class WReportView {
-    constructor(props , Config) {
-        this.type = "div";
-        this.props = props;
-        this.props.className = "reportV"
-        const ControlOptions = {
-            type: 'div', props: { id: 'optionsContainter', class: "OptionContainer" }, children: [
-            ]
+class WReportView extends HTMLElement{
+    constructor(Config) {
+        super();  
+        if (Config != undefined) {            
+            this.id = undefined ?? Config.id;
+            this.Config = Config;
         }
-        for (const prop in Config.Dataset[0]) {            
-            if ((typeof Config.Dataset[0][prop] != "number" 
+        this.attachShadow({ mode: "open" });  
+    }
+    connectedCallback() {
+        if (this.shadowRoot.innerHTML != "") {
+            return;
+        } 
+        this.className =  this.className + " reportV";       
+        this.DrawReport();
+    }
+    DrawReport(){
+        this.shadowRoot.innerHTML = "";
+        if (this.Config.Dataset.length == 0) {
+            this.shadowRoot.innerHTML = "No hay datos que mostrar";
+        }
+        
+        const ControlOptions = {
+            type: 'div',
+            props: { id: 'optionsContainter', class: "OptionContainer" }, children: []
+        }
+        console.log(this.Config);
+        for (const prop in this.Config.Dataset[0]) {            
+            if ((typeof this.Config.Dataset[0][prop] != "number" 
             && !prop.toUpperCase().includes("FECHA") 
             && !prop.toUpperCase().includes("DATE") )
             || prop.toUpperCase().includes("AÑO") 
@@ -134,16 +153,18 @@ class WReportView {
                 const select = {type:'select', props: {id: prop}, children:[
                     { type:'option', props: { innerText:'Seleccione', value: ''} }
                 ]}            
-                const SelectData = WArrayF.ArrayUnique(Config.Dataset, prop);
+                const SelectData = WArrayF.ArrayUnique(this.Config.Dataset, prop);
                 SelectData.forEach(data => {
-                    select.children.push({
-                        type:'option', props: {innerText: data[prop], value: data[prop]}
-                    });        
+                    if (data[prop] != "" && data[prop] != null) {
+                        select.children.push({
+                            type:'option', props: {innerText: data[prop], value: data[prop]}
+                        });                        
+                    }                           
                 });
                 select.props.onchange = async (ev)=>{
                     let SelectFlag = false;
-                    const Container =  document.getElementById(props.id);
-                    Container.querySelectorAll("#optionsContainter select").forEach(select => {
+                    //const Container =  this.shadowRoot.querySelector("#"+props.id);
+                    this.shadowRoot.querySelectorAll("#optionsContainter select").forEach(select => {
                         if (select.id != ev.target.id) {
                             if (select.value != "") {
                                 console.log("valor: ",select.value);
@@ -151,11 +172,11 @@ class WReportView {
                             }
                         }
                     });
-                    const table = Container.querySelector("w-table");   
-                    const wreport = Container.querySelector("w-report-list");              
-                    const DFilt =  Config.Dataset.filter( obj => {
+                    const table = this.shadowRoot.querySelector("w-table");   
+                    const wreport = this.shadowRoot.querySelector("w-report-list");              
+                    const DFilt =  this.Config.Dataset.filter( obj => {
                         let flagObj = true;
-                        Container.querySelectorAll("#optionsContainter select").forEach(select => {  
+                        this.shadowRoot.querySelectorAll("#optionsContainter select").forEach(select => {  
                             if (select.value == "") {
                                 return
                             }
@@ -169,7 +190,7 @@ class WReportView {
                         });
                         return flagObj;
                     });  
-                    console.log(DFilt);             
+                   // console.log(DFilt);             
                     wreport.Dataset = DFilt;
                     wreport.DrawReport();
                     table.Dataset = DFilt;
@@ -180,68 +201,120 @@ class WReportView {
             }
         }    
         ControlOptions.children.push([{ type:'input', 
-        props: { id: '', type:'button', class: 'className', value: 'Imprimir', onclick: async ()=>{
-            const ficha = document.getElementById(this.props.id);
-            const GeneralStyle = `<style>* {
-                -webkit-print-color-adjust: exact !important;
-                font-size: 12px;
-            } </style>`;
-            const WTable = document.querySelector("w-table");
-            const PrintHeader = "<h1>hola</h1>";
-            const WStyles = WTable.shadowRoot.querySelectorAll("w-style");
-            const Table = WTable.shadowRoot.querySelector("#MainTable" + WTable.id); 
-            WStyles.forEach(style => {
-                Table.append(style.cloneNode(true));
-            }); 
-            const ReportView = document.querySelector("w-report-list"); 
-            const RepStyles = ReportView.shadowRoot.querySelectorAll("w-style");
-            const RepPage = ReportView.shadowRoot.querySelectorAll(".pageA4");
-            const ReportPageContainer = WRender.createElement({ type:'div' });
-            const FirstPage = WRender.createElement({ type:'div', props: { class: "pageA4"}});
-            Table.append(WRender.CreateStringNode(GeneralStyle));                      
-            const Chart = WTable.shadowRoot.querySelector("w-colum-chart").shadowRoot;
-            Chart.append(WRender.CreateStringNode(GeneralStyle)); 
-            FirstPage.innerHTML = PrintHeader + Table.innerHTML + Chart.innerHTML;
-            ReportPageContainer.append(FirstPage)
-            RepStyles.forEach(style => {
-                ReportPageContainer.append(style.cloneNode(true));
-            }); 
-            RepPage.forEach(page => {
-                ReportPageContainer.append(page.cloneNode(true));
-            });     
-           
-            RepStyles.forEach(style => {
-                FirstPage.append(style.cloneNode(true));
-            }); 
-            console.log(FirstPage);
-            const ventimp =  window.open(' ', 'popimpr');
-            ventimp.document.write( ReportPageContainer.innerHTML );
-            ventimp.document.close();
-            ventimp.print();
-            ventimp.close();
-           
+            props: { id: '', type:'button', class: 'BtnSuccess', value: 'Imprimir', onclick: async ()=>{
+                const GeneralStyle = `<style>
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    font-size: 12px;
+                    font-family: arial
+                } 
+                h1 {
+                    font-size: 18px;
+                    text-align: center;
+                }
+                h2 {
+                    font-size: 16px;
+                    text-align: center;
+                }
+                h3 {
+                    font-size: 14px;
+                    text-align: center;
+                }
+                </style>`;
+                const WTable = this.shadowRoot.querySelector("w-table");
+                let PrintHeader = this.Config.PrintHeader;
+                if (PrintHeader == undefined) {
+                    PrintHeader = `<div>
+                    <h1>WExpDev</h1>
+                    <h2>Informe</h2>                
+                    <h2>Fecha ${(new Date()).toLocaleDateString()}</h2>
+                    </div>`
+                }
+                const WStyles = WTable.shadowRoot.querySelectorAll("w-style");
+                const Table = WTable.shadowRoot.querySelector("#MainTable" + WTable.id); 
+                WStyles.forEach(style => {
+                    Table.append(style.cloneNode(true));
+                }); 
+                const ReportView = this.shadowRoot.querySelector("w-report-list"); 
+                const RepStyles = ReportView.shadowRoot.querySelectorAll("w-style");
+                const RepPage = ReportView.shadowRoot.querySelectorAll(".pageA4");
+                const ReportPageContainer = WRender.createElement({ type:'div' });
+                const FirstPage = WRender.createElement({ type:'div', props: { class: "pageA4"}});
+                Table.append(WRender.CreateStringNode(GeneralStyle));  
+                if (WTable.shadowRoot.querySelector("w-colum-chart")) {
+                    const Chart = WTable.shadowRoot.querySelector("w-colum-chart").shadowRoot;
+                    Chart.append(WRender.CreateStringNode(GeneralStyle)); 
+                    FirstPage.innerHTML = PrintHeader + Table.innerHTML + Chart.innerHTML;
+                } else {
+                    FirstPage.innerHTML = PrintHeader; //+ Table.innerHTML + Chart.innerHTML;
+                }   
+                if (this.Config.bodyGroup) {    
+                    console.log(this.Config.bodyGroup);               
+                    const ArraySum = [];
+                    const groups = WArrayF.ArrayUnique(this.Config.Dataset, this.Config.bodyGroup[0].leyend);
+                    const SumContainer = { type:'div', props: { class: 'sumaryContainer'},
+                    children:[]};
+                    groups.forEach(element => {
+                        ArraySum.push({
+                            leyend: element[this.Config.bodyGroup[0].leyend],
+                            value: WArrayF.SumValAttByProp(this.Config.Dataset, 
+                                { prop: this.Config.bodyGroup[0].leyend , value: element[this.Config.bodyGroup[0].leyend]},
+                            this.Config.bodyGroup[0].value)  
+                        })                     
+                    }); 
+                    ArraySum.forEach(element => {
+                        SumContainer.children.push([
+                            element.leyend+": ",
+                            "€ " +element.value
+                        ]);
+                    }); 
+                    FirstPage.append(WRender.createElement(SumContainer))               
+                }      
+                ReportPageContainer.append(WRender.CreateStringNode(GeneralStyle))
+                ReportPageContainer.append(FirstPage)
+                RepStyles.forEach(style => {
+                    ReportPageContainer.append(style.cloneNode(true));
+                }); 
+                RepPage.forEach(page => {
+                    ReportPageContainer.append(page.cloneNode(true));
+                });     
+            
+                RepStyles.forEach(style => {
+                    FirstPage.append(style.cloneNode(true));
+                }); 
+                //console.log(FirstPage);
+
+                const ventimp =  window.open(' ', 'popimpr');
+                ventimp.document.write( ReportPageContainer.innerHTML );
+                ventimp.document.close();
+                ventimp.print();
+                ventimp.close();
+            
         }}}])    
-        this.children = [ControlOptions];
-        var ConfigG3 = {
-            Datasets: Config.Dataset,            
+        this.shadowRoot.append(WRender.createElement(ControlOptions));
+        var TableConfigG = {
+            Datasets: this.Config.Dataset,            
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             Dinamic: true,
             AddChart: true,
         };
-        this.children.push({
+        const WTableReport = WRender.createElement(WRender.createElement({
             type: "w-table",
             props: {
                 id: TableId,
-                TableConfig: ConfigG3
+                TableConfig: TableConfigG
             }
-        }),
-        this.children.push({
+        }));
+        console.log(WTableReport.TableConfig);
+        this.shadowRoot.append(WTableReport);
+
+        this.shadowRoot.append(WRender.createElement({
             type: 'w-report-list', props: { id: '', 
-            Dataset: Config.Dataset, 
-            groupParam: Config.GroupParam,
-            header:Config.headerGroup, body: Config.bodyGroup 
-        }})
-        this.children.push(this.style);
+            Dataset: this.Config.Dataset, 
+            groupParam: this.Config.GroupParam,
+            header:this.Config.headerGroup, body: this.Config.bodyGroup 
+        }}));
+        this.shadowRoot.append(WRender.createElement(this.style));
     }
     style = { type: 'w-style', props: {id: '', ClassList: [
             new WCssClass( `.reportV`, {
@@ -261,46 +334,22 @@ class WReportView {
                     "grid-row": "2/3",
                     margin: "0px",
                     padding: "5px 10px"
-                }),
+             }),new WCssClass(`.BtnSuccess`, {                
+                "font-weight": "bold",
+                "border": "none",
+                "padding": "10px",
+                "text-align": "center",
+                "display": "inline-block",
+                "min-width": "100px",
+                "cursor": "pointer",
+                "background-color": "#09f",
+                "color": "#fff",
+                "border-right": "rgb(3, 106, 175) 5px solid",               
+            }),
         ], MediaQuery: [ {condicion: '(max-width: 600px)',
             ClassList: []},
         ]}
-    };
-    Export2Doc(element, filename = 'file'){
-        var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
-        var postHtml = "</body></html>";
-        var html = preHtml+element.innerHTML+postHtml;
-    
-        var blob = new Blob(['ufeff', html], {
-            type: 'application/msword'
-        });
-        
-        // Specify link url
-        var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
-        
-        // Specify file name
-        filename = filename?filename+'.doc':'document.doc';
-        
-        // Create download link element
-        var downloadLink = document.createElement("a");
-    
-        document.body.appendChild(downloadLink);
-        
-        if(navigator.msSaveOrOpenBlob ){
-            navigator.msSaveOrOpenBlob(blob, filename);
-        }else{
-            // Create a link to the file
-            downloadLink.href = url;
-            
-            // Setting the file name
-            downloadLink.download = filename;
-            
-            //triggering the function
-            downloadLink.click();
-        }
-        
-        document.body.removeChild(downloadLink);
-    }
+    };   
 }
 const MasterStyle = {
     type: "w-style",
@@ -324,6 +373,7 @@ const MasterStyle = {
         ]
     }
 };
+customElements.define("w-report-view", WReportView);
 const PrintStyle = { type: 'w-style', props: {id: '', ClassList: [
         new WCssClass(".GFormPrint", {
             "padding": "2% 0",

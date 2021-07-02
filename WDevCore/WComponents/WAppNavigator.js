@@ -1,5 +1,6 @@
 import { WRender, ComponentsManager } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
+import { WIcons } from "../WModules/WIcons.js";
 class WAppNavigator extends HTMLElement {
     constructor() {
         super();
@@ -36,8 +37,8 @@ class WAppNavigator extends HTMLElement {
                     }
                 }
             }, children: [{
-                type: "label", props: {
-                    innerText: " ",
+                type: "img", props: {
+                    src: WIcons.Menu ,
                     class: "DisplayBtn",
                 }, children: []
             }]
@@ -171,13 +172,9 @@ class WAppNavigator extends HTMLElement {
                         "border-bottom": "solid 1px #999",
                     }),
                     //ocultacion. 
-                    new WCssClass(`.DisplayBtn`, {
-                        "font-weight": "bold",
-                        "font-size": "1.3rem",
+                    new WCssClass(`.DisplayBtn`, {                       
                         margin: "10px",
-                        display: "none", 
-                        "border-radius": "50%",
-                        "background-color": "#888888",    
+                        display: "none",                           
                         height: "15px", width:  "15px", 
                         cursor: "pointer"
                     }), new WCssClass(`.navActive`, {

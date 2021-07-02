@@ -43,6 +43,7 @@ class WTableComponent extends HTMLElement {
         }
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
+        //this.TableConfig.MasterDetailTable = true
         if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
             this.Dataset = this.TableConfig.Datasets;
             if (this.Dataset == undefined) {
@@ -243,7 +244,7 @@ class WTableComponent extends HTMLElement {
                         props: {
                             class: "txtControl",
                             type: "text",
-                            placeholder: "Search...",
+                            placeholder: "Buscar...",
                             onchange: async (ev) => {
                                 if (this.SearchItemsFromApi != undefined) {
                                     if (this.SearchItemsFromApi.Function != undefined) {
@@ -256,11 +257,19 @@ class WTableComponent extends HTMLElement {
                                         this.DrawTable(Dataset.data);
                                     }
                                 } else {
+                                   console.log( this.Dataset);
                                     const Dataset = this.Dataset.filter((element) => {
-                                        for (const prop in element) {
-                                            if (element[prop].toString().includes(ev.target.value)) {
-                                                return element;
+                                        for (const prop in element) {                                            
+                                            try {
+                                                if (element[prop] != null) {
+                                                     if (element[prop].toString().includes(ev.target.value)) {
+                                                        return element;
+                                                    }
+                                                }                                               
+                                            } catch (error) {
+                                                console.log(element);
                                             }
+                                            
                                         }
                                     })
                                     if (Dataset.length == 0 && this.Options.UrlSearch != undefined) {
@@ -291,6 +300,8 @@ class WTableComponent extends HTMLElement {
                                         ObjectModel: this.ModelObject,
                                         AddItemsFromApi: this.AddItemsFromApi,
                                         Dataset: this.Dataset,
+                                        icon: this.TableConfig.icon,
+                                        title: "Nuevo",
                                         ValidateFunction: this.TableConfig.ValidateFunction,
                                         ObjectOptions: {
                                             Url: this.Options.UrlAdd,
@@ -458,6 +469,8 @@ class WTableComponent extends HTMLElement {
                                     this.shadowRoot.append(WRender.createElement({
                                         type: "w-modal-form",
                                         props: {
+                                            icon: this.TableConfig.icon,
+                                            title: "Detalle",
                                             ObjectDetail: element,                                            
                                         }
                                     }));
@@ -478,6 +491,8 @@ class WTableComponent extends HTMLElement {
                                         props: {
                                             ObjectModel: this.ModelObject,
                                             EditObject: element,
+                                            icon: this.TableConfig.icon,
+                                            title: "Editar",
                                             ValidateFunction: this.TableConfig.ValidateFunction,
                                             ObjectOptions: {
                                                 Url: this.Options.UrlUpdate,
@@ -502,6 +517,8 @@ class WTableComponent extends HTMLElement {
                                     this.shadowRoot.append(WRender.createElement({
                                         type: "w-modal-form",
                                         props: {
+                                            icon: this.TableConfig.icon,
+                                            title: "Eliminar",
                                             id: "Alert" + this.id,
                                             ObjectModal: { type: "h5", children: ["¿Esta seguro de eliminar este elemento?"] },
                                             ObjectOptions: {
@@ -550,7 +567,7 @@ class WTableComponent extends HTMLElement {
             }
         });
         if (tbody.children.length == 0) {
-            tbody.children.push({ type: "h5", props: { innerText: "No hay elementos en la tabla" } });
+            tbody.children.push({ type: "h5", props: { innerText: "No hay elementos que mostrar" } });
         }
         this.shadowRoot.append(WRender.createElement(this.MediaStyleResponsive()));
         return tbody;

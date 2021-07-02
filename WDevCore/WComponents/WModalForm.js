@@ -1,5 +1,11 @@
-import { WRender, WAjaxTools, ComponentsManager } from "../WModules/WComponentsTools.js";
-import { WCssClass } from "../WModules/WStyledRender.js";
+import {
+    WRender,
+    WAjaxTools,
+    ComponentsManager
+} from "../WModules/WComponentsTools.js";
+import {
+    WCssClass
+} from "../WModules/WStyledRender.js";
 let photoB64;
 class WModalForm extends HTMLElement {
     constructor() {
@@ -14,9 +20,11 @@ class WModalForm extends HTMLElement {
     connectedCallback() {
         if (this.innerHTML != "") {
             return;
-        }//NO MODAL
+        } //NO MODAL
         if (this.ShadowRoot) {
-            this.attachShadow({ mode: "open" });
+            this.attachShadow({
+                mode: "open"
+            });
             this.shadowRoot.append(WRender.createElement(this.FormStyle()));
             if (this.StyleForm == "columnX1") {
                 this.shadowRoot.append(WRender.createElement(this.StyleColumX1()));
@@ -41,7 +49,8 @@ class WModalForm extends HTMLElement {
             this.append(WRender.createElement(this.StyleNoModal()));
             if (this.ShadowRoot) {
                 this.shadowRoot.append(WRender.createElement({
-                    type: "w-style", props: {
+                    type: "w-style",
+                    props: {
                         ClassList: [
                             new WCssClass(" .ContainerFormWModal", {
                                 "margin-top": "0px",
@@ -49,12 +58,14 @@ class WModalForm extends HTMLElement {
                                 "max-height": "auto !important",
                                 "height": "auto !important",
                                 "border-radius": "0cm",
-                            })]
+                            })
+                        ]
                     }
                 }))
             } else {
                 this.append(WRender.createElement({
-                    type: "w-style", props: {
+                    type: "w-style",
+                    props: {
                         ClassList: [
                             new WCssClass(" .ContainerFormWModal", {
                                 "margin-top": "0px",
@@ -62,7 +73,8 @@ class WModalForm extends HTMLElement {
                                 "max-height": "auto !important",
                                 "height": "auto !important",
                                 "border-radius": "0cm",
-                            })]
+                            })
+                        ]
                     }
                 }))
             }
@@ -98,7 +110,13 @@ class WModalForm extends HTMLElement {
             this.id = "TempModal";
         }
         this.className = "ModalContentWModal";
-        this.Modal = { type: "div", props: { class: "ContainerFormWModal" }, children: [] };
+        this.Modal = {
+            type: "div",
+            props: {
+                class: "ContainerFormWModal"
+            },
+            children: []
+        };
         this.Modal.children.push(this.DrawModalHead());
         if (this.ObjectModal) { //AGREGA UN OBJETO AL MODAL ENVIDO DESDE LA CONFIGURACION
             this.Modal.children.push(this.ObjectModal);
@@ -114,7 +132,10 @@ class WModalForm extends HTMLElement {
             }
         } else { //AGREGA FORMULARIO CRUD A LA VISTA
             if (this.ObjectOptions == undefined) {
-                this.ObjectOptions = { AddObject: false, Url: undefined };
+                this.ObjectOptions = {
+                    AddObject: false,
+                    Url: undefined
+                };
             }
             if (this.ObjectOptions.AddObject == true) { //AGREGA NUEVO OBJETO
                 const NewObject = {};
@@ -130,7 +151,7 @@ class WModalForm extends HTMLElement {
                         get: function (target, property) {
                             return target[property];
                         },
-                        set: function (target, property, value, receiver) {                            
+                        set: function (target, property, value, receiver) {
                             target[property] = value;
                             for (const prop in target) {
                                 if (prop.includes("_operationValue")) {
@@ -193,10 +214,14 @@ class WModalForm extends HTMLElement {
         if (this.HeadOptions == false) {
             return "";
         }
+        let icon ="";
+        if (this.icon != undefined) {
+            icon = WRender.CreateStringNode(`<img src="${this.icon}" class="HeaderIcon" alt="">`)
+        }
         const InputClose = {
             type: 'button',
             props: {
-                class: 'BtnClose',//class: 'Btn',
+                class: 'BtnClose', //class: 'Btn',
                 type: "button",
                 onclick: () => {
                     ComponentsManager.modalFunction(this);
@@ -209,16 +234,28 @@ class WModalForm extends HTMLElement {
             //children: ['◄ Back']
         };
         const Section = {
-            type: 'div', props: { className: "ModalHeader" }, children: [
-                WRender.CreateStringNode(`<img src="${this.icon}" class="HeaderIcon" alt="">`),
-                { type: "label", props: { innerText: this.title } },
+            type: 'div',
+            props: {
+                className: "ModalHeader"
+            },
+            children: [
+                icon,
+                {
+                    type: "label",
+                    props: {
+                        innerText: this.title
+                    }
+                },
                 InputClose
             ]
         };
         return Section;
     }
     ShowFormDetail(ObjectF = this.ObjectDetail) {
-        const Form = { type: 'divForm', children: [] };
+        const Form = {
+            type: 'divForm',
+            children: []
+        };
         for (const prop in ObjectF) {
             if (prop.includes("_hidden")) {
 
@@ -241,10 +278,21 @@ class WModalForm extends HTMLElement {
             } else {
                 Form.children.push({
                     type: "div",
-                    props: { class: "ModalElement" },
-                    children: [
-                        { type: "label", props: { innerText: prop + ": " } },
-                        { type: "label", props: { innerHTML: ObjectF[prop] } }
+                    props: {
+                        class: "ModalElement"
+                    },
+                    children: [{
+                            type: "label",
+                            props: {
+                                innerText: prop + ": "
+                            }
+                        },
+                        {
+                            type: "label",
+                            props: {
+                                innerHTML: ObjectF[prop]
+                            }
+                        }
                     ]
                 });
             }
@@ -271,7 +319,10 @@ class WModalForm extends HTMLElement {
             };
         }
         const Model = this.ObjectModel;
-        const Form = { type: 'divForm', children: [] };
+        const Form = {
+            type: 'divForm',
+            children: []
+        };
 
         for (const prop in Model) {
             if (prop.includes("_operationValue")) {
@@ -281,7 +332,9 @@ class WModalForm extends HTMLElement {
             } else if (!prop.includes("_hidden")) {
                 const ControlContainer = {
                     type: "div",
-                    props: { class: "ModalElement" },
+                    props: {
+                        class: "ModalElement"
+                    },
                     children: []
                 }
                 let ControlTagName = "input";
@@ -300,8 +353,8 @@ class WModalForm extends HTMLElement {
                     InputType = "date";
                 } else if (prop.toUpperCase().includes("HORA") || prop.toUpperCase().includes("HOUR")) {
                     InputType = "time";
-                } else if (prop.toUpperCase().includes("IMG") || prop.toUpperCase().includes("PICT")
-                    || prop.toUpperCase().includes("IMAGE") || prop.toUpperCase().includes("PHOTO")) {
+                } else if (prop.toUpperCase().includes("IMG") || prop.toUpperCase().includes("PICT") ||
+                    prop.toUpperCase().includes("IMAGE") || prop.toUpperCase().includes("PHOTO")) {
                     let cadenaB64 = "";
                     let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
                     if (base64regex.test(InputValue)) {
@@ -329,10 +382,17 @@ class WModalForm extends HTMLElement {
                 } else if (Model[prop] != null && Model[prop].__proto__ == Array.prototype) {
                     ControlTagName = "select";
                     InputType = "";
+                    Options.push({
+                        type: "option",
+                        props: {
+                            value: "",
+                            innerText: "Seleccionar"
+                        }
+                    })
                     for (const key in Model[prop]) {
                         let OValue, ODisplay;
-                        if (typeof Model[prop][key] === "object"
-                            && Model[prop][key].__proto__ == Object.prototype) {
+                        if (typeof Model[prop][key] === "object" &&
+                            Model[prop][key].__proto__ == Object.prototype) {
                             OValue = Model[prop][key]["id"];
                             ODisplay = Model[prop][key]["desc"];
                         } else {
@@ -395,7 +455,13 @@ class WModalForm extends HTMLElement {
                     InputControl.children = Options;
                 }
                 InputControl.props.value = InputValue;
-                const label = { type: "label", props: { class: "inputTitle", innerText: prop.replaceAll("_", " ") } }
+                const label = {
+                    type: "label",
+                    props: {
+                        class: "inputTitle",
+                        innerText: prop.replaceAll("_", " ")
+                    }
+                }
                 ControlContainer.children.push(label, InputControl);
                 if (ObjectOptions.AddObject == true) {
                     ObjectF[prop] = "";
@@ -410,7 +476,13 @@ class WModalForm extends HTMLElement {
         return Form;
     }
     SaveOptions(ObjectF = {}) {
-        const DivOptions = { type: 'div', props: { class: "DivSaveOptions" }, children: [] };
+        const DivOptions = {
+            type: 'div',
+            props: {
+                class: "DivSaveOptions"
+            },
+            children: []
+        };
         if (this.ObjectOptions != undefined) {
             const InputSave = {
                 type: 'button',
@@ -418,21 +490,28 @@ class WModalForm extends HTMLElement {
                     class: 'Btn',
                     type: "button",
                     onclick: async () => {
-                        if (this.ValidateFunction != undefined 
-                            && this.ValidateFunction.__proto__ == Function.prototype) {
+                        if (this.ValidateFunction != undefined &&
+                            this.ValidateFunction.__proto__ == Function.prototype) {
                             const response = this.ValidateFunction(ObjectF);
                             if (response.validate == false) {
                                 alert(response.message);
-                                return;  
-                            }                            
+                                return;
+                            }
                         }
                         if (this.DataRequire == true) {
                             for (const prop in ObjectF) {
                                 if (!prop.includes("_hidden")) {
                                     if (ObjectF[prop] == null || ObjectF[prop] == "") {
-                                        const control = this.shadowRoot.querySelector("." + prop);
-                                        control.style = "border-bottom:3px solid #ef4d00";
-                                        return;
+                                        if (this.ShadowRoot) {
+                                            const control = this.shadowRoot.querySelector("." + prop);
+                                            control.style = "border-bottom:3px solid #ef4d00";
+                                            return;
+                                        } else {
+                                            const control = this.querySelector("." + prop);
+                                            control.style = "border-bottom:3px solid #ef4d00";
+                                            return;
+                                        }
+
                                     }
                                 }
                             }
@@ -579,6 +658,7 @@ class WModalForm extends HTMLElement {
                         "display": "flex",
                         "justify-content": "space-between",
                         "align-items": "center",
+                        padding: "10px 30px",
                     }),
                     new WCssClass(` .BtnClose`, {
                         "font-size": "18pt",
@@ -654,7 +734,7 @@ class WModalForm extends HTMLElement {
                             "padding-bottom": "0px",
                         }),
                     ]
-                },]
+                }, ]
             }
         }
         return Style;

@@ -51,7 +51,6 @@ class WCalendar extends HTMLElement {
             props: {
                 ClassList: [
                     new WCssClass("#"+this.id, {
-                        //"background-color": "#ededed",
                         overflow: "hidden",
                         "border-radius": "0.2cm",
                         display: "block",

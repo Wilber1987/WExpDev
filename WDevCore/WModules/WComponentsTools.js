@@ -519,6 +519,21 @@ class WArrayF {
         }
         return Maxvalue;
     }
+    static SumValAttByProp(DataArry, Atrib, EvalValue) {
+        var Maxvalue = 0;
+        for (let index = 0; index < DataArry.length; index++) {
+            const Obj = DataArry[index];
+            if (Obj[Atrib.prop] == Atrib.value) {
+                if (typeof Obj[EvalValue] === "number") {
+                    Maxvalue = Maxvalue + parseFloat(Obj[EvalValue]);
+                } else {
+                    Maxvalue = "Error!";
+                    break;
+                }                
+            }            
+        }
+        return Maxvalue;
+    }
     static FindInArray(element, Datasets) {
         let val = false;
         for (let index = 0; index < Datasets.length; index++) {
