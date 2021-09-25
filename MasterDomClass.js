@@ -10,6 +10,8 @@ import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
 
 import { dataTestFact } from './DATA/data.js'
 import { ReportView } from "./Modules/ReportView.js";
+import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
+import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamicComp.js";
 
 const DOMManager = new ComponentsManager();
 
@@ -227,20 +229,30 @@ class MainClass {
         this.props = { className: "AppMain", id: "AppMain" }
 
         this.children = [
-            new WReportView({
-                id: "TestReport",
-                Dataset: dataTestFact,
-                GroupParam: "id",
-                headerGroup:  ["id", "estado", "mes", "año", "metodo_pago"],
-                bodyGroup: [ { leyend: "tipo" , value: "value" } ]
-            }),
-            // { type:"w-report-view", props: {id:"FacturasReport", Config: {
+            // new WReportView({
             //     id: "TestReport",
             //     Dataset: dataTestFact,
             //     GroupParam: "id",
             //     headerGroup:  ["id", "estado", "mes", "año", "metodo_pago"],
             //     bodyGroup: [ { leyend: "tipo" , value: "value" } ]
-            // }}}            
+            // }),
+            // new WTableComponent({
+            //     Dataset: dataTestFact,
+            //     DisplayData: ["servicio", "empresa", "tipo", "metodo_pago", "total"],
+            //     maxElementByPage: 5,
+            //     paginate: true,
+            //     //ModelObject: {"servicio":"", "empresa":"", "tipo":"", "metodo_pago":"", "total": 0},
+            //     Options: {
+            //         Search: true,  UrlSearch:"api_route",
+            //         Add: true, UrlAdd: "api_route",                    
+            //         Edit: true, UrlUpdate: "api_route",                    
+            //         Delete: true, UrlDelete: "api_route",
+            //         Show: true, 
+            //         Select: true,
+            //         UserActions: [{ name: "Log...", Function: (TableElement) => { console.log(TableElement); } }]
+            //     }
+            // })    
+            new WTableDynamicComp({ Dataset: dataTestFact }) 
         ];
     }
 }
