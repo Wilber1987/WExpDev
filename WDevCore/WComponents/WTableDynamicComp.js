@@ -211,10 +211,7 @@ class WTableDynamicComp extends HTMLElement {
                 type: "label",
                 children: [props],
                 props: {
-                    id: props + this.id,
-                    class: "labelParam",
-                    draggable: true,
-                    ondragstart: drag
+                    id: props + this.id, name: props,  class: "labelParam", draggable: true, ondragstart: drag
                 }
             });
         }
@@ -340,7 +337,6 @@ class WTableDynamicComp extends HTMLElement {
         var data = ev.dataTransfer.getData("text");
         let target = ev.target;
         let control = this.shadowRoot.querySelector("#" + data);
-        //console.log(control.parentNode);
         const OriginalParent = control.parentNode.id;
         if (control == null) {
             console.log("error", target.parentNode.id, "TableOptions" + this.id)
@@ -352,9 +348,9 @@ class WTableDynamicComp extends HTMLElement {
                     console.log("entro1");
                     return;
                 }
-                this.AttNameEval = this.shadowRoot.querySelector("#" + data).innerText;
+                this.AttNameEval = this.shadowRoot.querySelector("#" + data).name;
                 this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Dataset, this.AttNameEval);
-                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
+                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).name);
                 if (find) {
                     this.groupParams.splice(this.groupParams.indexOf(find), 1);
                 }
@@ -363,8 +359,8 @@ class WTableDynamicComp extends HTMLElement {
                     //console.log("entro1");
                     return;
                 }
-                this.EvalValue = this.shadowRoot.querySelector("#" + data).innerText;
-                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
+                this.EvalValue = this.shadowRoot.querySelector("#" + data).name;
+                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).name);
                 if (find) {
                     this.groupParams.splice(this.groupParams.indexOf(find), 1);
                 }
@@ -373,12 +369,12 @@ class WTableDynamicComp extends HTMLElement {
                     console.log("Grupos excedidos");
                     return;
                 }
-                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
+                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).name);
                 if (!find) {
-                    this.groupParams.push(this.shadowRoot.querySelector("#" + data).innerText);
+                    this.groupParams.push(this.shadowRoot.querySelector("#" + data).name);
                 }
             } else if (target.id.includes("ListAtribs")) {
-                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
+                let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).name);
                 if (find) {
                     this.groupParams.splice(this.groupParams.indexOf(find), 1);
                 }
@@ -395,7 +391,7 @@ class WTableDynamicComp extends HTMLElement {
                 this.groupParams = [];
                 const Parent = this.shadowRoot.querySelector("#" + OriginalParent);
                 Parent.querySelectorAll(".labelParam").forEach(element => {
-                    this.groupParams.push(element.innerText);
+                    this.groupParams.push(element.name);
                 });
             }
             this.DefineTable();
@@ -499,7 +495,7 @@ class WTableDynamicComp extends HTMLElement {
                         "grid-column": "2/3",
                         "grid-row": "1/3",
                         "grid-template-columns": "49% 49%",
-                        //"grid-template-rows": "49% 49%",
+                        "grid-template-rows": "70% 38%",
                         "box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
                     }), new WCssClass(`.TableOptionsAtribs`, {
                         display: "flex",
@@ -551,30 +547,6 @@ class WTableDynamicComp extends HTMLElement {
                 MediaQuery: [{
                     condicion: "(max-width: 600px)",
                     ClassList: [
-                        new WCssClass(`divForm div`, {
-                            width: "calc(100% - 10px)",
-                            margin: "5px"
-                        }), new WCssClass(`.WTable`, {
-                            display: "block ", //width: "100%"
-                        }), new WCssClass(`.WTable tbody`, {
-                            display: "block ", //width: "100%"
-                        }), new WCssClass(`.WTable thead`, {
-                            display: "none ", //width: "100%"
-                        }), new WCssClass(`.WTable tr`, {
-                            display: "block ",
-                            border: "5px solid #808080"
-                        }), new WCssClass(`.WTable td`, {
-                            display: "flex ",
-                            //width: "100%"
-                        }), new WCssClass(`.WTable .tdAction`, {
-                            display: "flex ",
-                            width: "calc(98% - 0.25rem)",
-                            "justify-content": "center",
-                            "align-items": "center"
-                        }), new WCssClass(`.WTable tbody tr:nth-child(odd)`, {
-                            "background-color": "#f9f9f9"
-                        }),
-
                     ]
                 }]
             }
