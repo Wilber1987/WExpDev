@@ -196,16 +196,7 @@ class WTableDynamicComp extends HTMLElement {
                 props: { innerText: "Parametros", class: "titleParam" }
             }]
         };
-        let model = this.Dataset[0];
-        for (const props in model) {
-            divAtt.children.push({
-                type: "label",
-                children: [WArrayF.Capitalize(props)],
-                props: {
-                    id: props + this.id, name: props, class: "labelParam", draggable: true, ondragstart: drag
-                }
-            });
-        }
+        let model = this.Dataset[0];        
         let divEvalAttib = {
             type: "div",
             props: {
@@ -255,6 +246,16 @@ class WTableDynamicComp extends HTMLElement {
                 ondragover: allowDrop
             }, children: [select]
         };
+        for (const props in model) {
+            const LabelP = {
+                type: "label",
+                children: [WArrayF.Capitalize(props)],
+                props: {
+                    id: props + this.id, name: props, class: "labelParam", draggable: true, ondragstart: drag
+                }
+            }
+            divAtt.children.push(LabelP);
+        }
         return {
             type: "div",
             props: { class: "TableOptions", id: "TableOptions" + this.id },
