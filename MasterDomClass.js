@@ -251,7 +251,7 @@ class MainClass {
             //         Select: true,
             //         UserActions: [{ name: "Log...", Function: (TableElement) => { console.log(TableElement); } }]
             //     }
-            // })    
+            // }),
             new WTableDynamicComp({ 
                 Dataset: dataTestFact,
                 EvalValue: "total",

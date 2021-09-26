@@ -56,7 +56,7 @@ class WTableDynamicComp extends HTMLElement {
         this.GroupsData = [];
         this.ProcessData = [];
         this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Dataset, this.AttNameEval);
-        this.className = "DinamicContainer";        
+        this.className = "DinamicContainer";
         this.append(WRender.createElement({
             type: 'w-style', props: {
                 id: '', ClassList: [
@@ -275,11 +275,11 @@ class WTableDynamicComp extends HTMLElement {
                     type: 'input', props: {
                         style: 'transform: rotate(90deg)', type: 'button', class: 'BtnTableSR', value: '>', onclick: async (ev) => {
                             if (TOpcion.className == "TableOptions") {
-                                ev.target.style["transform"] = "inherit";                                
+                                ev.target.style["transform"] = "inherit";
                                 TOpcion.className = "TableOptionsInact";
                                 this.style.gridTemplateColumns = "calc(100% - 70px) 70px";
                             } else {
-                                ev.target.style["transform"] = "rotate(90deg)";                                
+                                ev.target.style["transform"] = "rotate(90deg)";
                                 TOpcion.className = "TableOptions";
                                 this.style.gridTemplateColumns = "calc(100% - 350px) 350px";
                             }
@@ -287,16 +287,16 @@ class WTableDynamicComp extends HTMLElement {
                     }
                 }, {
                     type: 'button', props: {
-                         class: 'BtnTableSR', innerText: '', onclick: async () => {
+                        class: 'BtnTableSR', innerText: '', onclick: async () => {
                             //code.....
                         }
-                    }, children: [ { type:'img', props: { src: this.Icons.filter , srcset: this.Icons.filter }} ]
-                },  {
+                    }, children: [{ type: 'img', props: { src: this.Icons.filter, srcset: this.Icons.filter } }]
+                }, {
                     type: 'button', props: {
-                         class: 'BtnTableSR', innerText: '', onclick: async () => {
+                        class: 'BtnTableSR', innerText: '', onclick: async () => {
                             //code.....
                         }
-                    }, children: [ { type:'img', props: { src: this.Icons.config , srcset: this.Icons.config }} ]
+                    }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.config } }]
                 }
             ]
         });
@@ -449,7 +449,7 @@ class WTableDynamicComp extends HTMLElement {
                     //ESTILO DE LA TABLA BASICA----------------------------tableContainer                    
                     new WCssClass(`*`, {
                         "font-family": 'arial',
-                        transition: "all 1s"
+                        //transition: "all 1s"
                     }), new WCssClass(`.tableContainer`, {
                         overflow: "auto",
                         "grid-row": "1/2",
@@ -540,6 +540,9 @@ class WTableDynamicComp extends HTMLElement {
                         "grid-column": "1/3",
                         padding: 10,
                         "background-color": "#fff",
+                        display: "flex",
+                        //"justify-content": "center",
+                        "align-items": "center"
                     }), new WCssClass(`.TableOptions .TableOptionsAtribs`, {
                         display: "flex",
                         width: "100%",
@@ -567,15 +570,17 @@ class WTableDynamicComp extends HTMLElement {
                         "grid-template-columns": "98%",
                         "grid-template-rows": "50px 70% auto",
                         "box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
-                    }),   new WCssClass(`.TableOptionsInact .TableOptionsBTN`, {
+                    }), new WCssClass(`.TableOptionsInact .TableOptionsBTN`, {
                         "grid-column": "1/2",
                         "grid-row": "1/4",
-                        display: "flex",
-                        "flex-direction": "column",                        
                         padding: 10,
                         "background-color": "#fff",
+                        display: "flex",
+                        "flex-direction": "column",
+                        //"justify-content": "center",
+                        "align-items": "center"
                     }), new WCssClass(`.TableOptionsInact .TableOptionsAtribs`, {
-                        display: "none"                       
+                        display: "none"
                     }), //BOTONES
                     new WCssClass(`.Btn,.BtnTable, .BtnTableA, .BtnTableS, .BtnTableSR`, {
                         "font-weight": "bold",
@@ -583,19 +588,19 @@ class WTableDynamicComp extends HTMLElement {
                         "padding": "5px",
                         "margin": "2px",
                         "text-align": "center",
-                        "display": "inline-block",                        
+                        "display": "inline-block",
                         "font-size": "12px",
                         "cursor": "pointer",
                         "background-color": "#4894aa",
                         "color": "#fff",
                         "border-radius": "0.2cm"
                     }), new WCssClass(`.BtnTableSR`, {
-                        width:30,
+                        width: 30,
                         height: 30,
                         "background-color": "#4894aa",
                         "font-family": "monospace"
                     }), new WCssClass(`.BtnTableSR img`, {
-                        width:20,
+                        width: 20,
                         height: 20,
                         filter: "invert(100%)"
                     }),//---------------------------------------->
@@ -643,10 +648,12 @@ class WTableDynamicComp extends HTMLElement {
         }
         return WTableStyle;
     }
+    FilterModal = () => {
+        
+    }
     Icons = {
         filter: "data:image/svg+xml;base64," + "PHN2ZyBoZWlnaHQ9IjUxMXB0IiB2aWV3Qm94PSIwIDAgNTExIDUxMS45OTk4MiIgd2lkdGg9IjUxMXB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTIuNDc2NTYyIDBoLTQ3MS45NzY1NjJjLTExLjA0Njg3NSAwLTIwIDguOTUzMTI1LTIwIDIwIDAgNTUuNjk1MzEyIDIzLjg3NSAxMDguODY3MTg4IDY1LjUwMzkwNiAxNDUuODcxMDk0bDg3LjU4OTg0NCA3Ny44NTE1NjJjMTUuMTg3NSAxMy41IDIzLjg5ODQzOCAzMi44OTg0MzggMjMuODk4NDM4IDUzLjIyMjY1NnYxOTUuMDMxMjVjMCAxNS45Mzc1IDE3LjgxMjUgMjUuNDkyMTg4IDMxLjA4OTg0MyAxNi42MzY3MTlsMTE3Ljk5NjA5NC03OC42NjAxNTZjNS41NjI1LTMuNzEwOTM3IDguOTA2MjUtOS45NTMxMjUgOC45MDYyNS0xNi42NDA2MjV2LTExNi4zNjcxODhjMC0yMC4zMjQyMTggOC43MTA5MzctMzkuNzIyNjU2IDIzLjg5ODQzNy01My4yMjI2NTZsODcuNTg1OTM4LTc3Ljg1MTU2MmM0MS42Mjg5MDYtMzcuMDAzOTA2IDY1LjUwMzkwNi05MC4xNzU3ODIgNjUuNTAzOTA2LTE0NS44NzEwOTQgMC0xMS4wNDY4NzUtOC45NTMxMjUtMjAtMTkuOTk2MDk0LTIwem0tNzIuMDgyMDMxIDEzNS45NzI2NTYtODcuNTg1OTM3IDc3Ljg1NTQ2OWMtMjMuNzE4NzUgMjEuMDg1OTM3LTM3LjMyNDIxOSA1MS4zNzg5MDYtMzcuMzI0MjE5IDgzLjExMzI4MXYxMDUuNjY3OTY5bC03Ny45OTYwOTQgNTEuOTk2MDk0di0xNTcuNjYwMTU3YzAtMzEuNzM4MjgxLTEzLjYwNTQ2OS02Mi4wMzEyNS0zNy4zMjQyMTktODMuMTE3MTg3bC04Ny41ODU5MzctNzcuODUxNTYzYy0yOC4wNzAzMTMtMjQuOTU3MDMxLTQ1Ljk4ODI4MS01OS4xNTIzNDMtNTAuNzg1MTU2LTk1Ljk4MDQ2OGg0MjkuMzg2NzE5Yy00Ljc5Njg3NiAzNi44MjgxMjUtMjIuNzEwOTM4IDcxLjAyMzQzNy01MC43ODUxNTcgOTUuOTc2NTYyem0wIDAiLz48L3N2Zz4=",
-        config: "data:image/svg+xml;base64," +  "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNTEyLjAwMiA1MTIuMDAyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIuMDAyIDUxMi4wMDI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggc3R5bGU9ImZpbGw6IzQ1NUE2NDsiIGQ9Ik00OTYuNjQ3LDMxMi4xMDdsLTQ3LjA2MS0zNi44YzEuNDU5LTEyLjg0NCwxLjQ1OS0yNS44MTIsMC0zOC42NTZsNDcuMTA0LTM2LjgyMQoJYzguODI3LTcuMTA5LDExLjE4Ni0xOS41NzUsNS41NjgtMjkuNDE5bC00OC45Ni04NC42MjljLTUuNjM5LTkuOTA2LTE3LjY0OS0xNC4yMzItMjguMzA5LTEwLjE5N2wtNTUuNDY3LDIyLjMxNQoJYy0xMC40MjMtNy41NjItMjEuNTg4LTE0LjA0NS0zMy4zMjMtMTkuMzQ5bC04LjUxMi01OC45MjNjLTEuNTM1LTExLjMxMi0xMS4yNC0xOS43Mi0yMi42NTYtMTkuNjI3aC05OC4xMzMKCWMtMTEuMzIxLTAuMDY4LTIwLjk0OCw4LjI0Ni0yMi41MjgsMTkuNDU2bC04LjUzMyw1OS4wOTNjLTExLjY5OSw1LjM1NS0yMi44NDYsMTEuODQzLTMzLjI4LDE5LjM3MUw4Ni45NCw3NS41NjMKCWMtMTAuNTUtNC4xNTktMjIuNTQ5LDAuMTE1LTI4LjA5NiwxMC4wMDVMOS44NDEsMTcwLjM0N2MtNS43NjksOS44Ni0zLjM5NCwyMi40NjMsNS41NjgsMjkuNTQ3bDQ3LjA2MSwzNi44CgljLTEuNDczLDEyLjg0My0xLjQ3MywyNS44MTMsMCwzOC42NTZsLTQ3LjEwNCwzNi44Yy04Ljg0Miw3LjA5OS0xMS4yMTIsMTkuNTcyLTUuNTg5LDI5LjQxOWw0OC45MzksODQuNjUxCgljNS42MzIsOS45MTMsMTcuNjQ5LDE0LjI0MiwyOC4zMDksMTAuMTk3bDU1LjQ2Ny0yMi4zMTVjMTAuNDMyLDcuNTY2LDIxLjYwNCwxNC4wNTYsMzMuMzQ0LDE5LjM3MWw4LjUzMyw1OC44OAoJYzEuNTAyLDExLjI4MiwxMS4xNDcsMTkuNjk0LDIyLjUyOCwxOS42NDhoOTguMTMzYzExLjM0MiwwLjA5MSwyMS04LjIyNiwyMi41OTItMTkuNDU2bDguNTMzLTU5LjA5MwoJYzExLjY5OC01LjM1NywyMi44NDQtMTEuODQ1LDMzLjI4LTE5LjM3MWw1NS42OCwyMi4zNzljMTAuNTUsNC4xNDksMjIuNTQzLTAuMTIyLDI4LjA5Ni0xMC4wMDVsNDkuMTUyLTg1LjEyCglDNTA3Ljg2NiwzMzEuNTA1LDUwNS40NDcsMzE5LjEzOSw0OTYuNjQ3LDMxMi4xMDd6IE0yNTUuOTY0LDM2Mi42NjdjLTU4LjkxLDAtMTA2LjY2Ny00Ny43NTYtMTA2LjY2Ny0xMDYuNjY3CglzNDcuNzU2LTEwNi42NjcsMTA2LjY2Ny0xMDYuNjY3czEwNi42NjcsNDcuNzU2LDEwNi42NjcsMTA2LjY2N0MzNjIuNTYsMzE0Ljg4MiwzMTQuODQ1LDM2Mi41OTcsMjU1Ljk2NCwzNjIuNjY3eiIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K",
-
+        config: "data:image/svg+xml;base64," + "PHN2ZyBoZWlnaHQ9IjUxMnB0IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTkuOTUzMTI1IDE5Ny43MDMxMjUtMzkuMzUxNTYzLTguNTU0Njg3Yy0zLjQyMTg3NC0xMC40NzY1NjMtNy42NjAxNTYtMjAuNjk1MzEzLTEyLjY2NDA2Mi0zMC41MzkwNjNsMjEuNzg1MTU2LTMzLjg4NjcxOWMzLjg5MDYyNS02LjA1NDY4NyAzLjAzNTE1Ni0xNC4wMDM5MDYtMi4wNTA3ODEtMTkuMDg5ODQ0bC02MS4zMDQ2ODctNjEuMzA0Njg3Yy01LjA4NTkzOC01LjA4NTkzNy0xMy4wMzUxNTctNS45NDE0MDYtMTkuMDg5ODQ0LTIuMDUwNzgxbC0zMy44ODY3MTkgMjEuNzg1MTU2Yy05Ljg0Mzc1LTUuMDAzOTA2LTIwLjA2MjUtOS4yNDIxODgtMzAuNTM5MDYzLTEyLjY2NDA2MmwtOC41NTQ2ODctMzkuMzUxNTYzYy0xLjUyNzM0NC03LjAzMTI1LTcuNzUzOTA2LTEyLjA0Njg3NS0xNC45NDkyMTktMTIuMDQ2ODc1aC04Ni42OTUzMTJjLTcuMTk1MzEzIDAtMTMuNDIxODc1IDUuMDE1NjI1LTE0Ljk0OTIxOSAxMi4wNDY4NzVsLTguNTU0Njg3IDM5LjM1MTU2M2MtMTAuNDc2NTYzIDMuNDIxODc0LTIwLjY5NTMxMyA3LjY2MDE1Ni0zMC41MzkwNjMgMTIuNjY0MDYybC0zMy44ODY3MTktMjEuNzg1MTU2Yy02LjA1NDY4Ny0zLjg5MDYyNS0xNC4wMDM5MDYtMy4wMzUxNTYtMTkuMDg5ODQ0IDIuMDUwNzgxbC02MS4zMDQ2ODcgNjEuMzA0Njg3Yy01LjA4NTkzNyA1LjA4NTkzOC01Ljk0MTQwNiAxMy4wMzUxNTctMi4wNTA3ODEgMTkuMDg5ODQ0bDIxLjc4NTE1NiAzMy44ODY3MTljLTUuMDAzOTA2IDkuODQzNzUtOS4yNDIxODggMjAuMDYyNS0xMi42NjQwNjIgMzAuNTM5MDYzbC0zOS4zNTE1NjMgOC41NTQ2ODdjLTcuMDMxMjUgMS41MzEyNS0xMi4wNDY4NzUgNy43NTM5MDYtMTIuMDQ2ODc1IDE0Ljk0OTIxOXY4Ni42OTUzMTJjMCA3LjE5NTMxMyA1LjAxNTYyNSAxMy40MTc5NjkgMTIuMDQ2ODc1IDE0Ljk0OTIxOWwzOS4zNTE1NjMgOC41NTQ2ODdjMy40MjE4NzQgMTAuNDc2NTYzIDcuNjYwMTU2IDIwLjY5NTMxMyAxMi42NjQwNjIgMzAuNTM5MDYzbC0yMS43ODUxNTYgMzMuODg2NzE5Yy0zLjg5MDYyNSA2LjA1NDY4Ny0zLjAzNTE1NiAxNC4wMDM5MDYgMi4wNTA3ODEgMTkuMDg5ODQ0bDYxLjMwNDY4NyA2MS4zMDQ2ODdjNS4wODU5MzggNS4wODU5MzcgMTMuMDM1MTU3IDUuOTQxNDA2IDE5LjA4OTg0NCAyLjA1MDc4MWwzMy44ODY3MTktMjEuNzg1MTU2YzkuODQzNzUgNS4wMDM5MDYgMjAuMDYyNSA5LjI0MjE4OCAzMC41MzkwNjMgMTIuNjY0MDYybDguNTU0Njg3IDM5LjM1MTU2M2MxLjUyNzM0NCA3LjAzMTI1IDcuNzUzOTA2IDEyLjA0Njg3NSAxNC45NDkyMTkgMTIuMDQ2ODc1aDg2LjY5NTMxMmM3LjE5NTMxMyAwIDEzLjQyMTg3NS01LjAxNTYyNSAxNC45NDkyMTktMTIuMDQ2ODc1bDguNTU0Njg3LTM5LjM1MTU2M2MxMC40NzY1NjMtMy40MjE4NzQgMjAuNjk1MzEzLTcuNjYwMTU2IDMwLjUzOTA2My0xMi42NjQwNjJsMzMuODg2NzE5IDIxLjc4NTE1NmM2LjA1NDY4NyAzLjg5MDYyNSAxNC4wMDM5MDYgMy4wMzkwNjMgMTkuMDg5ODQ0LTIuMDUwNzgxbDYxLjMwNDY4Ny02MS4zMDQ2ODdjNS4wODU5MzctNS4wODU5MzggNS45NDE0MDYtMTMuMDM1MTU3IDIuMDUwNzgxLTE5LjA4OTg0NGwtMjEuNzg1MTU2LTMzLjg4NjcxOWM1LjAwMzkwNi05Ljg0Mzc1IDkuMjQyMTg4LTIwLjA2MjUgMTIuNjY0MDYyLTMwLjUzOTA2M2wzOS4zNTE1NjMtOC41NTQ2ODdjNy4wMzEyNS0xLjUzMTI1IDEyLjA0Njg3NS03Ljc1MzkwNiAxMi4wNDY4NzUtMTQuOTQ5MjE5di04Ni42OTUzMTJjMC03LjE5NTMxMy01LjAxNTYyNS0xMy40MTc5NjktMTIuMDQ2ODc1LTE0Ljk0OTIxOXptLTE1Mi4xNjAxNTYgNTguMjk2ODc1YzAgNTAuNjEzMjgxLTQxLjE3OTY4OCA5MS43OTI5NjktOTEuNzkyOTY5IDkxLjc5Mjk2OXMtOTEuNzkyOTY5LTQxLjE3OTY4OC05MS43OTI5NjktOTEuNzkyOTY5IDQxLjE3OTY4OC05MS43OTI5NjkgOTEuNzkyOTY5LTkxLjc5Mjk2OSA5MS43OTI5NjkgNDEuMTc5Njg4IDkxLjc5Mjk2OSA5MS43OTI5Njl6bTAgMCIvPjwvc3ZnPg==",
     }
 }
 customElements.define("w-table-dynamic", WTableDynamicComp);
