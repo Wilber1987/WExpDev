@@ -56,7 +56,7 @@ class WTableDynamicComp extends HTMLElement {
         this.GroupsData = [];
         this.ProcessData = [];
         this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Dataset, this.AttNameEval);
-        this.className = "DinamicContainer";
+        this.className = "DinamicContainer";        
         this.append(WRender.createElement({
             type: 'w-style', props: {
                 id: '', ClassList: [
@@ -70,7 +70,8 @@ class WTableDynamicComp extends HTMLElement {
                         "grid-template-rows": "300px  calc(100% - 300px)",
                         "font-size": "12px",
                         "grid-gap": "5px",
-                        padding: "10px"
+                        padding: "10px",
+                        transition: "all 1s"
                     }),
                 ]
             }
@@ -120,7 +121,7 @@ class WTableDynamicComp extends HTMLElement {
         }
         Groups.data.forEach((Group) => {
             let trGroup = { type: "div", props: { class: "TContainerBlock" }, children: [] };
-            trGroup.children.push({ type: "Tlabel", children: [WArrayF.Capitalize(Group[Groups.groupParam])]});
+            trGroup.children.push({ type: "Tlabel", children: [WArrayF.Capitalize(Group[Groups.groupParam])] });
             /////
             let dataGroup = { type: "div", props: { class: "Cajon" }, children: [] };
             trGroup.children.push(dataGroup);
@@ -171,7 +172,7 @@ class WTableDynamicComp extends HTMLElement {
             this.EvalArray = WArrayF.ArrayUnique(Dataset, this.AttNameEval);
             this.MainTable.innerHTML = "";
             this.GroupsData = [];
-            this.MainTable.style.display = "flex";
+            //this.MainTable.style.display = "flex";
             this.DrawGroupTable(Dataset);
         }
         this.ChartContainer.innerHTML = "";
@@ -196,7 +197,7 @@ class WTableDynamicComp extends HTMLElement {
                 props: { innerText: "Parametros", class: "titleParam" }
             }]
         };
-        let model = this.Dataset[0];        
+        let model = this.Dataset[0];
         let divEvalAttib = {
             type: "div",
             props: {
@@ -254,17 +255,59 @@ class WTableDynamicComp extends HTMLElement {
                     id: props + this.id, name: props, class: "labelParam", draggable: true, ondragstart: drag
                 }
             }
-            divAtt.children.push(LabelP);
+            if (props == this.EvalValue) {
+                divEvalValue.children.push(LabelP);
+            } else if (props == this.AttNameEval) {
+                divEvalAttib.children.push(LabelP);
+            } else if (this.groupParams.find(x => x == props)) {
+                divEvalGroups.children.push(LabelP);
+            } else {
+                divAtt.children.push(LabelP);
+            }
         }
-        return {
+        const TOpcion = WRender.createElement({
             type: "div",
-            props: { class: "TableOptions", id: "TableOptions" + this.id },
-            children: [divAtt, {
+            props: { class: "TableOptions", id: "TableOptions" + this.id }
+        });
+        const divBTNS = WRender.createElement({
+            type: 'div', props: { id: '', class: 'TableOptionsBTN' }, children: [
+                {
+                    type: 'input', props: {
+                        style: 'transform: rotate(90deg)', type: 'button', class: 'BtnTableSR', value: '>', onclick: async (ev) => {
+                            if (TOpcion.className == "TableOptions") {
+                                ev.target.style["transform"] = "inherit";                                
+                                TOpcion.className = "TableOptionsInact";
+                                this.style.gridTemplateColumns = "calc(100% - 70px) 70px";
+                            } else {
+                                ev.target.style["transform"] = "rotate(90deg)";                                
+                                TOpcion.className = "TableOptions";
+                                this.style.gridTemplateColumns = "calc(100% - 350px) 350px";
+                            }
+                        }
+                    }
+                }, {
+                    type: 'button', props: {
+                         class: 'BtnTableSR', innerText: '', onclick: async () => {
+                            //code.....
+                        }
+                    }, children: [ { type:'img', props: { src: this.Icons.filter , srcset: this.Icons.filter }} ]
+                },  {
+                    type: 'button', props: {
+                         class: 'BtnTableSR', innerText: '', onclick: async () => {
+                            //code.....
+                        }
+                    }, children: [ { type:'img', props: { src: this.Icons.config , srcset: this.Icons.config }} ]
+                }
+            ]
+        });
+        TOpcion.append(WRender.createElement(divBTNS),
+            WRender.createElement(divAtt),
+            WRender.createElement({
                 type: 'div', props: {
                     class: 'TableOptionsAtribs OptionsAtribsGroup'
                 }, children: [divEvalAttib, divEvalGroups, divEvalValue]
-            }]
-        };
+            }))
+        return TOpcion;
     }
     DrawChart() {
         if (this.groupParams.length > 0 && this.EvalArray != null) {
@@ -406,6 +449,7 @@ class WTableDynamicComp extends HTMLElement {
                     //ESTILO DE LA TABLA BASICA----------------------------tableContainer                    
                     new WCssClass(`*`, {
                         "font-family": 'arial',
+                        transition: "all 1s"
                     }), new WCssClass(`.tableContainer`, {
                         overflow: "auto",
                         "grid-row": "1/2",
@@ -490,21 +534,72 @@ class WTableDynamicComp extends HTMLElement {
                         "grid-column": "2/3",
                         "grid-row": "1/3",
                         "grid-template-columns": "49% 49%",
-                        "grid-template-rows": "70% 38%",
+                        "grid-template-rows": "50px 70% auto",
                         "box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
-                    }), new WCssClass(`.TableOptionsAtribs`, {
+                    }), new WCssClass(`.TableOptions .TableOptionsBTN`, {
+                        "grid-column": "1/3",
+                        padding: 10,
+                        "background-color": "#fff",
+                    }), new WCssClass(`.TableOptions .TableOptionsAtribs`, {
                         display: "flex",
                         width: "100%",
+                        "grid-row": "2/3",
                         "flex-direction": "column",
                         //"padding-bottom": "20px",
                         "background-color": "#fff",
                         "box-shadow": "0 0 2px 0 rgba(0,0,0,30%)",
                         height: "100%"
-                    }), new WCssClass(`.OptionsAtribsGroup`, {
+                    }), new WCssClass(`.TableOptions .OptionsAtribsGroup`, {
                         display: 'flex',
                         overflow: "hidden",
                         "flex-direction": "column",
-                    }), new WCssClass(`.titleParam`, {
+                    }),
+                    //OPTIONS INACT
+                    new WCssClass(`.TableOptionsInact`, {
+                        display: "grid",
+                        "grid-gap": 10,
+                        "background-color": "#eee",
+                        padding: 10,
+                        transition: "all 1s",
+                        overflow: "hidden",
+                        "grid-column": "2/3",
+                        "grid-row": "1/3",
+                        "grid-template-columns": "98%",
+                        "grid-template-rows": "50px 70% auto",
+                        "box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
+                    }),   new WCssClass(`.TableOptionsInact .TableOptionsBTN`, {
+                        "grid-column": "1/2",
+                        "grid-row": "1/4",
+                        display: "flex",
+                        "flex-direction": "column",                        
+                        padding: 10,
+                        "background-color": "#fff",
+                    }), new WCssClass(`.TableOptionsInact .TableOptionsAtribs`, {
+                        display: "none"                       
+                    }), //BOTONES
+                    new WCssClass(`.Btn,.BtnTable, .BtnTableA, .BtnTableS, .BtnTableSR`, {
+                        "font-weight": "bold",
+                        "border": "none",
+                        "padding": "5px",
+                        "margin": "2px",
+                        "text-align": "center",
+                        "display": "inline-block",                        
+                        "font-size": "12px",
+                        "cursor": "pointer",
+                        "background-color": "#4894aa",
+                        "color": "#fff",
+                        "border-radius": "0.2cm"
+                    }), new WCssClass(`.BtnTableSR`, {
+                        width:30,
+                        height: 30,
+                        "background-color": "#4894aa",
+                        "font-family": "monospace"
+                    }), new WCssClass(`.BtnTableSR img`, {
+                        width:20,
+                        height: 20,
+                        filter: "invert(100%)"
+                    }),//---------------------------------------->
+                    new WCssClass(`.titleParam`, {
                         display: "flex",
                         "background-color": "#cee4f3",
                         color: "#126e8d",
@@ -547,6 +642,11 @@ class WTableDynamicComp extends HTMLElement {
             }
         }
         return WTableStyle;
+    }
+    Icons = {
+        filter: "data:image/svg+xml;base64," + "PHN2ZyBoZWlnaHQ9IjUxMXB0IiB2aWV3Qm94PSIwIDAgNTExIDUxMS45OTk4MiIgd2lkdGg9IjUxMXB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTIuNDc2NTYyIDBoLTQ3MS45NzY1NjJjLTExLjA0Njg3NSAwLTIwIDguOTUzMTI1LTIwIDIwIDAgNTUuNjk1MzEyIDIzLjg3NSAxMDguODY3MTg4IDY1LjUwMzkwNiAxNDUuODcxMDk0bDg3LjU4OTg0NCA3Ny44NTE1NjJjMTUuMTg3NSAxMy41IDIzLjg5ODQzOCAzMi44OTg0MzggMjMuODk4NDM4IDUzLjIyMjY1NnYxOTUuMDMxMjVjMCAxNS45Mzc1IDE3LjgxMjUgMjUuNDkyMTg4IDMxLjA4OTg0MyAxNi42MzY3MTlsMTE3Ljk5NjA5NC03OC42NjAxNTZjNS41NjI1LTMuNzEwOTM3IDguOTA2MjUtOS45NTMxMjUgOC45MDYyNS0xNi42NDA2MjV2LTExNi4zNjcxODhjMC0yMC4zMjQyMTggOC43MTA5MzctMzkuNzIyNjU2IDIzLjg5ODQzNy01My4yMjI2NTZsODcuNTg1OTM4LTc3Ljg1MTU2MmM0MS42Mjg5MDYtMzcuMDAzOTA2IDY1LjUwMzkwNi05MC4xNzU3ODIgNjUuNTAzOTA2LTE0NS44NzEwOTQgMC0xMS4wNDY4NzUtOC45NTMxMjUtMjAtMTkuOTk2MDk0LTIwem0tNzIuMDgyMDMxIDEzNS45NzI2NTYtODcuNTg1OTM3IDc3Ljg1NTQ2OWMtMjMuNzE4NzUgMjEuMDg1OTM3LTM3LjMyNDIxOSA1MS4zNzg5MDYtMzcuMzI0MjE5IDgzLjExMzI4MXYxMDUuNjY3OTY5bC03Ny45OTYwOTQgNTEuOTk2MDk0di0xNTcuNjYwMTU3YzAtMzEuNzM4MjgxLTEzLjYwNTQ2OS02Mi4wMzEyNS0zNy4zMjQyMTktODMuMTE3MTg3bC04Ny41ODU5MzctNzcuODUxNTYzYy0yOC4wNzAzMTMtMjQuOTU3MDMxLTQ1Ljk4ODI4MS01OS4xNTIzNDMtNTAuNzg1MTU2LTk1Ljk4MDQ2OGg0MjkuMzg2NzE5Yy00Ljc5Njg3NiAzNi44MjgxMjUtMjIuNzEwOTM4IDcxLjAyMzQzNy01MC43ODUxNTcgOTUuOTc2NTYyem0wIDAiLz48L3N2Zz4=",
+        config: "data:image/svg+xml;base64," +  "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNTEyLjAwMiA1MTIuMDAyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIuMDAyIDUxMi4wMDI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggc3R5bGU9ImZpbGw6IzQ1NUE2NDsiIGQ9Ik00OTYuNjQ3LDMxMi4xMDdsLTQ3LjA2MS0zNi44YzEuNDU5LTEyLjg0NCwxLjQ1OS0yNS44MTIsMC0zOC42NTZsNDcuMTA0LTM2LjgyMQoJYzguODI3LTcuMTA5LDExLjE4Ni0xOS41NzUsNS41NjgtMjkuNDE5bC00OC45Ni04NC42MjljLTUuNjM5LTkuOTA2LTE3LjY0OS0xNC4yMzItMjguMzA5LTEwLjE5N2wtNTUuNDY3LDIyLjMxNQoJYy0xMC40MjMtNy41NjItMjEuNTg4LTE0LjA0NS0zMy4zMjMtMTkuMzQ5bC04LjUxMi01OC45MjNjLTEuNTM1LTExLjMxMi0xMS4yNC0xOS43Mi0yMi42NTYtMTkuNjI3aC05OC4xMzMKCWMtMTEuMzIxLTAuMDY4LTIwLjk0OCw4LjI0Ni0yMi41MjgsMTkuNDU2bC04LjUzMyw1OS4wOTNjLTExLjY5OSw1LjM1NS0yMi44NDYsMTEuODQzLTMzLjI4LDE5LjM3MUw4Ni45NCw3NS41NjMKCWMtMTAuNTUtNC4xNTktMjIuNTQ5LDAuMTE1LTI4LjA5NiwxMC4wMDVMOS44NDEsMTcwLjM0N2MtNS43NjksOS44Ni0zLjM5NCwyMi40NjMsNS41NjgsMjkuNTQ3bDQ3LjA2MSwzNi44CgljLTEuNDczLDEyLjg0My0xLjQ3MywyNS44MTMsMCwzOC42NTZsLTQ3LjEwNCwzNi44Yy04Ljg0Miw3LjA5OS0xMS4yMTIsMTkuNTcyLTUuNTg5LDI5LjQxOWw0OC45MzksODQuNjUxCgljNS42MzIsOS45MTMsMTcuNjQ5LDE0LjI0MiwyOC4zMDksMTAuMTk3bDU1LjQ2Ny0yMi4zMTVjMTAuNDMyLDcuNTY2LDIxLjYwNCwxNC4wNTYsMzMuMzQ0LDE5LjM3MWw4LjUzMyw1OC44OAoJYzEuNTAyLDExLjI4MiwxMS4xNDcsMTkuNjk0LDIyLjUyOCwxOS42NDhoOTguMTMzYzExLjM0MiwwLjA5MSwyMS04LjIyNiwyMi41OTItMTkuNDU2bDguNTMzLTU5LjA5MwoJYzExLjY5OC01LjM1NywyMi44NDQtMTEuODQ1LDMzLjI4LTE5LjM3MWw1NS42OCwyMi4zNzljMTAuNTUsNC4xNDksMjIuNTQzLTAuMTIyLDI4LjA5Ni0xMC4wMDVsNDkuMTUyLTg1LjEyCglDNTA3Ljg2NiwzMzEuNTA1LDUwNS40NDcsMzE5LjEzOSw0OTYuNjQ3LDMxMi4xMDd6IE0yNTUuOTY0LDM2Mi42NjdjLTU4LjkxLDAtMTA2LjY2Ny00Ny43NTYtMTA2LjY2Ny0xMDYuNjY3CglzNDcuNzU2LTEwNi42NjcsMTA2LjY2Ny0xMDYuNjY3czEwNi42NjcsNDcuNzU2LDEwNi42NjcsMTA2LjY2N0MzNjIuNTYsMzE0Ljg4MiwzMTQuODQ1LDM2Mi41OTcsMjU1Ljk2NCwzNjIuNjY3eiIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K",
+
     }
 }
 customElements.define("w-table-dynamic", WTableDynamicComp);

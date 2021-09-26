@@ -622,6 +622,7 @@ class WArrayF {
     }
     //STRINGS
     static Capitalize(str) {
+        str = str.toString();
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 

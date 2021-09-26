@@ -256,7 +256,7 @@ class MainClass {
                 Dataset: dataTestFact,
                 EvalValue: "total",
                 AttNameEval: "mes",
-                groupParams: ["tipo"],
+                groupParams: ["cuarto","año"],
             }) 
         ];
     }

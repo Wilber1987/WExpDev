@@ -6,7 +6,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "subtotal",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -17,7 +17,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "impuesto",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -28,7 +28,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "total",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -39,7 +39,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "costo operativo",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -50,7 +50,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "beneficio",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -61,7 +61,7 @@ const dataTestFact = [{
     empresa: "renfe",
     tipo: "subtotal",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "cheque"
 }, {
@@ -72,7 +72,7 @@ const dataTestFact = [{
     empresa: "renfe",
     tipo: "impuesto",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "cheque"
 }, {
@@ -83,7 +83,7 @@ const dataTestFact = [{
     empresa: "renfe",
     tipo: "total",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "cheque"
 }, {
@@ -94,7 +94,7 @@ const dataTestFact = [{
     empresa: "renfe",
     tipo: "costo operativo",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "cheque"
 }, {
@@ -105,7 +105,7 @@ const dataTestFact = [{
     empresa: "renfe",
     tipo: "beneficio",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "cheque"
 },
@@ -117,7 +117,7 @@ const dataTestFact = [{
     empresa: "c24",
     tipo: "subtotal",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -128,7 +128,7 @@ const dataTestFact = [{
     empresa: "c24",
     tipo: "impuesto",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -139,7 +139,7 @@ const dataTestFact = [{
     empresa: "c24",
     tipo: "total",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -150,7 +150,7 @@ const dataTestFact = [{
     empresa: "c24",
     tipo: "costo operativo",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -161,7 +161,7 @@ const dataTestFact = [{
     empresa: "c24",
     tipo: "beneficio",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -172,7 +172,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "subtotal",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -183,7 +183,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "impuesto",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -194,7 +194,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "total",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -205,7 +205,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "costo operativo",
     mes: "enero",
-    cuarto: "1er",
+    cuarto: "2er",
     año: 2020,
     metodo_pago: "stripe"
 }, {
@@ -349,7 +349,7 @@ const dataTestFact = [{
     tipo: "impuesto",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 7,
@@ -360,7 +360,7 @@ const dataTestFact = [{
     tipo: "total",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 7,
@@ -371,7 +371,7 @@ const dataTestFact = [{
     tipo: "costo operativo",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 7,
@@ -382,7 +382,7 @@ const dataTestFact = [{
     tipo: "beneficio",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 8,
@@ -393,7 +393,7 @@ const dataTestFact = [{
     tipo: "subtotal",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "cheque"
 }, {
     id: 8,
@@ -404,7 +404,7 @@ const dataTestFact = [{
     tipo: "impuesto",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "cheque"
 }, {
     id: 8,
@@ -415,7 +415,7 @@ const dataTestFact = [{
     tipo: "total",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "cheque"
 }, {
     id: 8,
@@ -426,7 +426,7 @@ const dataTestFact = [{
     tipo: "costo operativo",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "cheque"
 }, {
     id: 8,
@@ -437,7 +437,7 @@ const dataTestFact = [{
     tipo: "beneficio",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "cheque"
 },
 {
@@ -449,7 +449,7 @@ const dataTestFact = [{
     tipo: "subtotal",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 9,
@@ -460,7 +460,7 @@ const dataTestFact = [{
     tipo: "impuesto",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 9,
@@ -471,7 +471,7 @@ const dataTestFact = [{
     tipo: "total",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 9,
@@ -482,7 +482,7 @@ const dataTestFact = [{
     tipo: "costo operativo",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 9,
@@ -493,7 +493,7 @@ const dataTestFact = [{
     tipo: "beneficio",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 10,
@@ -504,7 +504,7 @@ const dataTestFact = [{
     tipo: "subtotal",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 10,
@@ -515,7 +515,7 @@ const dataTestFact = [{
     tipo: "impuesto",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 10,
@@ -526,7 +526,7 @@ const dataTestFact = [{
     tipo: "total",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 10,
@@ -537,7 +537,7 @@ const dataTestFact = [{
     tipo: "costo operativo",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 10,
@@ -548,7 +548,7 @@ const dataTestFact = [{
     tipo: "beneficio",
     mes: "enero",
     cuarto: "1er",
-    año: 2020,
+    año: 2021,
     metodo_pago: "stripe"
 }, {
     id: 11,
@@ -559,7 +559,7 @@ const dataTestFact = [{
     tipo: "subtotal",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 11,
@@ -570,7 +570,7 @@ const dataTestFact = [{
     tipo: "impuesto",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 11,
@@ -581,7 +581,7 @@ const dataTestFact = [{
     tipo: "total",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 11,
@@ -592,7 +592,7 @@ const dataTestFact = [{
     tipo: "costo operativo",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 11,
@@ -603,7 +603,7 @@ const dataTestFact = [{
     tipo: "beneficio",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 12,
@@ -614,7 +614,7 @@ const dataTestFact = [{
     tipo: "subtotal",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 12,
@@ -625,7 +625,7 @@ const dataTestFact = [{
     tipo: "impuesto",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 12,
@@ -636,7 +636,7 @@ const dataTestFact = [{
     tipo: "total",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 12,
@@ -647,7 +647,7 @@ const dataTestFact = [{
     tipo: "costo operativo",
     mes: "febrero",
     cuarto: "1er",
-    año: 2020,
+    año: 2022,
     metodo_pago: "stripe"
 }, {
     id: 12,
@@ -658,7 +658,669 @@ const dataTestFact = [{
     tipo: "beneficio",
     mes: "febrero",
     cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+},{
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 1,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 300,
+    empresa: "renfe",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "renfe",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "renfe",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "renfe",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+}, {
+    id: 2,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "renfe",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+},
+{
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "c24",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "c24",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "c24",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "c24",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 3,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "c24",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 4,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 5,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 6,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "febrero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+},{
+    id: 7,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 7,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "3er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 7,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 7,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 7,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "stripe"
+}, {
+    id: 8,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 300,
+    empresa: "renfe",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+}, {
+    id: 8,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "renfe",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2022,
+    metodo_pago: "cheque"
+}, {
+    id: 8,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "renfe",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
     año: 2020,
+    metodo_pago: "cheque"
+}, {
+    id: 8,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "renfe",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "cheque"
+}, {
+    id: 8,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "renfe",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "cheque"
+},
+{
+    id: 9,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "c24",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 9,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "c24",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 9,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "c24",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 9,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "c24",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 9,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "c24",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 10,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 10,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 10,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 10,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 10,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "enero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 11,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 11,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 11,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 11,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 11,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 200,
+    empresa: "psico",
+    tipo: "subtotal",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 20,
+    empresa: "psico",
+    tipo: "impuesto",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 220,
+    empresa: "psico",
+    tipo: "total",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 120,
+    empresa: "psico",
+    tipo: "costo operativo",
+    mes: "febrero",
+    cuarto: "1er",
+    año: 2023,
+    metodo_pago: "stripe"
+}, {
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 80,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "febrero",
+    cuarto: "2er",
+    año: 2023,
     metodo_pago: "stripe"
 },
 ];
