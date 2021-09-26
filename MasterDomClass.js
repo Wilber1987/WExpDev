@@ -252,7 +252,12 @@ class MainClass {
             //         UserActions: [{ name: "Log...", Function: (TableElement) => { console.log(TableElement); } }]
             //     }
             // })    
-            new WTableDynamicComp({ Dataset: dataTestFact }) 
+            new WTableDynamicComp({ 
+                Dataset: dataTestFact,
+                EvalValue: "total",
+                AttNameEval: "mes",
+                groupParams: ["tipo"],
+            }) 
         ];
     }
 }

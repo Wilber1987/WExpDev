@@ -620,6 +620,10 @@ class WArrayF {
         }
         return val;
     }
+    //STRINGS
+    static Capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
 }
 function _DispalNav(NavContainerId, NavAnimation) {

@@ -7,8 +7,12 @@ class WTableDynamicComp extends HTMLElement {
         super();
         this.TableClass = "WTable WScroll";
         this.Dataset = [];
-        this.attachShadow({ mode: "open" });
         this.TableConfig = TableConfig;
+        this.groupParams = this.TableConfig.groupParams ?? [];
+        this.EvalValue = this.TableConfig.EvalValue ?? null;
+        this.AttNameEval = this.TableConfig.AttNameEval ?? null;
+        this.attachShadow({ mode: "open" });
+
         this.MainTable = WRender.createElement({ type: "table", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] });
         this.divTableContainer = WRender.createElement({
             type: "div", props: { class: "tableContainer" },
@@ -41,9 +45,6 @@ class WTableDynamicComp extends HTMLElement {
         this.Dataset = this.TableConfig.Dataset;
         this.Colors = ["#ff6699", "#ffbb99", "#adebad"];
         this.AttNameEval = this.TableConfig.AttNameEval;
-        this.AttNameG1 = this.TableConfig.AttNameG1;
-        this.AttNameG2 = this.TableConfig.AttNameG2;
-        this.AttNameG3 = this.TableConfig.AttNameG3;
         this.EvalValue = this.TableConfig.EvalValue;
         this.Options = this.TableConfig.Options;
         if (this.TableConfig.TableClass) {
@@ -73,28 +74,22 @@ class WTableDynamicComp extends HTMLElement {
                     }),
                 ]
             }
-        }))
-        this.AttNameEval = null;
-        this.EvalValue = null;
-        this.groupParams = [];
-        this.EvalArray = [];
+        }));
         this.shadowRoot.append(WRender.createElement(this.TableStyleDinamic()));
         this.shadowRoot.append(WRender.createElement(this.TableOptions()));
         this.ChartContainer.innerHTML = "";
+        this.DrawGroupTable(this.Dataset);
         this.ChartContainer.append(WRender.createElement(this.DrawChart()));
         return;
     }
     //FIN BASIOC TABLE-------------------------------------------------------------------
     //#region TABLA DINAMICA-------------------------------------------------------------
-    DrawGroupTable() {
+    DrawGroupTable(Dataset) {
         this.groupParams.forEach(groupParam => {
-            this.GroupsData.push(WArrayF.ArrayUnique(this.TableConfig.Dataset, groupParam))
+            this.GroupsData.push(WArrayF.ArrayUnique(Dataset, groupParam))
         });
-        this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
-        this.table.children.push(div);
-        let divTableCntainer = { type: "div", props: { class: "tableContainer" }, children: [this.table] };
-        this.shadowRoot.append(WRender.createElement(div));
+        this.MainTable.append(WRender.createElement(div));
     }
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
@@ -109,10 +104,10 @@ class WTableDynamicComp extends HTMLElement {
     }
     AttEval = () => {
         let div = { type: "div", props: { class: "TContainerBlockL" }, children: [] };
-        div.children.push({ type: "Tlabel", children: [this.AttNameEval] });
+        div.children.push({ type: "Tlabel", children: [WArrayF.Capitalize(this.AttNameEval)] });
         if (this.EvalArray != null) {
             this.EvalArray.forEach(evalValue => {
-                div.children.push({ type: "TData", children: [evalValue[this.AttNameEval]] });
+                div.children.push({ type: "TData", children: [WArrayF.Capitalize(evalValue[this.AttNameEval])] });
             });
             div.children.push({ type: "TDataTotal", children: ["Total"] });
         }
@@ -125,7 +120,7 @@ class WTableDynamicComp extends HTMLElement {
         }
         Groups.data.forEach((Group) => {
             let trGroup = { type: "div", props: { class: "TContainerBlock" }, children: [] };
-            trGroup.children.push({ type: "Tlabel", children: [Group[Groups.groupParam]] });
+            trGroup.children.push({ type: "Tlabel", children: [WArrayF.Capitalize(Group[Groups.groupParam])]});
             /////
             let dataGroup = { type: "div", props: { class: "Cajon" }, children: [] };
             trGroup.children.push(dataGroup);
@@ -177,11 +172,7 @@ class WTableDynamicComp extends HTMLElement {
             this.MainTable.innerHTML = "";
             this.GroupsData = [];
             this.MainTable.style.display = "flex";
-            this.groupParams.forEach(groupParam => {
-                this.GroupsData.push(WArrayF.ArrayUnique(Dataset, groupParam))
-            });
-            let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
-            this.MainTable.append(WRender.createElement(div));
+            this.DrawGroupTable(Dataset);
         }
         this.ChartContainer.innerHTML = "";
         this.ChartContainer.append(WRender.createElement(this.DrawChart()));
@@ -209,9 +200,9 @@ class WTableDynamicComp extends HTMLElement {
         for (const props in model) {
             divAtt.children.push({
                 type: "label",
-                children: [props],
+                children: [WArrayF.Capitalize(props)],
                 props: {
-                    id: props + this.id, name: props,  class: "labelParam", draggable: true, ondragstart: drag
+                    id: props + this.id, name: props, class: "labelParam", draggable: true, ondragstart: drag
                 }
             });
         }
@@ -411,8 +402,10 @@ class WTableDynamicComp extends HTMLElement {
             props: {
                 id: "TableStyleDinamic" + this.id,
                 ClassList: [
-                    //ESTILO DE LA TABLA BASICA----------------------------tableContainer
-                    new WCssClass(`.tableContainer`, {
+                    //ESTILO DE LA TABLA BASICA----------------------------tableContainer                    
+                    new WCssClass(`*`, {
+                        "font-family": 'arial',
+                    }), new WCssClass(`.tableContainer`, {
                         overflow: "auto",
                         "grid-row": "1/2",
                     }), new WCssClass(`.WTable`, {
@@ -428,6 +421,7 @@ class WTableDynamicComp extends HTMLElement {
                         padding: "0px",
                         display: "flex",
                         "flex-grow": 1,
+                        "box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
                     }), new WCssClass(`.TContainerBlock`, {
                         width: "100%"
                     }), new WCssClass(" .TContainerBlockL", {
@@ -440,18 +434,18 @@ class WTableDynamicComp extends HTMLElement {
                         width: "100%"
                     }), new WCssClass(` Tlabel`, {
                         display: "block",
-                        "border-bottom": "1px solid #000",
+                        "border-bottom": "1px solid #126e8d",
                         "overflow-y": "hidden",
                         "white-space": "nowrap",
                         "overflow": "hidden",
                         "text-overflow": "ellipsis",
                         "min-width": "60px",
-                        "background-color": "#d4d4d4",
-                        color: "#000",
+                        "background-color": "#eee",
                         padding: "0.5rem",
                         "text-align": "left",
                         "font-weight": "bold",
-                        border: "1px rgb(185, 185, 185) solid",
+                        color: "#126e8d"
+                        //border: "1px rgb(185, 185, 185) solid",
                     }), new WCssClass(`.TContainerBlockData .Cajon`, {
                         overflow: "hidden",
                         display: "flex",
@@ -467,19 +461,19 @@ class WTableDynamicComp extends HTMLElement {
                         "min-width": "60px",
                         padding: "0.5rem",
                         "text-align": "left",
-                        border: "1px #ccc solid"
+                        //border: "1px #ccc solid"
                     }), new WCssClass(`TDataTotal`, {
                         "overflow-y": "hidden",
                         "white-space": "nowrap",
                         "overflow": "hidden",
                         "text-overflow": "ellipsis",
                         "min-width": "60px",
-                        "border-top": "solid 1px #000",
-                        "border-bottom": "solid 1px #000",
+                        "border-top": "solid 1px #ccc",
+                        //"border-bottom": "solid 1px #ccc",
                         padding: "0.5rem",
                         "text-align": "left",
                         "font-weight": "bold",
-                        border: "1px #ccc solid",
+                        //border: "1px #ccc solid",
                     }), new WCssClass(`.Cajon`, {
                         display: "flex"
                     }),
@@ -512,7 +506,7 @@ class WTableDynamicComp extends HTMLElement {
                     }), new WCssClass(`.titleParam`, {
                         display: "flex",
                         "background-color": "#cee4f3",
-                        color: "#444",
+                        color: "#126e8d",
                         "margin-bottom": "10px",
                         cursor: "pointer",
                         "text-align": "center",
@@ -526,7 +520,7 @@ class WTableDynamicComp extends HTMLElement {
                         cursor: "pointer",
                         "background-color": "#cee4f3",
                         border: "none",
-                        color: "#444",
+                        color: "#126e8d",
                         outline: "none", padding: "5px",
                         "outline-width": "0",
                         margin: "0px",
