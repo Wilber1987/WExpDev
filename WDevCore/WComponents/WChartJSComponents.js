@@ -28,12 +28,6 @@ class ColumChart2 extends HTMLElement {
         this.MainChart = { type: "section", props: { class: "SectionBars"}, children: [] };
         this.attachShadow({ mode: "open" });
     }
-    /*
-        PARA CONVERTIRLO EN GRAFICO DE BARRAS NO STAKED
-        1. modificar el flex direccion de Conteinerbars
-        2. modificar ancho de containerbars y label(la agrupada), en base a la cantidad de series/staks usar anchos fijos
-        3. modificar el alto y ancho de la bar
-    */
     attributeChangedCallBack() {
         this.DrawChart();
     }
@@ -59,9 +53,9 @@ class ColumChart2 extends HTMLElement {
         this.MaxVal = WArrayF.MaxValue(this.Totals, this.ChartInstance);
         this.EvalArray = WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.AttNameEval);
         let ChartFragment = WRender.createElement({ type:'div', props: { id: '', class: 'WChartContainer'}});
-        ChartFragment.append(this._AddSectionlabels(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
+        ChartFragment.append(this.DrawSeries(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
         ChartFragment.append(WRender.createElement(this._AddSectionBars()));
-        ChartFragment.append(this._AddSectionLabelsGroups(this.ChartInstance));
+        ChartFragment.append(this.DrawGroups());
         this.shadowRoot.append(ChartFragment);
     }
     _AddSectionBars(Dataset = this.Dataset) {  
@@ -72,7 +66,7 @@ class ColumChart2 extends HTMLElement {
             object[groupParam] = "";
             this.GroupsData.push(WArrayF.ArrayUniqueByObject(Dataset, object))
         });
-        return this.DrawGroupDiv(this.ChargeGroup(this.GroupsData)); 
+        return this.DrawGroupBars(this.ChargeGroup(this.GroupsData)); 
     } 
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
@@ -84,47 +78,43 @@ class ColumChart2 extends HTMLElement {
             children: this.ChargeGroup(Groups, inicio + 1)
         }
         return ObjGroup;
-    }    
-    DrawGroupDiv = (Groups, div = this.MainChart, arrayP = {}) => {
-        //console.log(Groups)
+    }   
+    DrawGroupBars = (Groups, div = this.MainChart, arrayP = {}) => {
         if (Groups == null) {
             return "";
-        }
-        let index = 0;
+        }        
         Groups.data.forEach((Group) => {
-            let trGroup = { type: "GroupSection", props: { class: "GroupSection" }, children: [] };
-           
-            /////
-            let groupBar = { type: "containerbar", props: { class: "ContainerBars" }, children: [] };
+            let trGroup = { type: "GroupSection", props: { class: "GroupSection" }, children: [WArrayF.Capitalize(Group[Groups.groupParam])] };
+            let groupBar = { type: "containerbar", props: { style:"padding:0px", class: "ContainerBars" }, children: [] };
             trGroup.children.push(groupBar);
             arrayP[Groups.groupParam] = Group[Groups.groupParam];
             if (Groups.children != null) {
+                console.log(Groups.children);
                 if (Groups.children.children == null) {
                     trGroup.props.class = "GroupSection";
-                }
-                this.DrawGroupDiv(Groups.children, groupBar, arrayP);
+                }                
+                this.DrawGroupBars(Groups.children, groupBar, arrayP);
             } else {
-                console.log(Group);
                 trGroup.type = "groupbar";
-                trGroup.props.class = "groupBars";               
+                trGroup.props.class = "groupBars";
+                groupBar.props.style = "";
                 if (this.EvalArray != null) {
+                    let index = 0;
                     this.EvalArray.forEach(Eval => {
                         arrayP[this.AttNameEval] = Eval[this.AttNameEval];
                         const Data = this.FindData(arrayP);
-                        console.log(Data);
                         if (Data != "n/a") {
-                            groupBar.children.push(this._DrawBar(Data, this.ChartInstance, index));
-                        }
-                    });                    
-                    //groupBar.children.push({ type: "TDataTotal", children: [sum] });
+                            groupBar.children.push(this.DrawBar(Data, this.ChartInstance, index));
+                        } 
+                        index++;  
+                    });                                     
                 }
-                index++;
             }
             div.children.push(trGroup);
         });
         return div;
     }
-    _AddSectionlabels(GroupLabelsData, Colors) {
+    DrawSeries(GroupLabelsData, Colors) {
         var SectionLabels = document.createElement('section');
         var index = 0
         var style = "";
@@ -144,6 +134,27 @@ class ColumChart2 extends HTMLElement {
             index++;
         })
         return SectionLabels;
+    }
+    DrawBar(DataValue, Config, index) {
+        var Size = Config.ContainerSize;
+        var Size = 180;
+        var BarSize = (DataValue / this.MaxVal); //% de tamaño
+        var labelCol = DataValue;
+        var styleP = "";
+        if (Config.ColumnLabelDisplay == 1) {
+            //dibujar el valor en porcentaje
+            styleP = ";flex-grow: 1;"
+            var multiplier = Math.pow(10, 1 || 0);
+            var number = labelCol / total[Config.EvalValue] * 100
+            number = Math.round(number * multiplier) / multiplier
+            labelCol = number + '%';
+        }
+        var Bars = WRender.CreateStringNode(`<Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
+                <label>
+                    ${labelCol}
+                </labe>
+            </Bars>`);
+        return Bars;
     }
       
     _DrawBackgroundChart(value, size = 600, ValP) {
@@ -207,50 +218,16 @@ class ColumChart2 extends HTMLElement {
             }
         }
         return ContainerLine;
-    }
-    _DrawBar(DataValue, Config, index) {
-        var Size = Config.ContainerSize;
-        var Size = 180;
-        var BarSize = (DataValue / this.MaxVal); //% de tamaño
-        var labelCol = DataValue;
-        var styleP = "";
-        if (Config.ColumnLabelDisplay == 1) {
-            //dibujar el valor en porcentaje
-            styleP = ";flex-grow: 1;"
-            var multiplier = Math.pow(10, 1 || 0);
-            var number = labelCol / total[Config.EvalValue] * 100
-            number = Math.round(number * multiplier) / multiplier
-            labelCol = number + '%';
-        }
-        var Bars = WRender.CreateStringNode(`<Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
-                <label>
-                    ${labelCol}
-                </labe>
-            </Bars>`);
-        return Bars;
-    }
-    _AddSectionLabelsGroups(Config) {
+    }    
+    DrawGroups() {
         var SectionLabelGroup = document.createElement('section');
         SectionLabelGroup.className = "SectionLabelGroup";
         var color1 = " #70ad47";
-        var AttNameG1 = sessionStorage.getItem('AttNameG1');
-        SectionLabelGroup.appendChild(WRender.CreateStringNode(
-            `<label><span style="background:${color1}"></span>${Config.AttNameG1}</label>`
-        ));
-        if (Config.AttNameG2) {
-            var color1 = " #5b9bd5";
-            var AttNameG1 = sessionStorage.getItem('AttNameG2');
+        this.groupParams.forEach(element => {
             SectionLabelGroup.appendChild(WRender.CreateStringNode(
-                `<label><span style="background:${color1}"></span>${Config.AttNameG2}</label>`
+                   `<label><span style="background:${color1}"></span>${element}</label>`
             ));
-        }
-        if (Config.AttNameG3) {
-            var color1 = " #ffc000";
-            var AttNameG1 = sessionStorage.getItem('AttNameG3');
-            SectionLabelGroup.appendChild(WRender.CreateStringNode(
-                `<label><span style="background:${color1}"></span>${Config.AttNameG3}</label>`
-            ));
-        }
+        });       
         return SectionLabelGroup;
     }
     FindData(arrayP) {
@@ -313,7 +290,7 @@ class RadialChart2 extends HTMLElement {
         ChartFragment.className = "WChartContainer";
         ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
         ChartFragment.append(
-            this._AddSectionlabels(
+            this.DrawSeries(
                 this.ChartInstance.GroupLabelsData,
                 this.ChartInstance.Colors
             )
@@ -327,7 +304,7 @@ class RadialChart2 extends HTMLElement {
         );
         return SectionTitle;
     }
-    _AddSectionlabels(GroupLabelsData, Colors) {
+    DrawSeries(GroupLabelsData, Colors) {
         var SectionLabels = document.createElement("section");
         var index = 0;
         var style = "";
@@ -485,23 +462,32 @@ const WChartStyle = (ChartInstance) => {
                     "padding-left": " 30px",
                     "position": " relative",
                     "overflow-x": " scroll",
+                    padding: 10
                     //"min-height": " 270px",
+                }),new WCssClass(".SectionBars label", {                    
+                    padding: 5
+                }),new WCssClass(".Bars label", {                    
+                    padding: 0
                 }),
                 new WCssClass(".GroupSection ", {
                     "display": " flex",
-                    "align-items": " flex-end",
-                    "height": " 80%",
-                    "border-bottom": " 3px rgb(155, 155, 155) solid",
+                    "align-items": "center",
+                    "height": " 100%",
                     "position": " relative",
-                    "flex-direction": " column",
+                    "flex-direction": "column-reverse",
                     "flex-grow": " 1",
+                    "border-bottom": " solid 2px #d4d4d4",
+                    "border-right": " solid 1px #d4d4d4",
+                    "border-top": " solid 2px #d4d4d4"
                 }),
                 new WCssClass(".groupBars ", {
                     "width": " 100%",
                     "height": " 180px",
                     "display": " flex",
+                    "flex-direction": "column-reverse",
                     "flex-grow": " 1",
-                    "border": " solid 1px #d4d4d4",
+                    "border-left": " solid 1px #d4d4d4",
+                    "align-items": "center"
                 }),
                 new WCssClass(".groupLabels ", {
                     "display": " flex",
@@ -530,7 +516,7 @@ const WChartStyle = (ChartInstance) => {
                     "align-items": " flex-end",
                     "justify-content": " flex-end",
                     overflow: "hidden",
-                    "border-right": "1px solid #BFBFBF"
+                    "border-bottom": "1px solid #BFBFBF"
                 }),
 
                 new WCssClass(".ContainerBars .Bars ", {
@@ -538,7 +524,7 @@ const WChartStyle = (ChartInstance) => {
                     "margin": " 0 auto",
                     "margin-top": " 0px",
                     "z-index": " 1",
-                    "width": " 60px",
+                    "width": "30px",
                     "min-height": " 20PX",
                     "background": " rgb(177, 177, 177)",
                     "background": " linear-gradient(0deg, rgba(177, 177, 177, 1) 0%, rgba(209, 209, 209, 1) 53%)",

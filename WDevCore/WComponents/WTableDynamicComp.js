@@ -124,7 +124,6 @@ class WTableDynamicComp extends HTMLElement {
         Groups.data.forEach((Group) => {
             let trGroup = { type: "div", props: { class: "TContainerBlock" }, children: [] };
             trGroup.children.push({ type: "Tlabel", children: [WArrayF.Capitalize(Group[Groups.groupParam])] });
-            /////
             let dataGroup = { type: "div", props: { class: "Cajon" }, children: [] };
             trGroup.children.push(dataGroup);
             arrayP[Groups.groupParam] = Group[Groups.groupParam];
