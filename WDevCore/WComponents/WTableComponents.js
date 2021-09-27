@@ -40,6 +40,8 @@ class WTableComponent extends HTMLElement {
                 break;
         }
         //PAGINACION
+        console.log(this.Dataset);
+        console.log(this.TableConfig.Dataset);
         if (this.TableConfig.maxElementByPage == undefined) {
             this.maxElementByPage = 10;
         } else {
@@ -49,7 +51,7 @@ class WTableComponent extends HTMLElement {
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
         //this.TableConfig.MasterDetailTable = true
         if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
-            this.Dataset = this.TableConfig.Datasets;
+            this.Dataset = this.TableConfig.Dataset;
             if (this.Dataset == undefined) {
                 this.Dataset = [];
             }
@@ -73,11 +75,11 @@ class WTableComponent extends HTMLElement {
             }
             this.DrawTable();
             return;
-        } else if (typeof this.TableConfig.Datasets === "undefined" || this.TableConfig.Datasets.length == 0) {
-            this.innerHTML = "Defina un Dataset en formato JSON";
-            return;
+        } else if (typeof this.TableConfig.Dataset === "undefined" || this.TableConfig.Dataset.length == 0) {
+            //this.innerHTML = "Defina un Dataset en formato JSON";
+            //return;
         }
-        this.Dataset = this.TableConfig.Datasets;
+        this.Dataset = this.TableConfig.Dataset;
         this.Colors = ["#ff6699", "#ffbb99", "#adebad"];
         this.AttNameEval = this.TableConfig.AttNameEval;
         this.AttNameG1 = this.TableConfig.AttNameG1;
@@ -102,7 +104,7 @@ class WTableComponent extends HTMLElement {
     RunTable() {
         this.GroupsData = [];
         this.ProcessData = [];
-        this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Datasets, this.AttNameEval);
+        this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Dataset, this.AttNameEval);
         if (this.TableConfig.Dinamic == true) {
             this.className = "DinamicContainer";
             this.append(WRender.createElement({
@@ -744,7 +746,7 @@ class WTableComponent extends HTMLElement {
     //#region TABLA DINAMICA-------------------------------------------------------------
     DrawGroupTable() {
         this.groupParams.forEach(groupParam => {
-            this.GroupsData.push(WArrayF.ArrayUnique(this.TableConfig.Datasets, groupParam))
+            this.GroupsData.push(WArrayF.ArrayUnique(this.TableConfig.Dataset, groupParam))
         });
         this.table = { type: "div", props: { id: "MainTable" + this.id, class: this.TableClass }, children: [] };
         let div = this.DrawGroupDiv(this.ChargeGroup(this.GroupsData))
@@ -825,7 +827,7 @@ class WTableComponent extends HTMLElement {
     }
     DefineTable(Dataset = this.Dataset) {
         this.ProcessData = [];
-        this.TableConfig.Datasets = Dataset;
+        this.TableConfig.Dataset = Dataset;
         let table = this.shadowRoot.querySelector("#MainTable" + this.id);
         let footer = this.shadowRoot.querySelector(".tfooter");
         if (typeof footer !== "undefined" && footer != null) {
@@ -879,7 +881,7 @@ class WTableComponent extends HTMLElement {
                         return;
                     }
                     this.AttNameEval = this.shadowRoot.querySelector("#" + data).innerText;
-                    this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Datasets, this.AttNameEval);
+                    this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Dataset, this.AttNameEval);
                     let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).innerText);
                     if (find) {
                         this.groupParams.splice(this.groupParams.indexOf(find), 1);
@@ -1043,7 +1045,7 @@ class WTableComponent extends HTMLElement {
                 TypeChart: this.TableConfig.TypeChart,
                 GroupLabelsData: GroupLabelsData,
                 GroupDataset: this.EvalArray,
-                Datasets: this.ProcessData,
+                Dataset: this.ProcessData,
                 Colors: this.Colors,
                 ContainerSize: 400,
                 ColumnLabelDisplay: 0,
@@ -1061,7 +1063,7 @@ class WTableComponent extends HTMLElement {
     FindData(arrayP) {
         let val = false;
         let nodes = [];
-        this.TableConfig.Datasets.forEach(Data => {
+        this.TableConfig.Dataset.forEach(Data => {
             val = WArrayF.compareObj(arrayP, Data)
             if (val == true) {
                 nodes.push(Data)

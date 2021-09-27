@@ -558,7 +558,7 @@ class WModalForm extends HTMLElement {
                         }, 1000);
                     }
                 },
-                children: ['Guardar']
+                children: ['Aceptar']
             };
             DivOptions.children.push(InputSave);
         }
@@ -617,21 +617,15 @@ class WModalForm extends HTMLElement {
                                         .ContainerFormWModal input[type=date],
                                         .ContainerFormWModal input[type=password],
                                         .ContainerFormWModal input[type=time],
-                                        .ContainerFormWModal select`, {
-                        padding: "8px",
-                        border: "none",
-                        "border-bottom": "3px solid #999999",
+                                        .ContainerFormWModal select, textarea`, {
                         width: "calc(100% - 16px)",
                         "font-size": "15px",
-                        transition: "all 0.7s"
-                    }), new WCssClass(` textarea`, {
-                        padding: "8px",
-                        border: "none",
-                        "border-bottom": "3px solid #999999",
-                        width: "calc(100% - 16px)",
+                        transition: "all 0.7s",
+                        padding: 8,
+                        "border": "2px solid #e1d4d4",
                         "font-size": "15px",
-                        transition: "all 0.7s"
-                    }), new WCssClass(` input:-internal-autofill-selected`, {
+                        "border-radius": "0.1cm"
+                    }),  new WCssClass(` input:-internal-autofill-selected`, {
                         "appearance": "menulist-button",
                         "background-color": "none !important",
                         "background-image": "none !important",
@@ -640,12 +634,12 @@ class WModalForm extends HTMLElement {
                     new WCssClass(` input:active,
                                          input:focus,
                                          select:focus`, {
-                        "border-bottom": "3px solid #09f",
+                        "border-bottom": "2px solid #09f",
                         outline: "none",
                     }), new WCssClass(` .DivSaveOptions`, {
                         "margin-top": "10px",
                         "margin-bottom": "10px",
-                        padding: "20px"
+                        padding: "20px","text-align": "center"
                     }), new WCssClass(` .imgPhotoWModal`, {
                         "grid-column": "1/2",
                         "grid-row": "1/10",
