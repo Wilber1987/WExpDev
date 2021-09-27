@@ -7,7 +7,6 @@ import { ChartDocs } from "./Modules/ChartDocs.js";
 import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
 import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
-
 import { dataTestFact } from './DATA/data.js'
 import { ReportView } from "./Modules/ReportView.js";
 
@@ -225,15 +224,16 @@ class MainClass {
     constructor() {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
-
         this.children = [
-            new WReportView({
-                id: "TestReport",
-                Dataset: dataTestFact,
-                GroupParam: "id",
-                headerGroup:  ["id", "estado", "mes", "año", "metodo_pago"],
-                bodyGroup: [ { leyend: "tipo" , value: "value" } ]
-            }),
+            
+            //TEST REPORT-------------------------->
+            // new WReportView({
+            //     id: "TestReport",
+            //     Dataset: dataTestFact,
+            //     GroupParam: "id",
+            //     headerGroup:  ["id", "estado", "mes", "año", "metodo_pago"],
+            //     bodyGroup: [ { leyend: "tipo" , value: "value" } ]
+            // }),
             // { type:"w-report-view", props: {id:"FacturasReport", Config: {
             //     id: "TestReport",
             //     Dataset: dataTestFact,
