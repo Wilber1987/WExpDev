@@ -1,22 +1,10 @@
 import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
 import "../WDevCore/WComponents/WTableComponents.js";
 import "../WDevCore/WComponents/WAppNavigator.js";
+import { dataTestFact } from '../DATA/data.js'
 import { ComponentsManager, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
 
-const Data = [
-    { id: 1, Category: "Category 3", Stock: "Stock 2", Type: "Type 1", Time: "2020-01-01", Value: 35 },
-    { id: 12, Category: "Category 3", Stock: "Stock 2", Type: "Type 1", Time: "2020-01-01", Value: 35 },
-    { id: 2, Category: "Category 1", Stock: "Stock 2", Type: "Type 2", Time: "2020-03-01", Value: 200 },
-    { id: 3, Category: "Category 2", Stock: "Stock 2", Type: "Type 2", Time: "2020-02-01", Value: 50 },
-    { id: 4, Category: "Category 1", Stock: "Stock 2", Type: "Type 3", Time: "2020-01-01", Value: 105 },
-    { id: 5, Category: "Category 1", Stock: "Stock 2", Type: "Type 3", Time: "2020-01-01", Value: 39 },
-    { id: 6, Category: "Category 2", Stock: "Stock 1", Type: "Type 4", Time: "2020-02-01", Value: 180 },
-    { id: 7, Category: "Category 1", Stock: "Stock 1", Type: "Type 4", Time: "2020-01-01", Value: 100 },
-    { id: 8, Category: "Category 2", Stock: "Stock 1", Type: "Type 1", Time: "2020-02-01", Value: 70 },
-    { id: 9, Category: "Category 1", Stock: "Stock 1", Type: "Type 1", Time: "2020-01-01", Value: 35 },
-    { id: 10, Category: "Category 3", Stock: "Stock 1", Type: "Type 5", Time: "2020-03-01", Value: 98 },
-    { id: 11, Category: "Category 1", Stock: "Stock 1", Type: "Type 3", Time: "2020-02-01", Value: 40 },
-];
+const Data = dataTestFact;
 class DinamicTableDoc extends ComponentsManager {
     constructor(props) {
         super();
@@ -91,7 +79,7 @@ class GroupTables {
         }
         );        
         var ConfigG1 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -133,7 +121,7 @@ class GroupTables {
             props: { innerText: "Double Group Table" },
         })
         var ConfigG2 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -175,7 +163,7 @@ class GroupTables {
             props: { innerText: "3 Group Table" },
         })
         var ConfigG3 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -232,7 +220,7 @@ class GroupTablesChart {
         }
         );        
         var ConfigG1 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -274,7 +262,7 @@ class GroupTablesChart {
             props: { innerText: "Double Group Table" },
         })
         var ConfigG2 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -316,7 +304,7 @@ class GroupTablesChart {
             props: { innerText: "3 Group Table" },
         })
         var ConfigG3 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
@@ -377,7 +365,7 @@ class DinamicTable {
             props: { innerText: "3 Group Table" },
         })
         var ConfigG3 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*
@@ -423,7 +411,7 @@ class DinamicTable {
             props: { innerText: "Dinamic Table Chart" },
         })
         var ConfigG3 = {
-            Datasets: Data,
+            Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*

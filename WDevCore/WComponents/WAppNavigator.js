@@ -1,3 +1,4 @@
+import { WSecurity } from "../WModules/WSecurity.js";
 import { WRender, ComponentsManager } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import { WIcons } from "../WModules/WIcons.js";
@@ -10,70 +11,90 @@ class WAppNavigator extends HTMLElement {
         this.DrawAppNavigator();
     }
     connectedCallback() {
-        if (this.shadowRoot.innerHTML != "") {
+        if (this.shadowRoot.innerHTML != "") {            
             return;
         }
         if (this.id == undefined) {
             const Rand = Math.random();
             this.id = "Menu" + Rand;
         }
-        this.DrawAppNavigator();
+        this.DrawAppNavigator();       
+        if (this.Inicialize == true) {
+            this.InitialNav();
+        }
     }
     ActiveMenu = (ev) => {
         this.shadowRoot.querySelectorAll(".elementNavActive").forEach(elementNavActive => {
             elementNavActive.className = "elementNav";
         });
-        ev.target.className = "elementNavActive";
+        // this.shadowRoot.querySelectorAll("h4.elementNavActive").forEach(elementNavActive => {
+        //     elementNavActive.className = "elementNavMedia";
+        // });
+        ev.className = "elementNavActive";
+        if (this.NavStyle != "tab") {
+            this.shadowRoot.querySelector("#MainNav").className = "navInactive";
+        }       
     }
     DrawAppNavigator() {
-        const header = {
-            type: "header", props: {
-                onclick: () => {
-                    const nav = this.shadowRoot.querySelector("#MainNav");
-                    if (nav.className == "navActive") {
-                        nav.className = "";
-                    } else {
-                        nav.className = "navActive";
-                    }
-                }
-            }, children: [{
-                type: "img", props: {
-                    src: WIcons.Menu ,
-                    class: "DisplayBtn",
-                }, children: []
-            }]
+        this.shadowRoot.append(WRender.createElement(this.Style()));
+        if (this.NavStyle == undefined) {
+            this.NavStyle = "nav";
         }
-        if (typeof this.title === "string") {
-            header.children.push({
-                type: "label", props: { class: "title", innerText: this.title }
-            });
+        if (this.NavStyle == "nav") {
+            const header = {
+                type: "header", props: {
+                    onclick: () => {
+                        const nav = this.shadowRoot.querySelector("#MainNav");
+                        if (nav.className == "navActive") {
+                            nav.className = "navInactive";
+                        } else {
+                            nav.className = "navActive";
+                        }
+                    }
+                }, children: [{
+                    type: "img", props: {
+                        src: WIcons.Menu,
+                        class: "DisplayBtn",
+                    }, children: []
+                }]
+            }
+            if (typeof this.title === "string") {
+                header.children.push({
+                    type: "label", props: { class: "title", innerText: this.title }
+                });
+            }
+            this.shadowRoot.appendChild(WRender.createElement(header));
         }
         if (this.Elements == undefined) {
             this.Elements = [];
         }
-        const Nav = { type: "nav", props: { id: "MainNav" }, children: [] };
+        const Nav = { type: "nav", props: { id: "MainNav", className: this.NavStyle }, children: [] };
         this.Elements.forEach((element, Index) => {
             if (element.url == undefined) {
                 element.url = "#" + this.id;
             }
-            const elementNav = {
+            const elementNav = WRender.createElement({
                 type: "a",
-                props: { class: "elementNav", innerText: element.name, href: element.url }
+                props: { class: "elementNav", innerText: element.name },
+               
+            });
+            if (element.url != undefined && element.url != "#") {
+                elementNav.href = element.url
             }
-            elementNav.props.onclick = async (ev) => {
-                this.ActiveMenu(ev);
+            elementNav.onclick = async (ev) => {
+                this.ActiveMenu(elementNav);
                 if (element.action != undefined) {
-                    element.action(ev);
+                    element.action();
                 }
             }
             Nav.children.push(elementNav);
             if (element.SubNav != undefined) {
-                elementNav.href = null;
+                elementNav.href = "#";
                 const SubMenuId = "SubMenu" + Index + this.id;
                 const SubNav = {
                     type: "section",
                     props: {
-                        id: SubMenuId,  href: element.url,  className: "UnDisplayMenu"
+                        id: SubMenuId, href: element.url, className: "UnDisplayMenu"
                     },
                     children: []
                 }
@@ -91,7 +112,7 @@ class WAppNavigator extends HTMLElement {
                             }
                         });
                     });
-                    elementNav.props.onclick = (ev) => {
+                    elementNav.onclick = (ev) => {
                         this.ActiveMenu(ev);
                         const MenuSelected = this.shadowRoot.querySelector("#" + SubMenuId);
                         if (MenuSelected.className == "UnDisplayMenu") {
@@ -103,9 +124,12 @@ class WAppNavigator extends HTMLElement {
                     Nav.children.push(SubNav);
                 }
             }
+            if (Index == 0 && element.SubNav == undefined) {
+                this.InitialNav = () => {
+                    elementNav.onclick();
+                }                
+            }
         });
-        this.shadowRoot.append(WRender.createElement(this.Style()));
-        this.shadowRoot.appendChild(WRender.createElement(header));
         this.shadowRoot.append(WRender.createElement(Nav));
     }
     Style() {
@@ -122,11 +146,25 @@ class WAppNavigator extends HTMLElement {
             props: {
                 id: "NavStyle" + this.id,
                 ClassList: [
-                    new WCssClass(`nav`, {
+                    new WCssClass(`.nav, .navInactive`, {
                         display: "flex",
                         "flex-direction": navDirection,
                         padding: "0px 10px",
                         transition: "all 1s",
+                    }), new WCssClass(`.tab`, {
+                        display: "flex",
+                        "flex-direction": navDirection,
+                        //padding: "0px 10px",
+                        transition: "all 1s",
+                        "justify-content": "center"
+                    }), new WCssClass(`.tab .elementNavActive`, {
+                        "border-top": "solid 1px #dedddd",
+                        "border-left": "solid 1px #dedddd",
+                        "border-right": "solid 1px #dedddd",
+                        "border-radius": "0.1cm",
+                    }), new WCssClass(`a`, {
+                        "text-decoration": "none",
+                        cursor: "pointer"
                     }), new WCssClass(`.elementNav`, {
                         "text-decoration": "none",
                         color: "#444444",
@@ -134,6 +172,7 @@ class WAppNavigator extends HTMLElement {
                         "border-bottom": "solid 2px #eee",
                         transition: "all 0.6s",
                         display: "flex", "align-items": "center",
+                        cursor: "pointer"
                     }), new WCssClass(`.elementNavActive`, {
                         "text-decoration": "none",
                         color: "#444444",
@@ -141,6 +180,8 @@ class WAppNavigator extends HTMLElement {
                         "border-bottom": "solid 2px #4da6ff",
                         transition: "all 0.6s",
                         display: "flex", "align-items": "center",
+                    }), new WCssClass(`h4.elementNavActive`, {
+                        display: "none",
                     }), new WCssClass(`.elementNav:hover`, {
                         "border-bottom": "solid 2px #444444"
                     }), new WCssClass(`header`, {
@@ -165,39 +206,103 @@ class WAppNavigator extends HTMLElement {
                         "max-height": "1000px",
                         display: "flex",
                         "flex-direction": "column"
-                    }), new WCssClass(`.DisplayMenu a`, {
+                    }), new WCssClass(`a`, {
                         "text-decoration": "none",
-                        color: "#444444",
-                        padding: "10px",
-                        "border-bottom": "solid 1px #999",
+                        color: "#8e8e8e",
+                        //padding: "10px",
                     }),
                     //ocultacion. 
-                    new WCssClass(`.DisplayBtn`, {                       
+                    new WCssClass(`.DisplayBtn`, {
                         margin: "10px",
-                        display: "none",                           
-                        height: "15px", width:  "15px", 
+                        display: "none",
+                        height: "15px", width: "15px",
                         cursor: "pointer"
                     }), new WCssClass(`.navActive`, {
                         overflow: "hidden",
-                        "max-height": "5000px"
-                    }),
+                        "max-height": "5000px",
+                    }), new WCssClass(`.elementNavMedia`, {
+                        display: "none",
+
+                    })
                 ],
                 MediaQuery: [{
+                    condicion: "(max-width: 1200px)",
+                    ClassList: [
+                        // new WCssClass(`.elementNav`, {
+                        //     display: "none",
+                        // }),new WCssClass(`.elementNavMedia` , {
+                        //     display: "block",
+                        //     "font-size": "26px",                        
+                        //     "text-align": "center",
+                        //     padding: "10px",
+                        //     "text-decoration": "none",
+                        //     "font-weight": "bold",
+                        //     cursor: "pointer",
+                        //     "border-bottom": "solid 2px #eee",
+                        //     margin: "0px"
+                        // }),  new WCssClass(`.elementNavActive` , {
+                        //     display: "block",
+                        //     "font-size": "26px",                        
+                        //     "text-align": "center",
+                        //     padding: "10px",
+                        //     "text-decoration": "none",
+                        //     "font-weight": "bold",
+                        //     cursor: "pointer",
+                        //     "border-bottom": "solid 2px #eee",
+                        //     margin: "0px"
+                        // }),  new WCssClass(`label.elementNavActive` , {
+                        //     display: "none",
+                        // })
+                    ]
+                }, {
                     condicion: "(max-width: 800px)",
                     ClassList: [
                         new WCssClass(`.DisplayBtn`, {
                             display: "initial",
-                        }),new WCssClass(`nav`, {
-                            "flex-direction": "column"
-                        }), new WCssClass(`nav`, {
+                            height: 25,
+                            width: 25,
+                        }), new WCssClass(`.nav`, {
+                            "flex-direction": "column",
                             overflow: "hidden",
                             "max-height": "0px"
+                        }), new WCssClass(`nav`, {
+
                         }), new WCssClass(`.navActive`, {
                             overflow: "hidden",
-                            "max-height": "5000px"
+                            "max-height": "5000px",
+                            "position": "fixed",
+                            "z-index": "999",
+                            "background-color": "#fff",
+                            "color": "#fff",
+                            "width": "80%",
+                            "height": "100vh",
+                            top: 0,
+                            transition: "all 0.6s",
+                            "box-shadow": "0 5px 5px 3px rgba(0,0,0,0.3)"
+                        }), new WCssClass(`.navInactive, .nav`, {
+                            overflow: "hidden",
+                            "max-height": "0px",
+                            "max-height": "5000px",
+                            transition: "all 0.6s",
+                            transform: "translateX(-100%)",
+                            "position": "fixed",
+                            "z-index": "999",
+                            "background-color": "#fff",
+                            "color": "#fff",
+                            "width": "80%",
+                            "height": "100vh",
+                            top: 0,
+                            transition: "all 0.6s",
+                            "box-shadow": "0 0 0 0 rgba(0,0,0,0.3)"
+                        }),
+                        new WCssClass(`header`, {
+                            display: "flex",
+                            "align-items": "center",
+                            "justify-content": "left",
+                            "box-shadow": "none"
                         }),
                     ]
-                },]
+                }]
             }
         }
         return Style;

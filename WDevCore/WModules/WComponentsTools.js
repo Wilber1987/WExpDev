@@ -48,12 +48,12 @@ class WAjaxTools {
                 ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
                 Accept = "*/*";
             }
-            let dataRequest =  {
+            let dataRequest = {
                 method: typeRequest,
                 headers: {
                     'Content-Type': ContentType,
                     'Accept': Accept
-                }               
+                }
             }
             if (Data != {}) {
                 dataRequest.body = JSON.stringify(Data);
@@ -137,7 +137,7 @@ class WAjaxTools {
 }
 class WRender {
     static CreateStringNode = (string) => {
-        let node = document.createRange().createContextualFragment(string);        
+        let node = document.createRange().createContextualFragment(string);
         return node.childNodes[0];
     }
     static createElement = (Node) => {
@@ -149,10 +149,10 @@ class WRender {
                     return this.CreateStringNode(`<p>${Node}</p>`);
                 }
                 return this.CreateStringNode(`<label>${Node}</label>`);
-            } else if (Node.__proto__ === HTMLElement.prototype 
+            } else if (Node.__proto__ === HTMLElement.prototype
                 || Node.__proto__.__proto__ === HTMLElement.prototype) {
                 return Node;
-            } else {   
+            } else {
                 if (Node.__proto__ == Array.prototype) {
                     Node = { type: "div", children: Node }
                 }
@@ -223,39 +223,82 @@ class WRender {
     }
 }
 class ComponentsManager {
-    constructor() {
+    constructor(Config = {}) {
         this.DomComponents = [];
         this.type = "div";
         this.props = {
             class: "MyForm"
         };
+        this.SelectedComponent = "";
+        this.MainContainer = Config.MainContainer;
+        this.Config = Config;
+        if (this.Config.SPAManage == true) {
+            window.onhashchange = () => {
+                if (this.Config.SPAManage != true) {
+                    return;
+                }
+                let NavManageClick = sessionStorage.getItem("NavManageClick");
+                if (NavManageClick == "true") {
+                    sessionStorage.setItem("NavManageClick", "false");
+                    return;
+                }
+                const hashD = window.location.hash.replace("#", "");
+                let navigateComponets = JSON.parse(sessionStorage.getItem("navigateComponets"));
+                if (navigateComponets != null) {                    
+                    const newNode = this.DomComponents.find(node => node.id == hashD);
+                    //console.log(newNode);
+                    this.NavigateFunction(hashD, newNode , this.MainContainer);
+                }      
+                       
+            }
+        }
+
     }
     NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName) => {
+        if (this.MainContainer == undefined) {
+            this.MainContainer = ContainerName;
+        }
         const ContainerNavigate = document.querySelector("#" + ContainerName);
-        let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");        
+        let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
         Nodes.forEach((node) => {
-            if (node.id != IdComponent) {               
-                this.DomComponents[node.id] = node;
+            if (node.id != IdComponent) {
+                let nodeF = this.DomComponents.find(n => n.id == node.id);
+                if (nodeF != undefined && nodeF != null) {
+                    nodeF = node;
+                } else {
+                    this.DomComponents.push(node);
+                }
                 if (ContainerNavigate.querySelector("#" + node.id)) {
                     ContainerNavigate.removeChild(node);
                 }
             }
         });
-        if (!ContainerNavigate.querySelector("#" + IdComponent)) {
-            if (typeof this.DomComponents[IdComponent] != "undefined") {
-                ContainerNavigate.append(this.DomComponents[IdComponent]);
-                return;
-            } else {               
+        if (!ContainerNavigate.querySelector("#" + IdComponent)) {  
+            const node = this.DomComponents.find(node => node.id == IdComponent);
+            if (node != undefined && node != null) {
+                ContainerNavigate.append(node);
+            } else {
                 const NewChild = WRender.createElement(ComponentsInstance);
                 NewChild.id = IdComponent;
                 NewChild.className = NewChild.className + " DivContainer";
-                this.DomComponents[IdComponent] = NewChild;
+                this.DomComponents.push(NewChild);
                 ContainerNavigate.append(NewChild);
-                return;
-            }            
+            }
+            if (this.Config.SPAManage == true) {
+                sessionStorage.setItem("NavManageClick", "true");
+                window.location = "#" + IdComponent;
+                const newNode = this.DomComponents.find(node => node.id == IdComponent);
+                let navigateComponets = JSON.parse(sessionStorage.getItem("navigateComponets"));
+                console.log(navigateComponets);
+                if (navigateComponets == null) {
+                    navigateComponets = [];
+                }
+                navigateComponets.push(newNode);
+                sessionStorage.setItem("navigateComponets", JSON.stringify(navigateComponets));
+            }
         }
     }
-    AddComponent = async(IdComponent, ComponentsInstance, ContainerName, order = "last") => {
+    AddComponent = async (IdComponent, ComponentsInstance, ContainerName, order = "last") => {
         const ContainerNavigate = document.querySelector("#" + ContainerName);
         if (ContainerNavigate.querySelector("#" + IdComponent)) {
             window.location = "#" + IdComponent;
@@ -323,7 +366,7 @@ class ComponentsManager {
     }
 }
 class WArrayF {
-    static JSONParse(param){
+    static JSONParse(param) {
         return JSON.parse((param).replace(/&quot;/gi, '"'));
     }
     static orderByDate(Arry, type) {
@@ -395,21 +438,49 @@ class WArrayF {
             });
             return DataArraySR;
         } else if (typeof param !== 'undefined' && param != null && param != "") {
-            let DataArraySR = DataArray.filter((ActalValue, ActualIndex, Array) => {
+            let DataArraySR = [] /* DataArray.filter((ActalValue, ActualIndex, Array) => {
                 return Array.findIndex(ArryValue => JSON.stringify(ArryValue[param]) ===
                     JSON.stringify(ActalValue[param])) === ActualIndex
+            });*/
+            DataArray.forEach(element => {
+                if (!DataArraySR.find(x => x[param] == element[param])) {
+                    DataArraySR.push(element)
+                }
             });
             return DataArraySR;
         }
         return null;
     }
+    static ArrayUniqueByObject(DataArray, param = {}) {
+        let DataArraySR = [];
+        DataArray.forEach(element => {
+            const DFilt = DataArraySR.find(obj => {
+                let flagObj = true;
+                for (const prop in param) {
+                    if (obj[prop] != element[prop]) {
+                        flagObj = false;
+                    }
+                }
+                return flagObj;
+            });
+            if (!DFilt) {
+                element.count = 1;
+                element.rate = ((1 / DataArray.length) * 100).toFixed(2) + "%";
+                DataArraySR.push(element)
+            } else {
+                DFilt.count = DFilt.count + 1;
+                DFilt.rate = ((DFilt.count / DataArray.length) * 100).toFixed(2) + "%";
+            }
+        });
+        return DataArraySR;
+    }
     static DataTotals(Config) {
-        let UniqueTotals = this.ArrayUnique(Config.Datasets, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);
+        let UniqueTotals = this.ArrayUnique(Config.Dataset, Config.AttNameG1, Config.AttNameG2, Config.AttNameG3);
         let Totals = [];
         if (typeof Config.AttNameG3 !== 'undefined' && Config.AttNameG3 != null && Config.AttNameG3 != "") {
             UniqueTotals.forEach(element => {
                 let suma = 0;
-                Config.Datasets.forEach(elementGroup => {
+                Config.Dataset.forEach(elementGroup => {
 
                     if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
                         element[Config.AttNameG2] == elementGroup[Config.AttNameG2] &&
@@ -427,7 +498,7 @@ class WArrayF {
         } else if (typeof Config.AttNameG2 !== 'undefined' && Config.AttNameG2 != null && Config.AttNameG2 != "") {
             UniqueTotals.forEach(element => {
                 let suma = 0;
-                Config.Datasets.forEach(elementGroup => {
+                Config.Dataset.forEach(elementGroup => {
 
                     if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
                         element[Config.AttNameG2] == elementGroup[Config.AttNameG2]) {
@@ -443,8 +514,7 @@ class WArrayF {
         } else if (typeof Config.AttNameG1 !== 'undefined' && Config.AttNameG1 != null && Config.AttNameG1 != "") {
             UniqueTotals.forEach(element => {
                 let suma = 0;
-                Config.Datasets.forEach(elementGroup => {
-
+                Config.Dataset.forEach(elementGroup => {
                     if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1]) {
                         suma = suma + parseFloat(elementGroup[Config.EvalValue]);
                     }
@@ -459,22 +529,17 @@ class WArrayF {
     }
     static MaxValue(DataArry, Config) {
         var Maxvalue = 0;
-        //Config.TypeChart = "row";
-        //Config.TypeChart = "column"; 
-        let Data = [];   
+        let Data = [];
         if (Config.TypeChart == "column") {
             Data = DataArry;
         } else {
-            console.log(Config.Datasets);
-            Data = Config.Datasets;
-        }    
-        console.log(Data);
+            Data = Config.Dataset;
+        }
         for (let index = 0; index < Data.length; index++) {
             if (parseInt(Data[index][Config.EvalValue]) > Maxvalue) {
                 Maxvalue = Data[index][Config.EvalValue];
             }
-        }
-        console.log(Maxvalue);
+        }        
         return Maxvalue;
     }
     static FindInTotal(Elemento, list, Config) {
@@ -529,15 +594,15 @@ class WArrayF {
                 } else {
                     Maxvalue = "Error!";
                     break;
-                }                
-            }            
+                }
+            }
         }
         return Maxvalue;
     }
-    static FindInArray(element, Datasets) {
+    static FindInArray(element, Dataset) {
         let val = false;
-        for (let index = 0; index < Datasets.length; index++) {
-            const Data = Datasets[index];
+        for (let index = 0; index < Dataset.length; index++) {
+            const Data = Dataset[index];
             val = this.compareObj(element, Data)
             if (val == true) {
                 break;
@@ -554,6 +619,14 @@ class WArrayF {
             }
         }
         return val;
+    }
+    //STRINGS
+    static Capitalize(str) {
+        if (str == null) {
+            return str;            
+        }
+        str = str.toString();
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
 }
@@ -612,5 +685,5 @@ const ModalNavigateFunction = async (IdComponent, ComponentsInstance, ContainerN
             }, 1000
         );
     }
-}  
+}
 export { WAjaxTools, WRender, ComponentsManager, WArrayF, type }

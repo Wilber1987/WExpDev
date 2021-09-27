@@ -19,9 +19,13 @@ class ChartConfig {
         this.TypeChart = Config.TypeChart;
     }
 }
-class ColumChart extends HTMLElement {
-    constructor(props) {
+class ColumChart2 extends HTMLElement {
+    constructor(ChartInstance =  {}) {
         super();
+        this.ChartInstance = ChartInstance;        
+        this.GroupsData = [];
+        this.ProcessData = [];
+        this.MainChart = { type: "section", props: { class: "SectionBars"}, children: [] };
         this.attachShadow({ mode: "open" });
     }
     /*
@@ -36,11 +40,12 @@ class ColumChart extends HTMLElement {
     connectedCallback() {
         if (this.shadowRoot.innerHTML != "") {
             return;
-        }
-        this.ChartInstance = new ChartConfig(this.data);
-        if (this.ChartInstance.TypeChart == undefined) {// bar or staked
-            this.ChartInstance.TypeChart = "row";
-        }else if (this.ChartInstance.TypeChart == "staked"){
+        } 
+        this.groupParams = this.ChartInstance.groupParams ?? [];
+        this.EvalValue = this.ChartInstance.EvalValue ?? null;
+        this.AttNameEval = this.ChartInstance.AttNameEval ?? null;
+        this.Dataset = this.ChartInstance.Dataset ??  [];
+        if (this.ChartInstance.TypeChart == "staked") {// bar or staked
             this.ChartInstance.TypeChart = "column";
         }else {
             this.ChartInstance.TypeChart = "row";
@@ -49,30 +54,75 @@ class ColumChart extends HTMLElement {
         this.DrawChart();
     }
     DrawChart() {
+        console.log(this.ChartInstance);
         this.Totals = WArrayF.DataTotals(this.ChartInstance);
         this.MaxVal = WArrayF.MaxValue(this.Totals, this.ChartInstance);
-        let ChartFragment = document.createElement("div");
-        ChartFragment.className = "WChartContainer";
-        ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
+        this.EvalArray = WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.AttNameEval);
+        let ChartFragment = WRender.createElement({ type:'div', props: { id: '', class: 'WChartContainer'}});
         ChartFragment.append(this._AddSectionlabels(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
-
-        let GroupsData = [
-            this.ChartInstance.Dataset,
-            WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.ChartInstance.AttNameG1),
-            WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.ChartInstance.AttNameG2),
-            WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.ChartInstance.AttNameG3)
-        ];
-        ChartFragment.append(this._AddSectionBars(GroupsData, this.ChartInstance));
+        ChartFragment.append(WRender.createElement(this._AddSectionBars()));
         ChartFragment.append(this._AddSectionLabelsGroups(this.ChartInstance));
         this.shadowRoot.append(ChartFragment);
     }
-    _AddSectionTitle(Title) {
-        // var Title = 
-        /* sessionStorage.getItem('Title') + ' - ' 
-        +sessionStorage.getItem('Indicador') 
-        +ChartContainer.name;*/
-        var SectionTitle = WRender.CreateStringNode(`<h3 style="font-size:18px; margin:0px">${Title}</h3>`);
-        return SectionTitle;
+    _AddSectionBars(Dataset = this.Dataset) {  
+        console.log(this.groupParams);   
+        console.log(Dataset);   
+        this.groupParams.forEach(groupParam => {
+            let object = {};
+            object[groupParam] = "";
+            this.GroupsData.push(WArrayF.ArrayUniqueByObject(Dataset, object))
+        });
+        return this.DrawGroupDiv(this.ChargeGroup(this.GroupsData)); 
+    } 
+    ChargeGroup = (Groups, inicio = 0) => {
+        if (!Groups[inicio]) {
+            return null;
+        }
+        let ObjGroup = {
+            data: Groups[inicio],
+            groupParam: this.groupParams[inicio],
+            children: this.ChargeGroup(Groups, inicio + 1)
+        }
+        return ObjGroup;
+    }    
+    DrawGroupDiv = (Groups, div = this.MainChart, arrayP = {}) => {
+        //console.log(Groups)
+        if (Groups == null) {
+            return "";
+        }
+        let index = 0;
+        Groups.data.forEach((Group) => {
+            let trGroup = { type: "GroupSection", props: { class: "GroupSection" }, children: [] };
+           
+            /////
+            let groupBar = { type: "containerbar", props: { class: "ContainerBars" }, children: [] };
+            trGroup.children.push(groupBar);
+            arrayP[Groups.groupParam] = Group[Groups.groupParam];
+            if (Groups.children != null) {
+                if (Groups.children.children == null) {
+                    trGroup.props.class = "GroupSection";
+                }
+                this.DrawGroupDiv(Groups.children, groupBar, arrayP);
+            } else {
+                console.log(Group);
+                trGroup.type = "groupbar";
+                trGroup.props.class = "groupBars";               
+                if (this.EvalArray != null) {
+                    this.EvalArray.forEach(Eval => {
+                        arrayP[this.AttNameEval] = Eval[this.AttNameEval];
+                        const Data = this.FindData(arrayP);
+                        console.log(Data);
+                        if (Data != "n/a") {
+                            groupBar.children.push(this._DrawBar(Data, this.ChartInstance, index));
+                        }
+                    });                    
+                    //groupBar.children.push({ type: "TDataTotal", children: [sum] });
+                }
+                index++;
+            }
+            div.children.push(trGroup);
+        });
+        return div;
     }
     _AddSectionlabels(GroupLabelsData, Colors) {
         var SectionLabels = document.createElement('section');
@@ -95,124 +145,7 @@ class ColumChart extends HTMLElement {
         })
         return SectionLabels;
     }
-    _AddSectionBars(Groups, Config) {
-        //console.log(Config)  
-        const DataSet = Groups[0];
-        const GroupDataset = Groups[1];
-        const SecondGroupDataset = Groups[2];
-        const ThreeGroupDataset = Groups[3];
-        let SectionBars = document.createElement('section');
-        SectionBars.className = "SectionBars";
-        var count = 0;
-        GroupDataset.forEach(elementGroup => {
-            var GroupSection = document.createElement("GroupSection");
-            GroupSection.className = "GroupSection";
-            var groupBars = document.createElement("groupBar");
-            groupBars.className = "groupBars";
-
-            var groupLabels = document.createElement("span");
-            var groupLabelsTwo = document.createElement("span");
-            var groupLabelsThree = document.createElement("span");
-            if (count == 0) {
-                groupLabels = document.createElement("groupLabels");
-                groupLabels.className = "groupLabels ElementG1";
-            } else {
-                groupLabels = document.createElement("groupLabels");
-                groupLabels.className = "groupLabels";
-            }
-            if (SecondGroupDataset != null) {
-                if (count == 0) {
-                    groupLabelsTwo = document.createElement("groupLabelsTwo");
-                    groupLabelsTwo.className = "groupLabels ElementG2";
-                } else {
-                    groupLabelsTwo = document.createElement("groupLabelsTwo");
-                    groupLabelsTwo.className = "groupLabels";
-                }
-            }
-            if (ThreeGroupDataset != null) {
-                if (count == 0) {
-                    groupLabelsThree = document.createElement("groupLabelsThree");
-                    groupLabelsThree.className = "groupLabels ElementG3";
-                } else {
-                    groupLabelsThree = document.createElement("groupLabelsThree");
-                    groupLabelsThree.className = "groupLabels";
-                }
-            }
-            //CONSTRUCCCION DE DATOS   
-            if (SecondGroupDataset != null) {
-                SecondGroupDataset.forEach(elementSecondGroup => { //RECORREMOS la categoria SEGUNDA AGRUPACION                     
-                    if (ThreeGroupDataset != null) {
-                        ThreeGroupDataset.forEach(elementThreeGroup => { //RECORREMOS la categoria tercera AGRUPACION
-                            var ContainerBars = document.createElement("ContainerBar");
-                            ContainerBars.className = "ContainerBars";
-                            this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup, elementThreeGroup);
-                            groupBars.append(ContainerBars);
-                            groupBars.append(this._DrawBackgroundLine(this.MaxVal, null, Config.ColumnLabelDisplay));
-                            groupLabelsThree.append(WRender.CreateStringNode(`<label class="">
-                                    ${elementThreeGroup[Config.AttNameG3]}
-                                </label>`));
-                        });
-
-                    } else {
-                        var ContainerBars = document.createElement("ContainerBar");
-                        ContainerBars.className = "ContainerBars";
-                        this._DrawGroupChart(Config, ContainerBars, elementGroup, elementSecondGroup);
-                        groupBars.append(ContainerBars);
-                        groupBars.append(this._DrawBackgroundLine(this.MaxVal, null, Config.ColumnLabelDisplay));
-                    }
-                    groupLabelsTwo.append(WRender.CreateStringNode(`<label class="">
-                                ${elementSecondGroup[Config.AttNameG2]}
-                            </label>`));
-                })
-            } else {
-                var ContainerBars = document.createElement("ContainerBar");
-                ContainerBars.className = "ContainerBars";
-                this._DrawGroupChart(Config, ContainerBars, elementGroup);
-                groupBars.append(ContainerBars);
-                groupBars.append(this._DrawBackgroundLine(this.MaxVal, null, Config.ColumnLabelDisplay));
-            }
-            groupLabels.append(WRender.CreateStringNode(`<label class="">
-                    ${elementGroup[Config.AttNameG1]}
-                </labe>`));
-            count++;
-            GroupSection.append(groupBars, groupLabelsThree, groupLabelsTwo, groupLabels);
-            SectionBars.append(GroupSection);
-        })
-        SectionBars.append(this._DrawBackgroundChart(this.MaxVal, null, Config.ColumnLabelDisplay));
-        return SectionBars;
-    }
-    _DrawGroupChart(Config, ContainerBars, elementGroup = null, elementSecondGroup = null, elementThreeGroup = null) {
-        let index = 0;
-        Config.GroupLabelsData.forEach(elementLabelData => { //RECORREMOS LOS STAKS 
-            Config.Dataset.forEach(element => { //RECORREMOS EL DTA EN BUSCA DEL TIEMPO Y EL STAK                
-                let bar = null;
-                if (elementThreeGroup != null) {
-                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
-                        element[Config.AttNameEval] == elementLabelData.id_ &&
-                        element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2] &&
-                        element[Config.AttNameG3] == elementThreeGroup[Config.AttNameG3]) {
-                        bar = this._DrawBar(element, Config, index);
-                    }
-                } else if (elementSecondGroup != null) {
-                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
-                        element[Config.AttNameEval] == elementLabelData.id_ &&
-                        element[Config.AttNameG2] == elementSecondGroup[Config.AttNameG2]) {
-                        bar = this._DrawBar(element, Config, index);
-                    }
-                } else if (elementGroup != null) {
-                    if (element[Config.AttNameG1] == elementGroup[Config.AttNameG1] &&
-                        element[Config.AttNameEval] == elementLabelData.id_) {
-                        bar = this._DrawBar(element, Config, index);
-                    }
-                }
-                if (bar != null) {
-                    ContainerBars.appendChild(bar);
-                }
-            }) //FIN DATA
-            index++;
-
-        });
-    }
+      
     _DrawBackgroundChart(value, size = 600, ValP) {
         var countLine = 0;
         var val = 0;
@@ -275,17 +208,15 @@ class ColumChart extends HTMLElement {
         }
         return ContainerLine;
     }
-    _DrawBar(element, Config, index) {
-        //console.log(element)
+    _DrawBar(DataValue, Config, index) {
         var Size = Config.ContainerSize;
         var Size = 180;
-        var BarSize = (element[Config.EvalValue] / this.MaxVal); //% de tamaño
-        var labelCol = element[Config.EvalValue];
+        var BarSize = (DataValue / this.MaxVal); //% de tamaño
+        var labelCol = DataValue;
         var styleP = "";
         if (Config.ColumnLabelDisplay == 1) {
             //dibujar el valor en porcentaje
             styleP = ";flex-grow: 1;"
-            var total = WArrayF.FindInTotal(element, this.Totals, Config);
             var multiplier = Math.pow(10, 1 || 0);
             var number = labelCol / total[Config.EvalValue] * 100
             number = Math.round(number * multiplier) / multiplier
@@ -322,6 +253,32 @@ class ColumChart extends HTMLElement {
         }
         return SectionLabelGroup;
     }
+    FindData(arrayP) {
+        let val = false;
+        let nodes = [];
+        this.ChartInstance.Dataset.forEach(Data => {
+            val = WArrayF.compareObj(arrayP, Data)
+            if (val == true) {
+                nodes.push(Data)
+            }
+        });
+        if (nodes.length != []) {
+            let Operations = this.shadowRoot.querySelector("#Select" + this.id);
+            let value = "fail!";
+            if (Operations != null) {
+                if (Operations.value == "sum") {
+                    value = WArrayF.SumValAtt(nodes, this.EvalValue);
+                } else if (Operations.value == "count") {
+                    value = nodes.length;
+                }
+            } else {
+                value = WArrayF.SumValAtt(nodes, this.EvalValue);
+            }
+            return value;
+        } else {
+            return "n/a";
+        }
+    }
     GenerateColor() {
         var hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
         var color_aleatorio = "#FF";
@@ -332,7 +289,7 @@ class ColumChart extends HTMLElement {
         return color_aleatorio
     }
 }
-class RadialChart extends HTMLElement {
+class RadialChart2 extends HTMLElement {
     constructor(props) {
         super();
         this.attachShadow({ mode: "open" });
@@ -787,5 +744,5 @@ const WChartStyle = (ChartInstance) => {
         }
     };
 }
-customElements.define("w-radial-chart", RadialChart);
-customElements.define("w-colum-chart", ColumChart);
+customElements.define("w-radial-chart2", RadialChart2);
+customElements.define("w-colum-chart2", ColumChart2);

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <label for="" id="count"></label>
+    <script>
+        function CuentaRegresiva(fecha = new Date()) { 
+            count.innerText = fecha.toLocaleString();
+            setTimeout(() => {
+                CuentaRegresiva(new Date(fecha.getTime() + 1000))
+            }, 1000);
+            let fechaLimite = new Date("2021-06-17 29:30:00");
+        }
+        CuentaRegresiva();       
+
+    </script>
+</body>
+
+</html>

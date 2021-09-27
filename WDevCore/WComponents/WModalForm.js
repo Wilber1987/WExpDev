@@ -11,7 +11,6 @@ class WModalForm extends HTMLElement {
     constructor() {
         super();
         this.ShadowRoot = true;
-
         this.DataRequire = true;
     }
     attributeChangedCallBack() {
@@ -46,6 +45,7 @@ class WModalForm extends HTMLElement {
 
         //NO MODAL
         if (this.NoModal == true) {
+            this.HeadOptions == false;
             this.append(WRender.createElement(this.StyleNoModal()));
             if (this.ShadowRoot) {
                 this.shadowRoot.append(WRender.createElement({
@@ -99,11 +99,29 @@ class WModalForm extends HTMLElement {
                             "overflow-y": "auto",
                             "padding-bottom": "50px",
                         })
-                    ]
+                    ], MediaQuery: [{
+                        condicion: "(max-width: 800px)",
+                        ClassList: [
+                            new WCssClass(".ModalContentWModal", {
+                                "padding-bottom": "0px",
+                            }),
+                        ]
+                    }]
                 }
             }))
         }
         this.DrawComponent();
+    }
+    checkDisplay(prop) {
+        let flag = true
+        if (this.DisplayData != undefined &&
+            this.DisplayData.__proto__ == Array.prototype) {
+            const findProp = this.DisplayData.find(x => x == prop);
+            if (!findProp) {
+                flag = false;
+            }
+        }
+        return flag;
     }
     DrawComponent = async () => {
         if (this.id == undefined || this.id == "") {
@@ -211,10 +229,10 @@ class WModalForm extends HTMLElement {
         ComponentsManager.modalFunction(this)
     }
     DrawModalHead() {
-        if (this.HeadOptions == false) {
+        if (this.HeadOptions == false || this.NoModal == true) {
             return "";
         }
-        let icon ="";
+        let icon = "";
         if (this.icon != undefined) {
             icon = WRender.CreateStringNode(`<img src="${this.icon}" class="HeaderIcon" alt="">`)
         }
@@ -257,31 +275,37 @@ class WModalForm extends HTMLElement {
             children: []
         };
         for (const prop in ObjectF) {
-            if (prop.includes("_hidden")) {
+            const flag = this.checkDisplay(prop);
+            if (flag) {
+                if (prop.includes("_hidden")) {
 
-            } else if (prop.includes("img") || prop.includes("pic") ||
-                prop.includes("Pict") || prop.includes("image") || prop.includes("Image") ||
-                prop.includes("Photo")) {
-                let cadenaB64 = "";
-                var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-                if (base64regex.test(ObjectF[prop])) {
-                    cadenaB64 = "data:image/png;base64,";
-                }
-                Form.children.push({
-                    type: "img",
-                    props: {
-                        src: cadenaB64 + ObjectF[prop],
-                        class: "imgPhotoWModal",
-                        id: "imgControl" + prop + this.id,
+                } else if (prop.includes("img") || prop.includes("pic") ||
+                    prop.includes("Pict") || prop.includes("image") || prop.includes("Image") ||
+                    prop.includes("Photo")) {
+                    let cadenaB64 = "";
+                    var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                    if (base64regex.test(ObjectF[prop])) {
+                        cadenaB64 = "data:image/png;base64,";
                     }
-                })
-            } else {
-                Form.children.push({
-                    type: "div",
-                    props: {
-                        class: "ModalElement"
-                    },
-                    children: [{
+                    if (this.ImageUrlPath != undefined
+                        && this.ImageUrlPath.__proto__ == String.prototype) {
+                        cadenaB64 = this.ImageUrlPath + "/";
+                    }
+                    Form.children.push({
+                        type: "img",
+                        props: {
+                            src: cadenaB64 + ObjectF[prop],
+                            class: "imgPhotoWModal",
+                            id: "imgControl" + prop + this.id,
+                        }
+                    })
+                } else {
+                    Form.children.push({
+                        type: "div",
+                        props: {
+                            class: "ModalElement"
+                        },
+                        children: [{
                             type: "label",
                             props: {
                                 innerText: prop + ": "
@@ -293,8 +317,9 @@ class WModalForm extends HTMLElement {
                                 innerHTML: ObjectF[prop]
                             }
                         }
-                    ]
-                });
+                        ]
+                    });
+                }
             }
         }
         return Form;
@@ -359,6 +384,10 @@ class WModalForm extends HTMLElement {
                     let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
                     if (base64regex.test(InputValue)) {
                         cadenaB64 = "data:image/png;base64,";
+                    }
+                    if (this.ImageUrlPath != undefined
+                        && this.ImageUrlPath.__proto__ == String.prototype) {
+                        cadenaB64 = this.ImageUrlPath + "/";
                     }
                     ControlContainer.children.push({
                         type: "img",
@@ -529,7 +558,7 @@ class WModalForm extends HTMLElement {
                         }, 1000);
                     }
                 },
-                children: ['Guardar']
+                children: ['Aceptar']
             };
             DivOptions.children.push(InputSave);
         }
@@ -588,21 +617,15 @@ class WModalForm extends HTMLElement {
                                         .ContainerFormWModal input[type=date],
                                         .ContainerFormWModal input[type=password],
                                         .ContainerFormWModal input[type=time],
-                                        .ContainerFormWModal select`, {
-                        padding: "8px",
-                        border: "none",
-                        "border-bottom": "3px solid #999999",
+                                        .ContainerFormWModal select, textarea`, {
                         width: "calc(100% - 16px)",
                         "font-size": "15px",
-                        transition: "all 0.7s"
-                    }), new WCssClass(` textarea`, {
-                        padding: "8px",
-                        border: "none",
-                        "border-bottom": "3px solid #999999",
-                        width: "calc(100% - 16px)",
+                        transition: "all 0.7s",
+                        padding: 8,
+                        "border": "2px solid #e1d4d4",
                         "font-size": "15px",
-                        transition: "all 0.7s"
-                    }), new WCssClass(` input:-internal-autofill-selected`, {
+                        "border-radius": "0.1cm"
+                    }),  new WCssClass(` input:-internal-autofill-selected`, {
                         "appearance": "menulist-button",
                         "background-color": "none !important",
                         "background-image": "none !important",
@@ -611,16 +634,19 @@ class WModalForm extends HTMLElement {
                     new WCssClass(` input:active,
                                          input:focus,
                                          select:focus`, {
-                        "border-bottom": "3px solid #09f",
+                        "border-bottom": "2px solid #09f",
                         outline: "none",
                     }), new WCssClass(` .DivSaveOptions`, {
                         "margin-top": "10px",
                         "margin-bottom": "10px",
-                        padding: "20px"
+                        padding: "20px","text-align": "center"
                     }), new WCssClass(` .imgPhotoWModal`, {
+                        "grid-column": "1/2",
+                        "grid-row": "1/10",
                         height: "300px",
                         display: "block",
                         width: "100%",
+                        "object-fit": "cover",
                         "border-radius": "0.3cm",
                         "box-shadow": "0 0px 2px 0px #000",
                     }), new WCssClass(` .ContainerFormWModal h1, 
@@ -659,6 +685,8 @@ class WModalForm extends HTMLElement {
                         "justify-content": "space-between",
                         "align-items": "center",
                         padding: "10px 30px",
+                        color: "#7b7b7b",
+                        "margin-top": "10px"
                     }),
                     new WCssClass(` .BtnClose`, {
                         "font-size": "18pt",
@@ -670,7 +698,7 @@ class WModalForm extends HTMLElement {
                         "display": "flex",
                         "justify-content": "center",
                         "align-items": "center",
-                        "transform": "translateY(-5px)",
+                        //"transform": "translateY(-5px)",
                         border: "none",
                         //float: "right",
                         "background-color": "#fff"
@@ -724,6 +752,7 @@ class WModalForm extends HTMLElement {
                             "grid-gap": "1rem",
                             "grid-template-columns": "calc(100% - 20px) !important",
                             "grid-template-rows": "auto",
+                            "justify-content": "center"
                         }), new WCssClass(" .ContainerFormWModal", {
                             "margin-top": "0px",
                             "width": "100%",
@@ -734,7 +763,7 @@ class WModalForm extends HTMLElement {
                             "padding-bottom": "0px",
                         }),
                     ]
-                }, ]
+                },]
             }
         }
         return Style;
@@ -772,7 +801,7 @@ class WModalForm extends HTMLElement {
                     new WCssClass(" divForm", {
                         "grid-template-columns": "calc(100% - 20px) !important",
                     }),
-                ]
+                ], MediaQuery: this.MediaQuery
             }
         }
         return Style;
@@ -794,14 +823,27 @@ class WModalForm extends HTMLElement {
             props: {
                 ClassList: [
                     new WCssClass(" .ContainerFormWModal", {
-                        "width": "90% !important",
-                        "border-radius": "0.2cm !important",
-                        "max-width": "900px !important",
+                        "width": "90%",
+                        "border-radius": "0.2cm",
+                        "max-width": "900px",
                     }),
                     new WCssClass(" divForm", {
                         "grid-template-columns": "calc(30%) calc(30%) calc(30%)",
                     }),
-                ]
+                ], MediaQuery: [{
+                    condicion: "(max-width: 800px)",
+                    ClassList: [
+                        new WCssClass(" .ContainerFormWModal", {
+                            "margin-top": "0px",
+                            "width": "100%",
+                            "max-height": "calc(100vh - 0px)",
+                            "height": "calc(100vh - 0px)",
+                            "border-radius": "0cm",
+                        }), new WCssClass("", {
+                            "padding-bottom": "0px",
+                        }),
+                    ]
+                },]
             }
         }
         return Style;
@@ -813,5 +855,26 @@ class WModalForm extends HTMLElement {
         }
         reader.readAsDataURL(value);
     }
+    MediaQuery= [{
+        condicion: "(max-width: 800px)",
+        ClassList: [
+            new WCssClass(" divForm", {
+                padding: "20px",
+                "display": "grid",
+                "grid-gap": "1rem",
+                "grid-template-columns": "calc(100% - 20px) !important",
+                "grid-template-rows": "auto",
+                "justify-content": "center"
+            }), new WCssClass(" .ContainerFormWModal", {
+                "margin-top": "0px",
+                "width": "100%",
+                "max-height": "calc(100vh - 0px)",
+                "height": "calc(100vh - 0px)",
+                "border-radius": "0cm",
+            }), new WCssClass("", {
+                "padding-bottom": "0px",
+            }),
+        ]
+    }]
 }
 customElements.define("w-modal-form", WModalForm);
