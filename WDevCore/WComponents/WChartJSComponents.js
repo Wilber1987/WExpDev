@@ -20,12 +20,13 @@ class ChartConfig {
     }
 }
 class ColumChart2 extends HTMLElement {
-    constructor(ChartInstance =  {}) {
+    constructor(ChartInstance = {}) {
         super();
-        this.ChartInstance = ChartInstance;        
+        this.ChartInstance = ChartInstance;
         this.GroupsData = [];
         this.ProcessData = [];
-        this.MainChart = { type: "section", props: { class: "SectionBars"}, children: [] };
+        this.IconsGroupColores = ["#c39c10", "#ab5", "#285a76", "#4640a3", "#8640a3"]
+        this.MainChart = { type: "section", props: { class: "SectionBars" }, children: [] };
         this.attachShadow({ mode: "open" });
     }
     attributeChangedCallBack() {
@@ -34,40 +35,37 @@ class ColumChart2 extends HTMLElement {
     connectedCallback() {
         if (this.shadowRoot.innerHTML != "") {
             return;
-        } 
+        }
         this.groupParams = this.ChartInstance.groupParams ?? [];
         this.EvalValue = this.ChartInstance.EvalValue ?? null;
         this.AttNameEval = this.ChartInstance.AttNameEval ?? null;
-        this.Dataset = this.ChartInstance.Dataset ??  [];
+        this.Dataset = this.ChartInstance.Dataset ?? [];
         if (this.ChartInstance.TypeChart == "staked") {// bar or staked
             this.ChartInstance.TypeChart = "column";
-        }else {
+        } else {
             this.ChartInstance.TypeChart = "row";
         }
         this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
         this.DrawChart();
     }
     DrawChart() {
-        console.log(this.ChartInstance);
         this.Totals = WArrayF.DataTotals(this.ChartInstance);
         this.MaxVal = WArrayF.MaxValue(this.Totals, this.ChartInstance);
         this.EvalArray = WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.AttNameEval);
-        let ChartFragment = WRender.createElement({ type:'div', props: { id: '', class: 'WChartContainer'}});
+        let ChartFragment = WRender.createElement({ type: 'div', props: { id: '', class: 'WChartContainer' } });
         ChartFragment.append(this.DrawSeries(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
         ChartFragment.append(WRender.createElement(this._AddSectionBars()));
         ChartFragment.append(this.DrawGroups());
         this.shadowRoot.append(ChartFragment);
     }
-    _AddSectionBars(Dataset = this.Dataset) {  
-        console.log(this.groupParams);   
-        console.log(Dataset);   
+    _AddSectionBars(Dataset = this.Dataset) {
         this.groupParams.forEach(groupParam => {
             let object = {};
             object[groupParam] = "";
             this.GroupsData.push(WArrayF.ArrayUniqueByObject(Dataset, object))
         });
-        return this.DrawGroupBars(this.ChargeGroup(this.GroupsData)); 
-    } 
+        return this.DrawGroupBars(this.ChargeGroup(this.GroupsData));
+    }
     ChargeGroup = (Groups, inicio = 0) => {
         if (!Groups[inicio]) {
             return null;
@@ -78,26 +76,32 @@ class ColumChart2 extends HTMLElement {
             children: this.ChargeGroup(Groups, inicio + 1)
         }
         return ObjGroup;
-    }   
-    DrawGroupBars = (Groups, div = this.MainChart, arrayP = {}) => {
+    }
+    DrawGroupBars = (Groups, div = this.MainChart, arrayP = {}, GroupIndex = 0) => {
         if (Groups == null) {
             return "";
-        }        
+        }
         Groups.data.forEach((Group) => {
             let trGroup = { type: "GroupSection", props: { class: "GroupSection" }, children: [WArrayF.Capitalize(Group[Groups.groupParam])] };
-            let groupBar = { type: "containerbar", props: { style:"padding:0px", class: "ContainerBars" }, children: [] };
+            let groupBar = { type: "containerbar", props: { style: "padding:0px", class: "ContainerBars" }, children: [] };
+            if (GroupIndex == 0) {
+                trGroup.children.push(this._DrawBackgroundLine(this.MaxVal, null, this.ChartInstance.ColumnLabelDisplay));
+                trGroup.children.push(this._DrawIconsGroups());
+            }
+            GroupIndex++;
             trGroup.children.push(groupBar);
             arrayP[Groups.groupParam] = Group[Groups.groupParam];
             if (Groups.children != null) {
-                console.log(Groups.children);
                 if (Groups.children.children == null) {
                     trGroup.props.class = "GroupSection";
-                }                
-                this.DrawGroupBars(Groups.children, groupBar, arrayP);
+                }
+                
+                this.DrawGroupBars(Groups.children, groupBar, arrayP, GroupIndex);
             } else {
                 trGroup.type = "groupbar";
                 trGroup.props.class = "groupBars";
-                groupBar.props.style = "";
+                groupBar.props.style = "height: 180px";
+                groupBar.children.push(this._DrawBackgroundLine(this.MaxVal, null, this.ChartInstance.ColumnLabelDisplay, false));
                 if (this.EvalArray != null) {
                     let index = 0;
                     this.EvalArray.forEach(Eval => {
@@ -105,9 +109,9 @@ class ColumChart2 extends HTMLElement {
                         const Data = this.FindData(arrayP);
                         if (Data != "n/a") {
                             groupBar.children.push(this.DrawBar(Data, this.ChartInstance, index));
-                        } 
-                        index++;  
-                    });                                     
+                        }
+                        index++;
+                    });
                 }
             }
             div.children.push(trGroup);
@@ -156,40 +160,7 @@ class ColumChart2 extends HTMLElement {
             </Bars>`);
         return Bars;
     }
-      
-    _DrawBackgroundChart(value, size = 600, ValP) {
-        var countLine = 0;
-        var val = 0;
-        var countLine = 0;
-        var val = parseFloat(value / 10);
-        //%
-        countLine = 10
-        if (ValP == 1) {
-            countLine = 10
-            //var value = parseInt(value / 10) * 10 + 10;
-            val = 10;
-        }
-        var ContainerLine = document.createElement('section');
-        ContainerLine.className = "BackGrounLineX";
-        var valueLabel = 0;
-
-        for (let index = 0; index < countLine; index++) {
-            if (ValP == 1) {
-                valueLabel = valueLabel + val;
-                ContainerLine.appendChild(WRender.CreateStringNode(
-                    `<path class="CharLineXNumber"><label>${valueLabel}%</label></path>`
-                ));
-            } else {
-                valueLabel = valueLabel + val;
-                ContainerLine.appendChild(WRender.CreateStringNode(
-                    `<path class="CharLineXNumber"><label>${valueLabel.toFixed(1)}</label></path>`
-                ));
-            }
-
-        }
-        return ContainerLine;
-    }
-    _DrawBackgroundLine(value, size = 600, ValP) {
+    _DrawBackgroundLine(value, size = 600, ValP, label = true) {
         //console.log(value)
         var countLine = 0;
         var val = parseFloat(value / 10);
@@ -205,29 +176,53 @@ class ColumChart2 extends HTMLElement {
         var valueLabel = 0;
 
         for (let index = 0; index < countLine; index++) {
-            if (ValP == 1) {
-                valueLabel = valueLabel + val;
-                ContainerLine.appendChild(WRender.CreateStringNode(
-                    `<path class="CharLineX"></path>`
-                ));
+            if (label) {
+                ContainerLine.className =  "BackGrounLineX BackGrounLineXNumber";
+                if (ValP == 1) {
+                    valueLabel = valueLabel + val;
+                    ContainerLine.appendChild(WRender.CreateStringNode(
+                        `<path class="CharLineXNumber"><label>${valueLabel}%</label></path>`
+                    ));
+                } else {
+                    valueLabel = valueLabel + val;
+                    ContainerLine.appendChild(WRender.CreateStringNode(
+                        `<path class="CharLineXNumber"><label>${valueLabel.toFixed(1)}</label></path>`
+                    ));
+                }
             } else {
-                valueLabel = valueLabel + val;
-                ContainerLine.appendChild(WRender.CreateStringNode(
-                    `<path class="CharLineX"></path>`
-                ));
+                if (ValP == 1) {
+                    valueLabel = valueLabel + val;
+                    ContainerLine.appendChild(WRender.CreateStringNode(
+                        `<path class="CharLineX"></path>`
+                    ));
+                } else {
+                    valueLabel = valueLabel + val;
+                    ContainerLine.appendChild(WRender.CreateStringNode(
+                        `<path class="CharLineX"></path>`
+                    ));
+                }
             }
+
         }
         return ContainerLine;
-    }    
+    }
+    _DrawIconsGroups=()=>{
+        const IconsGroup = WRender.createElement({ type:'div', props: { id: '', class: 'IconsGroup'}})
+        this.groupParams.forEach((element, index) => {
+            IconsGroup.append(WRender.CreateStringNode(`<div class='IconG' 
+            style='background: ${this.IconsGroupColores[index]}'>
+            <div/>`));
+        });
+        return IconsGroup;
+    }
     DrawGroups() {
         var SectionLabelGroup = document.createElement('section');
         SectionLabelGroup.className = "SectionLabelGroup";
-        var color1 = " #70ad47";
-        this.groupParams.forEach(element => {
+        this.groupParams.forEach((element, index) => {
             SectionLabelGroup.appendChild(WRender.CreateStringNode(
-                   `<label><span style="background:${color1}"></span>${element}</label>`
+                `<label><span class="IconG" style="background:${this.IconsGroupColores[index]}"></span>${element}</label>`
             ));
-        });       
+        });
         return SectionLabelGroup;
     }
     FindData(arrayP) {
@@ -419,57 +414,54 @@ const WChartStyle = (ChartInstance) => {
             ClassList: [
                 new WCssClass(".WChartContainer ", {
                     "padding-left": " 30px",
-                    "font-size": " 12px",
+                    "font-size": " 11px",
                     "border": " #d4d4d4 solid 1px",
                     "padding": " 20px",
-                    //"border-radius":" .4cm",
-                    "max-height": " 500px !important",
-                    "min-height": " 400px !important",
                     "overflow": " hidden",
-                }),
-                new WCssClass(".WChartContainer h3 ", {                    
+                    height: "calc(100% - 40px)",
+                    display: "flex",
+                    "justify-content": "center",
+                    "flex-direction": "column",
+                    "text-overflow": "ellipsis",
+                    "white-space": "nowrap"
+                }), new WCssClass(".WChartContainer h3 ", {
                     "text-align": " center",
                     "display": " block",
                     "font-size": " 16px",
-                }),
-                new WCssClass(".SectionLabels, .SectionLabelGroup ", {
+                }), new WCssClass(".SectionLabels, .SectionLabelGroup ", {
                     "display": " flex",
                     "justify-content": " center",
                     "align-items": " center",
                     "padding-top": " 5px",
                     "padding-bottom": " 5px",
                     "flex-wrap": " wrap",
-                }),
-                new WCssClass(".SectionLabels label, .SectionLabelGroup label ", {
+                }), new WCssClass(".SectionLabels label, .SectionLabelGroup label ", {
                     "display": " flex",
                     "height": " 20px",
                     "justify-content": " center",
                     "align-items": " center",
                     "font-size": " 9px",
-                }),
-                new WCssClass(".SectionLabels label span, .SectionLabelGroup label span ", {
+                }), new WCssClass(".SectionLabels label span, .SectionLabelGroup label span ", {
                     "min-height": " 20px",
                     "width": " 20px",
                     "content": '" "',
                     "border-radius": " 50%",
                     "display": " inline-flex",
                     "margin": " 5px",
-                }),
-                new WCssClass(".SectionBars ", {
+                }), new WCssClass(".SectionBars", {
                     "display": " flex",
                     "align-items": " flex-end",
                     "overflow-y": " hidden",
-                    "padding-left": " 30px",
                     "position": " relative",
                     "overflow-x": " scroll",
-                    padding: 10
+                    padding: 10,
+                    "padding-left": " 40px",
                     //"min-height": " 270px",
-                }),new WCssClass(".SectionBars label", {                    
-                    padding: 5
-                }),new WCssClass(".Bars label", {                    
+                }), new WCssClass(".SectionBars label", {
+                    padding: 5,
+                }), new WCssClass(".Bars label", {
                     padding: 0
-                }),
-                new WCssClass(".GroupSection ", {
+                }), new WCssClass(".GroupSection ", {
                     "display": " flex",
                     "align-items": "center",
                     "height": " 100%",
@@ -477,26 +469,24 @@ const WChartStyle = (ChartInstance) => {
                     "flex-direction": "column-reverse",
                     "flex-grow": " 1",
                     "border-bottom": " solid 2px #d4d4d4",
-                    "border-right": " solid 1px #d4d4d4",
+                    //"border-right": " solid 1px #d4d4d4",
                     "border-top": " solid 2px #d4d4d4"
-                }),
-                new WCssClass(".groupBars ", {
+                }), new WCssClass(".groupBars ", {
                     "width": " 100%",
-                    "height": " 180px",
+                    //"height": " 180px",
                     "display": " flex",
                     "flex-direction": "column-reverse",
                     "flex-grow": " 1",
                     "border-left": " solid 1px #d4d4d4",
-                    "align-items": "center"
-                }),
-                new WCssClass(".groupLabels ", {
+                    "align-items": "center",
+                    position: "relative"
+                }), new WCssClass(".groupLabels ", {
                     "display": " flex",
                     "width": " 100%",
                     "border": " solid 1px #d4d4d4",
                     "align-items": " stretch",
                     "background-color": " #fff",
-                }),
-                new WCssClass(".groupLabels label ", {
+                }), new WCssClass(".groupLabels label ", {
                     "padding": " 5px",
                     "flex-grow": " 1",
                     "width": " 80px",
@@ -528,8 +518,7 @@ const WChartStyle = (ChartInstance) => {
                     "min-height": " 20PX",
                     "background": " rgb(177, 177, 177)",
                     "background": " linear-gradient(0deg, rgba(177, 177, 177, 1) 0%, rgba(209, 209, 209, 1) 53%)",
-                }),
-                new WCssClass(".Bars label ", {
+                }), new WCssClass(".Bars label ", {
                     "width": " 100%",
                     "text-align": " center",
                     "display": " block",
@@ -537,8 +526,7 @@ const WChartStyle = (ChartInstance) => {
                     "margin-top": " 5px",
                     "font-weight": " bold",
                     "overflow": " hidden",
-                }),
-                new WCssClass(".BackGrounLineX ", {
+                }), new WCssClass(".BackGrounLineX ", {
                     "display": " flex",
                     "position": " absolute",
                     "flex-direction": " column-reverse",
@@ -548,9 +536,9 @@ const WChartStyle = (ChartInstance) => {
                     "top": " 0px",
                     "height": " 180px",
                     "right": " 0px",
-                }),
-
-                new WCssClass(".CharLineX ", {
+                }), new WCssClass(".BackGrounLineXNumber ", {                    
+                    "left": " -40px",
+                }), new WCssClass(".CharLineX ", {
                     "position": " relative",
                     "border-top": " rgb(190, 190, 190) solid 1px",
                     "height": " 100%",
@@ -558,87 +546,56 @@ const WChartStyle = (ChartInstance) => {
                     "align-items": " flex-start",
                     "display": " flex",
                     "padding-left": " 5PX",
-                }),
-
-                new WCssClass(".CharLineXNumber ", {
+                }), new WCssClass(".CharLineXNumber ", {
                     "position": " relative",
                     "border-top": " rgba(190, 190, 190, 0) solid 1px",
                     "height": " 100%",
                     "align-items": " flex-start",
                     "display": " flex",
                     "font-size": " 9px",
-                }),
+                }), new WCssClass(".CharLineXNumber label", {
+                    padding: 0,
+                    "padding-top": 5,                    
+                    width: 35,
+                    display: "block",
+                    "text-align": "right",
+                    "padding-right": 5,
 
-                new WCssClass(".ElementG1::before", {
-                    "height": " 25px",
-                    "width": " 25px",
-                    "background-color": " #70ad47",
-                    "content": '" "',
-                    "position": " absolute",
-                    "left": " -30px",
-                    "border-radius": " 0.15cm",
-                }),
-
-                new WCssClass(".ElementG2::before", {
-                    "height": " 25px",
-                    "width": " 25px",
-                    "background-color": " #5b9bd5",
-                    "content": '" "',
-                    "position": " absolute",
-                    "left": " -30px",
-                    "border-radius": " 0.15cm",
-                }),
-                new WCssClass(".ElementG3::before ", {
-                    "height": " 25px",
-                    "width": " 25px",
-                    "background-color": " #ffc000",
-                    "content": '" "',
-                    "position": "absolute",
-                    "left": " -30px",
-                    "border-radius": " 0.15cm",
-                }),
+                }),                  
                 new WCssClass(".SectionBars::-webkit-scrollbar-thumb", {
                     "background": " #ccc",
                     "border-radius": " 4px",
-                }),
-                new WCssClass(".SectionBars::-webkit-scrollbar-thumb:hover", {
+                }), new WCssClass(".SectionBars::-webkit-scrollbar-thumb:hover", {
                     "background": " #b3b3b3",
                     "box-shadow": " 0 0 3px 2px rgba(0, 0, 0, 0.2)",
-                }),
-                new WCssClass(".SectionBars::-webkit-scrollbar-thumb:active ", {
+                }), new WCssClass(".SectionBars::-webkit-scrollbar-thumb:active ", {
                     "background-color": " #999999",
-                }),
-
-                new WCssClass(".SectionBars::-webkit-scrollbar ", {
+                }), new WCssClass(".SectionBars::-webkit-scrollbar ", {
                     "width": " 8px",
                     "height": " 10px",
                     "margin": " 10px",
-                }),
-
-                new WCssClass(".SectionBars::-webkit-scrollbar-track ", {
+                }), new WCssClass(".SectionBars::-webkit-scrollbar-track ", {
                     "background": " #e1e1e1",
                     "border-radius": " 4px",
-                }),
-
-                new WCssClass(".SectionBars::-webkit-scrollbar-track:active ,.SectionBars::-webkit-scrollbar-track:hover", {
+                }), new WCssClass(".SectionBars::-webkit-scrollbar-track:active ,.SectionBars::-webkit-scrollbar-track:hover", {
                     "background": " #d4d4d4",
+                }), new WCssClass( `.IconsGroup`, {
+                    "display": " flex",
+                    "position": " absolute",
+                    //"justify-content": "space-between",
+                    "flex-direction": " column-reverse",
+                    "width": " 100%",
+                    "height": " 100%",
+                    "left": " 0px",
+                    "border-bottom": " 0px",
+                    "right": " 0px",
+                    "left": " -28px",
+                }), new WCssClass( `.IconG`, {
+                    height: 20,
+                    width: 20,
+                    margin: 1,
+                    "border-radius": "4px !important"
                 }),
-
-                new WCssClass(".Contenedor, .ContenedorPregs ", {
-                    "display": " block",
-                    "overflow": " initial",
-                    "margin": " auto",
-                    "margin-top": " 50px",
-                    "background-color": " #fff",
-                    "width": " 70%",
-                    "max-height": " 800px",
-                    "overflow-y": " initial",
-                    "padding": " 20px",
-                    "min-height": " 200px",
-                    "border-radius": " 5px",
-                }),
-
-
                 /*RADIALLLLL------------------------------------------------------------------------------------------------------*/
 
                 new WCssClass(".SectionRadialChart ", {
@@ -647,15 +604,11 @@ const WChartStyle = (ChartInstance) => {
                     "display": " block",
                     "width": " 100%",
                     "height": " 300px",
-                }),
-
-                new WCssClass(".RadialDataBackground ", {
+                }), new WCssClass(".RadialDataBackground ", {
                     "transform": " rotate(-90deg)",
-                }),
-                new WCssClass(".RadialDataBackground:first-child ", {
+                }), new WCssClass(".RadialDataBackground:first-child ", {
                     "margin-bottom": " 20px",
-                }),
-                new WCssClass(".RadialData ", {
+                }), new WCssClass(".RadialData ", {
                     "height": " 200px",
                     "width": " 200px",
                     "border-radius": " 50%",
@@ -664,9 +617,7 @@ const WChartStyle = (ChartInstance) => {
                     "top": " 0",
                     "left": " calc(50% - 100px)",
                     "margin": " auto",
-                }),
-
-                new WCssClass(".RadialData::before ", {
+                }),  new WCssClass(".RadialData::before ", {
                     "content": '" "',
                     "color": " #fff",
                     "height": " 200px",
@@ -678,9 +629,7 @@ const WChartStyle = (ChartInstance) => {
                     "left": " calc(50% - 100px)",
                     "margin": " auto",
                     "background": " linear-gradient( 90deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
-                }),
-
-                new WCssClass(".RadialData::after ", {
+                }),  new WCssClass(".RadialData::after ", {
                     "content": '" "',
                     "color": " #fff",
                     "height": " 200px",
@@ -692,38 +641,27 @@ const WChartStyle = (ChartInstance) => {
                     "left": " calc(50% - 100px)",
                     "margin": " auto",
                     "background": " linear-gradient( 180deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
-                }),
-
-                new WCssClass(".RadialChart ", {
+                }),  new WCssClass(".RadialChart ", {
                     "height": " 100%",
-                }),
-
-                new WCssClass(".circle ", {
+                }),  new WCssClass(".circle ", {
                     "transition": " all 0.5s",
                     "transform-origin": " 50% 50%",
                     "fill": " none",
                     "cursor": " pointer",
                     "clip-path": " circle(50% at 50% 50%)",
-                }),
-
-                new WCssClass(".circleText ", {
+                }), new WCssClass(".circleText ", {
                     "transition": " all 0.5s",
                     "height": " 100%",
                     "width": " 100%",
                     "transform-origin": " 50% 50%",
-                }),
-
-                new WCssClass(".circle:hover", {
+                }), new WCssClass(".circle:hover", {
                     "background-color": " #999999",
                     "background-blend-mode": " screen",
                     "z-index": " 5",
                     "clip-path": " circle(52% at 50% 50%)",
-                }),
-                new WCssClass(".progress__meter,.progress__value ", {
+                }), new WCssClass(".progress__meter,.progress__value ", {
                     "fill": " none",
-                }),
-
-                new WCssClass(".progress__meter ", {
+                }),  new WCssClass(".progress__meter ", {
                     "stroke": " #e6e6e6",
                 }),
             ]

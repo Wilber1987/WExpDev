@@ -600,7 +600,7 @@ class WTableDynamicComp extends HTMLElement {
                         padding: "0px",
                         display: "flex",
                         "flex-grow": 1,
-                        "box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
+                        //"box-shadow": "0 0 2px 0 rgba(0,0,0,50%)"
                     }), new WCssClass(`.TContainerBlock`, {
                         width: "100%"
                     }), new WCssClass(" .TContainerBlockL", {
