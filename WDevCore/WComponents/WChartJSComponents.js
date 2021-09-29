@@ -2,25 +2,16 @@ import { WRender, WArrayF } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 
 class ChartConfig {
-    constructor(Config) {
-        this.ContainerName = Config.ContainerName;
-        this.Title = Config.Title;
-        this.AttNameEval = Config.AttNameEval;
-        this.EvalValue = Config.EvalValue;
-        this.AttNameG1 = Config.AttNameG1;
-        this.AttNameG2 = Config.AttNameG2;
-        this.AttNameG3 = Config.AttNameG3;
-        this.GroupLabelsData = Config.GroupLabelsData; //series
-        this.Dataset = Config.Dataset; //datos        
-        this.Colors = Config.Colors;
-        this.GroupDataTotals = Config.GroupDataTotals;
-        this.ContainerSize = Config.ContainerSize;
-        this.ColumnLabelDisplay = Config.ColumnLabelDisplay;
-        this.TypeChart = Config.TypeChart;
-    }
+    TypeChart = 0;
+    Dataset = [];
+    Colors = [];
+    ColumnLabelDisplay = 0;
+    AttNameEval = "series";
+    EvalValue = "value";
+    groupParams = [];
 }
-class ColumChart2 extends HTMLElement {
-    constructor(ChartInstance = {}) {
+class ColumChart extends HTMLElement {
+    constructor(ChartInstance = (new ChartConfig())) {
         super();
         this.ChartInstance = ChartInstance;
         this.GroupsData = [];
@@ -40,6 +31,7 @@ class ColumChart2 extends HTMLElement {
         this.EvalValue = this.ChartInstance.EvalValue ?? null;
         this.AttNameEval = this.ChartInstance.AttNameEval ?? null;
         this.Dataset = this.ChartInstance.Dataset ?? [];
+        this.ChartInstance.Colors = this.ChartInstance.Colors ?? [];
         if (this.ChartInstance.TypeChart == "staked") {// bar or staked
             this.ChartInstance.TypeChart = "column";
         } else {
@@ -53,7 +45,7 @@ class ColumChart2 extends HTMLElement {
         this.MaxVal = WArrayF.MaxValue(this.Totals, this.ChartInstance);
         this.EvalArray = WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.AttNameEval);
         let ChartFragment = WRender.createElement({ type: 'div', props: { id: '', class: 'WChartContainer' } });
-        ChartFragment.append(this.DrawSeries(this.ChartInstance.GroupLabelsData, this.ChartInstance.Colors));
+        ChartFragment.append(this.DrawSeries(this.EvalArray, this.ChartInstance.Colors));
         ChartFragment.append(WRender.createElement(this._AddSectionBars()));
         ChartFragment.append(this.DrawGroups());
         this.shadowRoot.append(ChartFragment);
@@ -95,7 +87,7 @@ class ColumChart2 extends HTMLElement {
                 if (Groups.children.children == null) {
                     trGroup.props.class = "GroupSection";
                 }
-                
+
                 this.DrawGroupBars(Groups.children, groupBar, arrayP, GroupIndex);
             } else {
                 trGroup.type = "groupbar";
@@ -133,7 +125,7 @@ class ColumChart2 extends HTMLElement {
             }
             SectionLabels.appendChild(WRender.CreateStringNode(
                 `<label style="${style}"><span style="background:${Colors[index]}">
-                </span>${element.Descripcion}</label>`
+                </span>${element[this.AttNameEval]}</label>`
             ));
             index++;
         })
@@ -177,7 +169,7 @@ class ColumChart2 extends HTMLElement {
 
         for (let index = 0; index < countLine; index++) {
             if (label) {
-                ContainerLine.className =  "BackGrounLineX BackGrounLineXNumber";
+                ContainerLine.className = "BackGrounLineX BackGrounLineXNumber";
                 if (ValP == 1) {
                     valueLabel = valueLabel + val;
                     ContainerLine.appendChild(WRender.CreateStringNode(
@@ -206,8 +198,8 @@ class ColumChart2 extends HTMLElement {
         }
         return ContainerLine;
     }
-    _DrawIconsGroups=()=>{
-        const IconsGroup = WRender.createElement({ type:'div', props: { id: '', class: 'IconsGroup'}})
+    _DrawIconsGroups = () => {
+        const IconsGroup = WRender.createElement({ type: 'div', props: { id: '', class: 'IconsGroup' } })
         this.groupParams.forEach((element, index) => {
             IconsGroup.append(WRender.CreateStringNode(`<div class='IconG' 
             style='background: ${this.IconsGroupColores[index]}'>
@@ -261,7 +253,7 @@ class ColumChart2 extends HTMLElement {
         return color_aleatorio
     }
 }
-class RadialChart2 extends HTMLElement {
+class RadialChart extends HTMLElement {
     constructor(props) {
         super();
         this.attachShadow({ mode: "open" });
@@ -407,6 +399,7 @@ class RadialChart2 extends HTMLElement {
         circle.style.strokeDashoffset = dashoffset;
     }
 }
+
 const WChartStyle = (ChartInstance) => {
     return {
         type: "w-style",
@@ -424,10 +417,6 @@ const WChartStyle = (ChartInstance) => {
                     "flex-direction": "column",
                     "text-overflow": "ellipsis",
                     "white-space": "nowrap"
-                }), new WCssClass(".WChartContainer h3 ", {
-                    "text-align": " center",
-                    "display": " block",
-                    "font-size": " 16px",
                 }), new WCssClass(".SectionLabels, .SectionLabelGroup ", {
                     "display": " flex",
                     "justify-content": " center",
@@ -468,9 +457,9 @@ const WChartStyle = (ChartInstance) => {
                     "position": " relative",
                     "flex-direction": "column-reverse",
                     "flex-grow": " 1",
-                    "border-bottom": " solid 2px #d4d4d4",
+                    "border-bottom": " solid 1px #d4d4d4",
                     //"border-right": " solid 1px #d4d4d4",
-                    "border-top": " solid 2px #d4d4d4"
+                    "border-top": " solid 1px #d4d4d4"
                 }), new WCssClass(".groupBars ", {
                     "width": " 100%",
                     //"height": " 180px",
@@ -480,24 +469,7 @@ const WChartStyle = (ChartInstance) => {
                     "border-left": " solid 1px #d4d4d4",
                     "align-items": "center",
                     position: "relative"
-                }), new WCssClass(".groupLabels ", {
-                    "display": " flex",
-                    "width": " 100%",
-                    "border": " solid 1px #d4d4d4",
-                    "align-items": " stretch",
-                    "background-color": " #fff",
-                }), new WCssClass(".groupLabels label ", {
-                    "padding": " 5px",
-                    "flex-grow": " 1",
-                    "width": " 80px",
-                    "text-align": " center",
-                    "margin-bottom": " 0px !important",
-                    "white-space": " nowrap",
-                    "overflow": " hidden",
-                    "text-overflow": " ellipsis",
-                }),
-
-                new WCssClass(".ContainerBars ", {
+                }), new WCssClass(".ContainerBars ", {
                     "display": " flex",
                     "width": " 100%",
                     "padding-left": " 10px",
@@ -507,9 +479,7 @@ const WChartStyle = (ChartInstance) => {
                     "justify-content": " flex-end",
                     overflow: "hidden",
                     "border-bottom": "1px solid #BFBFBF"
-                }),
-
-                new WCssClass(".ContainerBars .Bars ", {
+                }), new WCssClass(".ContainerBars .Bars ", {
                     "display": " block",
                     "margin": " 0 auto",
                     "margin-top": " 0px",
@@ -536,7 +506,7 @@ const WChartStyle = (ChartInstance) => {
                     "top": " 0px",
                     "height": " 180px",
                     "right": " 0px",
-                }), new WCssClass(".BackGrounLineXNumber ", {                    
+                }), new WCssClass(".BackGrounLineXNumber ", {
                     "left": " -40px",
                 }), new WCssClass(".CharLineX ", {
                     "position": " relative",
@@ -555,14 +525,12 @@ const WChartStyle = (ChartInstance) => {
                     "font-size": " 9px",
                 }), new WCssClass(".CharLineXNumber label", {
                     padding: 0,
-                    "padding-top": 5,                    
+                    "padding-top": 5,
                     width: 35,
                     display: "block",
                     "text-align": "right",
-                    "padding-right": 5,
-
-                }),                  
-                new WCssClass(".SectionBars::-webkit-scrollbar-thumb", {
+                    "padding-right": 5
+                }), new WCssClass(".SectionBars::-webkit-scrollbar-thumb", {
                     "background": " #ccc",
                     "border-radius": " 4px",
                 }), new WCssClass(".SectionBars::-webkit-scrollbar-thumb:hover", {
@@ -579,7 +547,7 @@ const WChartStyle = (ChartInstance) => {
                     "border-radius": " 4px",
                 }), new WCssClass(".SectionBars::-webkit-scrollbar-track:active ,.SectionBars::-webkit-scrollbar-track:hover", {
                     "background": " #d4d4d4",
-                }), new WCssClass( `.IconsGroup`, {
+                }), new WCssClass(`.IconsGroup`, {
                     "display": " flex",
                     "position": " absolute",
                     //"justify-content": "space-between",
@@ -590,14 +558,13 @@ const WChartStyle = (ChartInstance) => {
                     "border-bottom": " 0px",
                     "right": " 0px",
                     "left": " -28px",
-                }), new WCssClass( `.IconG`, {
+                }), new WCssClass(`.IconG`, {
                     height: 20,
                     width: 20,
                     margin: 1,
                     "border-radius": "4px !important"
                 }),
                 /*RADIALLLLL------------------------------------------------------------------------------------------------------*/
-
                 new WCssClass(".SectionRadialChart ", {
                     "position": " relative",
                     "text-align": " center",
@@ -617,7 +584,7 @@ const WChartStyle = (ChartInstance) => {
                     "top": " 0",
                     "left": " calc(50% - 100px)",
                     "margin": " auto",
-                }),  new WCssClass(".RadialData::before ", {
+                }), new WCssClass(".RadialData::before ", {
                     "content": '" "',
                     "color": " #fff",
                     "height": " 200px",
@@ -629,7 +596,7 @@ const WChartStyle = (ChartInstance) => {
                     "left": " calc(50% - 100px)",
                     "margin": " auto",
                     "background": " linear-gradient( 90deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
-                }),  new WCssClass(".RadialData::after ", {
+                }), new WCssClass(".RadialData::after ", {
                     "content": '" "',
                     "color": " #fff",
                     "height": " 200px",
@@ -641,9 +608,9 @@ const WChartStyle = (ChartInstance) => {
                     "left": " calc(50% - 100px)",
                     "margin": " auto",
                     "background": " linear-gradient( 180deg, rgb(12, 109, 148) 50%, rgba(255, 255, 55, 0) 50%)",
-                }),  new WCssClass(".RadialChart ", {
+                }), new WCssClass(".RadialChart ", {
                     "height": " 100%",
-                }),  new WCssClass(".circle ", {
+                }), new WCssClass(".circle ", {
                     "transition": " all 0.5s",
                     "transform-origin": " 50% 50%",
                     "fill": " none",
@@ -661,12 +628,13 @@ const WChartStyle = (ChartInstance) => {
                     "clip-path": " circle(52% at 50% 50%)",
                 }), new WCssClass(".progress__meter,.progress__value ", {
                     "fill": " none",
-                }),  new WCssClass(".progress__meter ", {
+                }), new WCssClass(".progress__meter ", {
                     "stroke": " #e6e6e6",
                 }),
             ]
         }
     };
 }
-customElements.define("w-radial-chart2", RadialChart2);
-customElements.define("w-colum-chart2", ColumChart2);
+customElements.define("w-radial-chart2", RadialChart);
+customElements.define("w-colum-chart2", ColumChart);
+export {RadialChart, ColumChart}
