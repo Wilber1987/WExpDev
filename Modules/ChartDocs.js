@@ -1,5 +1,5 @@
 import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
-import "../WDevCore/WComponents/WChartJSComponent.js";
+import "../WDevCore/WDeprecateComponents/WChartJSComponent.js";
 import "../WDevCore/WComponents/WAppNavigator.js";
 import { ComponentsManager, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
 import "../WDevCore/WComponents/WCalendar.js";

@@ -1,5 +1,5 @@
 import { WRender } from "../WDevCore/WModules/WComponentsTools.js";
-import "../WDevCore/WComponents/WChartJSComponent.js";
+import "../WDevCore/WDeprecateComponents/WChartJSComponent.js";
 class BarReport {
     constructor(props) {
         this.type = "div";

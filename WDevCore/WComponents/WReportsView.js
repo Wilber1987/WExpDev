@@ -1,6 +1,6 @@
 import { WRender, WArrayF } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
-import "./WTableComponents.js";
+import "../WDeprecateComponents/WTableComponents.js";
 const TableId = "tableReport"
 
 //facturas de empresa ligadas al usuario y y por sesiones de empresa
@@ -146,7 +146,8 @@ class WReportView extends HTMLElement{
             props: { id: 'optionsContainter', class: "OptionContainer" }, children: []
         }
         console.log(this.Config);
-        for (const prop in this.Config.Dataset[0]) {            
+        for (const prop in this.Config.Dataset[0]) {             
+                                
             if ((typeof this.Config.Dataset[0][prop] != "number" 
             && !prop.toUpperCase().includes("FECHA") 
             && !prop.toUpperCase().includes("DATE") )
@@ -197,7 +198,6 @@ class WReportView extends HTMLElement{
                     wreport.DrawReport();
                     table.Dataset = DFilt;
                     table.DefineTable(DFilt);
-
                 }
                 ControlOptions.children.push([prop, select]);
             }

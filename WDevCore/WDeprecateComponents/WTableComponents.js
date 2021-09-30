@@ -1,7 +1,7 @@
 import { WRender, WArrayF, ComponentsManager, WAjaxTools } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
 import "./WChartJSComponent.js";
-import "./WModalForm.js";
+import "../WComponents/WModalForm.js";
 class WTableComponent extends HTMLElement {
     constructor() {
         super();

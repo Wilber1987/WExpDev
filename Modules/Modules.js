@@ -1,7 +1,7 @@
 import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
 import "../WDevCore/WComponents/WSlide.js";
 import "../WDevCore/WComponents/WRichText.js";
-import "../WDevCore/WComponents/WTableComponents.js";
+import "../WDevCore/WDeprecateComponents/WTableComponents.js";
 import "../WDevCore/WComponents/WAppNavigator.js";
 import { ComponentsManager, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
 //DEFINICION DE TABLAS

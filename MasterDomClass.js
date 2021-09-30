@@ -1,15 +1,15 @@
 import { ComponentsManager, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
-import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
-import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
-import { SlideDoc } from "./Modules/SlideDoc.js";
-import { ChartDocs } from "./Modules/ChartDocs.js";
-import DocumentView from "./Modules/DocumentView.js";
+//import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
+//import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
+//import { SlideDoc } from "./Modules/SlideDoc.js";
+//import { ChartDocs } from "./Modules/ChartDocs.js";
+//import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
-import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
+//import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
 import { dataTestFact } from './DATA/data.js'
-import { ReportView } from "./Modules/ReportView.js";
-import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
+//import { ReportView } from "./Modules/ReportView.js";
+//import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
 import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamicComp.js";
 
 const DOMManager = new ComponentsManager();

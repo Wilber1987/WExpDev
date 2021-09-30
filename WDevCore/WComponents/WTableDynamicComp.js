@@ -13,7 +13,6 @@ class WTableDynamicComp extends HTMLElement {
         this.EvalValue = this.TableConfig.EvalValue ?? null;
         this.AttNameEval = this.TableConfig.AttNameEval ?? null;
         this.attachShadow({ mode: "open" });
-
         this.MainTable = WRender.createElement({ type: "div", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] });
         this.divTableContainer = WRender.createElement({
             type: "div", props: { class: "tableContainer" },
@@ -23,8 +22,10 @@ class WTableDynamicComp extends HTMLElement {
             type: "div",
             props: { id: "Chart" + this.id, className: "CharttableReport" },
         });
-        this.FilterControl = WRender.createElement(this.FilterOptions()); 
-        this.ConfigControl = WRender.createElement(this.CreateConfig()); 
+        this.FilterControl = WRender.createElement(this.FilterOptions());
+        this.ConfigControl = WRender.createElement(this.CreateConfig());
+        this.TableStyle = WRender.createElement(this.TableStyleDinamic());
+        this.shadowRoot.append(this.TableStyle);
         this.shadowRoot.append(this.divTableContainer);
         this.shadowRoot.append(this.ChartContainer);
     }
@@ -40,7 +41,6 @@ class WTableDynamicComp extends HTMLElement {
         }
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
-        //this.TableConfig.MasterDetailTable = true
         if (typeof this.TableConfig.Dataset === "undefined" || this.TableConfig.Dataset.length == 0) {
             this.innerHTML = "Defina un Dataset en formato JSON";
             return;
@@ -78,8 +78,7 @@ class WTableDynamicComp extends HTMLElement {
                     }),
                 ]
             }
-        }));
-        this.shadowRoot.append(WRender.createElement(this.TableStyleDinamic()));
+        }));        
         this.shadowRoot.append(WRender.createElement(this.TableOptions()));
         this.ChartContainer.innerHTML = "";
         this.DrawGroupTable(this.Dataset);
@@ -189,53 +188,31 @@ class WTableDynamicComp extends HTMLElement {
         let divAtt = WRender.createElement({
             type: "div",
             props: {
-                class: "TableOptionsAtribs",
-                id:  "ListAtribs",
-                ondrop: this.drop,
-                ondragover: allowDrop
-            },
-            children: [{
-                type: "label",
-                props: { innerText: "Parametros", class: "titleParam" }
-            }]
+                class: "TableOptionsAtribs", id: "ListAtribs", ondrop: this.drop, ondragover: allowDrop
+            }, children: [{ type: "label", props: { innerText: "Parametros", class: "titleParam" } }]
         });
         let model = this.Dataset[0];
         let divEvalAttib = WRender.createElement({
             type: "div",
             props: {
-                class: "TableOptionsAtribs",
-                style: "height: 35%",
-                id:  "ListEval",
-                ondrop: this.drop,
-                ondragover: allowDrop
-            },
-            children: [{
-                type: "label",
-                props: { innerText: "Filas", class: "titleParam" }
+                class: "TableOptionsAtribs", style: "height: 35%", id: "ListEval", ondrop: this.drop, ondragover: allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Filas", class: "titleParam" }
             }]
         });
         let divEvalGroups = WRender.createElement({
             type: "div",
             props: {
-                class: "TableOptionsAtribs",
-                id:  "ListGroups",
-                ondrop: this.drop,
-                ondragover: allowDrop
-            },
-            children: [{
-                type: "label",
-                props: { innerText: "Columnas", class: "titleParam" },
-                children: []
+                class: "TableOptionsAtribs", id: "ListGroups", ondrop: this.drop, ondragover: allowDrop
+            }, children: [{
+                type: "label", props: { innerText: "Columnas", class: "titleParam" }, children: []
             }]
         });
         let select = {
             type: "select",
             props: {
-                id: "Select" + this.id,
-                class: "titleParam",
-                onchange: () => { this.DefineTable(); }
-            },
-            children: [
+                id: "Select" + this.id, class: "titleParam", onchange: () => { this.DefineTable(); }
+            }, children: [
                 { type: "option", props: { innerText: "Value - Suma", value: "sum" } },
                 { type: "option", props: { innerText: "Value - Count", value: "count" } }
             ]
@@ -244,7 +221,7 @@ class WTableDynamicComp extends HTMLElement {
             type: "div",
             props: {
                 class: "TableOptionsAtribs",
-                id:  "ListValue",
+                id: "ListValue",
                 ondrop: this.drop,
                 ondragover: allowDrop
             }, children: [select]
@@ -252,13 +229,17 @@ class WTableDynamicComp extends HTMLElement {
         for (const props in model) {
             const LabelP = WRender.createElement({
                 type: "label",
-                children: [WArrayF.Capitalize(props), { type:'input', props: { type:'button', value: 'x', onclick: async ()=>{
-                    const btn = LabelP.querySelector("input");
-                    btn.style.display = "none"; 
-                    divAtt.append(LabelP);   
-                    this.DefineParams(); 
-                    this.DefineTable();           
-                }}}],
+                children: [WArrayF.Capitalize(props), {
+                    type: 'input', props: {
+                        type: 'button', value: 'x', onclick: async () => {
+                            const btn = LabelP.querySelector("input");
+                            btn.style.display = "none";
+                            divAtt.append(LabelP);
+                            this.DefineParams();
+                            this.DefineTable();
+                        }
+                    }
+                }],
                 props: {
                     id: props + this.id, name: props, class: "labelParam", draggable: true, ondragstart: drag
                 }
@@ -271,7 +252,7 @@ class WTableDynamicComp extends HTMLElement {
                 divEvalGroups.append(LabelP);
             } else {
                 const btn = LabelP.querySelector("input");
-                btn.style.display = "none";                
+                btn.style.display = "none";
                 divAtt.append(LabelP);
             }
         }
@@ -297,14 +278,14 @@ class WTableDynamicComp extends HTMLElement {
                     }
                 }, {//filters
                     type: 'button', props: {
-                        class: 'BtnTableSR', innerText: '', onclick: async () => {                            
+                        class: 'BtnTableSR', innerText: '', onclick: async () => {
                             this.shadowRoot.append(WRender.createElement({
                                 type: "w-modal-form",
                                 props: {
                                     title: "Filtros",
                                     ObjectModal: this.FilterControl,
-                                    ObjectOptions: {                                        
-                                        SaveFunction: (NewObject) => {}
+                                    ObjectOptions: {
+                                        SaveFunction: (NewObject) => { }
                                     }
                                 }
                             }));
@@ -319,9 +300,9 @@ class WTableDynamicComp extends HTMLElement {
                                     title: "Datos",
                                     ObjectModal: new WTableComponent({
                                         Dataset: this.TableConfig.Dataset,
-                                        Options: {Search: true}
-                                    }),  ObjectOptions: {                                        
-                                        SaveFunction: (NewObject) => {}
+                                        Options: { Search: true }
+                                    }), ObjectOptions: {
+                                        SaveFunction: (NewObject) => { }
                                     }
                                 }
                             }));
@@ -330,7 +311,15 @@ class WTableDynamicComp extends HTMLElement {
                 }, {//Print
                     type: 'button', props: {
                         class: 'BtnTableSR', innerText: '', onclick: async () => {
-                            //NO IMPLEMENT
+                            const MainTable = this.MainTable.innerHTML + this.TableStyle.innerHTML;
+                            const MainChart = this.ChartContainer.querySelector("w-colum-chart");
+                            const PrintNode = MainTable + MainChart.shadowRoot.innerHTML;
+                            //console.log(PrintNode);
+                            const ventimp =  window.open(' ', 'popimpr');
+                            ventimp.document.write( PrintNode );
+                            ventimp.document.close();
+                            ventimp.print();
+                            ventimp.close();
                         }
                     }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.printI } }]
                 }, {//Config
@@ -341,8 +330,8 @@ class WTableDynamicComp extends HTMLElement {
                                 props: {
                                     title: "Configuraciones",
                                     ObjectModal: this.ConfigControl,
-                                    ObjectOptions: {                                        
-                                        SaveFunction: (NewObject) => {}
+                                    ObjectOptions: {
+                                        SaveFunction: (NewObject) => { }
                                     }
                                 }
                             }));
@@ -351,7 +340,7 @@ class WTableDynamicComp extends HTMLElement {
                 }
             ]
         });
-        TOpcion.append(divBTNS,divAtt,
+        TOpcion.append(divBTNS, divAtt,
             WRender.createElement({
                 type: 'div', props: {
                     class: 'TableOptionsAtribs OptionsAtribsGroup'
@@ -360,21 +349,20 @@ class WTableDynamicComp extends HTMLElement {
         return TOpcion;
     }
     DrawChart() {
-        if (this.groupParams.length > 0 && this.EvalArray != null) {            
+        if (this.groupParams.length > 0 && this.EvalArray != null) {
             if (this.TableConfig.TypeChart == undefined) {// bar or staked
                 this.TableConfig.TypeChart = "bar";
             }
-            var CharConfig = {       
+            var CharConfig = {
                 TypeChart: this.TableConfig.TypeChart,
-                Dataset: this.ProcessData,
+                Dataset: this.ProcessData, // this.TableConfig.Dataset,
                 Colors: this.Colors,
                 ColumnLabelDisplay: 0,
-                AttNameEval: this.AttNameEval,                
+                AttNameEval: this.AttNameEval,
                 EvalValue: this.EvalValue,
                 groupParams: this.groupParams,
             };
-            console.log(CharConfig);
-            return { type: 'w-colum-chart2', props: { ChartInstance: CharConfig } };
+            return { type: 'w-colum-chart', props: { ChartInstance: CharConfig } };
         }
         return "No hay agrupaciones";
     }
@@ -445,7 +433,7 @@ class WTableDynamicComp extends HTMLElement {
                 if (!find) {
                     this.groupParams.push(this.shadowRoot.querySelector("#" + data).name);
                 }
-            } else if (target.id.includes("ListAtribs")) {                
+            } else if (target.id.includes("ListAtribs")) {
                 let find = this.groupParams.find(a => a == this.shadowRoot.querySelector("#" + data).name);
                 if (find) {
                     this.groupParams.splice(this.groupParams.indexOf(find), 1);
@@ -468,23 +456,23 @@ class WTableDynamicComp extends HTMLElement {
             }
             const btn = control.querySelector("input");
             if (target.id.includes("ListAtribs")) {
-                btn.style.display = "none"; 
+                btn.style.display = "none";
             } else {
-                btn.style.display = "block"; 
+                btn.style.display = "block";
             }
             this.DefineTable();
         } else {
             console.log("error")
         }
     }
-    DefineParams = ()=>{        
+    DefineParams = () => {
         this.EvalValue = null;
         this.groupParams = [];
         this.AttNameEval = null;
         const ContEval = this.shadowRoot.querySelector("#ListEval");
         const LabelEval = ContEval.querySelector(".labelParam");
-        if(LabelEval != null){
-            this.AttNameEval = LabelEval.name;            
+        if (LabelEval != null) {
+            this.AttNameEval = LabelEval.name;
         }
         const ContGroups = this.shadowRoot.querySelector("#ListGroups");
         ContGroups.querySelectorAll(".labelParam").forEach(labelParam => {
@@ -492,90 +480,95 @@ class WTableDynamicComp extends HTMLElement {
         });
         const ConValue = this.shadowRoot.querySelector("#ListValue");
         const LabelValue = ConValue.querySelector(".labelParam");
-        if( LabelValue != null){
+        if (LabelValue != null) {
             this.EvalValue = LabelValue.name;
         }
     }
     FilterOptions = () => {
         const ControlOptions = {
             type: 'div',
-            props: { class: "OptionContainer" }, children: [{ type:'w-style', props: {id: '', ClassList: [
-                new WCssClass(`.OptionContainer`, {
-                    padding: 20,
-                    display: "grid",
-                    "grid-template-columns": "50% 50%",
-                    "grid-gap": 10
-                }),new WCssClass(`.OptionContainer label`, {
-                    padding: 10,
-                    display: "block"                   
-                }),
-            ]}}]
-        }        
-        for (const prop in this.TableConfig.Dataset[0]) {            
-            if ((typeof this.TableConfig.Dataset[0][prop] != "number" 
-            && !prop.toUpperCase().includes("FECHA") 
-            && !prop.toUpperCase().includes("DATE") )
-            || prop.toUpperCase().includes("AÑO") 
-            || prop.toUpperCase().includes("YEAR")) {
-                const select = {type:'select', props: {id: prop}, children:[
-                    { type:'option', props: { innerText:'Seleccione', value: ''} }
-                ]}            
+            props: { class: "OptionContainer" }, children: [{
+                type: 'w-style', props: {
+                    id: '', ClassList: [
+                        new WCssClass(`.OptionContainer`, {
+                            padding: 20,
+                            display: "grid",
+                            "grid-template-columns": "50% 50%",
+                            "grid-gap": 10
+                        }), new WCssClass(`.OptionContainer label`, {
+                            padding: 10,
+                            display: "block"
+                        }),
+                    ]
+                }
+            }]
+        }
+        for (const prop in this.TableConfig.Dataset[0]) {
+            const flag = WArrayF.checkDisplay(this.DisplayFilts, prop);
+            if (!flag) {
+                continue;
+            }
+            if ((typeof this.TableConfig.Dataset[0][prop] != "number"
+                && !prop.toUpperCase().includes("FECHA")
+                && !prop.toUpperCase().includes("DATE"))
+                || prop.toUpperCase().includes("AÑO")
+                || prop.toUpperCase().includes("YEAR")) {
+                const select = {
+                    type: 'select', props: { id: prop }, children: [
+                        { type: 'option', props: { innerText: 'Seleccione', value: '' } }
+                    ]
+                }
                 const SelectData = WArrayF.ArrayUnique(this.TableConfig.Dataset, prop);
                 SelectData.forEach(data => {
                     if (data[prop] != "" && data[prop] != null) {
                         select.children.push({
-                            type:'option', props: {innerText: data[prop], value: data[prop]}
-                        });                        
-                    }                           
+                            type: 'option', props: { innerText: data[prop], value: data[prop] }
+                        });
+                    }
                 });
-                select.props.onchange =  (ev)=>{
-                    let SelectFlag = false;
-                    this.FilterControl.querySelectorAll("select").forEach(select => {
-                        if (select.id != ev.target.id) {
-                            if (select.value != "") {
-                                console.log("valor: ",select.value);
-                                SelectFlag = true;
-                            }
-                        }
-                    });            
-                    const DFilt =  this.TableConfig.Dataset.filter( obj => {
+                select.props.onchange = (ev) => {
+                    const DFilt = this.TableConfig.Dataset.filter(obj => {
                         let flagObj = true;
-                        this.FilterControl.querySelectorAll("select").forEach(select => {  
+                        this.FilterControl.querySelectorAll("select").forEach(select => {
                             if (select.value == "") {
                                 return
                             }
-                            if ( obj[select.id] == select.value) {
+                            if (obj[select.id] == select.value) {
                                 if (flagObj) {
                                     flagObj = true;
-                                } 
+                                }
                             } else {
                                 flagObj = false;
                             }
                         });
                         return flagObj;
-                    });  
+                    });
                     this.DefineTable(DFilt);
                 }
                 ControlOptions.children.push([WArrayF.Capitalize(prop), select]);
             }
-        }  
+        }
         return ControlOptions;
     }
     CreateConfig = () => {
         const ConfigContainer = {
             type: 'div',
-            props: { class: "ConfigContainer" }, children: [{ type:'w-style', props: {id: '', ClassList: [
-                new WCssClass(`.ConfigContainer`, {
-                    padding: 20,
-                    display: "grid",
-                    "grid-template-columns": "50% 50%",
-                    "grid-gap": 10
-                }),new WCssClass(`.ConfigContainer label`, {
-                    padding: 10,
-                    display: "block"                   
-                }),
-            ]}}]
-        }   
+            props: { class: "ConfigContainer" }, children: [{
+                type: 'w-style', props: {
+                    id: '', ClassList: [
+                        new WCssClass(`.ConfigContainer`, {
+                            padding: 20,
+                            display: "grid",
+                            "grid-template-columns": "50% 50%",
+                            "grid-gap": 10
+                        }), new WCssClass(`.ConfigContainer label`, {
+                            padding: 10,
+                            display: "block"
+                        }),
+                    ]
+                }
+            }]
+        }
         return ConfigContainer;
     }
     //#endregion FIN TABLA DINAMICA---------------------------------------------------------------------------
@@ -593,6 +586,7 @@ class WTableDynamicComp extends HTMLElement {
                     //ESTILO DE LA TABLA BASICA----------------------------tableContainer                    
                     new WCssClass(`*`, {
                         "font-family": 'arial',
+                        "-webkit-print-color-adjust": "exact !important"
                         //transition: "all 1s"
                     }), new WCssClass(`.tableContainer`, {
                         overflow: "auto",
@@ -779,7 +773,7 @@ class WTableDynamicComp extends HTMLElement {
                         "background-color": "#fff",
                         cursor: "pointer",
                         "border-bottom": "solid 2px #efefef"
-                    }),new WCssClass(`.labelParam input`, {
+                    }), new WCssClass(`.labelParam input`, {
                         outline: "none",
                         border: "none",
                         background: "none",
@@ -799,10 +793,10 @@ class WTableDynamicComp extends HTMLElement {
             }
         }
         return WTableStyle;
-    }    
+    }
     Icons = {
         printI: "data:image/svg+xml;base64," + "PHN2ZyBpZD0iTGF5ZXIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUxMiA1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtNDE0IDgwaC0zMTZjLTUuNTIzIDAtMTAtNC40NzctMTAtMTB2LTI2YzAtMjQuMzAxIDE5LjY5OS00NCA0NC00NGgyNDhjMjQuMzAxIDAgNDQgMTkuNjk5IDQ0IDQ0djI2YzAgNS41MjMtNC40NzcgMTAtMTAgMTB6Ii8+PHBhdGggZD0ibTQ1OCAxMTJoLTQwNGMtMjkuNzc2IDAtNTQgMjQuMjI0LTU0IDU0djE4OGMwIDI5Ljc3NiAyNC4yMjQgNTQgNTQgNTRoMzR2LTgwYzAtMzkuNzAxIDMyLjI5OS03MiA3Mi03MmgxOTJjMzkuNzAxIDAgNzIgMzIuMjk5IDcyIDcydjgwaDM0YzI5Ljc3NiAwIDU0LTI0LjIyNCA1NC01NHYtMTg4YzAtMjkuNzc2LTI0LjIyNC01NC01NC01NHptLTM2MS45OCAxMjBjLTEzLjI1NSAwLTI0LjAwNS0xMC43NDUtMjQuMDA1LTI0czEwLjc0LTI0IDIzLjk5NS0yNGguMDFjMTMuMjU1IDAgMjQgMTAuNzQ1IDI0IDI0cy0xMC43NDUgMjQtMjQgMjR6Ii8+PHBhdGggZD0ibTM1MiAzMDRoLTE5MmMtMTMuMjU1IDAtMjQgMTAuNzQ1LTI0IDI0djgwIDMyYzAgMTMuMjU1IDEwLjc0NSAyNCAyNCAyNGgxOTJjMTMuMjU1IDAgMjQtMTAuNzQ1IDI0LTI0di0zMi04MGMwLTEzLjI1NS0xMC43NDUtMjQtMjQtMjR6Ii8+PC9zdmc+",
-        dataset: "data:image/svg+xml;base64," +  "PHN2ZyBoZWlnaHQ9IjUxMnB0IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTcgMzMxaC00NXYtNDVjMC04LjI4NTE1Ni02LjcxNDg0NC0xNS0xNS0xNWgtMTY2di0zMGg0NWM4LjI4NTE1NiAwIDE1LTYuNzE0ODQ0IDE1LTE1cy02LjcxNDg0NC0xNS0xNS0xNWgtNDV2LTMwaDEwNWM4LjI4NTE1NiAwIDE1LTYuNzE0ODQ0IDE1LTE1di0xNTFjMC04LjI4NTE1Ni02LjcxNDg0NC0xNS0xNS0xNWgtMjQwYy04LjI4NTE1NiAwLTE1IDYuNzE0ODQ0LTE1IDE1djE1MWMwIDguMjg1MTU2IDYuNzE0ODQ0IDE1IDE1IDE1aDEwNXYzMGgtNDVjLTguMjg1MTU2IDAtMTUgNi43MTQ4NDQtMTUgMTVzNi43MTQ4NDQgMTUgMTUgMTVoNDV2MzBoLTE2NmMtOC4yODUxNTYgMC0xNSA2LjcxNDg0NC0xNSAxNXY0NWgtNDVjLTguMjg1MTU2IDAtMTUgNi43MTQ4NDQtMTUgMTV2MTUxYzAgOC4yODUxNTYgNi43MTQ4NDQgMTUgMTUgMTVoMTIwYzguMjg1MTU2IDAgMTUtNi43MTQ4NDQgMTUtMTV2LTE1MWMwLTguMjg1MTU2LTYuNzE0ODQ0LTE1LTE1LTE1aC00NXYtMzBoMTUxdjMwaC00NWMtOC4yODUxNTYgMC0xNSA2LjcxNDg0NC0xNSAxNXYxNTFjMCA4LjI4NTE1NiA2LjcxNDg0NCAxNSAxNSAxNWgxMjBjOC4yODUxNTYgMCAxNS02LjcxNDg0NCAxNS0xNXYtMTUxYzAtOC4yODUxNTYtNi43MTQ4NDQtMTUtMTUtMTVoLTQ1di0zMGgxNTF2MzBoLTQ1Yy04LjI4NTE1NiAwLTE1IDYuNzE0ODQ0LTE1IDE1djE1MWMwIDguMjg1MTU2IDYuNzE0ODQ0IDE1IDE1IDE1aDEyMGM4LjI4NTE1NiAwIDE1LTYuNzE0ODQ0IDE1LTE1di0xNTFjMC04LjI4NTE1Ni02LjcxNDg0NC0xNS0xNS0xNXptLTM0Ni0zMDFoMjEwdjEyMWgtMjEwem0tMzEgNDUyaC05MHYtMTIxaDkwem0xODEgMGgtOTB2LTEyMWg5MHptMTgxIDBoLTkwdi0xMjFoOTB6bTAgMCIvPjxwYXRoIGQ9Im00NTIgNDM2YzAgOC4yODUxNTYtNi43MTQ4NDQgMTUtMTUgMTVzLTE1LTYuNzE0ODQ0LTE1LTE1IDYuNzE0ODQ0LTE1IDE1LTE1IDE1IDYuNzE0ODQ0IDE1IDE1em0wIDAiLz48cGF0aCBkPSJtMjcxIDQzNmMwIDguMjg1MTU2LTYuNzE0ODQ0IDE1LTE1IDE1cy0xNS02LjcxNDg0NC0xNS0xNSA2LjcxNDg0NC0xNSAxNS0xNSAxNSA2LjcxNDg0NCAxNSAxNXptMCAwIi8+PHBhdGggZD0ibTkwIDQzNmMwIDguMjg1MTU2LTYuNzE0ODQ0IDE1LTE1IDE1cy0xNS02LjcxNDg0NC0xNS0xNSA2LjcxNDg0NC0xNSAxNS0xNSAxNSA2LjcxNDg0NCAxNSAxNXptMCAwIi8+PC9zdmc+",
+        dataset: "data:image/svg+xml;base64," + "PHN2ZyBoZWlnaHQ9IjUxMnB0IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTcgMzMxaC00NXYtNDVjMC04LjI4NTE1Ni02LjcxNDg0NC0xNS0xNS0xNWgtMTY2di0zMGg0NWM4LjI4NTE1NiAwIDE1LTYuNzE0ODQ0IDE1LTE1cy02LjcxNDg0NC0xNS0xNS0xNWgtNDV2LTMwaDEwNWM4LjI4NTE1NiAwIDE1LTYuNzE0ODQ0IDE1LTE1di0xNTFjMC04LjI4NTE1Ni02LjcxNDg0NC0xNS0xNS0xNWgtMjQwYy04LjI4NTE1NiAwLTE1IDYuNzE0ODQ0LTE1IDE1djE1MWMwIDguMjg1MTU2IDYuNzE0ODQ0IDE1IDE1IDE1aDEwNXYzMGgtNDVjLTguMjg1MTU2IDAtMTUgNi43MTQ4NDQtMTUgMTVzNi43MTQ4NDQgMTUgMTUgMTVoNDV2MzBoLTE2NmMtOC4yODUxNTYgMC0xNSA2LjcxNDg0NC0xNSAxNXY0NWgtNDVjLTguMjg1MTU2IDAtMTUgNi43MTQ4NDQtMTUgMTV2MTUxYzAgOC4yODUxNTYgNi43MTQ4NDQgMTUgMTUgMTVoMTIwYzguMjg1MTU2IDAgMTUtNi43MTQ4NDQgMTUtMTV2LTE1MWMwLTguMjg1MTU2LTYuNzE0ODQ0LTE1LTE1LTE1aC00NXYtMzBoMTUxdjMwaC00NWMtOC4yODUxNTYgMC0xNSA2LjcxNDg0NC0xNSAxNXYxNTFjMCA4LjI4NTE1NiA2LjcxNDg0NCAxNSAxNSAxNWgxMjBjOC4yODUxNTYgMCAxNS02LjcxNDg0NCAxNS0xNXYtMTUxYzAtOC4yODUxNTYtNi43MTQ4NDQtMTUtMTUtMTVoLTQ1di0zMGgxNTF2MzBoLTQ1Yy04LjI4NTE1NiAwLTE1IDYuNzE0ODQ0LTE1IDE1djE1MWMwIDguMjg1MTU2IDYuNzE0ODQ0IDE1IDE1IDE1aDEyMGM4LjI4NTE1NiAwIDE1LTYuNzE0ODQ0IDE1LTE1di0xNTFjMC04LjI4NTE1Ni02LjcxNDg0NC0xNS0xNS0xNXptLTM0Ni0zMDFoMjEwdjEyMWgtMjEwem0tMzEgNDUyaC05MHYtMTIxaDkwem0xODEgMGgtOTB2LTEyMWg5MHptMTgxIDBoLTkwdi0xMjFoOTB6bTAgMCIvPjxwYXRoIGQ9Im00NTIgNDM2YzAgOC4yODUxNTYtNi43MTQ4NDQgMTUtMTUgMTVzLTE1LTYuNzE0ODQ0LTE1LTE1IDYuNzE0ODQ0LTE1IDE1LTE1IDE1IDYuNzE0ODQ0IDE1IDE1em0wIDAiLz48cGF0aCBkPSJtMjcxIDQzNmMwIDguMjg1MTU2LTYuNzE0ODQ0IDE1LTE1IDE1cy0xNS02LjcxNDg0NC0xNS0xNSA2LjcxNDg0NC0xNSAxNS0xNSAxNSA2LjcxNDg0NCAxNSAxNXptMCAwIi8+PHBhdGggZD0ibTkwIDQzNmMwIDguMjg1MTU2LTYuNzE0ODQ0IDE1LTE1IDE1cy0xNS02LjcxNDg0NC0xNS0xNSA2LjcxNDg0NC0xNSAxNS0xNSAxNSA2LjcxNDg0NCAxNSAxNXptMCAwIi8+PC9zdmc+",
         filter: "data:image/svg+xml;base64," + "PHN2ZyBoZWlnaHQ9IjUxMXB0IiB2aWV3Qm94PSIwIDAgNTExIDUxMS45OTk4MiIgd2lkdGg9IjUxMXB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTIuNDc2NTYyIDBoLTQ3MS45NzY1NjJjLTExLjA0Njg3NSAwLTIwIDguOTUzMTI1LTIwIDIwIDAgNTUuNjk1MzEyIDIzLjg3NSAxMDguODY3MTg4IDY1LjUwMzkwNiAxNDUuODcxMDk0bDg3LjU4OTg0NCA3Ny44NTE1NjJjMTUuMTg3NSAxMy41IDIzLjg5ODQzOCAzMi44OTg0MzggMjMuODk4NDM4IDUzLjIyMjY1NnYxOTUuMDMxMjVjMCAxNS45Mzc1IDE3LjgxMjUgMjUuNDkyMTg4IDMxLjA4OTg0MyAxNi42MzY3MTlsMTE3Ljk5NjA5NC03OC42NjAxNTZjNS41NjI1LTMuNzEwOTM3IDguOTA2MjUtOS45NTMxMjUgOC45MDYyNS0xNi42NDA2MjV2LTExNi4zNjcxODhjMC0yMC4zMjQyMTggOC43MTA5MzctMzkuNzIyNjU2IDIzLjg5ODQzNy01My4yMjI2NTZsODcuNTg1OTM4LTc3Ljg1MTU2MmM0MS42Mjg5MDYtMzcuMDAzOTA2IDY1LjUwMzkwNi05MC4xNzU3ODIgNjUuNTAzOTA2LTE0NS44NzEwOTQgMC0xMS4wNDY4NzUtOC45NTMxMjUtMjAtMTkuOTk2MDk0LTIwem0tNzIuMDgyMDMxIDEzNS45NzI2NTYtODcuNTg1OTM3IDc3Ljg1NTQ2OWMtMjMuNzE4NzUgMjEuMDg1OTM3LTM3LjMyNDIxOSA1MS4zNzg5MDYtMzcuMzI0MjE5IDgzLjExMzI4MXYxMDUuNjY3OTY5bC03Ny45OTYwOTQgNTEuOTk2MDk0di0xNTcuNjYwMTU3YzAtMzEuNzM4MjgxLTEzLjYwNTQ2OS02Mi4wMzEyNS0zNy4zMjQyMTktODMuMTE3MTg3bC04Ny41ODU5MzctNzcuODUxNTYzYy0yOC4wNzAzMTMtMjQuOTU3MDMxLTQ1Ljk4ODI4MS01OS4xNTIzNDMtNTAuNzg1MTU2LTk1Ljk4MDQ2OGg0MjkuMzg2NzE5Yy00Ljc5Njg3NiAzNi44MjgxMjUtMjIuNzEwOTM4IDcxLjAyMzQzNy01MC43ODUxNTcgOTUuOTc2NTYyem0wIDAiLz48L3N2Zz4=",
         config: "data:image/svg+xml;base64," + "PHN2ZyBoZWlnaHQ9IjUxMnB0IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00OTkuOTUzMTI1IDE5Ny43MDMxMjUtMzkuMzUxNTYzLTguNTU0Njg3Yy0zLjQyMTg3NC0xMC40NzY1NjMtNy42NjAxNTYtMjAuNjk1MzEzLTEyLjY2NDA2Mi0zMC41MzkwNjNsMjEuNzg1MTU2LTMzLjg4NjcxOWMzLjg5MDYyNS02LjA1NDY4NyAzLjAzNTE1Ni0xNC4wMDM5MDYtMi4wNTA3ODEtMTkuMDg5ODQ0bC02MS4zMDQ2ODctNjEuMzA0Njg3Yy01LjA4NTkzOC01LjA4NTkzNy0xMy4wMzUxNTctNS45NDE0MDYtMTkuMDg5ODQ0LTIuMDUwNzgxbC0zMy44ODY3MTkgMjEuNzg1MTU2Yy05Ljg0Mzc1LTUuMDAzOTA2LTIwLjA2MjUtOS4yNDIxODgtMzAuNTM5MDYzLTEyLjY2NDA2MmwtOC41NTQ2ODctMzkuMzUxNTYzYy0xLjUyNzM0NC03LjAzMTI1LTcuNzUzOTA2LTEyLjA0Njg3NS0xNC45NDkyMTktMTIuMDQ2ODc1aC04Ni42OTUzMTJjLTcuMTk1MzEzIDAtMTMuNDIxODc1IDUuMDE1NjI1LTE0Ljk0OTIxOSAxMi4wNDY4NzVsLTguNTU0Njg3IDM5LjM1MTU2M2MtMTAuNDc2NTYzIDMuNDIxODc0LTIwLjY5NTMxMyA3LjY2MDE1Ni0zMC41MzkwNjMgMTIuNjY0MDYybC0zMy44ODY3MTktMjEuNzg1MTU2Yy02LjA1NDY4Ny0zLjg5MDYyNS0xNC4wMDM5MDYtMy4wMzUxNTYtMTkuMDg5ODQ0IDIuMDUwNzgxbC02MS4zMDQ2ODcgNjEuMzA0Njg3Yy01LjA4NTkzNyA1LjA4NTkzOC01Ljk0MTQwNiAxMy4wMzUxNTctMi4wNTA3ODEgMTkuMDg5ODQ0bDIxLjc4NTE1NiAzMy44ODY3MTljLTUuMDAzOTA2IDkuODQzNzUtOS4yNDIxODggMjAuMDYyNS0xMi42NjQwNjIgMzAuNTM5MDYzbC0zOS4zNTE1NjMgOC41NTQ2ODdjLTcuMDMxMjUgMS41MzEyNS0xMi4wNDY4NzUgNy43NTM5MDYtMTIuMDQ2ODc1IDE0Ljk0OTIxOXY4Ni42OTUzMTJjMCA3LjE5NTMxMyA1LjAxNTYyNSAxMy40MTc5NjkgMTIuMDQ2ODc1IDE0Ljk0OTIxOWwzOS4zNTE1NjMgOC41NTQ2ODdjMy40MjE4NzQgMTAuNDc2NTYzIDcuNjYwMTU2IDIwLjY5NTMxMyAxMi42NjQwNjIgMzAuNTM5MDYzbC0yMS43ODUxNTYgMzMuODg2NzE5Yy0zLjg5MDYyNSA2LjA1NDY4Ny0zLjAzNTE1NiAxNC4wMDM5MDYgMi4wNTA3ODEgMTkuMDg5ODQ0bDYxLjMwNDY4NyA2MS4zMDQ2ODdjNS4wODU5MzggNS4wODU5MzcgMTMuMDM1MTU3IDUuOTQxNDA2IDE5LjA4OTg0NCAyLjA1MDc4MWwzMy44ODY3MTktMjEuNzg1MTU2YzkuODQzNzUgNS4wMDM5MDYgMjAuMDYyNSA5LjI0MjE4OCAzMC41MzkwNjMgMTIuNjY0MDYybDguNTU0Njg3IDM5LjM1MTU2M2MxLjUyNzM0NCA3LjAzMTI1IDcuNzUzOTA2IDEyLjA0Njg3NSAxNC45NDkyMTkgMTIuMDQ2ODc1aDg2LjY5NTMxMmM3LjE5NTMxMyAwIDEzLjQyMTg3NS01LjAxNTYyNSAxNC45NDkyMTktMTIuMDQ2ODc1bDguNTU0Njg3LTM5LjM1MTU2M2MxMC40NzY1NjMtMy40MjE4NzQgMjAuNjk1MzEzLTcuNjYwMTU2IDMwLjUzOTA2My0xMi42NjQwNjJsMzMuODg2NzE5IDIxLjc4NTE1NmM2LjA1NDY4NyAzLjg5MDYyNSAxNC4wMDM5MDYgMy4wMzkwNjMgMTkuMDg5ODQ0LTIuMDUwNzgxbDYxLjMwNDY4Ny02MS4zMDQ2ODdjNS4wODU5MzctNS4wODU5MzggNS45NDE0MDYtMTMuMDM1MTU3IDIuMDUwNzgxLTE5LjA4OTg0NGwtMjEuNzg1MTU2LTMzLjg4NjcxOWM1LjAwMzkwNi05Ljg0Mzc1IDkuMjQyMTg4LTIwLjA2MjUgMTIuNjY0MDYyLTMwLjUzOTA2M2wzOS4zNTE1NjMtOC41NTQ2ODdjNy4wMzEyNS0xLjUzMTI1IDEyLjA0Njg3NS03Ljc1MzkwNiAxMi4wNDY4NzUtMTQuOTQ5MjE5di04Ni42OTUzMTJjMC03LjE5NTMxMy01LjAxNTYyNS0xMy40MTc5NjktMTIuMDQ2ODc1LTE0Ljk0OTIxOXptLTE1Mi4xNjAxNTYgNTguMjk2ODc1YzAgNTAuNjEzMjgxLTQxLjE3OTY4OCA5MS43OTI5NjktOTEuNzkyOTY5IDkxLjc5Mjk2OXMtOTEuNzkyOTY5LTQxLjE3OTY4OC05MS43OTI5NjktOTEuNzkyOTY5IDQxLjE3OTY4OC05MS43OTI5NjkgOTEuNzkyOTY5LTkxLjc5Mjk2OSA5MS43OTI5NjkgNDEuMTc5Njg4IDkxLjc5Mjk2OSA5MS43OTI5Njl6bTAgMCIvPjwvc3ZnPg==",
     }

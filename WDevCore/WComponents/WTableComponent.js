@@ -1,6 +1,5 @@
 import { WRender, WArrayF, ComponentsManager, WAjaxTools } from "../WModules/WComponentsTools.js";
 import { WCssClass } from "../WModules/WStyledRender.js";
-import "./WChartJSComponent.js";
 import "./WModalForm.js";
 class WTableComponent extends HTMLElement {
     constructor(TableConfig = {}) {
@@ -314,25 +313,14 @@ class WTableComponent extends HTMLElement {
             return null;
         }
         return null;
-    }
-    checkDisplay(prop) {
-        let flag = true
-        if (this.TableConfig.DisplayData != undefined &&
-            this.TableConfig.DisplayData.__proto__ == Array.prototype) {
-            const findProp = this.TableConfig.DisplayData.find(x => x == prop);
-            if (!findProp) {
-                flag = false;
-            }
-        }
-        return flag;
-    }
+    }    
     DrawTHead = (element = this.ModelObject) => {
         const thead = { type: "thead", props: {}, children: [] };
         //const element = this.Dataset[0];
         let tr = { type: "tr", children: [] }
 
         for (const prop in element) {
-            const flag = this.checkDisplay(prop);
+            const flag = WArrayF.checkDisplay(this.DisplayData,prop);
             if (flag) {
                 if (!prop.includes("_hidden")) {
                     const th = {
@@ -429,7 +417,7 @@ class WTableComponent extends HTMLElement {
             }
             let tr = { type: "tr", props: {}, children: [] };
             for (const prop in element) {
-                const flag = this.checkDisplay(prop);
+                const flag = WArrayF.checkDisplay(this.DisplayData,prop);
                 if (flag) {
                     if (!prop.includes("_hidden")) {
                         let value = "";
@@ -727,7 +715,7 @@ class WTableComponent extends HTMLElement {
         const ClassList = [];
         let index = 1;
         for (const prop in this.ModelObject) {
-            const flag = this.checkDisplay(prop);
+            const flag = WArrayF.checkDisplay(this.DisplayData,prop);
             if (flag) {
                 if (!prop.includes("Photo") &&
                     !prop.includes("img") &&

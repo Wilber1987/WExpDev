@@ -569,7 +569,7 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "impuesto",
     mes: "febrero",
-    cuarto: "1er",
+    cuarto: "3er",
     año: 2022,
     metodo_pago: "stripe"
 }, {
