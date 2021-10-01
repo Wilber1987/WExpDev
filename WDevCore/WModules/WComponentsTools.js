@@ -297,8 +297,6 @@ class ComponentsManager {
         }
     }
     static modalFunction(ventanaM) {
-        //var ventanaM = document.getElementById(DivModal);
-        //console.log(DivModal)
         if (ventanaM.style.opacity == 0) {
             ventanaM.style.transition = "all ease 1s";
             ventanaM.style.display = "block";

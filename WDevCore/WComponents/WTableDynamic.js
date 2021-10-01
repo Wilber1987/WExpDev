@@ -3,6 +3,7 @@ import { WCssClass } from "../WModules/WStyledRender.js";
 import "./WChartJSComponents.js";
 import "./WModalForm.js";
 import { WTableComponent } from "./WTableComponent.js";
+import {  WFilterOptions } from "./WFilterControls.js";
 class WTableDynamicComp extends HTMLElement {
     constructor(TableConfig = {}) {
         super();
@@ -10,6 +11,8 @@ class WTableDynamicComp extends HTMLElement {
         this.Dataset = [];
         this.TableConfig = TableConfig;
         this.groupParams = this.TableConfig.groupParams ?? [];
+        this.ParamsForOptions = this.TableConfig.ParamsForOptions ?? null;
+        this.DisplayFilts = this.TableConfig.DisplayFilts ?? null;
         this.EvalValue = this.TableConfig.EvalValue ?? null;
         this.AttNameEval = this.TableConfig.AttNameEval ?? null;
         this.attachShadow({ mode: "open" });
@@ -117,10 +120,7 @@ class WTableDynamicComp extends HTMLElement {
         return div;
     }
     DrawGroupDiv = (Groups, div = { type: "div", props: { class: "TContainer" }, children: [this.AttEval()] }, arrayP = {}) => {
-        //console.log(Groups)
-        if (Groups == null) {
-            return "";
-        }
+        if (Groups == null) { return ""; }
         Groups.data.forEach((Group) => {
             let trGroup = { type: "div", props: { class: "TContainerBlock" }, children: [] };
             trGroup.children.push({ type: "Tlabel", children: [WArrayF.Capitalize(Group[Groups.groupParam])] });
@@ -134,7 +134,6 @@ class WTableDynamicComp extends HTMLElement {
                 this.DrawGroupDiv(Groups.children, dataGroup, arrayP);
             } else {
                 trGroup.props.class = "TContainerBlockData";
-                //let dataGroupeV = { type: "div", props: { class: "Cajon" }, children: [] };
                 if (this.EvalArray != null) {
                     this.EvalArray.forEach(Eval => {
                         arrayP[this.AttNameEval] = Eval[this.AttNameEval];
@@ -150,8 +149,7 @@ class WTableDynamicComp extends HTMLElement {
                         }
                     });
                     let sum = 0;
-                    dataGroup.children.forEach(element => {
-                        //console.log(element.children[0])
+                    dataGroup.children.forEach(element => {                    
                         const value = parseFloat(element.children[0]);
                         if (typeof value === "number" && value.toString() != "NaN") {
                             sum = sum + value;
@@ -227,6 +225,9 @@ class WTableDynamicComp extends HTMLElement {
             }, children: [select]
         });
         for (const props in model) {
+            if (!WArrayF.checkDisplay(this.ParamsForOptions, props)) {
+                continue;
+            }
             const LabelP = WRender.createElement({
                 type: "label",
                 children: [WArrayF.Capitalize(props), {
@@ -485,70 +486,13 @@ class WTableDynamicComp extends HTMLElement {
         }
     }
     FilterOptions = () => {
-        const ControlOptions = {
-            type: 'div',
-            props: { class: "OptionContainer" }, children: [{
-                type: 'w-style', props: {
-                    id: '', ClassList: [
-                        new WCssClass(`.OptionContainer`, {
-                            padding: 20,
-                            display: "grid",
-                            "grid-template-columns": "50% 50%",
-                            "grid-gap": 10
-                        }), new WCssClass(`.OptionContainer label`, {
-                            padding: 10,
-                            display: "block"
-                        }),
-                    ]
-                }
-            }]
-        }
-        for (const prop in this.TableConfig.Dataset[0]) {
-            const flag = WArrayF.checkDisplay(this.DisplayFilts, prop);
-            if (!flag) {
-                continue;
+        return new WFilterOptions({
+            Dataset: this.TableConfig.Dataset,
+            DisplayFilts: this.DisplayFilts,
+            FilterFunction: (DFilt)=>{
+                this.DefineTable(DFilt);
             }
-            if ((typeof this.TableConfig.Dataset[0][prop] != "number"
-                && !prop.toUpperCase().includes("FECHA")
-                && !prop.toUpperCase().includes("DATE"))
-                || prop.toUpperCase().includes("AÑO")
-                || prop.toUpperCase().includes("YEAR")) {
-                const select = {
-                    type: 'select', props: { id: prop }, children: [
-                        { type: 'option', props: { innerText: 'Seleccione', value: '' } }
-                    ]
-                }
-                const SelectData = WArrayF.ArrayUnique(this.TableConfig.Dataset, prop);
-                SelectData.forEach(data => {
-                    if (data[prop] != "" && data[prop] != null) {
-                        select.children.push({
-                            type: 'option', props: { innerText: data[prop], value: data[prop] }
-                        });
-                    }
-                });
-                select.props.onchange = (ev) => {
-                    const DFilt = this.TableConfig.Dataset.filter(obj => {
-                        let flagObj = true;
-                        this.FilterControl.querySelectorAll("select").forEach(select => {
-                            if (select.value == "") {
-                                return
-                            }
-                            if (obj[select.id] == select.value) {
-                                if (flagObj) {
-                                    flagObj = true;
-                                }
-                            } else {
-                                flagObj = false;
-                            }
-                        });
-                        return flagObj;
-                    });
-                    this.DefineTable(DFilt);
-                }
-                ControlOptions.children.push([WArrayF.Capitalize(prop), select]);
-            }
-        }
-        return ControlOptions;
+        })
     }
     CreateConfig = () => {
         const ConfigContainer = {

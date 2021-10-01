@@ -88,13 +88,7 @@ class ColumChart extends HTMLElement {
                 trGroup.children.push(this._DrawIconsGroups());
             }
             GroupIndex++;
-            arrayP[Groups.groupParam] = Group[Groups.groupParam];           
-            // if (!WArrayF.compareObj(arrayP, Group)) {
-            //     console.log(arrayP);
-            //     console.log(Group);
-            //     console.log(WArrayF.compareObj(Group, arrayP))
-            //     return;
-            // }
+            arrayP[Groups.groupParam] = Group[Groups.groupParam];
             if (Groups.children != null) {
                 if (Groups.children.children == null) {
                     trGroup.props.class = "GroupSection";

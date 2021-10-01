@@ -1,17 +1,20 @@
 import { ComponentsManager, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
-//import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
-//import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
-//import { SlideDoc } from "./Modules/SlideDoc.js";
-//import { ChartDocs } from "./Modules/ChartDocs.js";
+
 //import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
 //import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
 import { dataTestFact } from './DATA/data.js'
-//import { ReportView } from "./Modules/ReportView.js";
-//import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
-import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamicComp.js";
-
+//COMPONENTS
+import {  } from "./WDevCore/WComponents/WAppNavigator.JS";
+import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamic.js";
+import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
+import { WCardCarousel } from "./WDevCore/WComponents/WCardCarousel.JS";
+//DOCUMENTACION
+//import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
+//import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
+//import { SlideDoc } from "./Modules/SlideDoc.js";
+//import { ChartDocs } from "./Modules/ChartDocs.js";
 const DOMManager = new ComponentsManager();
 
 class MasterDomClass extends ComponentsManager {
@@ -227,17 +230,7 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
-
-            
-            //TEST REPORT-------------------------->
-
-            // new WReportView({
-            //     id: "TestReport",
-            //     Dataset: dataTestFact,
-            //     GroupParam: "id",
-            //     headerGroup:  ["id", "estado", "mes", "año", "metodo_pago"],
-            //     bodyGroup: [ { leyend: "tipo" , value: "value" } ]
-            // }),
+            //TABLA BASICA
             // new WTableComponent({
             //     Dataset: dataTestFact,
             //     DisplayData: ["servicio", "empresa", "tipo", "metodo_pago", "total"],
@@ -254,12 +247,17 @@ class MainClass {
             //         UserActions: [{ name: "Log...", Function: (TableElement) => { console.log(TableElement); } }]
             //     }
             // }),
+            //TABLA DINAMICA
             new WTableDynamicComp({ 
                 Dataset: dataTestFact,
                 EvalValue: "total",
                 AttNameEval: "mes",
                 groupParams: ["cuarto","año"],
-            }) 
+                //DisplayFilts: [],//filtros
+                //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+            }), 
+            // CARROSEL DE IMAGENES
+            //new WCardCarousel(dataTestFact)
         ];
     }
 }
