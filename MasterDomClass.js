@@ -3,7 +3,6 @@ import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 
 //import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
-//import { WReportView } from "./WDevCore/WComponents/WReportsView.js";
 import { dataTestFact } from './DATA/data.js'
 //COMPONENTS
 import {  } from "./WDevCore/WComponents/WAppNavigator.JS";
@@ -11,6 +10,7 @@ import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamic.js";
 import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
 import { WCardCarousel } from "./WDevCore/WComponents/WCardCarousel.JS";
 //DOCUMENTACION
+import { WTestView } from "./Modules/TestView.js";
 //import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 //import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 //import { SlideDoc } from "./Modules/SlideDoc.js";
@@ -230,6 +230,8 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
+            //TEST
+            new WTestView()
             //TABLA BASICA
             // new WTableComponent({
             //     Dataset: dataTestFact,
@@ -248,16 +250,17 @@ class MainClass {
             //     }
             // }),
             //TABLA DINAMICA
-            new WTableDynamicComp({ 
-                Dataset: dataTestFact,
-                EvalValue: "total",
-                AttNameEval: "mes",
-                groupParams: ["cuarto","año"],
-                //DisplayFilts: [],//filtros
-                //ParamsForOptions: ["cuarto"]//parametros de agrupacion
-            }), 
+            // new WTableDynamicComp({ 
+            //     Dataset: dataTestFact,
+            //     EvalValue: "total",
+            //     AttNameEval: "mes",
+            //     groupParams: ["cuarto","año"],
+            //     //DisplayFilts: [],//filtros
+            //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+            // }), 
             // CARROSEL DE IMAGENES
             //new WCardCarousel(dataTestFact)
+
         ];
     }
 }
