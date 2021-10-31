@@ -48,7 +48,8 @@ const StylesControlsV1 = {
                 "font-size": "12px",
                 "color": "#fff",
                 //"border-right": "rgb(3, 106, 175) 5px solid",
-                "border-radius": "0.2cm"
+                "border-radius": "0.2cm",
+                "max-height": 40
             }), new WCssClass(`.BtnPrimary`, {
                 "color": "#fff",
                 "background-color": "007bff",
@@ -182,29 +183,67 @@ const ArticleStyle = {
                 overflow: "hidden"
             }), new WCssClass(`.WArticles .ArticleHeader`, {
                 padding: 10,
-                display: "grid",
-                "grid-template-rows": "20px 20px",
-                "grid-template-columns": "50px auto auto",
-                "font-size": 11,
+                display: "flex",
+                "align-items": "center",
+                "font-size": 13,
                 "font-family": "system-ui",
-                "box-shadow": "0 0px 2px 0 rgba(0,0,0,0.3)"
+                "box-shadow": "0 0px 2px 0 rgba(0,0,0,0.3)",
+                "justify-content": "space-between"
             }), new WCssClass(`.WArticles .ArticleBody`, {
-                padding: 10,
+                margin: 10,
                 display: "flex",
                 "flex-direction": "column",
                 "font-size": 12,
                 "font-family": "system-ui",
+                position: "relative",
+                "min-height": 126,
+                "border": "solid 1px rgba(0,0,0,0.3)",
+                "border-radius": "0.2cm",
+                overflow: "hidden"
+            }),new WCssClass(`.WArticles  .ArticleBody label`, {
+                padding: 10,
+                "font-size": 16,
+                "font-weight": "bold", 
+                color: "#444" ,
+                position: "absolute" ,
+                "background-color": "rgb(9, 49, 95, 80%)",
+                color: "#fff", left: 0, right: 0,
+                margin: 0,
+                top: 0,
+                "text-align": "center"     
             }), new WCssClass(`.WArticles .ArticleBody p`, {
                 "text-align": "justify",
+                "text-overflow": "ellipsis",
+                "display": "-webkit-box",
+                " display": "-moz-box",
+                "  display": "box",
+                "-webkit-box-orient": "vertical",
+                "-moz-box-orient": "vertical",
+                "box-orient": "vertical",
+                "-webkit-line-clamp": "4",
+                "line-clamp": "4",
+                height: 75,
+                position: "absolute",
+                overflow: "hidden",
+                padding: "5px 15px",
+                color: "#fff",
+                bottom:0,
+                "background-color": "rgb(0,0,0,50%)",
+                "font-size": 14,
+                width: "calc(100% - 30px)", 
+                margin: 0
             }), new WCssClass(`.ArticleHeader img`, {
-                "grid-row": "1/3",
-                "grid-column": "1/2",
-                height: 40,
-                width: 40,
+                //"grid-row": "1/3",
+                //"grid-column": "1/2",
+                height: 60,
+                width: 60,
                 "border-radius": "20%",
-                "box-shadow": "0 0px 1px 0 rgba(0,0,0,0.3)"
+                "box-shadow": "0 0px 1px 0 rgba(0,0,0,0.3)",
+                "object-fit": "cover"
             }), new WCssClass(`.ArticleBody img`, {                
-                width: "100%",  
+                width: "100%", 
+                height: 200, 
+                "object-fit": "cover",
                 "box-shadow": "0 0px 1px 0 rgba(0,0,0,0.3)"
             }), new WCssClass(`.ArticleBody img`, {                
                 width: "100%",  

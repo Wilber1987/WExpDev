@@ -12,17 +12,11 @@ class WTableComponent extends HTMLElement {
         this.attachShadow({ mode: "open" });
         this.TypeMoney = "Euro";     
         this.TableConfig = TableConfig;
-        this.append(WRender.createElement({ type:'w-style', props: {id: '', ClassList: [
-            new WCssClass(`w-b-table`, {
-                padding: 10,
-                display: "block"
-            }),
-        ]}}))
     }
     connectedCallback() {        
         if (this.shadowRoot.innerHTML != "") {
             return;
-        }        
+        } 
         this.shadowRoot.append(WRender.createElement(this.PaginateTOptionsStyle()));
         switch (this.TableConfig.StyleType) {
             default:
@@ -30,6 +24,12 @@ class WTableComponent extends HTMLElement {
                 break;
         }
         //PAGINACION
+        this.append(WRender.createElement({ type:'w-style', props: {id: '', ClassList: [
+            new WCssClass(`w-table`, {
+                padding: 10,
+                display: "block"
+            }),
+        ]}}));
         if (this.TableConfig.maxElementByPage == undefined) {
             this.maxElementByPage = 10;
         } else {
@@ -37,6 +37,7 @@ class WTableComponent extends HTMLElement {
         }
         this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
         this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
+        this.DisplayData = this.TableConfig.DisplayData ?? null;
         //this.TableConfig.MasterDetailTable = true
         if (this.TableConfig != undefined && this.TableConfig.MasterDetailTable == true) {
             this.Dataset = this.TableConfig.Dataset;
@@ -364,7 +365,7 @@ class WTableComponent extends HTMLElement {
                             }
                         }
                     };
-                    if (parseFloat(element[prop].toString().replaceAll("%", "").replaceAll(Money[this.TypeMoney], "")).toString() != "NaN") {
+                    if (element[prop] != null && parseFloat(element[prop].toString().replaceAll("%", "").replaceAll(Money[this.TypeMoney], "")).toString() != "NaN" ) {
                         th.children.push(BtnU);
                         th.children.push(BtnD);
                     }
@@ -986,5 +987,5 @@ const Money = {
     Dollar: "$",
     Cordoba: "C$"
 }
-customElements.define("w-b-table", WTableComponent);
+customElements.define("w-table", WTableComponent);
 export { WTableComponent }

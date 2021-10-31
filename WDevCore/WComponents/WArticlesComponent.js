@@ -88,7 +88,6 @@ class WArticlesComponent extends HTMLElement {
             return "";
         }
         if (this.Options != undefined) {
-            console.log(this.Options);
             if (this.Options.Search != undefined || this.Options.Add != undefined) {
                 const trOptions = { type: "div", props: { class:  this.ArticlesClass }, children: [] }
                 if (this.Options.Search != undefined) {
@@ -203,7 +202,7 @@ class WArticlesComponent extends HTMLElement {
             for (let index = 0; index < this.numPage; index++) {
                 let ArticlesContainerStyle = "display:none";
                 if (index == 0) {
-
+                    ArticlesContainerStyle = "";
                 }
                 ArticlesContainer.children.push({ type: "ArticlesContainer", props: { class: "ArticlesContainerChild", style: ArticlesContainerStyle }, children: [] });
             }
@@ -228,8 +227,8 @@ class WArticlesComponent extends HTMLElement {
                 }
             }
             if (this.ArticleBody.length != 0 || this.ArticleHeader.length != 0) {
-                ArticleC.children.push(ArticleHeader);
                 ArticleC.children.push(ArticleBody);
+                ArticleC.children.push(ArticleHeader);                
             }
             for (const prop in element) {
                 const flag = this.checkDisplay(prop);
@@ -288,7 +287,7 @@ class WArticlesComponent extends HTMLElement {
             if (this.Options != undefined) {
                 if (this.Options.Show != undefined ||
                     this.Options.UserActions != undefined) {
-                    const Options = { type: "div", props: { class: "ArticleAction" }, children: [] };
+                    const Options = ArticleHeader;//{ type: "div", props: { class: "ArticleAction" }, children: [] };
                     if (this.Options.Show != undefined && this.Options.Show == true) {
                         Options.children.push({
                             type: "button",
@@ -325,7 +324,7 @@ class WArticlesComponent extends HTMLElement {
                             })
                         });
                     }
-                    ArticleC.children.push(Options);
+                    //ArticleC.children.push(Options);
                 }
             }
             if (this.numPage > 1 && ArticlesContainer.children[page] &&

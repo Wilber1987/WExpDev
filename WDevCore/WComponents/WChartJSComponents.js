@@ -24,23 +24,32 @@ class ColumChart extends HTMLElement {
         this.DrawChart();
     }
     connectedCallback() {
-        if (this.shadowRoot.innerHTML != "") {
-            return;
-        }
+        console.log("conected");
+        this.shadowRoot.innerHTML = "";
+        this.MainChart.children = [];
+        this.GroupsData = [];
+        // if (this.shadowRoot.innerHTML != "") {
+        //     return;
+        // }
+        
         this.groupParams = this.ChartInstance.groupParams ?? [];
         this.EvalValue = this.ChartInstance.EvalValue ?? null;
         this.AttNameEval = this.ChartInstance.AttNameEval ?? null;
         this.Dataset = this.ChartInstance.Dataset ?? [];
         this.ChartInstance.Colors = this.ChartInstance.Colors ?? [];
+        console.log(this.groupParams);
+        console.log(this.AttNameEval);
+        console.log(this.EvalValue);
+        console.log(this.Dataset);
         if (this.ChartInstance.TypeChart == "staked") {// bar or staked
             this.ChartInstance.TypeChart = "column";
         } else {
             this.ChartInstance.TypeChart = "row";
-        }
-        this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
+        }       
         this.DrawChart();
     }
     DrawChart() {
+        this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
         const object = {};
         if (this.ChartInstance.TypeChart = "row") {
             object[this.AttNameEval] = "";
@@ -127,7 +136,7 @@ class ColumChart extends HTMLElement {
         GroupLabelsData.forEach(element => {
             var color = Colors[index];
             if (!color) {
-                Colors.push(this.GenerateColor());
+                Colors.push(GenerateColor());
             }
             SectionLabels.appendChild(WRender.CreateStringNode(
                 `<label style="${style}"><span style="background:${Colors[index]}">
@@ -231,39 +240,36 @@ class ColumChart extends HTMLElement {
             return "n/a";
         }
     }
-    GenerateColor() {
-        var hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
-        var color_aleatorio = "#FF";
-        for (let index = 0; index < 4; index++) {
-            const random = Math.floor(Math.random() * hexadecimal.length);
-            color_aleatorio += hexadecimal[random]
-        }
-        return color_aleatorio
-    }
+    
 }
 class RadialChart extends HTMLElement {
-    constructor(props) {
+    constructor(ChartInstance = (new ChartConfig())) {
         super();
         this.attachShadow({ mode: "open" });
+        this.ChartInstance = ChartInstance;
     }
     attributeChangedCallBack() {
         this.DrawChart();
     }
     connectedCallback() {
-        if (this.innerHTML != "") {
+        if (this.shadowRoot.innerHTML != "") {
             return;
         }
         this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
         this.DrawChart();
     }
     DrawChart = async () => {
-        this.ChartInstance = new ChartConfig(this.data);
+        if (!this.ChartInstance) {
+            this.ChartInstance = new ChartConfig(this.data);
+        }        
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
-        ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
+        if (this.ChartInstance.Title) {
+            ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
+        }        
         ChartFragment.append(
             this.DrawSeries(
-                this.ChartInstance.GroupLabelsData,
+                this.ChartInstance.Dataset,
                 this.ChartInstance.Colors
             )
         );
@@ -277,23 +283,24 @@ class RadialChart extends HTMLElement {
         return SectionTitle;
     }
     DrawSeries(GroupLabelsData, Colors) {
-        var SectionLabels = document.createElement("section");
-        var index = 0;
+        var SectionLabels = document.createElement('section');
+        var index = 0
         var style = "";
         if (GroupLabelsData.length > 7) {
-            style = "font-size:8px;";
+            style = "font-size:8px;"
         }
-        SectionLabels.className = "SectionLabels";
-        GroupLabelsData.forEach((element) => {
-            SectionLabels.appendChild(
-                WRender.CreateStringNode(
-                    `<label style="${style}"><span style="background:${Colors[index]}">
-                   </span>${element.Descripcion}
-            </label>`
-                )
-            );
+        SectionLabels.className = "SectionLabels"
+        GroupLabelsData.forEach(element => {
+            var color = Colors[index];
+            if (!color) {
+                Colors.push(GenerateColor());
+            }
+            SectionLabels.appendChild(WRender.CreateStringNode(
+                `<label style="${style}"><span style="background:${Colors[index]}">
+                </span>${element[this.ChartInstance.AttNameEval]}</label>`
+            ));
             index++;
-        });
+        })
         return SectionLabels;
     }
     _AddSectionData(Config) {
@@ -365,6 +372,11 @@ class RadialChart extends HTMLElement {
             } else {
                 this.progressInitial(porcentaje, Circle);
             }
+            if (this.ChartInstance.ChartFunction) {
+                Circle.onclick = ()=>{
+                    this.ChartInstance.ChartFunction(element)
+                }
+            }
             Chart.append(Circle);
             Chart.append(g)
             index++;
@@ -384,7 +396,15 @@ class RadialChart extends HTMLElement {
         circle.style.strokeDashoffset = dashoffset;
     }
 }
-
+const GenerateColor = () => {
+    var hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+    var color_aleatorio = "#FF";
+    for (let index = 0; index < 4; index++) {
+        const random = Math.floor(Math.random() * hexadecimal.length);
+        color_aleatorio += hexadecimal[random]
+    }
+    return color_aleatorio
+}
 const WChartStyle = (ChartInstance) => {
     return {
         type: "w-style",
@@ -430,8 +450,8 @@ const WChartStyle = (ChartInstance) => {
                     "position": " relative",
                     "overflow-x": " scroll",
                     padding: 10,
-                    "padding-left": " 40px",
-                    //"min-height": " 270px",
+                    "padding-left": 40,
+                    "min-height": 150,
                 }), new WCssClass(".SectionBars label", {
                     padding: 5,
                 }), new WCssClass(".GroupSection ", {
@@ -462,7 +482,7 @@ const WChartStyle = (ChartInstance) => {
                     "align-items": " flex-end",
                     "justify-content": " flex-end",
                     overflow: "hidden",
-                    "border-bottom": "1px solid #BFBFBF"
+                    "border-bottom": "1px solid #BFBFBF",                    
                 }), new WCssClass(".ContainerBars .Bars ", {
                     "display": " block",
                     "margin": " 0 auto",
@@ -556,7 +576,7 @@ const WChartStyle = (ChartInstance) => {
                     "text-align": " center",
                     "display": " block",
                     "width": " 100%",
-                    "height": " 300px",
+                    "height": 220,
                 }), new WCssClass(".RadialDataBackground ", {
                     "transform": " rotate(-90deg)",
                 }), new WCssClass(".RadialDataBackground:first-child ", {
