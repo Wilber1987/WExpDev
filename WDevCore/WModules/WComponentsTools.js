@@ -242,9 +242,9 @@ class WRender {
                             });
                         } else if(Node.children != undefined && Node.children.__proto__ == Object.prototype) {
                             Node.children.N = Node.children.N ?? 0;
-                            Node.children.nodes = Node.children.nodes ?? [];
+                            Node.children.childs = Node.children.childs ?? [];
                             for (let index = 0; index < Node.children.N; index++) {
-                                const contain = Node.children.nodes[index] ?? "";
+                                const contain = Node.children.childs[index] ?? "";
                                 element.appendChild(this.Create({
                                     tagName: Node.children.tagName,
                                     class: Node.children.className,

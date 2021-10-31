@@ -196,7 +196,7 @@ const ArticleStyle = {
                 "font-size": 12,
                 "font-family": "system-ui",
                 position: "relative",
-                "min-height": 126,
+                "min-height": 150,
                 "border": "solid 1px rgba(0,0,0,0.3)",
                 "border-radius": "0.2cm",
                 overflow: "hidden"
@@ -204,13 +204,7 @@ const ArticleStyle = {
                 padding: 10,
                 "font-size": 16,
                 "font-weight": "bold", 
-                color: "#444" ,
-                position: "absolute" ,
-                "background-color": "rgb(9, 49, 95, 80%)",
-                color: "#fff", left: 0, right: 0,
-                margin: 0,
-                top: 0,
-                "text-align": "center"     
+                color: "#444"               
             }), new WCssClass(`.WArticles .ArticleBody p`, {
                 "text-align": "justify",
                 "text-overflow": "ellipsis",
@@ -230,8 +224,7 @@ const ArticleStyle = {
                 bottom:0,
                 "background-color": "rgb(0,0,0,50%)",
                 "font-size": 14,
-                width: "calc(100% - 30px)", 
-                margin: 0
+                width: "calc(100% - 30px)"
             }), new WCssClass(`.ArticleHeader img`, {
                 //"grid-row": "1/3",
                 //"grid-column": "1/2",
