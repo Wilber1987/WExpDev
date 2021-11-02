@@ -5,7 +5,7 @@ import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 //REPORTS 
 import { dataTestFact } from './DATA/data.js'
 //COMPONENTS
-import {  } from "./WDevCore/WComponents/WAppNavigator.JS";
+import { } from "./WDevCore/WComponents/WAppNavigator.JS";
 import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamic.js";
 import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
 import { WCardCarousel } from "./WDevCore/WComponents/WCardCarousel.JS";
@@ -231,7 +231,37 @@ class MainClass {
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
             //TEST
-            new WTestView()
+            new WTestView({
+                Title: "TEST",
+                Descripcion: "Desc",
+                Questions: [
+                    {
+                        Id: 1, Descripcion: "desc 1", Value: null,
+                        QuestionType: "MultiSelect",
+                        Resps: [
+                            { id: 1, desc: "SI", value: "SI" },
+                            { id: 2, desc: "NO", value: "NO" },
+                            { id: 3, desc: "N/A", value: "N/A" }
+                        ]
+                    }, {
+                        Id: 2, Descripcion: "desc 1", Value: null,
+                        QuestionType: "MultiSelect",
+                        Resps: [
+                            { id: 1, desc: "SI", value: "SI" },
+                            { id: 2, desc: "NO", value: "NO" },
+                            { id: 3, desc: "N/A", value: "N/A" }
+                        ]
+                    }, {
+                        Id: 3, Descripcion: "desc 1", Value: null,
+                        QuestionType: "MultiSelect",
+                        Resps: [
+                            { id: 1, desc: "SI", value: "SI" },
+                            { id: 2, desc: "NO", value: "NO" },
+                            { id: 3, desc: "N/A", value: "N/A" }
+                        ]
+                    }
+                ]
+            })
             //TABLA BASICA
             // new WTableComponent({
             //     Dataset: dataTestFact,
