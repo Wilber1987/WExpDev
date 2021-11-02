@@ -233,10 +233,8 @@ class WRender {
                 for (const prop in Node) {
                     if (prop == "tagName") { continue;  }
                     else if (prop == "class") { element.className = Node[prop]; }//CLASSNAME
-                    else if (prop == "style" && Node[prop].__proto__ == Object.prototype) {  //STYLE                          
-                        for (const styleProp in Node[prop]) {
-                            element[prop][styleProp] = Node[prop][styleProp];
-                        }
+                    else if (prop == "style" && Node[prop].__proto__ == Object.prototype) {  //STYLE
+                        this.SetStyle(element, Node[prop]);
                     }else if (prop == "children") {
                         if (Node.children != undefined && Node.children.__proto__ == Array.prototype) {
                             Node.children.forEach(Child => {
@@ -267,7 +265,11 @@ class WRender {
             return document.createTextNode("Problemas en la construcción del nodo.");
         }
     }
-
+    static SetStyle = (Node, Style = (new ElementStyle())) =>{
+        for (const styleProp in Style) {
+            Node.style[styleProp] = Style[styleProp];
+        }
+    }
 
 }
 class ComponentsManager {

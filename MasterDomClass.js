@@ -10,7 +10,7 @@ import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamic.js";
 import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
 import { WCardCarousel } from "./WDevCore/WComponents/WCardCarousel.JS";
 //DOCUMENTACION
-import { WTestView } from "./Modules/TestView.js";
+import { WTestView } from "./WDevCore/WComponents/TestView.js";
 //import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 //import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 //import { SlideDoc } from "./Modules/SlideDoc.js";
@@ -234,23 +234,14 @@ class MainClass {
             new WTestView({
                 Title: "TEST",
                 Descripcion: "Desc",
-                Questions: [
-                    {
-                        Id: 1, Descripcion: "desc 1", Value: null,
-                        QuestionType: "MultiSelect",
-                        Resps: [
-                            { id: 1, desc: "SI", value: "SI" },
-                            { id: 2, desc: "NO", value: "NO" },
-                            { id: 3, desc: "N/A", value: "N/A" }
-                        ]
-                    }, {
+                GeneralResp: ["SI", "NO"],
+                //AllRequire: false,
+                Questions: [ {
+                    Id: 1, Descripcion: "Name", Value: null,
+                    QuestionType: "Open"
+                },{
                         Id: 2, Descripcion: "desc 1", Value: null,
                         QuestionType: "MultiSelect",
-                        Resps: [
-                            { id: 1, desc: "SI", value: "SI" },
-                            { id: 2, desc: "NO", value: "NO" },
-                            { id: 3, desc: "N/A", value: "N/A" }
-                        ]
                     }, {
                         Id: 3, Descripcion: "desc 1", Value: null,
                         QuestionType: "MultiSelect",
@@ -259,7 +250,18 @@ class MainClass {
                             { id: 2, desc: "NO", value: "NO" },
                             { id: 3, desc: "N/A", value: "N/A" }
                         ]
-                    }
+                    }, {
+                        Id: 4, Descripcion: "desc 1", Value: null,
+                        QuestionType: "Likert/Category",
+                        Resps: [
+                            { id: 1, desc: "SI", value: "SI" },
+                            { id: 2, desc: "NO", value: "NO" },
+                            { id: 3, desc: "N/A", value: "N/A" }
+                        ]
+                    },{
+                        Id: 1, Descripcion: "Number", Value: null,
+                        QuestionType: "Number"
+                    },
                 ]
             })
             //TABLA BASICA
