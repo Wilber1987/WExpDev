@@ -33,10 +33,10 @@ class WModalForm extends HTMLElement {
         if (this.ShadowRoot) {
             this.attachShadow({
                 mode: "open"
-            });            
+            });
             this.shadowRoot.append(WRender.createElement(this.FormStyle()));
         } else {
-            this.append(WRender.createElement(this.FormStyle()));            
+            this.append(WRender.createElement(this.FormStyle()));
         }
         //NO MODAL
         if (this.NoModal == true) {
@@ -54,7 +54,7 @@ class WModalForm extends HTMLElement {
                     ]
                 }
             }
-            
+
             this.HeadOptions == false;
             this.append(WRender.createElement(this.StyleNoModal()));
             if (this.ShadowRoot) {
@@ -563,6 +563,13 @@ class WModalForm extends HTMLElement {
         }
         return DivOptions;
     }
+    close = () => {
+        ComponentsManager.modalFunction(this);
+        setTimeout(() => {
+            this.parentNode.removeChild(this);
+        }, 1000);
+    }
+    //STYLES----------------------------------------------------------------->
     FormStyle = () => {
         const Style = {
             type: "w-style",
@@ -773,13 +780,13 @@ class WModalForm extends HTMLElement {
             }
         }
         return Style;
-    }    
+    }
     async SelectedFile(value) {
         var reader = new FileReader();
         reader.onloadend = function (e) {
             photoB64 = e.target.result.split("base64,")[1];
         }
         reader.readAsDataURL(value);
-    }    
+    }
 }
 customElements.define("w-modal-form", WModalForm);

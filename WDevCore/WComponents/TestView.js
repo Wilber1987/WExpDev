@@ -1,6 +1,8 @@
 import { WRender, WArrayF, ComponentsManager, WAjaxTools } from '../WModules/WComponentsTools.js';
 import { WCssClass } from '../WModules/WStyledRender.js';
 import { StyleScrolls, StylesControlsV1 } from "../StyleModules/WStyleComponents.JS";
+import "./WSlide.js";
+import "./WModalForm.js";
 
 const DOMManager = new ComponentsManager();
 class WTestConfig {
@@ -8,6 +10,8 @@ class WTestConfig {
     Descripcion = "descripcion....";
     AllRequire = true;
     GeneralResp = ["SI", "NO", "N/A"];
+    DisplayDescription = true;
+    Type = "Form" ?? "Slide" ?? "Modal";
     Questions = [{
         Id: 1, Descripcion: "desc 1", Value: null,
         QuestionType: "Open" ??
@@ -23,16 +27,16 @@ class WTestConfig {
 class WTestView extends HTMLElement {
     constructor(Config = (new WTestConfig())) {
         super();
-        this.attachShadow({
-            mode: 'open'
-        });
+        this.attachShadow({ mode: 'open' });
         this.Config = Config;
         this.Config.GeneralResp = this.Config.GeneralResp ?? [];
+        this.Config.AllRequire = this.Config.AllRequire ?? true;
+        this.Config.Type = this.Config.Type ?? "Form";
+        this.Config.DisplayDescription = this.Config.DisplayDescription ?? true;
         this.MainTestContainer = WRender.Create({ class: "MainTestContainer" });
         this.MainTestContainer.append(WRender.CreateStringNode(`<h3>${this.Config.Title}</h3>`));
         this.MainTestContainer.append(WRender.CreateStringNode(`<p>${this.Config.Descripcion}</p>`));
         this.MainTestContainer.append(this.DrawTest(this.Config.Questions));
-        this.Config.AllRequire = this.Config.AllRequire ?? true;
         this.shadowRoot.append(this.MainTestContainer);
         this.shadowRoot.append(this.MainOptions());
         this.shadowRoot.append(WRender.Create(this.style));
@@ -44,7 +48,7 @@ class WTestView extends HTMLElement {
     }
     DrawComponent = () => { }
     DrawTest = (QuestionsList) => {
-        const ContainerQuestions = WRender.Create({ class: "ContainerQuestions" });
+        const QuestionsArray = [];
         QuestionsList.forEach((Question, index) => {
             Question.id = Question.id ?? index;
             const RespContainer = WRender.Create({ class: "RespContainer" });
@@ -93,10 +97,100 @@ class WTestView extends HTMLElement {
             const QuestionControl = WRender.Create({
                 id: "Question" + Question.id,
                 class: "QuestionControl",
-                children: [{ tagName: "label", class: "DescQuestion", innerText: Question.Descripcion + ":" }, RespContainer]
+                children: [{
+                    tagName: "label",
+                    class: "DescQuestion",
+                    style: { display: (this.Config.DisplayDescription == true) ? "block" : "none" },
+                    innerText: Question.Descripcion + ":"
+                }, RespContainer]
             });
-            ContainerQuestions.append(QuestionControl);
+            QuestionsArray.push(QuestionControl);
         });
+        let ContainerQuestions;
+        switch (this.Config.Type) {
+            case "Form":
+                ContainerQuestions = WRender.Create({ class: "ContainerQuestions" })
+                QuestionsArray.forEach(Q => {
+                    ContainerQuestions.append(Q);
+                });
+                break;
+            case "Slide":
+                ContainerQuestions = WRender.Create({
+                    tagName: "w-slide",
+                    class: "ContainerQuestions",
+                    content: QuestionsArray
+                });
+                break;
+            case "Modal":
+                this.SelectedModal = null;
+                this.IndexModal = 0;
+                const ModalTest = async () => {
+                    if (this.SelectedModal != null) {
+                        this.SelectedModal.close();
+                    }
+                    this.SelectedModal = WRender.Create({
+                        tagName: "w-modal-form",
+                        title: "Detalle",
+                        ShadowRoot: false,
+                        ObjectModal: {
+                            class: "ModalQuestion",
+                            children: [
+                                QuestionsArray[this.IndexModal], ModalOptions
+                            ]
+                        }
+                    });
+                    this.shadowRoot.append(this.SelectedModal);
+                }
+                const CheckQuestion = (Question) => {
+                    console.log(Question);
+                    console.log(this.SelectedModal);
+                    let flag = true;
+                    if (this.Config.AllRequire == true) {
+                        if (Question.Value == null || Question.Value == undefined) {
+                            flag = false;
+                            WRender.SetStyle(this.SelectedModal.querySelector("#Question" + Question.id),
+                             { boxShadow: "0 0 2px 0 rgb(255, 0, 0)" });
+                        }
+                    }
+                    return flag;
+                }
+                const ModalOptions = WRender.Create({
+                    class: "ModalOptions",
+                    children: [{
+                        tagName: "button", innerText: "Anterior", className: "BtnPrimary",
+                        onclick: async () => {
+                            if (this.IndexModal == 0) { return; }
+                            if (CheckQuestion(QuestionsList[this.IndexModal])) {
+                                this.IndexModal--;
+                                ModalTest();
+                            }
+                        }
+                    }, {
+                        tagName: "button", innerText: "Cerrar", className: "BtnPrimary",
+                        onclick: async () => {
+
+                        }
+                    }, {
+                        tagName: "button", innerText: "Next", className: "BtnPrimary",
+                        onclick: async () => {
+                            if (this.IndexModal == (QuestionsArray.length - 1)) { return; }
+                            if (CheckQuestion(QuestionsList[this.IndexModal])) {
+                                this.IndexModal++;
+                                ModalTest();
+                            }
+                        }
+                    }]
+                });
+                const Options = WRender.Create({
+                    tagName: "button", innerText: "Iniciar", className: "BtnPrimary",
+                    onclick: ModalTest
+                });
+                ContainerQuestions = WRender.Create({ class: "ContainerQuestions", children: Options });
+                break;
+            default:
+                RespContainer = WRender.Create({ class: "RespContainer", innerHTML: "ERROR" });
+                break;
+        }
         return ContainerQuestions;
     }
     MainOptions = () => {
@@ -109,6 +203,9 @@ class WTestView extends HTMLElement {
                     this.Config.Questions.forEach(Question => {
                         if (Question.Value == null || Question.Value == undefined) {
                             flag = false;
+                            if (this.Config.Type == "Modal") {
+                                return;
+                            }
                             const ContainerQ = this.shadowRoot.querySelector("#Question" + Question.id);
                             WRender.SetStyle(ContainerQ, { boxShadow: "0 0 2px 0 rgb(255, 0, 0)" });
                         }
@@ -137,23 +234,36 @@ class WTestView extends HTMLElement {
                 padding: 20,
                 margin: 0,
                 "border-bottom": "solid 3px #888"
-            }), new WCssClass(`.QuestionControl`, {
+            }), new WCssClass(`.ContainerQuestions .QuestionControl`, {
                 padding: 10,
                 margin: 10,
                 "box-shadow": "0 0 2px 0 rgb(0,0,0,70%)",
                 "border-radius": 5,
                 display: 'flex',
                 "align-items": "center"
-            }), new WCssClass(`.QuestionControl:nth-child(odd)`, {
+            }), new WCssClass(`w-slide.ContainerQuestions .QuestionControl`, {
+                padding: 20,
+                margin: "auto",
+                "margin-top": 20,
+                "border-radius": 5,
+                height: "calc(100% - 140px)",
+                display: 'flex',
+                "flex-direction": "column",
+                width: "calc(100% - 160px)",
+                "align-items": "flex-start"
+            }), new WCssClass(`.ContainerQuestions .QuestionControl:nth-child(odd)`, {
                 "background-color": "#f5f4f4",
-            }), new WCssClass(`.QuestionControl .DescQuestion`, {
+            }), new WCssClass(`.ContainerQuestions .QuestionControl .DescQuestion`, {
                 padding: "5px 20px",
                 "min-width": "200px"
-            }), new WCssClass(`.RespContainer, .RespContainer div`, {
+            }), new WCssClass(`.ContainerQuestions .RespContainer, .RespContainer div`, {
                 display: 'flex',
                 "align-items": "center",
                 width: "100%"
-            }), new WCssClass(`.RespContainer label, .RespContainer input`, {
+            }), new WCssClass(`w-slide.ContainerQuestions .RespContainer`, {
+                "flex-direction": "column",
+                "align-items": "flex-start",
+            }), new WCssClass(`.ContainerQuestions .RespContainer label, .RespContainer input`, {
                 cursor: "pointer",
                 padding: "5px 20px",
             }), new WCssClass(`.RespContainer input`, {
@@ -174,9 +284,9 @@ class WTestView extends HTMLElement {
         ], MediaQuery: [{
             condicion: '(max-width: 600px)',
             ClassList: [
-                new WCssClass(`.QuestionControl:nth-child(odd)`, {
+                new WCssClass(`.ContainerQuestions .QuestionControl:nth-child(odd)`, {
                     "background-color": "inherit",
-                }), new WCssClass(`.QuestionControl, .RespContainer`, {
+                }), new WCssClass(`.ContainerQuestions .QuestionControl, .RespContainer`, {
                     display: 'flex',
                     "align-items": "flex-start",
                     "flex-direction": "column",
