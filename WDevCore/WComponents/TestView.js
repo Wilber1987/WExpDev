@@ -79,14 +79,9 @@ class WTestView extends HTMLElement {
                                         if (index == -1 && control.checked == true) {
                                             if (WArrayF.FindInArray(Resp, Question.MultiValues) == false) {
                                                 Question.MultiValues.push(Resp)
-                                            } else {
-                                                console.log("Item Existente")
-                                            }
-                                        } else {
-                                            Question.MultiValues.splice(index, 1)
-                                        }
+                                            } else { console.log("Item Existente") }
+                                        } else { Question.MultiValues.splice(index, 1) }
                                         Question.Value = Question.MultiValues;
-
                                     } else Question.Value = ev.target.value;
                                 }
                             }
@@ -127,6 +122,7 @@ class WTestView extends HTMLElement {
                 const ModalTest = async () => {
                     if (this.SelectedModal != null) {
                         this.SelectedModal.close();
+                        this.SelectedModal = null;
                     }
                     this.SelectedModal = WRender.Create({
                         tagName: "w-modal-form",
@@ -142,14 +138,12 @@ class WTestView extends HTMLElement {
                     this.shadowRoot.append(this.SelectedModal);
                 }
                 const CheckQuestion = (Question) => {
-                    console.log(Question);
-                    console.log(this.SelectedModal);
                     let flag = true;
                     if (this.Config.AllRequire == true) {
                         if (Question.Value == null || Question.Value == undefined) {
                             flag = false;
                             WRender.SetStyle(this.SelectedModal.querySelector("#Question" + Question.id),
-                             { boxShadow: "0 0 2px 0 rgb(255, 0, 0)" });
+                                { boxShadow: "0 0 2px 0 rgb(255, 0, 0)" });
                         }
                     }
                     return flag;
@@ -159,8 +153,8 @@ class WTestView extends HTMLElement {
                     children: [{
                         tagName: "button", innerText: "Anterior", className: "BtnPrimary",
                         onclick: async () => {
-                            if (this.IndexModal == 0) { return; }
                             if (CheckQuestion(QuestionsList[this.IndexModal])) {
+                                if (this.IndexModal == 0) { return; }
                                 this.IndexModal--;
                                 ModalTest();
                             }
@@ -168,13 +162,16 @@ class WTestView extends HTMLElement {
                     }, {
                         tagName: "button", innerText: "Cerrar", className: "BtnPrimary",
                         onclick: async () => {
-
+                            this.SelectedModal.close();
                         }
                     }, {
                         tagName: "button", innerText: "Next", className: "BtnPrimary",
                         onclick: async () => {
-                            if (this.IndexModal == (QuestionsArray.length - 1)) { return; }
                             if (CheckQuestion(QuestionsList[this.IndexModal])) {
+                                if (this.IndexModal == (QuestionsArray.length - 1)) {
+                                    this.SelectedModal.close();
+                                    return;
+                                }
                                 this.IndexModal++;
                                 ModalTest();
                             }
@@ -234,36 +231,23 @@ class WTestView extends HTMLElement {
                 padding: 20,
                 margin: 0,
                 "border-bottom": "solid 3px #888"
-            }), new WCssClass(`.ContainerQuestions .QuestionControl`, {
+            }), new WCssClass(`.QuestionControl`, {
                 padding: 10,
                 margin: 10,
                 "box-shadow": "0 0 2px 0 rgb(0,0,0,70%)",
                 "border-radius": 5,
                 display: 'flex',
                 "align-items": "center"
-            }), new WCssClass(`w-slide.ContainerQuestions .QuestionControl`, {
-                padding: 20,
-                margin: "auto",
-                "margin-top": 20,
-                "border-radius": 5,
-                height: "calc(100% - 140px)",
-                display: 'flex',
-                "flex-direction": "column",
-                width: "calc(100% - 160px)",
-                "align-items": "flex-start"
-            }), new WCssClass(`.ContainerQuestions .QuestionControl:nth-child(odd)`, {
+            }), new WCssClass(`.QuestionControl:nth-child(odd)`, {
                 "background-color": "#f5f4f4",
-            }), new WCssClass(`.ContainerQuestions .QuestionControl .DescQuestion`, {
+            }), new WCssClass(`.QuestionControl .DescQuestion`, {
                 padding: "5px 20px",
                 "min-width": "200px"
-            }), new WCssClass(`.ContainerQuestions .RespContainer, .RespContainer div`, {
+            }), new WCssClass(`.RespContainer, .RespContainer div`, {
                 display: 'flex',
                 "align-items": "center",
                 width: "100%"
-            }), new WCssClass(`w-slide.ContainerQuestions .RespContainer`, {
-                "flex-direction": "column",
-                "align-items": "flex-start",
-            }), new WCssClass(`.ContainerQuestions .RespContainer label, .RespContainer input`, {
+            }), new WCssClass(`.RespContainer label, .RespContainer input`, {
                 cursor: "pointer",
                 padding: "5px 20px",
             }), new WCssClass(`.RespContainer input`, {
@@ -280,6 +264,38 @@ class WTestView extends HTMLElement {
                 display: 'flex',
                 "align-items": "center",
                 "justify-content": "center"
+            }),
+            //MODALES--------------------------->
+            new WCssClass(`w-modal-form .QuestionControl`, {
+                padding: 20,
+                margin: "auto",
+                "margin-top": 20,
+                height: "calc(100% - 140px)",
+                "flex-direction": "column",
+                width: "calc(100% - 160px)",
+                "align-items": "flex-start"
+            }), new WCssClass(`.ModalOptions`, {
+                display: "flex",
+                "justify-content": "center",
+                "align-items": "center",
+                padding: 20,
+            }), new WCssClass(`.ModalOptions button`, {
+                margin: 10
+            }), new WCssClass(`w-modal-form .QuestionControl:nth-child(odd)`, {
+                "background-color": "inherit",
+            }),
+            //SLIDE----------------------------->
+            new WCssClass(`w-slide.ContainerQuestions .QuestionControl`, {
+                padding: 20,
+                margin: "auto",
+                "margin-top": 20,
+                height: "calc(100% - 140px)",
+                "flex-direction": "column",
+                width: "calc(100% - 160px)",
+                "align-items": "flex-start"
+            }), new WCssClass(`w-slide.ContainerQuestions .RespContainer`, {
+                "flex-direction": "column",
+                "align-items": "flex-start",
             }),
         ], MediaQuery: [{
             condicion: '(max-width: 600px)',
