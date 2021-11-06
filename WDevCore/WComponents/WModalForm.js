@@ -279,6 +279,10 @@ class WModalForm extends HTMLElement {
                         }
                     })
                 } else {
+                    let value = ObjectF[prop];
+                    if(typeof value === "number"){
+                      value = value.toFixed(2)
+                    } 
                     Form.children.push({
                         type: "div",
                         props: {
@@ -291,7 +295,7 @@ class WModalForm extends HTMLElement {
                         }, {
                             type: "label",
                             props: {
-                                innerHTML: ObjectF[prop]
+                                innerHTML: value
                             }
                         }]
                     });

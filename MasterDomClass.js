@@ -235,7 +235,7 @@ class MainClass {
                 Title: "TEST",
                 Descripcion: "Desc",
                 GeneralResp: ["SI", "NO"],
-                Type: "Modal",
+                //Type: "Modal",
                 //AllRequire: false,
                 Questions: [ {
                     Id: 1, Descripcion: "Name", Value: null,

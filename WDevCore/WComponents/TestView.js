@@ -27,6 +27,14 @@ class WTestConfig {
 class WTestView extends HTMLElement {
     constructor(Config = (new WTestConfig())) {
         super();
+        this.append(WRender.Create({ tagName:'w-style', ClassList: [
+            new WCssClass(`w-test`, {
+                display: "block",
+                "box-shadow": "0 0 2px 0 rgb(0,0,0,70%)",
+                "border-radius": 5,
+                margin: 10
+            })
+        ]}));
         this.attachShadow({ mode: 'open' });
         this.Config = Config;
         this.Config.GeneralResp = this.Config.GeneralResp ?? [];
@@ -36,7 +44,7 @@ class WTestView extends HTMLElement {
         this.MainTestContainer = WRender.Create({ class: "MainTestContainer" });
         this.MainTestContainer.append(WRender.CreateStringNode(`<h3>${this.Config.Title}</h3>`));
         this.MainTestContainer.append(WRender.CreateStringNode(`<p>${this.Config.Descripcion}</p>`));
-        this.MainTestContainer.append(this.DrawTest(this.Config.Questions));
+        this.MainTestContainer.append(this.DrawTest(this.Config.Questions));        
         this.shadowRoot.append(this.MainTestContainer);
         this.shadowRoot.append(this.MainOptions());
         this.shadowRoot.append(WRender.Create(this.style));
@@ -220,17 +228,19 @@ class WTestView extends HTMLElement {
         return ContainerOptions;
     }
     style = {
-        tagName: 'w-style', ClassList: [
+        tagName: 'w-style', ClassList: [            
             new WCssClass(`.MainTestContainer`, {
                 display: "flex",
                 "justify-content": "center",
-                "flex-direction": "column",
-                padding: 20
+                "flex-direction": "column", 
             }), new WCssClass(`.MainTestContainer h3`, {
                 "text-align": "center",
                 padding: 20,
                 margin: 0,
-                "border-bottom": "solid 3px #888"
+                "border-bottom": "solid 1px #888"
+            }), new WCssClass(`.MainTestContainer p`, {
+                display: "flex",
+                "justify-content": "center",
             }), new WCssClass(`.QuestionControl`, {
                 padding: 10,
                 margin: 10,
@@ -258,8 +268,6 @@ class WTestView extends HTMLElement {
             //OPTIONS
             new WCssClass(`.ContainerOptions`, {
                 padding: 10,
-                margin: 10,
-                "box-shadow": "0 0 2px 0 rgb(0,0,0,50%)",
                 "border-radius": 5,
                 display: 'flex',
                 "align-items": "center",
