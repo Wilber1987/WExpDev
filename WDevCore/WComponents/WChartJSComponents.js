@@ -24,34 +24,28 @@ class ColumChart extends HTMLElement {
         this.DrawChart();
     }
     connectedCallback() {
-        console.log("conected");
+        //console.log("conected");
         this.shadowRoot.innerHTML = "";
         this.MainChart.children = [];
         this.GroupsData = [];
-        // if (this.shadowRoot.innerHTML != "") {
-        //     return;
-        // }
-        
         this.groupParams = this.ChartInstance.groupParams ?? [];
         this.EvalValue = this.ChartInstance.EvalValue ?? null;
         this.AttNameEval = this.ChartInstance.AttNameEval ?? null;
         this.Dataset = this.ChartInstance.Dataset ?? [];
         this.ChartInstance.Colors = this.ChartInstance.Colors ?? [];
-        console.log(this.groupParams);
-        console.log(this.AttNameEval);
-        console.log(this.EvalValue);
-        console.log(this.Dataset);
         if (this.ChartInstance.TypeChart == "staked") {// bar or staked
-            this.ChartInstance.TypeChart = "column";
+            this.ChartInstance.DirectionChart = "column";
+        } else if (this.ChartInstance.TypeChart == "Line") {// bar or staked
+            this.ChartInstance.DirectionChart = "column";
         } else {
-            this.ChartInstance.TypeChart = "row";
-        }       
+            this.ChartInstance.DirectionChart = "row";
+        }
         this.DrawChart();
     }
     DrawChart() {
         this.shadowRoot.append(WRender.createElement(WChartStyle(this.ChartInstance)));
         const object = {};
-        if (this.ChartInstance.TypeChart = "row") {
+        if (this.ChartInstance.DirectionChart = "row") {
             object[this.AttNameEval] = "";
         }
         this.groupParams.forEach(element => {
@@ -62,9 +56,13 @@ class ColumChart extends HTMLElement {
         this.EvalArray = WArrayF.ArrayUnique(this.ChartInstance.Dataset, this.AttNameEval);
         let ChartFragment = WRender.createElement({ type: 'div', props: { id: '', class: 'WChartContainer' } });
         ChartFragment.append(this.DrawSeries(this.EvalArray, this.ChartInstance.Colors));
-        ChartFragment.append(WRender.createElement(this._AddSectionBars()));
+        const SectionBars = WRender.createElement(this._AddSectionBars());
+        ChartFragment.append(SectionBars);
         ChartFragment.append(this.DrawGroups());
         this.shadowRoot.append(ChartFragment);
+        if (this.ChartInstance.TypeChart == "Line") {
+            SectionBars.append(this.DrawLineChart(this.EvalArray, this.ChartInstance.Colors, ChartFragment));
+        }       
     }
     _AddSectionBars(Dataset = this.Dataset) {
         this.groupParams.forEach(groupParam => {
@@ -113,9 +111,9 @@ class ColumChart extends HTMLElement {
                     this.EvalArray.forEach(Eval => {
                         arrayP[this.AttNameEval] = Eval[this.AttNameEval];
                         const Data = this.FindData(arrayP);
-                        if (Data != "n/a") {
-                            groupBar.children.push(this.DrawBar(Data, this.ChartInstance, index));
-                        }
+                        //if (Data != "n/a") {
+                            groupBar.children.push(this.DrawBar(Data, this.ChartInstance, index, arrayP[this.AttNameEval]));
+                        //}
                         index++;
                     });
                 }
@@ -146,11 +144,11 @@ class ColumChart extends HTMLElement {
         })
         return SectionLabels;
     }
-    DrawBar(DataValue, Config, index) {
+    DrawBar(DataValue, Config, index, SerieName = "") {
         var Size = Config.ContainerSize;
         var Size = 180;
-        var BarSize = (DataValue / this.MaxVal); //% de tamaño
-        var labelCol = DataValue;
+        var BarSize =  DataValue == "n/a" ? 0 : (DataValue / this.MaxVal); //% de tamaño
+        var labelCol =  DataValue;
         var styleP = "";
         if (Config.ColumnLabelDisplay == 1) {
             //dibujar el valor en porcentaje
@@ -160,7 +158,9 @@ class ColumChart extends HTMLElement {
             number = Math.round(number * multiplier) / multiplier
             labelCol = number + '%';
         }
-        var Bars = WRender.CreateStringNode(`<Bars class="Bars" style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
+        var Bars = WRender.CreateStringNode(`<Bars class="Bars"
+                name="${SerieName}"
+                style="${styleP}height:${Size * BarSize}px;background:${Config.Colors[index]}">
                 <label>
                     ${labelCol}
                 </labe>
@@ -240,7 +240,75 @@ class ColumChart extends HTMLElement {
             return "n/a";
         }
     }
-    
+    DrawLineChart = (GroupLabelsData, Colors, ChartFragment) => {
+        //this.MainChart.querySelector
+        const LineChart = WRender.createElementNS({
+            type: "svg",
+            props: {
+                style: "position:absolute; top: 0; width:100%; height: 100%"
+            }
+        });
+        var index = 0
+        var style = "";
+        GroupLabelsData.forEach(element => {
+            var color = Colors[index];
+            if (!color) {
+                Colors.push(GenerateColor());
+            }
+            const bars = ChartFragment.querySelectorAll(`bars[name=${element[this.AttNameEval]}]`);
+            const BarContainers =  ChartFragment.querySelectorAll(`groupbar`);
+            let M00 = "";
+            let DPropiety = "";
+            let ABar = null;            
+            bars.forEach((bar, IndexBars) => {    
+                bar.style.opacity = 0;  
+                console.log( bar.parentNode.parentNode.offsetWidth ); 
+                console.log( (bar.parentNode.parentNode.offsetWidth )/2); 
+                console.log(bar.offsetLeft);   
+                const indexGroup = Array.prototype.indexOf.call(BarContainers, bar.parentNode.parentNode);   
+                const BarParentWidth = (bar.parentNode.parentNode.offsetWidth)/2 ;  
+                let Cx = 0;               
+                if (IndexBars == 0) {
+                    M00 =  `M ${ BarParentWidth } ${bar.offsetTop + 2} `
+                    DPropiety = DPropiety + ` l 0 0`;     
+                    Cx =  BarParentWidth;           
+                } else {
+                    Cx =  bar.offsetLeft - 35; 
+                    DPropiety = DPropiety + ` l ${ 
+                        bar.offsetLeft  - ABar.offsetLeft  + 0
+                    } ${bar.offsetTop - ABar.offsetTop} `; 
+                }
+                ABar = bar;
+                let Circle = WRender.createElementNS({
+                    type: "circle",
+                    props: {
+                        class: "circleLineChart",
+                        cx: Cx,
+                        cy: bar.offsetTop + 2,
+                        r: 5,
+                        "stroke-width": 10,
+                        fill: color
+                    },
+                });                
+                LineChart.append(Circle);
+            });
+            const Path = WRender.createElementNS({
+                type: "path",
+                props: {
+                    id: "path_"+element[this.AttNameEval],
+                    class: "line",
+                    stroke: color,
+                    "fill-opacity": 0,
+                    "stroke-width": 3,
+                    d: `${M00} ${DPropiety}  m 0 0 z`
+                },
+            });
+            LineChart.append(Path);
+            index++;
+        });
+        return LineChart;
+    }
+
 }
 class RadialChart extends HTMLElement {
     constructor(ChartInstance = (new ChartConfig())) {
@@ -261,12 +329,12 @@ class RadialChart extends HTMLElement {
     DrawChart = async () => {
         if (!this.ChartInstance) {
             this.ChartInstance = new ChartConfig(this.data);
-        }        
+        }
         let ChartFragment = document.createElement("div");
         ChartFragment.className = "WChartContainer";
         if (this.ChartInstance.Title) {
             ChartFragment.append(this._AddSectionTitle(this.ChartInstance.Title));
-        }        
+        }
         ChartFragment.append(
             this.DrawSeries(
                 this.ChartInstance.Dataset,
@@ -373,7 +441,7 @@ class RadialChart extends HTMLElement {
                 this.progressInitial(porcentaje, Circle);
             }
             if (this.ChartInstance.ChartFunction) {
-                Circle.onclick = ()=>{
+                Circle.onclick = () => {
                     this.ChartInstance.ChartFunction(element)
                 }
             }
@@ -406,6 +474,7 @@ const GenerateColor = () => {
     return color_aleatorio
 }
 const WChartStyle = (ChartInstance) => {
+    console.log(ChartInstance);
     return {
         type: "w-style",
         props: {
@@ -422,7 +491,8 @@ const WChartStyle = (ChartInstance) => {
                     "flex-direction": "column",
                     "text-overflow": "ellipsis",
                     "white-space": "nowrap",
-                    "max-height": 450
+                    "max-height": 450,
+                    position: "relative"
                 }), new WCssClass(".SectionLabels, .SectionLabelGroup ", {
                     "display": " flex",
                     "justify-content": " center",
@@ -465,31 +535,33 @@ const WChartStyle = (ChartInstance) => {
                     //"border-right": " solid 1px #d4d4d4",
                     "border-top": " solid 1px #d4d4d4"
                 }), new WCssClass(".groupBars ", {
-                    "width": " 100%",
+                    "width":  300,
                     //"height": " 180px",
                     "display": " flex",
                     "flex-direction": "column-reverse",
-                    "flex-grow": " 1",
+                    //"flex-grow": " 1",
                     "border-left": " solid 1px #d4d4d4",
                     "align-items": "center",
-                    position: "relative"
+                    //position: "relative"
                 }), new WCssClass(".ContainerBars ", {
                     "display": " flex",
                     "width": " 100%",
-                    "padding-left": " 10px",
-                    "padding-right": " 10px",
-                    "flex-direction": ChartInstance.TypeChart,
+                    //"padding-left": " 10px",
+                    //"padding-right": " 10px",
+                    "flex-direction": ChartInstance.DirectionChart,
                     "align-items": " flex-end",
-                    "justify-content": " flex-end",
+                    "justify-content": "flex-end",
                     overflow: "hidden",
-                    "border-bottom": "1px solid #BFBFBF",                    
+                    "border-bottom": "1px solid #BFBFBF",
                 }), new WCssClass(".ContainerBars .Bars ", {
                     "display": " block",
                     "margin": " 0 auto",
+                    //"align-self": "center",
                     "margin-top": " 0px",
                     "z-index": " 1",
-                    "width": "30px",
-                    "min-height": " 20PX",
+                    "width":  ChartInstance.TypeChart == "Line" ? 1 : 30,
+                    //"min-height": " 20PX",
+                    //"min-width": 10,
                     "background": " rgb(177, 177, 177)",
                     "background": " linear-gradient(0deg, rgba(177, 177, 177, 1) 0%, rgba(209, 209, 209, 1) 53%)",
                 }), new WCssClass(".Bars label ", {
@@ -513,7 +585,8 @@ const WChartStyle = (ChartInstance) => {
                     "height": " 180px",
                     "right": " 0px",
                 }), new WCssClass(".BackGrounLineXNumber ", {
-                    "left": " -40px",
+                    //"left": " -40px",
+                    
                 }), new WCssClass(".CharLineX ", {
                     "position": " relative",
                     "border-top": " rgb(190, 190, 190) solid 1px",
@@ -569,6 +642,9 @@ const WChartStyle = (ChartInstance) => {
                     width: 20,
                     margin: 1,
                     "border-radius": "4px !important"
+                }), new WCssClass(`.circleLineChart`, {
+                    //"-webkit-filter": "drop-shadow( 0px 0px 1px rgba(0, 0, 0, .7))",
+                    //filter: "drop-shadow( 0px 0px 1px rgba(0, 0, 0, .7))"
                 }),
                 /*RADIALLLLL------------------------------------------------------------------------------------------------------*/
                 new WCssClass(".SectionRadialChart ", {
@@ -641,6 +717,7 @@ const WChartStyle = (ChartInstance) => {
         }
     };
 }
+
 customElements.define("w-radial-chart", RadialChart);
 customElements.define("w-colum-chart", ColumChart);
 export { RadialChart, ColumChart }

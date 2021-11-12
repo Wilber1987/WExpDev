@@ -1282,10 +1282,10 @@ const dataTestFact = [{
     id: 12,
     servicio: "llamadas",
     estado: "cancelada",
-    total: 20,
+    total: 200,
     empresa: "psico",
     tipo: "impuesto",
-    mes: "febrero",
+    mes: "marzo",
     cuarto: "1er",
     año: 2023,
     metodo_pago: "stripe"
@@ -1319,6 +1319,50 @@ const dataTestFact = [{
     empresa: "psico",
     tipo: "beneficio",
     mes: "febrero",
+    cuarto: "2er",
+    año: 2023,
+    metodo_pago: "stripe"
+},{
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 2000,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "marzo",
+    cuarto: "2er",
+    año: 2023,
+    metodo_pago: "stripe"
+},{
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 3500,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "abril",
+    cuarto: "2er",
+    año: 2023,
+    metodo_pago: "stripe"
+},{
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 3500,
+    empresa: "psico",
+    tipo: "beneficio",
+    mes: "marzo",
+    cuarto: "2er",
+    año: 2023,
+    metodo_pago: "stripe"
+},{
+    id: 12,
+    servicio: "llamadas",
+    estado: "cancelada",
+    total: 3500,
+    empresa: "renfe",
+    tipo: "beneficio",
+    mes: "marzo",
     cuarto: "2er",
     año: 2023,
     metodo_pago: "stripe"
