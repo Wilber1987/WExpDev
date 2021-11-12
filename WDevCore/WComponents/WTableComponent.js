@@ -24,7 +24,8 @@ class WTableComponent extends HTMLElement {
                 break;
         }
         //PAGINACION
-        this.append(WRender.createElement({ type:'w-style', props: {id: '', ClassList: [
+        this.append(WRender.createElement(
+            { type:'w-style', props: {id: '', ClassList: [
             new WCssClass(`w-table`, {
                 padding: 10,
                 display: "block"

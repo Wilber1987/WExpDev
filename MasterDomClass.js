@@ -231,7 +231,7 @@ class MainClass {
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
             //TEST
-            new WTestView()
+            //new WTestView()
             //TABLA BASICA
             // new WTableComponent({
             //     Dataset: dataTestFact,
@@ -250,14 +250,14 @@ class MainClass {
             //     }
             // }),
             //TABLA DINAMICA
-            // new WTableDynamicComp({ 
-            //     Dataset: dataTestFact,
-            //     EvalValue: "total",
-            //     AttNameEval: "mes",
-            //     groupParams: ["cuarto","año"],
-            //     //DisplayFilts: [],//filtros
-            //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
-            // }), 
+            new WTableDynamicComp({ 
+                Dataset: dataTestFact,
+                EvalValue: "total",
+                AttNameEval: "mes",
+                groupParams: ["cuarto","año"],
+                //DisplayFilts: [],//filtros
+                //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+            }), 
             // CARROSEL DE IMAGENES
             //new WCardCarousel(dataTestFact)
 
