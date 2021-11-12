@@ -7,26 +7,19 @@ const StyleScrolls = {
             new WCssClass("*::-webkit-scrollbar-thumb", {
                 "background": " #ccc",
                 "border-radius": " 4px",
-            }),
-            new WCssClass("*::-webkit-scrollbar-thumb:hover", {
+            }), new WCssClass("*::-webkit-scrollbar-thumb:hover", {
                 "background": " #b3b3b3",
                 "box-shadow": " 0 0 3px 2px rgba(0, 0, 0, 0.2)",
-            }),
-            new WCssClass("*::-webkit-scrollbar-thumb:active ", {
+            }), new WCssClass("*::-webkit-scrollbar-thumb:active ", {
                 "background-color": " #999999",
-            }),
-
-            new WCssClass("*::-webkit-scrollbar ", {
+            }), new WCssClass("*::-webkit-scrollbar ", {
                 "width": " 8px",
                 "height": " 10px",
                 "margin": " 10px",
-            }),
-
-            new WCssClass("*::-webkit-scrollbar-track ", {
+            }), new WCssClass("*::-webkit-scrollbar-track ", {
                 "background": " #e1e1e1",
                 "border-radius": " 4px",
-            }),
-            new WCssClass("*::-webkit-scrollbar-track:active ,*::-webkit-scrollbar-track:hover", {
+            }),  new WCssClass("*::-webkit-scrollbar-track:active ,*::-webkit-scrollbar-track:hover", {
                 "background": " #d4d4d4",
             })
         ]
@@ -48,7 +41,8 @@ const StylesControlsV1 = {
                 "font-size": "12px",
                 "color": "#fff",
                 //"border-right": "rgb(3, 106, 175) 5px solid",
-                "border-radius": "0.2cm"
+                "border-radius": "0.2cm",
+                "max-height": 40
             }), new WCssClass(`.BtnPrimary`, {
                 "color": "#fff",
                 "background-color": "007bff",
@@ -98,14 +92,15 @@ const StylesControlsV1 = {
             input[type=string], 
             input[type=number],
             input[type=date]`, {
-                padding: "8px",
+                padding: 10,
                 border: "none",
-                "border-bottom": "3px solid #999999",
-                width: "calc(100% - 16px)",
+                border: "2px solid #dddada",
+                width: "calc(100% - 24px)",
                 "font-size": "15px",
-                height: "20px"
+                height: 20,
+                "border-radius": "0.2cm"
             }), new WCssClass(`input:active, input:focus`, {
-                "border-bottom": "3px solid #0099cc",
+                "border-bottom": "2px solid #0099cc",
                 outline: "none",
             }), new WCssClass(`input[type=button]`, {
                 cursor: "pointer",
@@ -115,156 +110,6 @@ const StylesControlsV1 = {
         ]
     }
 }
-const StyleTFooter = {
-    type: 'w-style', props: {
-        id: '', ClassList: [
-            new WCssClass(`.paginateBTN`, {
-                display: "inline-block",
-                padding: "5px",
-                //"background-color": "#09f",
-                color: "#888888",
-                "margin": "5px",
-                cursor: "pointer",
-                "border-radius": "0.2cm",
-                //"font-weight": "bold",
-                transition: "all 0.6s"
-            }), new WCssClass(`.paginateBTNHidden`, {
-                display: "none",
-            }), new WCssClass(`.paginateBTNActive`, {
-                //"background-color": "rgb(3, 106, 175)",
-                "font-weight": "bold",
-                color: "#444444",
-            }), new WCssClass(`.pagBTN`, {
-                display: "inline-block",
-                padding: "5px",
-                //"background-color": "rgb(3, 106, 175)",
-                color: "#888888",
-                "margin": "5px",
-                cursor: "pointer",
-                "border-radius": "0.2cm",
-                "font-weight": "bold",
-                transition: "all 0.6s",
-                //width: "80px",
-                "text-align": "center",
-            }), new WCssClass(`.tfooter`, {
-                display: "flex",
-                "border-bottom": "1px rgb(185, 185, 185) solid",
-                "justify-content": "flex-end",
-                "padding-left": "20px",
-                "padding-right": "20px",
-            }), new WCssClass(`.tfooterNumbers`, {
-                overflow: "hidden",
-                "max-width": "390px",
-                "text-overflow": "ellipsis",
-                "white-space": "nowrap",
-            }), new WCssClass(`h5`, {
-                padding: "0.25rem 5px",
-                "padding-left": "20px",
-                "padding-right": "20px",
-                margin: "0px",
-            })
-        ]
-    }
-}
-//#endregion ##################################################################################################
-//#region WARTICLESTYLE #######################################################################################
-const ArticleStyle = {
-    type: 'w-style', props: {
-        id: '', ClassList: [
-            new WCssClass(`.WArticles`, {
-                padding: 10,
-            }), new WCssClass(`.WArticles article`, {
-                padding: 0,
-                "background-color": "#fff",
-                "margin-bottom": 10,
-                "border-radius": "0.2cm",
-                "box-shadow": "0 0px 2px 0 rgba(0,0,0,0.3)",
-                overflow: "hidden"
-            }), new WCssClass(`.WArticles .ArticleHeader`, {
-                padding: 10,
-                display: "grid",
-                "grid-template-rows": "20px 20px",
-                "grid-template-columns": "50px auto auto",
-                "font-size": 11,
-                "font-family": "system-ui",
-                "box-shadow": "0 0px 2px 0 rgba(0,0,0,0.3)"
-            }), new WCssClass(`.WArticles .ArticleBody`, {
-                margin: 10,
-                display: "flex",
-                "flex-direction": "column",
-                "font-size": 12,
-                "font-family": "system-ui",
-                position: "relative",
-                "min-height": 150,
-                "border": "solid 1px rgba(0,0,0,0.3)",
-                "border-radius": "0.2cm",
-                overflow: "hidden"
-            }),new WCssClass(`.WArticles  .ArticleBody label`, {
-                padding: 10,
-                "font-size": 16,
-                "font-weight": "bold", 
-                color: "#444"               
-            }), new WCssClass(`.WArticles .ArticleBody p`, {
-                "text-align": "justify",
-                "text-overflow": "ellipsis",
-                "display": "-webkit-box",
-                " display": "-moz-box",
-                "  display": "box",
-                "-webkit-box-orient": "vertical",
-                "-moz-box-orient": "vertical",
-                "box-orient": "vertical",
-                "-webkit-line-clamp": "4",
-                "line-clamp": "4",
-                height: 75,
-                position: "absolute",
-                overflow: "hidden",
-                padding: "5px 15px",
-                color: "#fff",
-                bottom:0,
-                "background-color": "rgb(0,0,0,50%)",
-                "font-size": 14,
-                width: "calc(100% - 30px)"
-            }), new WCssClass(`.ArticleHeader img`, {
-                "grid-row": "1/3",
-                "grid-column": "1/2",
-                height: 40,
-                width: 40,
-                "border-radius": "20%",
-                "box-shadow": "0 0px 1px 0 rgba(0,0,0,0.3)"
-            }), new WCssClass(`.ArticleBody img`, {                
-                width: "100%",  
-                "box-shadow": "0 0px 1px 0 rgba(0,0,0,0.3)"
-            }), new WCssClass(`.ArticleBody img`, {                
-                width: "100%",  
-                "box-shadow": "0 0px 1px 0 rgba(0,0,0,0.3)"
-            }), new WCssClass( `.ArticleAction`, {
-                display: 'flex',
-                //height: 30,
-                padding: "10px 30px",
-                "justify-content": "flex-end",
-                "align-items": "center"
-            }),  new WCssClass( `.ArticleAction .BtnArticles, .ArticleAction img`, {                
-                height: 30,
-                width: 30,
-                border: "none",
-                "background-color": "initial",
-                cursor: "pointer",
-            }),
-        ], MediaQuery: [{
-            condicion: '(max-width: 600px)',
-            ClassList: []
-        },
-        ]
-    }
-};
-const WArticleStyleContainer = {
-    type: 'div',
-    props: { id: '', style: 'display: none' },
-    children: [
-        StyleScrolls, ArticleStyle, StylesControlsV1, StyleTFooter
-    ]
-}
-
 //#endregion  #################################################################################################
 
-export { StyleScrolls, WArticleStyleContainer , StylesControlsV1}
+export { StyleScrolls , StylesControlsV1}

@@ -1,11 +1,6 @@
-import {
-    WRender,
-    WAjaxTools,
-    ComponentsManager
-} from "../WModules/WComponentsTools.js";
-import {
-    WCssClass
-} from "../WModules/WStyledRender.js";
+import { WRender, WAjaxTools, ComponentsManager } from "../WModules/WComponentsTools.js";
+import { WCssClass } from "../WModules/WStyledRender.js";
+import { StyleScrolls, StylesControlsV1 } from "../StyleModules/WStyleComponents.JS";
 let photoB64;
 class WModalForm extends HTMLElement {
     constructor() {
@@ -31,12 +26,10 @@ class WModalForm extends HTMLElement {
             this.DivColumns = "calc(50% - 10px) calc(50% - 10px)";
         }
         if (this.ShadowRoot) {
-            this.attachShadow({
-                mode: "open"
-            });            
+            this.attachShadow({ mode: "open" });
             this.shadowRoot.append(WRender.createElement(this.FormStyle()));
         } else {
-            this.append(WRender.createElement(this.FormStyle()));            
+            this.append(WRender.createElement(this.FormStyle()));
         }
         //NO MODAL
         if (this.NoModal == true) {
@@ -54,9 +47,11 @@ class WModalForm extends HTMLElement {
                     ]
                 }
             }
-            
+
             this.HeadOptions == false;
             this.append(WRender.createElement(this.StyleNoModal()));
+            this.shadowRoot.append(WRender.createElement(StyleScrolls));
+            this.shadowRoot.append(WRender.createElement(StylesControlsV1));
             if (this.ShadowRoot) {
                 this.shadowRoot.append(WRender.createElement(StyleNoM))
             } else {
@@ -64,6 +59,8 @@ class WModalForm extends HTMLElement {
             }
 
         } else {
+            this.append(WRender.createElement(StyleScrolls));
+            this.append(WRender.createElement(StylesControlsV1));
             this.append(WRender.createElement({
                 type: "w-style",
                 props: {
@@ -190,7 +187,6 @@ class WModalForm extends HTMLElement {
                     const ObjectProxy = new Proxy(NewObject, ObjHandler);
                     this.Modal.children.push(this.CrudForm(ObjectProxy, this.ObjectOptions));
                     this.Modal.children.push(this.SaveOptions(ObjectProxy));
-
                 } else {
                     this.Modal.children.push(this.CrudForm(NewObject, this.ObjectOptions));
                     this.Modal.children.push(this.SaveOptions(NewObject));
@@ -230,9 +226,8 @@ class WModalForm extends HTMLElement {
                     setTimeout(() => {
                         this.parentNode.removeChild(this);
                     }, 1000);
-                }
-            },
-            children: ['x']
+                }, innerText: 'x'
+            }
             //children: ['◄ Back']
         };
         const Section = {
@@ -284,24 +279,25 @@ class WModalForm extends HTMLElement {
                         }
                     })
                 } else {
+                    let value = ObjectF[prop];
+                    if(typeof value === "number"){
+                      value = value.toFixed(2)
+                    } 
                     Form.children.push({
                         type: "div",
                         props: {
                             class: "ModalElement"
-                        },
-                        children: [{
+                        }, children: [{
                             type: "label",
                             props: {
                                 innerText: prop + ": "
                             }
-                        },
-                        {
+                        }, {
                             type: "label",
                             props: {
-                                innerHTML: ObjectF[prop]
+                                innerHTML: value
                             }
-                        }
-                        ]
+                        }]
                     });
                 }
             }
@@ -563,6 +559,13 @@ class WModalForm extends HTMLElement {
         }
         return DivOptions;
     }
+    close = () => {
+        ComponentsManager.modalFunction(this);
+        setTimeout(() => {
+            this.parentNode.removeChild(this);
+        }, 1000);
+    }
+    //STYLES----------------------------------------------------------------->
     FormStyle = () => {
         const Style = {
             type: "w-style",
@@ -585,7 +588,7 @@ class WModalForm extends HTMLElement {
                         "padding": "10px",
                         "margin": "0px",
                         "background": "#09f",
-                    }), new WCssClass(" divForm", {
+                    }), new WCssClass("divForm", {
                         //display: "flex", "flex-wrap": "wrap",
                         padding: "20px",
                         "display": "grid",
@@ -595,21 +598,7 @@ class WModalForm extends HTMLElement {
                     }), new WCssClass(" divForm .imageGridForm", {
                         "grid-row": "1/5",
                         //width: "calc(50% - 10px)", margin: "5px"
-                    }), new WCssClass(`.ContainerFormWModal input[type=text],
-                                        .ContainerFormWModal input[type=string],
-                                        .ContainerFormWModal input[type=number], 
-                                        .ContainerFormWModal input[type=date],
-                                        .ContainerFormWModal input[type=password],
-                                        .ContainerFormWModal input[type=time],
-                                        .ContainerFormWModal select, textarea`, {
-                        width: "calc(100% - 16px)",
-                        "font-size": "15px",
-                        transition: "all 0.7s",
-                        padding: 8,
-                        "border": "2px solid #e1d4d4",
-                        "font-size": "15px",
-                        "border-radius": "0.1cm"
-                    }), new WCssClass(` input:-internal-autofill-selected`, {
+                    }),new WCssClass(` input:-internal-autofill-selected`, {
                         "appearance": "menulist-button",
                         "background-color": "none !important",
                         "background-image": "none !important",
@@ -691,43 +680,8 @@ class WModalForm extends HTMLElement {
                         "width": "50px",
                         "position": "relative",
                         "left": "-10px;",
-                    }),
-                    //BORONES
-                    new WCssClass(` .BtnAlert, .BtnPrimary, 
-                                    .BtnSuccess, .BtnSecundary, .Btn`, {
-                        "font-weight": "bold",
-                        "border": "none",
-                        "padding": "10px",
-                        "text-align": "center",
-                        "display": "inline-block",
-                        "min-width": "100px",
-                        "cursor": "pointer",
-                        "background-color": "#09f",
-                        "color": "#fff",
-                        "border-right": "rgb(3, 106, 175) 5px solid",
-                    }), new WCssClass(` .BtnPrimary`, {
-                        "color": "#fff",
-                        "background-color": "007bff",
-                        "border-right": "rgb(3, 106, 175) 5px solid",
-                    }), new WCssClass(` .BtnAlert`, {
-                        "color": "#fff",
-                        "background-color": "#dc3545",
-                        "border-right": "#7e1b25 5px solid",
-                    }), new WCssClass(` .BtnSuccess`, {
-                        "color": "#fff",
-                        "background-color": "#28a745",
-                        "border-right": "#165c26 5px solid",
-                    }), new WCssClass(` .BtnSecundary`, {
-                        "color": "#fff",
-                        "background-color": "#17a2b8",
-                        "border-right": "#0f5964 5px solid",
-                    }), new WCssClass(` .Btn[type=checkbox]`, {
-                        "height": "20px",
-                        "min-width": "20px",
-                        "margin": "5px",
                     })
-                ],
-                MediaQuery: [{
+                ], MediaQuery: [{
                     condicion: "(max-width: 800px)",
                     ClassList: [
                         new WCssClass(" divForm", {
@@ -773,13 +727,13 @@ class WModalForm extends HTMLElement {
             }
         }
         return Style;
-    }    
+    }
     async SelectedFile(value) {
         var reader = new FileReader();
         reader.onloadend = function (e) {
             photoB64 = e.target.result.split("base64,")[1];
         }
         reader.readAsDataURL(value);
-    }    
+    }
 }
 customElements.define("w-modal-form", WModalForm);

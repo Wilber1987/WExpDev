@@ -5,12 +5,13 @@ import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 //REPORTS 
 import { dataTestFact } from './DATA/data.js'
 //COMPONENTS
-import {  } from "./WDevCore/WComponents/WAppNavigator.JS";
+import { } from "./WDevCore/WComponents/WAppNavigator.JS";
 import { WTableDynamicComp } from "./WDevCore/WComponents/WTableDynamic.js";
 import { WTableComponent } from "./WDevCore/WComponents/WTableComponent.js";
 import { WCardCarousel } from "./WDevCore/WComponents/WCardCarousel.JS";
+import { ColumChart } from "./WDevCore/WComponents/WChartJSComponents.js";
 //DOCUMENTACION
-import { WTestView } from "./Modules/TestView.js";
+import { WTestView } from "./WDevCore/WComponents/TestView.js";
 //import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
 //import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 //import { SlideDoc } from "./Modules/SlideDoc.js";
@@ -230,8 +231,51 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
+            new ColumChart({
+                Dataset: dataTestFact, 
+                Colors: ["#ff6699", "#ffbb99", "#adebad"],
+                TypeChart: "Line",
+                ColumnLabelDisplay: 0,
+                AttNameEval: "empresa",
+                EvalValue: "total",
+                groupParams: ["mes"]
+            })
             //TEST
             //new WTestView()
+            // new WTestView({
+            //     Title: "TEST",
+            //     Descripcion: "Desc",
+            //     GeneralResp: ["SI", "NO"],
+            //     //Type: "Modal",
+            //     //AllRequire: false,
+            //     Questions: [ {
+            //         Id: 1, Descripcion: "Name", Value: null,
+            //         QuestionType: "Open"
+            //     },{
+            //             Id: 2, Descripcion: "desc 1", Value: null,
+            //             QuestionType: "MultiSelect",
+            //         }, {
+            //             Id: 3, Descripcion: "desc 1", Value: null,
+            //             QuestionType: "MultiSelect",
+            //             Resps: [
+            //                 { id: 1, desc: "SI", value: "SI" },
+            //                 { id: 2, desc: "NO", value: "NO" },
+            //                 { id: 3, desc: "N/A", value: "N/A" }
+            //             ]
+            //         }, {
+            //             Id: 4, Descripcion: "desc 1", Value: null,
+            //             QuestionType: "Likert/Category",
+            //             Resps: [
+            //                 { id: 1, desc: "SI", value: "SI" },
+            //                 { id: 2, desc: "NO", value: "NO" },
+            //                 { id: 3, desc: "N/A", value: "N/A" }
+            //             ]
+            //         },{
+            //             Id: 1, Descripcion: "Number", Value: null,
+            //             QuestionType: "Number"
+            //         },
+            //     ]
+            // })
             //TABLA BASICA
             // new WTableComponent({
             //     Dataset: dataTestFact,
@@ -250,16 +294,18 @@ class MainClass {
             //     }
             // }),
             //TABLA DINAMICA
-            new WTableDynamicComp({ 
-                Dataset: dataTestFact,
-                EvalValue: "total",
-                AttNameEval: "mes",
-                groupParams: ["cuarto","año"],
-                //DisplayFilts: [],//filtros
-                //ParamsForOptions: ["cuarto"]//parametros de agrupacion
-            }), 
+            // new WTableDynamicComp({ 
+            //     Dataset: dataTestFact,
+            //     EvalValue: "total",
+            //     AttNameEval: "mes",
+            //     groupParams: ["cuarto","año"],
+            //     //DisplayFilts: [],//filtros
+            //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+            // }), 
             // CARROSEL DE IMAGENES
             //new WCardCarousel(dataTestFact)
+            //Chart
+
 
         ];
     }
