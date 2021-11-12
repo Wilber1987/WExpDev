@@ -222,6 +222,18 @@ class AsideClass {
                 name: "Slide", url: "#", action: async (ev) => {
                     DOMManager.NavigateFunction("SlideDoc", new SlideDoc({ id: "SlideDoc" }), "AppMain");
                 }
+            }, {
+                name: "LineChart", url: "#", action: async (ev) => {
+                    DOMManager.NavigateFunction("SlideDoc", new ColumChart({
+                        Dataset: dataTestFact, 
+                        Colors: ["#ff6699", "#ffbb99", "#adebad"],
+                        TypeChart: "Line",
+                        ColumnLabelDisplay: 0,
+                        AttNameEval: "empresa",
+                        EvalValue: "total",
+                        groupParams: ["mes"]
+                    }), "AppMain");
+                }
             },]
         }
     }
