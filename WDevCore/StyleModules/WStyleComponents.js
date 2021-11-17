@@ -91,14 +91,14 @@ const StylesControlsV1 = {
             new WCssClass(`input[type=text], 
             input[type=string], 
             input[type=number],
-            input[type=date]`, {
+            input[type=date], select`, {
                 padding: 10,
                 border: "none",
                 border: "2px solid #dddada",
                 width: "calc(100% - 24px)",
                 "font-size": "15px",
-                height: 20,
-                "border-radius": "0.2cm"
+                "border-radius": "0.2cm",
+                "box-sizing": "border-box",
             }), new WCssClass(`input:active, input:focus`, {
                 "border-bottom": "2px solid #0099cc",
                 outline: "none",

@@ -27,10 +27,6 @@ class WTableDynamicComp extends HTMLElement {
         });
         this.FilterControl = WRender.createElement(this.FilterOptions());
         this.ConfigControl = WRender.createElement(this.CreateConfig());
-        this.TableStyle = WRender.createElement(this.TableStyleDinamic());
-        this.shadowRoot.append(this.TableStyle);
-        this.shadowRoot.append(this.divTableContainer);
-        this.shadowRoot.append(this.ChartContainer);
     }
     connectedCallback() {
         if (this.MainTable.innerHTML != "") {
@@ -81,8 +77,16 @@ class WTableDynamicComp extends HTMLElement {
                     }),
                 ]
             }
-        }));        
-        this.shadowRoot.append(WRender.createElement(this.TableOptions()));
+        }));  
+        this.GridTC = "1/3";
+        if (this.TableConfig.DisplayOptions != false) {
+            this.GridTC = "1/2";
+            this.shadowRoot.append(WRender.createElement(this.TableOptions()));
+        } 
+        this.TableStyle = WRender.createElement(this.TableStyleDinamic());
+        this.shadowRoot.append(this.TableStyle);
+        this.shadowRoot.append(this.divTableContainer);
+        this.shadowRoot.append(this.ChartContainer);
         this.ChartContainer.innerHTML = "";
         this.DrawGroupTable(this.Dataset);
         this.ChartContainer.append(WRender.createElement(this.DrawChart()));
@@ -534,7 +538,8 @@ class WTableDynamicComp extends HTMLElement {
                         //transition: "all 1s"
                     }), new WCssClass(`.tableContainer`, {
                         overflow: "auto",
-                        "grid-row": "1/2",
+                        "grid-row": "1/2" ,
+                        "grid-column":  this.GridTC
                     }), new WCssClass(`.WTable`, {
                         "font-family": "Verdana, sans-serif",
                         width: "100%",
@@ -726,7 +731,7 @@ class WTableDynamicComp extends HTMLElement {
                     //CHART.....
                     new WCssClass(`.CharttableReport`, {
                         "grid-row": "2/3",
-                        "grid-column": "1/2"
+                        "grid-column": this.GridTC 
                     }),
                 ],
                 MediaQuery: [{

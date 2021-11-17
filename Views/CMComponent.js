@@ -4,21 +4,30 @@ import { WTableDynamicComp } from "../WDevCore/WComponents/WTableDynamic.js";
 import { ColumChart } from "../WDevCore/WComponents/WChartJSComponents.js";
 import { WCssClass } from '../WDevCore/WModules/WStyledRender.js';
 import { WFilterOptions } from "../WDevCore/WComponents/WFilterControls.js";
-
+import { WModalForm } from "../WDevCore/WComponents/WModalForm.js";
+import { StyleScrolls, StylesControlsV1 } from "../WDevCore/StyleModules/WStyleComponents.JS";
+import { dataTestFact } from '../DATA/data.js'
 class CMComponent extends HTMLElement {
     constructor() {
         super();
         WRender.SetStyle(this, {
             display: "grid",
             gridTemplateColumns: "50% 50%",
-            gridTemplateRows: "100px 100px auto",
+            gridTemplateRows: "50px 50px auto",
         });
         this.attachShadow({ mode: 'open' });
         this.postRequest = {};
+        this.FilterControl = new WFilterOptions({
+            Dataset: [new Model()],
+            FilterFunction: (DFilt) => {
+                this.DefineTable(DFilt);
+            }
+        });
+        //Options
         this.TimeOptions = WRender.Create({
             className: "TimeOptions", children: [
-                { tagName: "input", type: "date", onchange: async () => { } },
-                { tagName: "input", type: "date", onchange: async () => { } },
+                { tagName: "input", type: "date", value: (new Date()).toISO(), onchange: async () => { } },
+                { tagName: "input", type: "date", value: (new Date()).toISO(), onchange: async () => { } },
                 {
                     tagName: "select", onchange: async () => { }, children: [
                         { tagName: "option", value: "Años", innerText: "Años" },
@@ -33,31 +42,17 @@ class CMComponent extends HTMLElement {
                 }
             ]
         });
-        this.EvaluationOptions = WRender.Create({
-            className: "TimeOptions", children: [
-                {
-                    tagName: "select", onchange: async () => { },
-                    children: EvaluacionBasica.map(x => {
-                        return { tagName: "option", value: x, innerText: x };
-                    })
-                }, {
-                    tagName: "select", onchange: async () => { }, children: []
-                }
-            ]
-        });
         this.FilterOptions = WRender.createElement({
-            type: 'div', props: {  class: 'FilterOptions' }, children: [
+            type: 'div', props: { class: 'FilterOptions' }, children: [
                 {//filters
                     type: 'button', props: {
                         class: 'CMBTn', innerText: '', onclick: async () => {
-                            this.shadowRoot.append(WRender.createElement({
-                                type: "w-modal-form",
-                                props: {
-                                    title: "Filtros",
-                                    ObjectModal: this.FilterControl,
-                                    ObjectOptions: {
-                                        SaveFunction: (NewObject) => { }
-                                    }
+                            this.shadowRoot.append(new WModalForm({
+                                title: "Filtros",
+                                ObjectModal: this.FilterControl,
+                                StyleForm: "columnX3",
+                                ObjectOptions: {
+                                    SaveFunction: (NewObject) => { }
                                 }
                             }));
                         }
@@ -86,33 +81,55 @@ class CMComponent extends HTMLElement {
                             const MainChart = this.ChartContainer.querySelector("w-colum-chart");
                             const PrintNode = MainTable + MainChart.shadowRoot.innerHTML;
                             //console.log(PrintNode);
-                            const ventimp =  window.open(' ', 'popimpr');
-                            ventimp.document.write( PrintNode );
+                            const ventimp = window.open(' ', 'popimpr');
+                            ventimp.document.write(PrintNode);
                             ventimp.document.close();
                             ventimp.print();
                             ventimp.close();
                         }
                     }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.printI } }]
-                }, {//Config
-                    type: 'button', props: {
-                        class: 'CMBTn', innerText: '', onclick: async () => {
-                            this.shadowRoot.append(WRender.createElement({
-                                type: "w-modal-form",
-                                props: {
-                                    title: "Configuraciones",
-                                    ObjectModal: this.ConfigControl,
-                                    ObjectOptions: {
-                                        SaveFunction: (NewObject) => { }
-                                    }
-                                }
-                            }));
-                        }
-                    }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.config } }]
                 }
             ]
         });
-        this.shadowRoot.append(this.TimeOptions, this.EvaluationOptions, this.FilterOptions);
-        this.shadowRoot.append(WRender.createElement(this.FStyle()))
+        this.EvaluationOptions = WRender.Create({
+            className: "EvaluationOptions", children: [{
+                tagName: "select", onchange: async () => { },
+                children: EvaluacionBasica.map(x => {
+                    return { tagName: "option", value: x, innerText: x };
+                })
+            }]
+        });
+        this.AnaliticOptions = WRender.Create({
+            className: "EvaluationOptions", children: [{
+                tagName: "select", onchange: async () => { }, children: []
+            }]
+        });
+        // TABLA DINAMICA 
+        this.Table = new WTableDynamicComp({ 
+            Dataset: dataTestFact,
+            EvalValue: "total",
+            AttNameEval: "mes",
+            groupParams: ["cuarto","año"],
+            DisplayOptions: false,
+            //DisplayFilts: [],//filtros
+            //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+        })
+        WRender.SetStyle(this.Table, {
+            gridColumn: "1/3"
+        })
+        //styles
+        this.shadowRoot.append(WRender.createElement(StyleScrolls));
+        this.shadowRoot.append(WRender.createElement(StylesControlsV1));
+        this.shadowRoot.append(WRender.createElement(this.FStyle()));
+        //Body
+        this.shadowRoot.append(
+            this.TimeOptions,
+            this.EvaluationOptions,
+            this.FilterOptions,
+            this.AnaliticOptions,
+            this.Table
+        );
+
     }
     connectedCallback() { this.DraCMComponent(); }
     DraCMComponent = async () => { }
@@ -122,7 +139,7 @@ class CMComponent extends HTMLElement {
             props: {
                 id: "TableStyleDinamic" + this.id,
                 ClassList: [
-                    new WCssClass(`.Btn,.BtnTable, .BtnTableA, .BtnTableS, .CMBTn`, {
+                    new WCssClass(`.CMBTn`, {
                         "font-weight": "bold",
                         "border": "none",
                         "padding": "5px",
@@ -133,12 +150,13 @@ class CMComponent extends HTMLElement {
                         "cursor": "pointer",
                         "background-color": "#4894aa",
                         "color": "#fff",
-                        "border-radius": "0.2cm"
-                    }),new WCssClass(`.CMBTn`, {
+                        "border-radius": "0.2cm",
                         width: 30,
                         height: 30,
                         "background-color": "#4894aa",
                         "font-family": "monospace"
+                    }), new WCssClass(`.TimeOptions`, {
+                        display: "flex",
                     }), new WCssClass(`.CMBTn img`, {
                         width: 20,
                         height: 20,
