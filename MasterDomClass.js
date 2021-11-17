@@ -16,6 +16,9 @@ import { WTestView } from "./WDevCore/WComponents/TestView.js";
 //import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 //import { SlideDoc } from "./Modules/SlideDoc.js";
 //import { ChartDocs } from "./Modules/ChartDocs.js";
+//COMPONENTES ESPECIFICOS
+import { CMComponent } from "./Views/CMComponent.js";
+
 const DOMManager = new ComponentsManager();
 
 class MasterDomClass extends ComponentsManager {
@@ -24,7 +27,7 @@ class MasterDomClass extends ComponentsManager {
         this.props = { className: "App" }
         this.children = [
             new headerClass(),
-            new AsideClass(),
+            //new AsideClass(),
             new MainClass(),
             new FooterClass(),
             this.MasterStyle
@@ -45,7 +48,9 @@ class MasterDomClass extends ComponentsManager {
                 }), new WCssClass(".AppAside", {
                     "border-right": "solid #999999 1px"
                 }), new WCssClass(".AppMain", {
-                    overflow: "auto"
+                    overflow: "auto",
+                    display: "block",
+                    "grid-column": "1/3",
                 }), new WCssClass(".AppFooter", {
                     "grid-column": "1/3",
                     "background-color": "#eee",
@@ -243,15 +248,17 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
-            new ColumChart({
-                Dataset: dataTestFact, 
-                Colors: ["#ff6699", "#ffbb99", "#adebad"],
-                TypeChart: "Line",
-                ColumnLabelDisplay: 0,
-                AttNameEval: "empresa",
-                EvalValue: "total",
-                groupParams: ["mes"]
-            })
+            new CMComponent()
+            //COLUMN CHART LINEAL
+            // new ColumChart({
+            //     Dataset: dataTestFact, 
+            //     Colors: ["#ff6699", "#ffbb99", "#adebad"],
+            //     TypeChart: "Line",
+            //     ColumnLabelDisplay: 0,
+            //     AttNameEval: "empresa",
+            //     EvalValue: "total",
+            //     groupParams: ["mes"]
+            // })
             //TEST
             //new WTestView()
             // new WTestView({
