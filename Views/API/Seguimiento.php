@@ -245,7 +245,34 @@ function handle()
                 ($ValorSeg == "Naranja" && $ValorSeg2 == "Fresa")) {
                 $tipoEvolucion = "Negativa";
             }
-
+            mysqli_query($CM_Con, "UPDATE `tblseguimientousuario` SET                
+                `estado_inicial` = '$estadoInicial',
+                `estado_final` = '$estadoFinal',
+                `area_psicoemocional` = 'BienestarGeneral',
+                `tipo_evolucion` = '$tipoEvolucion'
+                where id_seguimiento = $id_seguimiento"
+            );
+            //LOGS
+            $Log =  GetQuery($base_Con, "SELECT id FROM log_servicios 
+                WHERE tipo = 'test' 
+                and id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW()) 
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+            if (count($Log) == 0) {
+                $Log2 =  GetQuery($base_Con, "SELECT id_test FROM gt_tu_resultados 
+                where id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW()) 
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+                if (count($Log2) != 0) {
+                    mysqli_query($CM_Con, "INSERT INTO log_servicios SET
+                    log_servicios.id_usuario = $key->id_usuario,
+                    log_servicios.id_curso = $Log2->id_test,
+                    log_servicios.id_seccion = $Log2->id_test,
+                    log_servicios.id_tipo_curso = 7,
+                    log_servicios.tipo= 'test',
+                    log_servicios.fecha_crea= NOW();");
+                }
+            }
         }
 
     } catch (\Throwable $th) {

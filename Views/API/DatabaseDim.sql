@@ -177,48 +177,7 @@ MAX_ROWS = 0
 MIN_ROWS = 0
 ROW_FORMAT = Compact;
 
-CREATE TRIGGER `insert_log_psicologo` After INSERT ON `gpsi_solicitud_psicologos` FOR EACH ROW BEGIN
 
-			IF EXISTS(SELECT id  FROM log_servicios WHERE tipo = 'psicologo' and id_usuario = NEW.id_usuario
-			and (month(fecha_crea) = MONTH(NOW()) AND YEAR(fecha_crea) = YEAR(NOW()))) 
-			-- OR (month(fecha_crea) = MONTH(NEW.updated_at) AND YEAR(fecha_crea) = YEAR(NEW.updated_at)) ))
-			THEN 
-				-- no se inserta porq ya existe el registro
-					set @value=@value;-- or print 'TODO' etc
-			ELSE 
-				
-					INSERT INTO log_servicios SET
-					log_servicios.id_usuario = NEW.id_usuario,
-					log_servicios.id_curso = NEW.id_solicitud,
-					log_servicios.id_seccion = NEW.id_solicitud,
-					log_servicios.id_tipo_curso = 7,
-					log_servicios.tipo= 'psicologo',
-					log_servicios.fecha_crea= NOW();
-			END IF;
-end;
-CREATE TRIGGER `update_log_psicologo` After UPDATE ON `gpsi_solicitud_psicologos` FOR EACH ROW BEGIN
-
-			IF EXISTS(SELECT id  FROM log_servicios WHERE tipo = 'psicologo' and id_usuario = NEW.id_usuario
-			and (month(fecha_crea) = MONTH(NOW()) AND YEAR(fecha_crea) = YEAR(NOW()))) 
-			-- OR (month(fecha_crea) = MONTH(NEW.updated_at) AND YEAR(fecha_crea) = YEAR(NEW.updated_at)) ))
-			THEN 
-				-- no se inserta porq ya existe el registro
-					set @value=@value;-- or print 'TODO' etc
-			ELSE 
-				
-					INSERT INTO log_servicios SET
-					log_servicios.id_usuario = NEW.id_usuario,
-					log_servicios.id_curso = NEW.id_solicitud,
-					log_servicios.id_seccion = NEW.id_solicitud,
-					log_servicios.id_tipo_curso = 7,
-					log_servicios.tipo= 'psicologo',
-					log_servicios.fecha_crea= NOW();
-			END IF;
-end;
-
-CREATE TABLE `log_absentismo` (
-
-);
 
 CREATE TABLE `log_absentismo` (
 `id_absentismo` int(10) NOT NULL AUTO_INCREMENT,
@@ -270,9 +229,9 @@ CREATE TABLE `log_solicitud` (
 `solicita` varchar(255) NULL,
 `tiene_psicologo` varchar(255) NULL,
 `n_solicitudes` int(10) NULL,
-`solicitan` enum(empresa, personal) NULL,
+`solicitan` enum('empresa', 'personal') NULL,
 `sesiones_consumidas` int(255) NULL,
-`tipo_usuario` enum(Alta, Fuga, Tratamiento) NULL,
+`tipo_usuario` enum('Alta', 'Fuga', 'Tratamiento') NULL,
 PRIMARY KEY (`id_segumiento`) 
 );
 
