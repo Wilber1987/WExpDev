@@ -3,6 +3,7 @@ handle();
 
 function Get($conect, $tableName, $condicion = "")
 {
+    //$conect = new mysqli('localhost', 'root', '', 'psicovitalem');
     $Form = [];
     $q = $conect->query("SELECT * FROM  $tableName $condicion");
     foreach ($q as $row) {
@@ -21,7 +22,7 @@ function GetQuery($conect, $Query)
 }
 function InsertEscalar($pMysqli, $Query)
 {
-    $response = mysqli_query($pMysqli, $Query."; SELECT LAST_INSERT_ID();");
+    $response = mysqli_query($pMysqli, $Query . "; SELECT LAST_INSERT_ID();");
     if ($response) {
         return array('success' => "true");
     } else {
@@ -68,10 +69,15 @@ function handle()
     $fecha = date("Y-m-d");
     try {
         $base_Con = new mysqli('localhost', 'root', '', 'psicovitalem');
-        $CM_Con = new mysqli('localhost', 'root', '', 'cm_data');
+        $CM_Con = new mysqli('localhost', 'root', '', 'cmdata');
         $Usuarios = Get($base_Con, "vw_join_usuarios");
+        echo "lista: ". json_encode(count($Usuarios)) . "<hr>";
+        echo print_r( $Usuarios);
+       
+        //return;
         foreach ($Usuarios as $key) //recorrer todos los usuarios
         {
+            echo "objeto: ". json_encode($key) . "<hr>";
             $consultaLogueo = Get(
                 $base_Con,
                 "tbllogueo",
@@ -83,9 +89,9 @@ function handle()
                 "tblseguimientousuario",
                 "WHERE id_usuario = $key->id_usuario and actual = 1"
             );
-            if (count($consultaLogueo) == 0 && count($seguimientoAct) != 0) {
+            if (count($consultaLogueo) == 0 && count($seguimientoAct) != 0)  {
                 $AstadoA = "Fuga";
-            } else if (count($consultaLogueo) != 0 &&  count($seguimientoAct) != 0) {
+            } else if (count($consultaLogueo) != 0 && count($seguimientoAct) != 0) {
                 if ($seguimientoAct[0]->estado == 'Fuga') //si eras fuga entonces pasas a ser recuperado
                 {
                     $AstadoA = "Recuperado";
@@ -97,7 +103,7 @@ function handle()
                     $AstadoA = "Activo";
                 }
             }
-            mysqli_query($CM_Con, "UPDATE tblseguimientousuario set estado = 0 
+            mysqli_query($CM_Con, "UPDATE tblseguimientousuario set estado = 0
                 where id_seguimiento = $seguimientoAct->id_seguimiento"
             );
 
@@ -245,33 +251,164 @@ function handle()
                 ($ValorSeg == "Naranja" && $ValorSeg2 == "Fresa")) {
                 $tipoEvolucion = "Negativa";
             }
-            mysqli_query($CM_Con, "UPDATE `tblseguimientousuario` SET                
+            mysqli_query($CM_Con, "UPDATE `tblseguimientousuario` SET
                 `estado_inicial` = '$estadoInicial',
                 `estado_final` = '$estadoFinal',
                 `area_psicoemocional` = 'BienestarGeneral',
                 `tipo_evolucion` = '$tipoEvolucion'
                 where id_seguimiento = $id_seguimiento"
             );
-            //LOGS
-            $Log =  GetQuery($base_Con, "SELECT id FROM log_servicios 
-                WHERE tipo = 'test' 
+            //LOGS servicios----------------------------------------------------------------------->
+            //TESTs
+            $Log = GetQuery($base_Con, "SELECT id FROM log_servicios
+                WHERE tipo = 'test'
                 and id_usuario = $key->id_usuario
-                and (month(fecha_crea) = MONTH(NOW()) 
+                and (month(fecha_crea) = MONTH(NOW())
                 AND YEAR(fecha_crea) = YEAR(NOW()))");
             if (count($Log) == 0) {
-                $Log2 =  GetQuery($base_Con, "SELECT id_test FROM gt_tu_resultados 
+                $Log2 = GetQuery($base_Con, "SELECT id_test FROM gt_tu_resultados
                 where id_usuario = $key->id_usuario
-                and (month(fecha_crea) = MONTH(NOW()) 
+                and (month(fecha_crea) = MONTH(NOW())
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+                if (count($Log2) != 0) {
+                    $Log2O = $Log2[0];
+                    mysqli_query($CM_Con, "INSERT INTO log_servicios (
+                     $id_seguimiento,
+                     $key->id_usuario,
+                     $Log2O->id_test,
+                     $Log2O->id_test,
+                     7,
+                     'test',
+                     NOW());");
+                }
+            }
+            //entrenamientos
+            $Log = GetQuery($base_Con, "SELECT id FROM log_servicios
+                WHERE tipo = 'area'
+                and id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW())
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+            if (count($Log) == 0) {
+                $Log2 = GetQuery(
+                    $base_Con,
+                    "SELECT gte_secciones_cursos.id_curso, id_tipo_curso, id_seccion from gte_secciones_cursos
+                    INNER JOIN gte_cursos on gte_secciones_cursos.id_curso = gte_cursos.id_curso
+                    where id_usuario = $key->id_usuario GROUP BY id_tipo_curso"
+                );
+                foreach ($Log2 as $curso) //recorrer todos los usuarios
+                {
+                    $tipo = "area";
+                    switch ($curso->id_tipo_curso) {
+                        case 2:
+                            $tipo = "taller";
+                        case 3:
+                            $tipo = "entrenamiento en directo";
+                            break;
+                    }
+                    mysqli_query($CM_Con, "INSERT INTO log_servicios (
+                     $id_seguimiento,
+                     $key->id_usuario,
+                     $curso->id_curso,
+                     $curso->id_seccion,
+                     $curso->id_tipo_curso,
+                     $tipo,
+                     NOW());");
+                }
+
+            }
+            $Log = GetQuery($base_Con, "SELECT id FROM log_servicios
+                WHERE tipo = 'foro'
+                and id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW())
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+            if (count($Log) == 0) {
+                $Log2 = GetQuery($base_Con, "SELECT id_foro, gf_topics.id_topic
+                from gf_respuestas_topics 
+                INNER JOIN gf_topics on gf_respuestas_topics.id_topic = gf_topics.id_topic
+                where id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW())
                 AND YEAR(fecha_crea) = YEAR(NOW()))");
                 if (count($Log2) != 0) {
                     mysqli_query($CM_Con, "INSERT INTO log_servicios SET
-                    log_servicios.id_usuario = $key->id_usuario,
-                    log_servicios.id_curso = $Log2->id_test,
-                    log_servicios.id_seccion = $Log2->id_test,
-                    log_servicios.id_tipo_curso = 7,
-                    log_servicios.tipo= 'test',
-                    log_servicios.fecha_crea= NOW();");
+                    id_seguimiento = $id_seguimiento,
+                    id_usuario = $key->id_usuario,
+                    id_curso = $Log2->id_foro,
+                    id_seccion = $Log2->id_topic,
+                    id_tipo_curso = 4,
+                    tipo= 'foro',
+                    fecha_crea= NOW();");
                 }
+            }
+            $Log = GetQuery($base_Con, "SELECT id FROM log_servicios
+                WHERE tipo = 'llamada'
+                and id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW())
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+            if (count($Log) == 0) {
+                $Log2 = GetQuery($base_Con, "SELECT id 
+                from historials 
+                where id_usuario = $key->id_usuario
+                and (month(fecha) = MONTH(NOW())
+                AND YEAR(fecha) = YEAR(NOW()))");
+                if (count($Log2) != 0) {
+                    mysqli_query($CM_Con, "INSERT INTO log_servicios (
+                     $id_seguimiento,
+                     $key->id_usuario,
+                     $Log2->id,
+                     $Log2->id,
+                     5,
+                     'llamada',
+                     NOW()
+                    );");
+                }
+            }
+            $Log = GetQuery($base_Con, "SELECT id FROM log_servicios
+                WHERE tipo = 'chat'
+                and id_usuario = $key->id_usuario
+                and (month(fecha_crea) = MONTH(NOW())
+                AND YEAR(fecha_crea) = YEAR(NOW()))");
+            if (count($Log) == 0) {
+                $Log2 = GetQuery($base_Con, "SELECT id 
+                from historial_mensajes 
+                where id_usuario = $key->id_usuario
+                and (month(fecha) = MONTH(NOW())
+                AND YEAR(fecha) = YEAR(NOW()))");
+                if (count($Log2) != 0) {
+                    $Log2O = $Log2[0];
+                    mysqli_query($CM_Con, "INSERT INTO log_servicios (
+                         $id_seguimiento,
+                         $key->id_usuario,
+                         $Log2O->id,
+                         $Log2O->id,
+                         6,
+                         'chat',
+                         NOW();
+                    )");
+                }
+            }
+            //ABSENTISMO------------------------------------------------------------------------->
+            $Log = GetQuery($base_Con, "SELECT id_absentismo FROM tbl_absentismo
+                WHERE  id_usuario = $key->id_usuario
+                and (month(fecha_inicio) = MONTH(NOW())
+                AND YEAR(fecha_inicio) = YEAR(NOW()))");
+            if (count($Log) == 0) {
+                $LogObject = $Log[0];
+                mysqli_query($CM_Con, "INSERT INTO tbl_absentismo(
+                    id_seguimiento,
+                    id_absentismo,
+                    fecha_inicio,
+                    fecha_final,
+                    id_usuario,
+                    comentario
+                ) values(
+                    $id_seguimiento,
+                    $LogObject->id_absentismo,
+                    '$LogObject->fecha_inicio',
+                    '$LogObject->fecha_final',
+                    $key->id_usuario,
+                    '$key->comentario'
+                )"
+                );                
             }
         }
 
