@@ -5,9 +5,9 @@ function Get($conect, $tableName, $condicion = "")
 {
     //$conect = new mysqli('localhost', 'root', '', 'psicovitalem');
     $Form = [];
-    $q = $conect->query("SELECT * FROM  $tableName $condicion");
-    foreach ($q as $row) {
-        $Form[] = $row;
+    $q = $conect->query("SELECT * FROM  $tableName $condicion");   
+    while ($fila = $q->fetch_object()) {
+        $Form[] = $fila;
     }
     return $Form;
 }
@@ -15,21 +15,25 @@ function GetQuery($conect, $Query)
 {
     $Form = [];
     $q = $conect->query($Query);
-    foreach ($q as $row) {
-        $Form[] = $row;
+    while ($fila = $q->fetch_object()) {
+        $Form[] = $fila;
     }
     return $Form;
 }
 function InsertEscalar($pMysqli, $Query)
 {
-    $response = mysqli_query($pMysqli, $Query . "; SELECT LAST_INSERT_ID();");
+    $response = mysqli_query($pMysqli, $Query);
     if ($response) {
-        return array('success' => "true");
+        return array('success' => "true", "id"=>GetQuery($pMysqli, "SELECT LAST_INSERT_ID() as id")[0]->id);
     } else {
         return array('success' => "false");
     }
 }
-
+function trimestre($mes=null){
+    $mes = is_null($mes) ? date('m') : $mes;
+    $trim=floor(($mes-1) / 3)+1;
+    return $trim;
+}
 function handle()
 {
     $actual = date("Y-m-d"); //fecha actual
@@ -69,10 +73,10 @@ function handle()
     $fecha = date("Y-m-d");
     try {
         $base_Con = new mysqli('localhost', 'root', '', 'psicovitalem');
-        $CM_Con = new mysqli('localhost', 'root', '', 'cmdata');
+        $CM_Con = new mysqli('localhost', 'root', '', 'cm_data');
         $Usuarios = Get($base_Con, "vw_join_usuarios");
-        echo "lista: ". json_encode(count($Usuarios)) . "<hr>";
-        echo print_r( $Usuarios);
+        //echo "lista: ". json_encode(count($Usuarios)) . "<hr>";
+        //echo print_r( $Usuarios);
        
         //return;
         foreach ($Usuarios as $key) //recorrer todos los usuarios
@@ -103,41 +107,56 @@ function handle()
                     $AstadoA = "Activo";
                 }
             }
-            mysqli_query($CM_Con, "UPDATE tblseguimientousuario set estado = 0
-                where id_seguimiento = $seguimientoAct->id_seguimiento"
+            if (count($seguimientoAct) !=0) {
+                $seguimientoAct = $seguimientoAct[0]->id_seguimiento;
+                echo print_r($seguimientoAct)."<hr>";
+                mysqli_query($CM_Con, "UPDATE tblseguimientousuario set estado = 0
+                where id_seguimiento = $seguimientoAct"
             );
 
+            }
+           
             $QuerySeg = "INSERT INTO tblseguimientousuario(
                     id_usuario,
                     estado,
                     actual,
                     created_at,
                     updated_at,
-                    fecha
+                    fecha,
+                    trimestre,
+                    mes
                     )
                 VALUES (
                     $key->id_usuario,
-                    $AstadoA,
+                   '$AstadoA',
                     1,
                     '$actual',
                     '$actual',
-                    '$actual'
+                    '$actual',
+                    
             )";
             $seguimiento = InsertEscalar($CM_Con, $QuerySeg);
-            $id_seguimiento = $seguimiento->id;
+            echo print_r($seguimiento)."<hr>";
+            $id_seguimiento = $seguimiento["id"];
+            $estadosObtenidosA = array();
+            $estadosObtenidosN =  array();
             foreach ($ESTADOS as $keyEstate) {
                 $QueryData = "SELECT TR.id_usuario,
                     (SELECT estado_psicoemocional from gt_tu_resultados
                     WHERE id_usuario = TR.id_usuario and area_psicoemocional = '$keyEstate'
                     ORDER BY fecha desc LIMIT 1) as estadoFinal,
+
                     (SELECT id_test from gt_tu_resultados
                     WHERE id_usuario = TR.id_usuario and area_psicoemocional = '$keyEstate'
                     ORDER BY fecha desc LIMIT 1) as IdTest,
+
                     (SELECT estado_psicoemocional from gt_tu_resultados
                     WHERE id_usuario = TR.id_usuario and area_psicoemocional = '$keyEstate'
                     AND estado_psicoemocional != estadoFinal
                     ORDER BY fecha desc LIMIT 1) as estadoInicial
+
                     from usuarios as TR where id_usuario = $key->id_usuario";
+                
                 $UserObtenido2 = GetQuery($base_Con, $QueryData);
                 if (count($UserObtenido2) == 0) {
                     continue;
@@ -266,10 +285,13 @@ function handle()
                 and (month(fecha_crea) = MONTH(NOW())
                 AND YEAR(fecha_crea) = YEAR(NOW()))");
             if (count($Log) == 0) {
-                $Log2 = GetQuery($base_Con, "SELECT id_test FROM gt_tu_resultados
+                echo "" . "<hr>";
+
+                $Log2 = GetQuery($base_Con, "SELECT * FROM gt_tu_resultados
                 where id_usuario = $key->id_usuario
-                and (month(fecha_crea) = MONTH(NOW())
-                AND YEAR(fecha_crea) = YEAR(NOW()))");
+                and (month(fecha) = MONTH(NOW())
+                AND YEAR(fecha) = YEAR(NOW()))");
+               
                 if (count($Log2) != 0) {
                     $Log2O = $Log2[0];
                     mysqli_query($CM_Con, "INSERT INTO log_servicios (
@@ -291,8 +313,8 @@ function handle()
             if (count($Log) == 0) {
                 $Log2 = GetQuery(
                     $base_Con,
-                    "SELECT gte_secciones_cursos.id_curso, id_tipo_curso, id_seccion from gte_secciones_cursos
-                    INNER JOIN gte_cursos on gte_secciones_cursos.id_curso = gte_cursos.id_curso
+                    "SELECT * FROM `gte_curso_usuarios` 
+                    INNER JOIN gte_cursos on gte_curso_usuarios.id_curso = gte_cursos.id_curso
                     where id_usuario = $key->id_usuario GROUP BY id_tipo_curso"
                 );
                 foreach ($Log2 as $curso) //recorrer todos los usuarios
@@ -309,8 +331,8 @@ function handle()
                      $id_seguimiento,
                      $key->id_usuario,
                      $curso->id_curso,
-                     $curso->id_seccion,
-                     $curso->id_tipo_curso,
+                     1,
+                     1,
                      $tipo,
                      NOW());");
                 }
@@ -326,8 +348,8 @@ function handle()
                 from gf_respuestas_topics 
                 INNER JOIN gf_topics on gf_respuestas_topics.id_topic = gf_topics.id_topic
                 where id_usuario = $key->id_usuario
-                and (month(fecha_crea) = MONTH(NOW())
-                AND YEAR(fecha_crea) = YEAR(NOW()))");
+                and (month(gf_topics.fecha_crea) = MONTH(NOW())
+                AND YEAR(gf_topics.fecha_crea) = YEAR(NOW()))");
                 if (count($Log2) != 0) {
                     mysqli_query($CM_Con, "INSERT INTO log_servicios SET
                     id_seguimiento = $id_seguimiento,
@@ -391,7 +413,7 @@ function handle()
                 WHERE  id_usuario = $key->id_usuario
                 and (month(fecha_inicio) = MONTH(NOW())
                 AND YEAR(fecha_inicio) = YEAR(NOW()))");
-            if (count($Log) == 0) {
+            if (count($Log) != 0) {
                 $LogObject = $Log[0];
                 mysqli_query($CM_Con, "INSERT INTO tbl_absentismo(
                     id_seguimiento,
