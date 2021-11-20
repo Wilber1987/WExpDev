@@ -92,12 +92,13 @@ class CMComponent extends HTMLElement {
             ]
         });
         this.EvaluationOptions = WRender.Create({
-            className: "EvaluationOptions", children: [{
-                tagName: "select", onchange: async () => { },
-                children: EvaluacionBasica.map(x => {
-                    return { tagName: "option", value: x, innerText: x };
-                })
-            }]
+            className: "EvaluationOptions", children: [
+                { tagName: "select", onchange: async () => { },
+                    children: EvaluacionBasica.map(x => {
+                        return { tagName: "option", value: x, innerText: x };
+                    })
+                }
+        ]
         });
         this.AnaliticOptions = WRender.Create({
             className: "EvaluationOptions", children: [{

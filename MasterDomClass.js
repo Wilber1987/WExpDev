@@ -248,17 +248,17 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
-            new CMComponent()
+            new CMComponent(),
             //COLUMN CHART LINEAL
-            // new ColumChart({
-            //     Dataset: dataTestFact, 
-            //     Colors: ["#ff6699", "#ffbb99", "#adebad"],
-            //     TypeChart: "Line",
-            //     ColumnLabelDisplay: 0,
-            //     AttNameEval: "empresa",
-            //     EvalValue: "total",
-            //     groupParams: ["mes"]
-            // })
+            new ColumChart({
+                Dataset: dataTestFact, 
+                Colors: ["#ff6699", "#ffbb99", "#adebad"],
+                TypeChart: "Line",
+                ColumnLabelDisplay: 0,
+                AttNameEval: "empresa",
+                EvalValue: "total",
+                groupParams: ["mes"]
+            })
             //TEST
             //new WTestView()
             // new WTestView({
