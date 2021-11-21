@@ -26,14 +26,100 @@ function InsertEscalar($pMysqli, $Query)
     if ($response) {
         return array('success' => "true", "id"=>GetQuery($pMysqli, "SELECT LAST_INSERT_ID() as id")[0]->id);
     } else {
+        echo "query: $Query <hr>";
         return array('success' => "false");
     }
 }
-function trimestre($mes=null){
-    $mes = is_null($mes) ? date('m') : $mes;
-    $trim=floor(($mes-1) / 3)+1;
-    return $trim;
-}
+function trimestre($datetime)
+    {
+        $mes = date("m",strtotime($datetime));//Referencias: http://stackoverflow.com/a/3768112/1883256
+        $mes = is_null($mes) ? date('m') : $mes;
+        $trim=floor(($mes-1) / 3)+1;
+        return $trim;
+    }
+    function InsertOrUpdateDIMU($CM_Con, $key){
+        $QueryInsertUsuarios = "INSERT INTO dim_usuarios(
+            id_usuario, 
+            centro, 
+            cargo, 
+            edad, 
+            contrato, 
+            antiguedad, 
+            turno, 
+            id_genero, 
+            genero, 
+            id_departamento, 
+            departamento_area, 
+            id_empresa, 
+            nombre_empresa, 
+            id_sector, 
+            sector, 
+            id_comunidad, 
+            id_provincia, 
+            id_empresa_padre, 
+            empresa_padre, 
+            edad_years, 
+            antiguedad_years,
+            edad_etiqueta,
+            antiguedad_etiqueta
+        ) values(
+            $key->id_usuario, 
+            '$key->centro', 
+            '$key->CARGO', 
+            '$key->edad', 
+            '$key->contrato', 
+            '$key->antiguedad', 
+            '$key->turno', 
+            $key->id_genero, 
+            '$key->genero', 
+            $key->id_departamento, 
+            '$key->departamento_area', 
+            $key->id_empresa, 
+            '$key->nombre_empresa', 
+            $key->id_sector, 
+            '$key->sector', 
+            $key->id_comunidad, 
+            $key->id_provincia, 
+            $key->id_empresa_padre, 
+            '$key->empresa_padre', 
+            $key->edad_years, 
+            $key->antiguedad_years,
+            $key->edad_etiqueta, 
+            $key->antiguedad_etiqueta
+        )";
+        $QueryUpdateUsuarios = "UPDATE  dim_usuarios set
+            id_usuario = $key->id_usuario,  
+            centro = '$key->centro',  
+            cargo = '$key->CARGO',  
+            edad = '$key->edad',  
+            contrato = '$key->contrato',  
+            antiguedad = '$key->antiguedad',  
+            turno = '$key->turno',  
+            id_genero = $key->id_genero,  
+            genero = '$key->genero',  
+            id_departamento = $key->id_departamento,  
+            departamento_area = '$key->departamento_area',  
+            id_empresa = $key->id_empresa,  
+            nombre_empresa = '$key->nombre_empresa',  
+            id_sector = $key->id_sector,  
+            sector = '$key->sector',  
+            id_comunidad = $key->id_comunidad,  
+            id_provincia = $key->id_provincia,  
+            id_empresa_padre = $key->id_empresa_padre,  
+            empresa_padre = '$key->empresa_padre',  
+            edad_years = $key->edad_years,  
+            antiguedad_years = $key->antiguedad_years,
+            edad_etiqueta = $key->edad_etiqueta, 
+            antiguedad_etiqueta = $key->antiguedad_etiqueta
+            where  id_usuario = $key->id_usuario
+        ";
+        $contUsuas = Get($CM_Con, "dim_usuarios", "WHERE id_usuario = $key->id_usuario"); 
+        if (count($contUsuas) == 0) {
+            $seguimiento = InsertEscalar($CM_Con, $QuerySeg);
+        } else {
+            mysqli_query($CM_Con, $QueryUpdateUsuarios );
+        }        
+    }
 function handle()
 {
     $actual = date("Y-m-d"); //fecha actual
@@ -77,7 +163,6 @@ function handle()
         $Usuarios = Get($base_Con, "vw_join_usuarios");
         //echo "lista: ". json_encode(count($Usuarios)) . "<hr>";
         //echo print_r( $Usuarios);
-       
         //return;
         foreach ($Usuarios as $key) //recorrer todos los usuarios
         {
@@ -115,7 +200,9 @@ function handle()
             );
 
             }
-           
+            $current_month = date('m',strtotime($actual));
+            $current_year = date('Y',strtotime($actual));
+            $trimestre = trimestre($actual);
             $QuerySeg = "INSERT INTO tblseguimientousuario(
                     id_usuario,
                     estado,
@@ -124,7 +211,8 @@ function handle()
                     updated_at,
                     fecha,
                     trimestre,
-                    mes
+                    mes,
+                    year
                     )
                 VALUES (
                     $key->id_usuario,
@@ -133,9 +221,13 @@ function handle()
                     '$actual',
                     '$actual',
                     '$actual',
-                    
+                    $trimestre,
+                    $current_month,
+                    $current_year
             )";
             $seguimiento = InsertEscalar($CM_Con, $QuerySeg);
+            
+            InsertOrUpdateDIMU($CM_Con, $key);
             echo print_r($seguimiento)."<hr>";
             $id_seguimiento = $seguimiento["id"];
             $estadosObtenidosA = array();
@@ -430,6 +522,37 @@ function handle()
                     $key->id_usuario,
                     '$key->comentario'
                 )"
+                );                
+            }
+
+             //psicologos------------------------------------------------------------------------->
+             $Log = GetQuery($base_Con, "SELECT * FROM `gpsi_solicitud_psicologos`
+             WHERE  id_usuario = $key->id_usuario
+             and (month(fecha_inicio) = MONTH(NOW())
+             AND YEAR(fecha_inicio) = YEAR(NOW()))");
+            if (count($Log) != 0) {
+                $LogObject = $Log[0];
+                mysqli_query($CM_Con, "INSERT INTO `cm_data`.`log_solicitud`(
+                    `id_segumiento`,
+                    `tratamiento`,
+                    `solicita`,
+                    `tiene_psicologo`,
+                    `n_solicitudes`,
+                    `solicitan`,
+                    `sesiones_consumidas`,
+                    `tipo_usuario`
+                    `id_solicitud`
+                    ) VALUES (
+                        $id_seguimiento, 
+                        NULL, 
+                        NULL,
+                        NULL, 
+                        NULL, 
+                        NULL, 
+                        NULL, 
+                        NULL, 
+                        $LogObject->id_solicitud
+                    );"
                 );                
             }
         }
