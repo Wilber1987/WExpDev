@@ -86,7 +86,7 @@ MIN_ROWS = 0
 ROW_FORMAT = Compact;
 
 CREATE TABLE `log_solicitud` (
-`id_segumiento` int(10) NOT NULL,
+`id_seguimiento` int(10) NOT NULL,
 `tratamiento` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
 `solicita` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
 `tiene_psicologo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,

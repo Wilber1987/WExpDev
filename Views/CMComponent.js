@@ -133,7 +133,14 @@ class CMComponent extends HTMLElement {
 
     }
     connectedCallback() { this.DraCMComponent(); }
-    DraCMComponent = async () => { }
+    DraCMComponent = async () => { 
+        const url = "./Views/API/TakeData.php?function=handle"
+        const response = await WAjaxTools.PostRequest(url, {
+            fecha1: "2019-01-01",
+            fecha2: (new Date()).toISO(),
+        });
+        this.Table.Dataset = response;
+    }
     FStyle() {
         const WTableStyle = {
             type: "w-style",
