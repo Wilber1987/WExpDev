@@ -40,7 +40,7 @@ CREATE TABLE `log_estados_psicoemocionales` (
 `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP,
 `estado_inicial` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 `estado_final` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-`area_psicoemocional` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+`area_psicoemocional` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 `tipo_evolucion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
 `countTest` int(10) NULL DEFAULT NULL,
 `id_seguimiento` int(10) NULL DEFAULT NULL,

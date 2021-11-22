@@ -1,9 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>ETL</title>
+</head>
+<body>
 <?php
-handle();
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+header('Content-Type: application/json; charset=utf-8');
+//header("Content-Type: text/html;charset=utf-8");
+RUN();
 
 function Get($conect, $tableName, $condicion = "")
 {
-    try {        
+    try {
         $Form = [];
         $q = $conect->query("SELECT * FROM  $tableName $condicion");
         while ($fila = $q->fetch_object()) {
@@ -30,11 +45,12 @@ function GetQuery($conect, $Query)
 }
 function InsertEscalar($pMysqli, $Query)
 {
+    mysqli_query($pMysqli, "SET NAMES 'utf8'");
     $response = mysqli_query($pMysqli, $Query);
     if ($response) {
         return array('success' => "true", "id" => GetQuery($pMysqli, "SELECT LAST_INSERT_ID() as id")[0]->id);
     } else {
-        echo "query: $Query <hr>";
+        //echo "query: $Query <hr>";
         return array('success' => "false");
     }
 }
@@ -47,6 +63,7 @@ function trimestre($datetime)
 }
 function InsertOrUpdateDIMU($CM_Con, $key)
 {
+    mysqli_query($CM_Con, "SET NAMES 'utf8'");
     $QueryInsertUsuarios = "INSERT INTO dim_usuarios(
             id_usuario,
             centro,
@@ -129,14 +146,31 @@ function InsertOrUpdateDIMU($CM_Con, $key)
         mysqli_query($CM_Con, $QueryUpdateUsuarios);
     }
 }
-function handle()
+function RUN()
+{
+    $fechas = [
+        date("Y-m-d", strtotime("2019-12-01")),
+        date("Y-m-d", strtotime("2020-01-01")),
+        date("Y-m-d", strtotime("2020-04-01")),
+        date("Y-m-d", strtotime("2020-06-01")),
+        date("Y-m-d", strtotime("2020-08-01")),
+        date("Y-m-d", strtotime("2020-10-01")),
+        date("Y-m-d", strtotime("2021-01-01")),
+        date("Y-m-d", strtotime("2021-12-01")),
+    ];
+    foreach ($fechas as $key) {
+        handle($key, $key);
+        echo "fechas: $key <hr>";
+    }
+}
+function handle($fecha, $actual)
 {
     //$fecha = date("Y-m-d");
     //$actual = date("Y-m-d"); //fecha actual
     //$fecha = date("Y-m-d", strtotime("2019-12-01"));
     //$actual = date("Y-m-d", strtotime("2019-12-01")); //fecha actual
-    $fecha = date("Y-m-d", strtotime("2021-06-01"));
-    $actual = date("Y-m-d", strtotime("2021-06-01")); //fecha actual
+    //$fecha = date("Y-m-d", strtotime("2021-06-01"));
+    //$actual = date("Y-m-d", strtotime("2021-06-01")); //fecha actual
     $timestamp = strtotime($actual);
     $diasdelmes = date("t", $timestamp);
     $fin30 = date("Y-m-" . $diasdelmes);
@@ -196,7 +230,7 @@ function handle()
         //return;
         foreach ($Usuarios as $key) //recorrer todos los usuarios
         {
-            echo "objeto: " . json_encode($key) . "<hr>";
+            //echo "objeto: " . json_encode($key) . "<hr>";
             $consultaLogueo = Get(
                 $base_Con,
                 "tbllogueo",
@@ -224,7 +258,7 @@ function handle()
             }
             if (count($seguimientoAct) != 0) {
                 $seguimientoAct = $seguimientoAct[0]->id_seguimiento;
-                echo print_r($seguimientoAct) . "<hr>";
+                //echo print_r($seguimientoAct) . "<hr>";
                 mysqli_query($CM_Con, "UPDATE tblseguimientousuario set estado = 0
                 where id_seguimiento = $seguimientoAct"
                 );
@@ -256,7 +290,7 @@ function handle()
             $seguimiento = InsertEscalar($CM_Con, $QuerySeg);
 
             InsertOrUpdateDIMU($CM_Con, $key);
-            echo print_r($seguimiento) . "<hr>";
+            //echo print_r($seguimiento) . "<hr>";
             $id_seguimiento = $seguimiento["id"];
             $estadosObtenidosA = array();
             $estadosObtenidosN = array();
@@ -401,7 +435,7 @@ function handle()
                 and (month(fecha_crea) = MONTH('$actual')
                 AND YEAR(fecha_crea) = YEAR('$actual'))");
             if (count($Log) == 0) {
-                echo "" . "<hr>";
+                //echo "" . "<hr>";
                 $Log2 = GetQuery($base_Con, "SELECT * FROM gt_tu_resultados
                 where id_usuario = $key->id_usuario
                 and (month(fecha) = MONTH('$actual')
@@ -607,3 +641,7 @@ function handle()
         throw $th;
     }
 }
+?>
+</body>
+</html>
+
