@@ -13,12 +13,17 @@ function Get($conect, $tableName, $condicion = "")
 }
 function GetQuery($conect, $Query)
 {
-    $Form = [];
-    $q = $conect->query($Query);
-    while ($fila = $q->fetch_object()) {
-        $Form[] = $fila;
+    try {
+        $Form = [];
+        $q = $conect->query($Query);
+        while ($fila = $q->fetch_object()) {
+            $Form[] = $fila;
+        }
+        return $Form;
+    } catch (\Throwable $th) {
+        echo "error: $Query <hr>";
     }
-    return $Form;
+    
 }
 function InsertEscalar($pMysqli, $Query)
 {
@@ -84,8 +89,8 @@ function trimestre($datetime)
             '$key->empresa_padre', 
             $key->edad_years, 
             $key->antiguedad_years,
-            $key->edad_etiqueta, 
-            $key->antiguedad_etiqueta
+            '$key->edad_etiqueta', 
+            '$key->antiguedad_etiqueta'
         )";
         $QueryUpdateUsuarios = "UPDATE  dim_usuarios set
             id_usuario = $key->id_usuario,  
@@ -115,7 +120,7 @@ function trimestre($datetime)
         ";
         $contUsuas = Get($CM_Con, "dim_usuarios", "WHERE id_usuario = $key->id_usuario"); 
         if (count($contUsuas) == 0) {
-            $seguimiento = InsertEscalar($CM_Con, $QuerySeg);
+            $seguimiento = InsertEscalar($CM_Con, $QueryInsertUsuarios);
         } else {
             mysqli_query($CM_Con, $QueryUpdateUsuarios );
         }        
@@ -378,7 +383,6 @@ function handle()
                 AND YEAR(fecha_crea) = YEAR(NOW()))");
             if (count($Log) == 0) {
                 echo "" . "<hr>";
-
                 $Log2 = GetQuery($base_Con, "SELECT * FROM gt_tu_resultados
                 where id_usuario = $key->id_usuario
                 and (month(fecha) = MONTH(NOW())
@@ -528,11 +532,34 @@ function handle()
              //psicologos------------------------------------------------------------------------->
              $Log = GetQuery($base_Con, "SELECT * FROM `gpsi_solicitud_psicologos`
              WHERE  id_usuario = $key->id_usuario
-             and (month(fecha_inicio) = MONTH(NOW())
-             AND YEAR(fecha_inicio) = YEAR(NOW()))");
+             and (month(fecha_prevista) = MONTH(NOW())
+             AND YEAR(fecha_prevista) = YEAR(NOW()))");
+             $tratamiento =  "NO";
+             $solicita = "NO";
+             $tiene_psicologo = "NO";
+             $n_solicitudes = 0;
+             $solicitan = "NO";
+             $sesiones_consumidas = 0;
+             $tipo_usuario = "Alta";
+             $solicitud_empresa = "N/A";
             if (count($Log) != 0) {
                 $LogObject = $Log[0];
-                mysqli_query($CM_Con, "INSERT INTO `cm_data`.`log_solicitud`(
+                $Eval = array_values(array_filter($Log, function ($L) {
+                    return $L->usuario_asiste == 1;
+                }));
+                $EvalSE = array_values(array_filter($Log, function ($L) {
+                    return $L->id_solicitud_empresa != null;
+                }));
+                $tratamiento =  $LogObject->usuario_asiste == 1 ? 'SI' : 'NO';
+                $solicita = "SI";
+                $tiene_psicologo = "SI";
+                $n_solicitudes = count($Log);
+                $solicitan = "SI";
+                $sesiones_consumidas = count($Eval);;
+                $tipo_usuario = "Tratamiento";
+                $solicitud_empresa =  count($EvalSE) > 0 ? 'SI' : 'NO';
+            }
+            mysqli_query($CM_Con, "INSERT INTO log_solicitud(
                     `id_segumiento`,
                     `tratamiento`,
                     `solicita`,
@@ -540,21 +567,20 @@ function handle()
                     `n_solicitudes`,
                     `solicitan`,
                     `sesiones_consumidas`,
-                    `tipo_usuario`
-                    `id_solicitud`
+                    `tipo_usuario`,
+                    solicitud_empresa
                     ) VALUES (
                         $id_seguimiento, 
-                        NULL, 
-                        NULL,
-                        NULL, 
-                        NULL, 
-                        NULL, 
-                        NULL, 
-                        NULL, 
-                        $LogObject->id_solicitud
+                        '$tratamiento',
+                        '$solicita',
+                        '$tiene_psicologo',
+                        $n_solicitudes,
+                        '$solicitan',
+                        $sesiones_consumidas,
+                        '$tipo_usuario',
+                        '$solicitud_empresa'
                     );"
-                );                
-            }
+            ); 
         }
 
     } catch (\Throwable $th) {
