@@ -27,7 +27,7 @@ function handle($Data)
     $Seguimiento = GetQuery($CM_Con, "SELECT * FROM tblseguimientousuario as ls
         INNER JOIN dim_usuarios as du ON du.id_usuario = ls.id_usuario
         WHERE ls.fecha BETWEEN '$Data->fecha1' and '$Data->fecha2'
-        limit 20
+        limit 200
     ");
     foreach ($Seguimiento as $seg) //recorrer todos los usuarios
     {

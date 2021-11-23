@@ -6,7 +6,10 @@ import { WCssClass } from '../WDevCore/WModules/WStyledRender.js';
 import { WFilterOptions } from "../WDevCore/WComponents/WFilterControls.js";
 import { WModalForm } from "../WDevCore/WComponents/WModalForm.js";
 import { StyleScrolls, StylesControlsV1 } from "../WDevCore/StyleModules/WStyleComponents.JS";
-import { dataTestFact } from '../DATA/data.js'
+import { dataTestFact } from '../DATA/data.js';
+
+//proto
+import { MultiSelect } from "../WDevCore/WWComponentsPROTOS/WMultiSelect.js";
 class CMComponent extends HTMLElement {
     constructor() {
         super();
@@ -101,9 +104,9 @@ class CMComponent extends HTMLElement {
         ]
         });
         this.AnaliticOptions = WRender.Create({
-            className: "EvaluationOptions", children: [{
-                tagName: "select", onchange: async () => { }, children: []
-            }]
+            className: "EvaluationOptions", children: [
+                new MultiSelect({Dataset:Servicios})
+            ]
         });
         // TABLA DINAMICA 
         this.Table = new WTableDynamicComp({ 

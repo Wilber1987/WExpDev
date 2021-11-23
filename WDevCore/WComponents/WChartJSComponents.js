@@ -316,7 +316,7 @@ class ColumChart extends HTMLElement {
                         LineChart.append(Circle);
                     });
                     path.setAttribute("d", `${M00} ${DPropiety}  m 0 0 z`)
-                    console.log(`${M00} ${DPropiety}  m 0 0 z`);
+                    //console.log(`${M00} ${DPropiety}  m 0 0 z`);
                 });
             }, 10);
             index++;
@@ -544,7 +544,7 @@ const WChartStyle = (ChartInstance) => {
                     "display": " flex",
                     "align-items": "center",
                     "height": " 100%",
-                    "position": " relative",
+                    //"position": " relative",
                     "flex-direction": "column-reverse",
                     "flex-grow": " 1",
                     "border-bottom": " solid 1px #d4d4d4",
