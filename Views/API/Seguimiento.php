@@ -20,6 +20,7 @@ function Get($conect, $tableName, $condicion = "")
 {
     try {
         $Form = [];
+        mysqli_query($conect, "SET NAMES 'utf8'");
         $q = $conect->query("SELECT * FROM  $tableName $condicion");
         while ($fila = $q->fetch_object()) {
             $Form[] = $fila;
@@ -33,6 +34,7 @@ function GetQuery($conect, $Query)
 {
     try {
         $Form = [];
+        mysqli_query($conect, "SET NAMES 'utf8'");
         $q = $conect->query($Query);
         while ($fila = $q->fetch_object()) {
             $Form[] = $fila;

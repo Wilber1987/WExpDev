@@ -32,7 +32,8 @@ class WAjaxTools {
                 method: typeRequest,
                 headers: {
                     'Content-Type': ContentType,
-                    'Accept': Accept
+                    'Accept': Accept,
+                    dataType: 'json',
                 }
             }
             if (Data != {}) {
@@ -105,7 +106,8 @@ class WAjaxTools {
                 return [];
             }
         } else {
-            response = await response.json();
+            response = await response.json(response);
+            console.log(response);
             try {
                 localStorage.setItem(Url, JSON.stringify(response));
             } catch (error) {

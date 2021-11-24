@@ -15,6 +15,8 @@ class WTableDynamicComp extends HTMLElement {
         this.DisplayFilts = this.TableConfig.DisplayFilts ?? null;
         this.EvalValue = this.TableConfig.EvalValue ?? null;
         this.AttNameEval = this.TableConfig.AttNameEval ?? null;
+        this.OperationsType = "count";//"sum";
+        
         this.attachShadow({ mode: "open" });
         this.MainTable = WRender.createElement({ type: "div", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] });
         this.divTableContainer = WRender.createElement({
@@ -31,15 +33,10 @@ class WTableDynamicComp extends HTMLElement {
     connectedCallback() {
         if (this.MainTable.innerHTML != "") {
             return;
-        }
-        //PAGINACION
-        if (this.TableConfig.maxElementByPage == undefined) {
-            this.maxElementByPage = 10;
-        } else {
-            this.maxElementByPage = this.TableConfig.maxElementByPage;
-        }
-        this.AddItemsFromApi = this.TableConfig.AddItemsFromApi;
-        this.SearchItemsFromApi = this.TableConfig.SearchItemsFromApi;
+        } 
+        this.RunTable();
+    }
+    RunTable() {
         if (typeof this.TableConfig.Dataset === "undefined" || this.TableConfig.Dataset.length == 0) {
             this.innerHTML = "Defina un Dataset en formato JSON";
             return;
@@ -52,9 +49,6 @@ class WTableDynamicComp extends HTMLElement {
         if (this.TableConfig.TableClass) {
             this.TableClass = this.TableConfig.TableClass + " WScroll";
         }
-        this.RunTable();
-    }
-    RunTable() {
         this.GroupsData = [];
         this.ProcessData = [];
         this.EvalArray = WArrayF.ArrayUnique(this.TableConfig.Dataset, this.AttNameEval);
@@ -213,7 +207,10 @@ class WTableDynamicComp extends HTMLElement {
         let select = {
             type: "select",
             props: {
-                id: "Select" + this.id, class: "titleParam", onchange: () => { this.DefineTable(); }
+                id: "Select" + this.id, class: "titleParam", onchange: (ev) => {
+                    this.OperationsType = ev.target.value;
+                    this.DefineTable(); 
+                }
             }, children: [
                 { type: "option", props: { innerText: "Value - Suma", value: "sum" } },
                 { type: "option", props: { innerText: "Value - Count", value: "count" } }
@@ -381,12 +378,12 @@ class WTableDynamicComp extends HTMLElement {
             }
         });
         if (nodes.length != []) {
-            let Operations = this.shadowRoot.querySelector("#Select" + this.id);
+            //let Operations = this.OperationsType;// this.shadowRoot.querySelector("#Select" + this.id);
             let value = "fail!";
-            if (Operations != null) {
-                if (Operations.value == "sum") {
+            if (this.OperationsType != null) {
+                if (this.OperationsType == "sum") {
                     value = WArrayF.SumValAtt(nodes, this.EvalValue);
-                } else if (Operations.value == "count") {
+                } else if (this.OperationsType == "count") {
                     value = nodes.length;
                 }
             } else {

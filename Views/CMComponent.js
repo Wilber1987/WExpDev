@@ -96,31 +96,31 @@ class CMComponent extends HTMLElement {
         });
         this.EvaluationOptions = WRender.Create({
             className: "EvaluationOptions", children: [
-                { tagName: "select", onchange: async () => { },
+                {
+                    tagName: "select", onchange: async () => { },
                     children: EvaluacionBasica.map(x => {
                         return { tagName: "option", value: x, innerText: x };
                     })
                 }
-        ]
+            ]
         });
         this.AnaliticOptions = WRender.Create({
             className: "EvaluationOptions", children: [
-                new MultiSelect({Dataset:Servicios})
+                new MultiSelect({ Dataset: Servicios })
             ]
         });
         // TABLA DINAMICA 
-        this.Table = new WTableDynamicComp({ 
-            Dataset: dataTestFact,
-            EvalValue: "total",
-            AttNameEval: "mes",
-            groupParams: ["cuarto","año"],
-            DisplayOptions: false,
-            //DisplayFilts: [],//filtros
-            //ParamsForOptions: ["cuarto"]//parametros de agrupacion
-        })
-        WRender.SetStyle(this.Table, {
-            gridColumn: "1/3"
-        })
+        // this.Table = new WTableDynamicComp({ 
+        //     Dataset: dataTestFact,
+        //     EvalValue: "total",
+        //     AttNameEval: "mes",
+        //     groupParams: ["cuarto","año"],
+        //     DisplayOptions: true,
+        //     //DisplayOptions: false,
+        //     //DisplayFilts: [],//filtros
+        //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+        // })
+        
         //styles
         this.shadowRoot.append(WRender.createElement(StyleScrolls));
         this.shadowRoot.append(WRender.createElement(StylesControlsV1));
@@ -130,19 +130,45 @@ class CMComponent extends HTMLElement {
             this.TimeOptions,
             this.EvaluationOptions,
             this.FilterOptions,
-            this.AnaliticOptions,
-            this.Table
+            this.AnaliticOptions
         );
 
     }
     connectedCallback() { this.DraCMComponent(); }
-    DraCMComponent = async () => { 
-        const url = "./Views/API/TakeData.php?function=handle"
+    DraCMComponent = async () => {
+        const url = "./Views/API/TakeData.php?function=Report"
         const response = await WAjaxTools.PostRequest(url, {
             fecha1: "2019-01-01",
             fecha2: (new Date()).toISO(),
+            Dimencion: "log_estados_psicoemocionales",
+            DIMCondicion: [],
+            VAL: "-"
         });
-        this.Table.Dataset = response;
+
+        //this.Table.Dataset = response;
+        // this.Table.TableConfig = { 
+        //     Dataset: response,
+        //     EvalValue: "id_usuario",
+        //     AttNameEval: "departamento_area",
+        //     groupParams: ["year"],
+        //     DisplayOptions: true,
+        //     //DisplayFilts: [],//filtros
+        //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+        // };
+        this.Table = new WTableDynamicComp({
+            Dataset: response,
+            EvalValue: "id_usuario",
+            AttNameEval: "estado_final",
+            groupParams: ["year"],
+            DisplayOptions: true,
+            //DisplayFilts: [],//filtros
+            //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+        })
+        WRender.SetStyle(this.Table, {
+            gridColumn: "1/3"
+        })
+        //this.Table.DefineTable();
+        this.shadowRoot.append(this.Table);
     }
     FStyle() {
         const WTableStyle = {
