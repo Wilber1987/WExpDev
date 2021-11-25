@@ -48,7 +48,7 @@ function Report( $Params)
     $DIM = "";
     $DIMCondicion = "";
     if ($Params->Dimencion != "") {
-        $DIM = " INNER JOIN $Params->Dimencion  ON $Params->Dimencion.id_seguimiento = ls.id_seguimiento ";
+        $DIM = " INNER JOIN $Params->Dimencion as DIM  ON DIM.id_seguimiento = ls.id_seguimiento ";
     }
     if (count($Params->DIMCondicion) > 0) {
         $values = "";
@@ -61,7 +61,7 @@ function Report( $Params)
     
     $CM_Con = new mysqli('localhost', 'root', '', 'cm_data');
     mysqli_query($CM_Con, "SET NAMES 'utf8'");
-    $Query = "SELECT * FROM tblseguimientousuario as ls
+    $Query = "SELECT ls.* FROM tblseguimientousuario as ls
         INNER JOIN dim_usuarios as du ON du.id_usuario = ls.id_usuario
         $DIM
         WHERE ls.fecha BETWEEN '$Params->fecha1' and '$Params->fecha2'
