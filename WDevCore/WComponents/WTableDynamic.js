@@ -15,7 +15,7 @@ class WTableDynamicComp extends HTMLElement {
         this.DisplayFilts = this.TableConfig.DisplayFilts ?? null;
         this.EvalValue = this.TableConfig.EvalValue ?? null;
         this.AttNameEval = this.TableConfig.AttNameEval ?? null;
-        this.OperationsType = "count";//"sum";
+        this.OperationsType = "sum";//"sum" count;
         
         this.attachShadow({ mode: "open" });
         this.MainTable = WRender.createElement({ type: "div", props: { class: this.TableClass, id: "MainTable" + this.id }, children: [] });
@@ -581,7 +581,7 @@ class WTableDynamicComp extends HTMLElement {
                         "flex-direction": "column",
                     }), new WCssClass(`.flexChild`, {
                         padding: "0px",
-                        width: "100%"
+                        //width: "100%"
                     }), new WCssClass(`TData`, {
                         "overflow-y": "hidden",
                         "white-space": "nowrap",

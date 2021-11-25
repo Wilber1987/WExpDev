@@ -45,8 +45,19 @@ function handle($Data)
 }
 function Report( $Params)
 {
-    $DIM = "";
+    
+    $Basic = "";
+    $BasicSelect = "";
+    if ($Params->Basic != "") {
+        $Basic = ", du.$Params->Basic";
+        $BasicSelect = ", du.$Params->Basic as Basic";
+    }
+    $DIMSelect = "";
+    $DIMJoin = "";
     $DIMCondicion = "";
+    if ($Params->DIMSelect != "") {
+        $DIM = ", DIM.$Params->DIMSelect as Specifict ";
+    }
     if ($Params->Dimencion != "") {
         $DIM = " INNER JOIN $Params->Dimencion as DIM  ON DIM.id_seguimiento = ls.id_seguimiento ";
     }
@@ -56,16 +67,20 @@ function Report( $Params)
             $values = $values."$key->id_,";
         }
         $values = substr($values, 0, -1);
-        $DIMCondicion = " AND $Params->Dimencion.id_seguimiento IN ($values) ";
+        $DIMCondicion = " AND DIM.$Params->DIMSelect IN ($values) ";
     }
-    
     $CM_Con = new mysqli('localhost', 'root', '', 'cm_data');
     mysqli_query($CM_Con, "SET NAMES 'utf8'");
-    $Query = "SELECT ls.* FROM tblseguimientousuario as ls
+    $Query = "SELECT  COUNT(distinct ls.id_usuario) AS EvalValue, ls.* 
+        $BasicSelect
+        $DIMSelect
+        FROM tblseguimientousuario as ls
         INNER JOIN dim_usuarios as du ON du.id_usuario = ls.id_usuario
-        $DIM
+        $DIMJoin
         WHERE ls.fecha BETWEEN '$Params->fecha1' and '$Params->fecha2'
         $DIMCondicion 
+        GROUP BY ls.estado_final, ls.$Params->Time  $Basic
+        ORDER BY ls.fecha DESC
     ";
     //echo $Query;
     $Seguimiento = GetQuery($CM_Con, $Query);

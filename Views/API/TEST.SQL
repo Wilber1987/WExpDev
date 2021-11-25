@@ -27,3 +27,14 @@ UPDATE dim_usuarios set antiguedad_etiqueta = "De 1 a 3 años" WHERE antiguedad_
 UPDATE dim_usuarios set antiguedad_etiqueta = "De 7 a 10 años" WHERE antiguedad_etiqueta = "De 7 a 10 a?os";
 
 UPDATE dim_usuarios set edad_etiqueta = "Más de 61" WHERE edad_etiqueta = "M?s de 61";
+
+SELECT  COUNT(distinct ls.id_usuario) AS EvalValue, ls.*
+FROM
+	tblseguimientousuario AS ls
+	INNER JOIN dim_usuarios AS du ON du.id_usuario = ls.id_usuario
+	INNER JOIN log_estados_psicoemocionales as DIM  ON DIM.id_seguimiento = ls.id_seguimiento
+WHERE (ls.fecha BETWEEN '2019-01-01' AND '2021-11-24')
+	-- AND ls.fecha = (SELECT MAX(fecha) FROM  tblseguimientousuario as sub WHERE (sub.fecha BETWEEN '2019-01-01' AND '2021-11-24') AND sub.fecha <= ls.fecha AND sub.id_usuario = ls.id_usuario)
+GROUP BY ls.estado_final, ls.year
+ORDER BY ls.fecha DESC
+	

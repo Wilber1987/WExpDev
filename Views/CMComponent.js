@@ -27,17 +27,18 @@ class CMComponent extends HTMLElement {
             }
         });
         //Options
+        this.TimeDrop = WRender.Create({
+            tagName: "select", onchange: async () => { }, children: [
+                { tagName: "option", value: "year", innerText: "Años" },
+                { tagName: "option", value: "mes", innerText: "Meses" },
+                { tagName: "option", value: "trimestre", innerText: "Trimestre" }
+            ]
+        });
         this.TimeOptions = WRender.Create({
             className: "TimeOptions", children: [
                 { tagName: "input", type: "date", value: (new Date()).toISO(), onchange: async () => { } },
                 { tagName: "input", type: "date", value: (new Date()).toISO(), onchange: async () => { } },
-                {
-                    tagName: "select", onchange: async () => { }, children: [
-                        { tagName: "option", value: "Años", innerText: "Años" },
-                        { tagName: "option", value: "Meses", innerText: "Meses" },
-                        { tagName: "option", value: "Trimestre", innerText: "Trimestre" }
-                    ]
-                }, {
+                this.TimeDrop , {
                     tagName: "select", onchange: async () => { }, children: [
                         { tagName: "option", value: "%", innerText: "%" },
                         { tagName: "option", value: "Total", innerText: "Total" },
@@ -63,18 +64,7 @@ class CMComponent extends HTMLElement {
                 }, {//Data
                     type: 'button', props: {
                         class: 'CMBTn', innerText: '', onclick: async () => {
-                            this.shadowRoot.append(WRender.createElement({
-                                type: "w-modal-form",
-                                props: {
-                                    title: "Datos",
-                                    ObjectModal: new WTableComponent({
-                                        Dataset: this.TableConfig.Dataset,
-                                        Options: { Search: true }
-                                    }), ObjectOptions: {
-                                        SaveFunction: (NewObject) => { }
-                                    }
-                                }
-                            }));
+                            this.TableRefres();
                         }
                     }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.dataset } }]
                 }, {//Print
@@ -94,34 +84,26 @@ class CMComponent extends HTMLElement {
                 }
             ]
         });
+        this.BasicDrop = WRender.Create({
+            tagName: "select", onchange: async () => { },
+            children: EvaluacionBasica.map(x => {
+                return { tagName: "option", value: x.id_, innerText: x.Descripcion };
+            })
+        });
         this.EvaluationOptions = WRender.Create({
             className: "EvaluationOptions", children: [
-                {
-                    tagName: "select", onchange: async () => { },
-                    children: EvaluacionBasica.map(x => {
-                        return { tagName: "option", value: x, innerText: x };
-                    })
-                }
+                this.BasicDrop
             ]
+        });
+        this.SpecifictMultiselect = new MultiSelect({ 
+            Dataset: TiposEstados,
+            MultiSelect: false
         });
         this.AnaliticOptions = WRender.Create({
             className: "EvaluationOptions", children: [
-                new MultiSelect({ Dataset: Servicios })
+                this.SpecifictMultiselect
             ]
         });
-        // TABLA DINAMICA 
-        // this.Table = new WTableDynamicComp({ 
-        //     Dataset: dataTestFact,
-        //     EvalValue: "total",
-        //     AttNameEval: "mes",
-        //     groupParams: ["cuarto","año"],
-        //     DisplayOptions: true,
-        //     //DisplayOptions: false,
-        //     //DisplayFilts: [],//filtros
-        //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
-        // })
-        
-        //styles
         this.shadowRoot.append(WRender.createElement(StyleScrolls));
         this.shadowRoot.append(WRender.createElement(StylesControlsV1));
         this.shadowRoot.append(WRender.createElement(this.FStyle()));
@@ -135,31 +117,26 @@ class CMComponent extends HTMLElement {
 
     }
     connectedCallback() { this.DraCMComponent(); }
-    DraCMComponent = async () => {
+    TakeData = async ()=>{
         const url = "./Views/API/TakeData.php?function=Report"
         const response = await WAjaxTools.PostRequest(url, {
             fecha1: "2019-01-01",
             fecha2: (new Date()).toISO(),
-            Dimencion: "log_estados_psicoemocionales",
-            DIMCondicion: [],
-            VAL: "-"
+            Basic: this.BasicDrop.value,
+            Dimencion: this.SpecifictMultiselect.NameSelected,
+            DIMSelect: this.SpecifictMultiselect.FieldName, 
+            DIMCondicion: this.SpecifictMultiselect.selectedItems,
+            Time: this.TimeDrop.value,
         });
-
-        //this.Table.Dataset = response;
-        // this.Table.TableConfig = { 
-        //     Dataset: response,
-        //     EvalValue: "id_usuario",
-        //     AttNameEval: "departamento_area",
-        //     groupParams: ["year"],
-        //     DisplayOptions: true,
-        //     //DisplayFilts: [],//filtros
-        //     //ParamsForOptions: ["cuarto"]//parametros de agrupacion
-        // };
+        return response;
+    }
+    DraCMComponent = async () => {  
+        const response = await this.TakeData();
         this.Table = new WTableDynamicComp({
             Dataset: response,
-            EvalValue: "id_usuario",
+            EvalValue: "EvalValue",
             AttNameEval: "estado_final",
-            groupParams: ["year"],
+            groupParams: this.TakeGroups(),
             DisplayOptions: true,
             //DisplayFilts: [],//filtros
             //ParamsForOptions: ["cuarto"]//parametros de agrupacion
@@ -168,8 +145,34 @@ class CMComponent extends HTMLElement {
             gridColumn: "1/3"
         })
         //this.Table.DefineTable();
-        this.shadowRoot.append(this.Table);
+        //this.shadowRoot.append(this.Table);
     }
+    TableRefres = async ()=>{
+        const response = await this.TakeData();
+        this.Table.Dataset = response;
+        this.Table.TableConfig = { 
+            Dataset: response,
+            EvalValue: "EvalValue",
+            AttNameEval: "estado_final",
+            groupParams: ["year", "Basic"],
+            DisplayOptions: true,
+            //DisplayFilts: [],//filtros
+            //ParamsForOptions: ["cuarto"]//parametros de agrupacion
+        };
+        this.Table.DefineTable();
+    }
+    TakeGroups = ()=>{
+        const groupParams = [this.TimeDrop.value];
+        if (this.BasicDrop.value != "") {
+            groupParams.push(this.BasicDrop.value)
+        }
+        if (this.SpecifictMultiselect.NameSelected != "") {
+            groupParams.push(this.SpecifictMultiselect.NameSelected)
+        }
+        return groupParams;
+    }
+  
+    
     FStyle() {
         const WTableStyle = {
             type: "w-style",
@@ -323,52 +326,52 @@ const TiposAbsentismos = [
 ];
 const TiposEstados = [
     //Deportes------------->
-    { id_test: 1, Test: "Deportes", id_: "Autoconfianza", Descripcion: "Autoconfianza", },
-    { id_test: 1, Test: "Deportes", id_: "Control de la energía negativa", Descripcion: "Control de la energía negativa", },
-    { id_test: 1, Test: "Deportes", id_: "Control de la atención", Descripcion: "Control de la atención", },
-    { id_test: 1, Test: "Deportes", id_: "Control de la visualización y de las imágenes", Descripcion: "Control de la visualización y de las imágenes", },
-    { id_test: 1, Test: "Deportes", id_: "Nivel motivacional", Descripcion: "Nivel motivacional", },
-    { id_test: 1, Test: "Deportes", id_: "Energía positiva", Descripcion: "Energía positiva", },
-    { id_test: 1, Test: "Deportes", id_: "Control de la actitud", Descripcion: "Control de la actitud", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Autoconfianza", Descripcion: "Autoconfianza", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Control de la energía negativa", Descripcion: "Control de la energía negativa", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Control de la atención", Descripcion: "Control de la atención", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Control de la visualización y de las imágenes", Descripcion: "Control de la visualización y de las imágenes", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Nivel motivacional", Descripcion: "Nivel motivacional", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Energía positiva", Descripcion: "Energía positiva", },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 1, Test: "Deportes", id_: "Control de la actitud", Descripcion: "Control de la actitud", },
     //--------------->
-    { id_test: 2, Test: "Ansiedad", id_: 'Ansiedad', Descripcion: 'Ansiedad', },
-    { id_test: 3, Test: "Estrés", id_: 'Estrés', Descripcion: 'Estrés', },
-    { id_test: 2, Test: "Estado de ánimo bajo", id_: 'Estado de ánimo bajo', Descripcion: 'Estado de ánimo bajo', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 2, Test: "Ansiedad", id_: 'Ansiedad', Descripcion: 'Ansiedad', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 3, Test: "Estrés", id_: 'Estrés', Descripcion: 'Estrés', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 2, Test: "Estado de ánimo bajo", id_: 'Estado de ánimo bajo', Descripcion: 'Estado de ánimo bajo', },
     //--------------->
-    { id_test: 4, Test: "Bienestar", id_: 'Bienestar Psicológico', Descripcion: 'Bienestar Psicológico', },
-    { id_test: 4, Test: "Bienestar", id_: 'Autoaceptación', Descripcion: 'Autoaceptación', },
-    { id_test: 4, Test: "Bienestar", id_: 'Relaciones positivas', Descripcion: 'Relaciones positivas', },
-    { id_test: 4, Test: "Bienestar", id_: 'Autonomía', Descripcion: 'Autonomía', },
-    { id_test: 4, Test: "Bienestar", id_: 'Dominio del entorno', Descripcion: 'Dominio del entorno', },
-    { id_test: 4, Test: "Bienestar", id_: 'Crecimiento personal', Descripcion: 'Crecimiento personal', },
-    { id_test: 4, Test: "Bienestar", id_: 'Propósito de vida', Descripcion: 'Propósito de vida' },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Bienestar Psicológico', Descripcion: 'Bienestar Psicológico', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Autoaceptación', Descripcion: 'Autoaceptación', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Relaciones positivas', Descripcion: 'Relaciones positivas', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Autonomía', Descripcion: 'Autonomía', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Dominio del entorno', Descripcion: 'Dominio del entorno', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Crecimiento personal', Descripcion: 'Crecimiento personal', },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 4, Test: "Bienestar", id_: 'Propósito de vida', Descripcion: 'Propósito de vida' },
     //SATISFACCIONLABORAL
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Política", Descripcion: "Política de la empresa" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Sueldo", Descripcion: "Sueldo" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Relaciones con el jefe", Descripcion: "Relaciones con el jefe" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Condiciones de trabajo", Descripcion: "Condiciones de trabajo" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Relaciones con los compañeros", Descripcion: "Relaciones con los compañeros" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Vida personal", Descripcion: "Vida personal" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Status", Descripcion: "Status" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Supervisión", Descripcion: "Supervisión" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Seguridad", Descripcion: "Seguridad" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Responsabilidad", Descripcion: "Responsabilidad otorgada" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Trabajo en sí mismo", Descripcion: "Trabajo en sí mismo" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Crecimiento y promoción", Descripcion: "Crecimiento y promoción" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Reconocimiento", Descripcion: "Reconocimiento otorgado" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Igualdad", Descripcion: "Políticas de Igualdad" },
-    { id_test: 5, Test: "SatisLaboralIgualdad", id_: "Logro", Descripcion: "Logro alcanzado" }
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Política", Descripcion: "Política de la empresa" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Sueldo", Descripcion: "Sueldo" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Relaciones con el jefe", Descripcion: "Relaciones con el jefe" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Condiciones de trabajo", Descripcion: "Condiciones de trabajo" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Relaciones con los compañeros", Descripcion: "Relaciones con los compañeros" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Vida personal", Descripcion: "Vida personal" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Status", Descripcion: "Status" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Supervisión", Descripcion: "Supervisión" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Seguridad", Descripcion: "Seguridad" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Responsabilidad", Descripcion: "Responsabilidad otorgada" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Trabajo en sí mismo", Descripcion: "Trabajo en sí mismo" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Crecimiento y promoción", Descripcion: "Crecimiento y promoción" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Reconocimiento", Descripcion: "Reconocimiento otorgado" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Igualdad", Descripcion: "Políticas de Igualdad" },
+    { name: "log_estados_psicoemocionales", FieldName: "estado_final", SubOptions: Estados, id_test: 5, Test: "SatisLaboralIgualdad", id_: "Logro", Descripcion: "Logro alcanzado" }
 ];
 const EvaluacionBasica = [
-    "Análisis básico",
-    "Sector",
-    "Empresa",
-    "Centro",
-    "Departamento/área",
-    "Edad",
-    "Cargo",
-    "Años en la empresa",
-    "Turno",
-    "Tipo de contrato",
-    "Sexo"
+    {id_:"", Descripcion: "Análisis básico"},
+    {id_:"sector", Descripcion: "Sector"},
+    {id_:"id_empresa", Descripcion: "Empresa"},
+    {id_:"centro", Descripcion: "Centro"},
+    {id_:"departamento_area", Descripcion: "Departamento/área"},
+    {id_:"edad_etiqueta", Descripcion: "Edad"},
+    {id_:"cargo", Descripcion: "Cargo"},
+    {id_:"antiguedad_etiqueta", Descripcion: "Años en la empresa"},
+    {id_:"turno", Descripcion: "Turno"},
+    {id_:"contrato", Descripcion: "Tipo de contrato"},
+    {id_:"genero", Descripcion: "Sexo"},
 ]
