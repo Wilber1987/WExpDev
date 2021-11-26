@@ -95,11 +95,12 @@ const StylesControlsV1 = {
                 padding: 10,
                 border: "none",
                 border: "2px solid #dddada",
-                width: "calc(100% - 24px)",
+                width: "calc(100%)",
+                //height: "100%",
                 "font-size": "15px",
                 "border-radius": "0.2cm",
                 "box-sizing": "border-box",
-            }), new WCssClass(`input:active, input:focus`, {
+            }), new WCssClass(`input:active, input:focus, select:active, select:focus`, {
                 "border-bottom": "2px solid #0099cc",
                 outline: "none",
             }), new WCssClass(`input[type=button]`, {

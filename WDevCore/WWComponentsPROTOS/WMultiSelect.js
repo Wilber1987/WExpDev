@@ -93,6 +93,7 @@ class MultiSelect extends HTMLElement {
                     }
                 }, new WStyledRender(SubMenu));
                 SubContainer.append(element.SubMultiSelect);
+                
             }
             this.OptionsContainer.append(WRender.Create({
                 className: "OContainer",
@@ -152,9 +153,7 @@ const MainMenu = {
             cursor: "pointer",
             "border-left": "solid 2px #062e2c",
             "background": "none",
-        }), new WCssClass(`.SubMenu .OptionsContainer`, {
-            "max-height": "500px",
-        }), new WCssClass(`.OptionsContainer`, {
+        }),  new WCssClass(`.OptionsContainer`, {
             "max-height": 0,
             "overflow-y": "auto",
             transition: "all 1s"
@@ -176,14 +175,18 @@ const MainMenu = {
             cursor: "pointer",
             padding: "10px 10px",
         }), new WCssClass(".SubMenu", {
-            display: "none",
+            //display: "none",
             //padding: 10,
-            "background-color": "rgb(0,0,0,35%)"
+            "max-height": 0,
+            "grid-column": "1/3",
+            "background-color": "rgb(0,0,0,35%)",
+            transition: "all 0.6s",
+            overflow: "hidden",
         }), new WCssClass(".SubMenu w-multi-select:first-child", {           
             margin: 10,
         }), new WCssClass(".Option:checked ~ .SubMenu", {
-            display: "block",
-            "grid-column": "1/3"
+            //display: "block",            
+            "max-height": 500,
         })
     ]
 }
