@@ -145,7 +145,7 @@ class CMComponent extends HTMLElement {
             gridColumn: "1/3"
         })
         //this.Table.DefineTable();
-        //this.shadowRoot.append(this.Table);
+        this.shadowRoot.append(this.Table);
     }
     TableRefres = async ()=>{
         const response = await this.TakeData();

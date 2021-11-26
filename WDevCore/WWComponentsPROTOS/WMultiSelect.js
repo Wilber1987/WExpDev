@@ -136,9 +136,10 @@ const MainMenu = {
             background: "#f1f1f1",
             display: "flex",
             "align-items": "center",
-            height: 40,
+            "min-height": 40,
             "border-bottom": "#c3c3c3 solid 1px",
-            cursor: "pointer"
+            cursor: "pointer",
+            height: "100%"            
         }),new WCssClass(`.LabelMultiselect label`, {
             padding: "5px 10px",
             "border-radius": "0.3cm",
@@ -156,7 +157,11 @@ const MainMenu = {
         }),  new WCssClass(`.OptionsContainer`, {
             "max-height": 0,
             "overflow-y": "auto",
-            transition: "all 1s"
+            transition: "all 1s",
+            "z-index": "100",
+            width: "100%",
+            position: "absolute",
+            "box-shadow": "0 0 4px 0 rgb(0,0,0,50%)",
         }),  new WCssClass(`.MenuActive`, {
             "max-height": 500,
         }), new WCssClass(`.OContainer`, {
@@ -175,9 +180,8 @@ const MainMenu = {
             cursor: "pointer",
             padding: "10px 10px",
         }), new WCssClass(".SubMenu", {
-            //display: "none",
-            //padding: 10,
-            "max-height": 0,
+            "max-height": 0,            
+            width: "100%",
             "grid-column": "1/3",
             "background-color": "rgb(0,0,0,35%)",
             transition: "all 0.6s",
@@ -194,6 +198,8 @@ const SubMenu = {
     ClassList: [
         new WCssClass(`.OptionsContainer`, {
             "max-height": 500,
+            position: "relative",
+            "box-shadow": "none",           
         })
     ]
 }
