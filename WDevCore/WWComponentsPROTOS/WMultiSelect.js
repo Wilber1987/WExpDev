@@ -92,8 +92,8 @@ class MultiSelect extends HTMLElement {
                         //pendiente
                     }
                 }, new WStyledRender(SubMenu));
-                SubContainer.append(element.SubMultiSelect);
-                
+                element.selectedItems = element.SubMultiSelect.selectedItems;
+                SubContainer.append(element.SubMultiSelect);                
             }
             this.OptionsContainer.append(WRender.Create({
                 className: "OContainer",
