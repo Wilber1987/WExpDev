@@ -21,71 +21,73 @@ function GetQuery($conect, $Query)
         echo "error: $Query <hr>";
     }
 }
-function handle($Data)
-{
-    $CM_Con = new mysqli('localhost', 'root', '', 'cm_data');
-    $Seguimiento = GetQuery($CM_Con, "SELECT * FROM tblseguimientousuario as ls
-        INNER JOIN dim_usuarios as du ON du.id_usuario = ls.id_usuario
-        WHERE ls.fecha BETWEEN '$Data->fecha1' and '$Data->fecha2'
-        limit 200
-    ");
-    foreach ($Seguimiento as $seg) //recorrer todos los usuarios
-    {
-        $seg->{"Estados"} = GetQuery($CM_Con, "SELECT * FROM log_estados_psicoemocionales
-         WHERE id_seguimiento = $seg->id_seguimiento");
-        $seg->{"Servicios"} = GetQuery($CM_Con, "SELECT * FROM log_servicios
-         WHERE id_seguimiento = $seg->id_seguimiento");
-        $seg->{"Solicitudes"} = GetQuery($CM_Con, "SELECT * FROM log_solicitud
-         WHERE id_seguimiento = $seg->id_seguimiento");
-        $seg->{"Absentismo"} = GetQuery($CM_Con, "SELECT * FROM tbl_absentismo
-         WHERE id_seguimiento = $seg->id_seguimiento");
-    }
-    echo json_encode($Seguimiento);
-    return;
-}
 function Report( $Params)
-{
-    
+{    
     $Basic = "";
     $BasicSelect = "";
     if ($Params->Basic != "") {
         $Basic = ", du.$Params->Basic";
-        $BasicSelect = ", du.$Params->Basic as Basic";
+        $BasicSelect = ", du.$Params->Basic";
     }
     $DIMSelect = "";
     $DIMJoin = "";
     $DIMCondicion = "";
+    $DIMGroup = "";
+    $DIMGroupCondicion = "";
     if ($Params->DIMSelect != "") {
-        $DIM = ", DIM.$Params->DIMSelect as Specifict ";
+        $DIMSelect = ", DIM.$Params->DIMSelect as DIMName, DIM.$Params->DIMSubSelect as DIMValue ";
+        $DIMGroup = ", DIM.$Params->DIMSubSelect";
     }
     if ($Params->Dimencion != "") {
-        $DIM = " INNER JOIN $Params->Dimencion as DIM  ON DIM.id_seguimiento = ls.id_seguimiento ";
+        $DIMJoin = " INNER JOIN $Params->Dimencion as DIM  ON DIM.id_seguimiento = ls.id_seguimiento ";
     }
+    //$DimArray = json_decode($Params->DIMCondicion);    
     if (count($Params->DIMCondicion) > 0) {
         $values = "";
+        $valuesCondition = "";
+       // echo json_encode($Params->DIMCondicion);
         foreach ($Params->DIMCondicion as $key) {
-            $values = $values."$key->id_,";
+            $values = $values."'$key->id_',";
+            if (count($key->selectedItems) > 0) {
+                foreach ($key->selectedItems as $SubKey) {
+                    $valuesCondition = $valuesCondition."'$SubKey->id_',";
+                }
+            }            
         }
-        $values = substr($values, 0, -1);
+        $values = substr($values, 0, -1);        
         $DIMCondicion = " AND DIM.$Params->DIMSelect IN ($values) ";
+        if ($valuesCondition != "") {
+            $valuesCondition = substr($valuesCondition, 0, -1);            
+            $DIMGroupCondicion = " AND DIM.$Params->DIMSubSelect IN ($valuesCondition) ";
+        }        
+    }
+    $KpiParamExclude = "";
+    if (count($Params->KpiParamExclude) > 0) { 
+        $values = "";
+        $valuesCondition = "";
+        foreach ($Params->KpiParamExclude as $key) {
+            $values = $values."'$key',";
+        }
+        $values = substr($values, 0, -1);        
+        $KpiParamExclude = " AND ls.$Params->KpiParam NOT IN ($values) ";       
     }
     $CM_Con = new mysqli('localhost', 'root', '', 'cm_data');
     mysqli_query($CM_Con, "SET NAMES 'utf8'");
     $Query = "SELECT  COUNT(distinct ls.id_usuario) AS EvalValue, ls.* 
         $BasicSelect
         $DIMSelect
-        FROM tblseguimientousuario as ls
+        FROM $Params->KpiTable as ls
         INNER JOIN dim_usuarios as du ON du.id_usuario = ls.id_usuario
         $DIMJoin
         WHERE ls.fecha BETWEEN '$Params->fecha1' and '$Params->fecha2'
-        $DIMCondicion 
-        GROUP BY ls.estado_final, ls.$Params->Time  $Basic
+        $DIMCondicion
+        $DIMGroupCondicion 
+        $KpiParamExclude
+        GROUP BY ls.$Params->KpiParam, ls.$Params->Time $Basic $DIMGroup
         ORDER BY ls.fecha DESC
     ";
     //echo $Query;
     $Seguimiento = GetQuery($CM_Con, $Query);
     echo json_encode($Seguimiento);
-    //echo print_r($Seguimiento);
-    //echo "success";
     return;
 }

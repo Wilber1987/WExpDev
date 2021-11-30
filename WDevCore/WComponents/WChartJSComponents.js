@@ -176,7 +176,7 @@ class ColumChart extends HTMLElement {
     _DrawBackgroundLine(value, size = 600, ValP, label = true) {
         //console.log(value)
         var countLine = 0;
-        var val = parseFloat(value / 10);
+        var val = parseFloat(value / 7);
         //%
         countLine = 7
         if (ValP == 1) {
@@ -534,7 +534,7 @@ const WChartStyle = (ChartInstance) => {
                     "overflow-y": " hidden",
                     "position": " relative",
                     "overflow-x": " scroll",
-                    padding: 10,
+                    //padding: 10,
                     "padding-left": 40,
                     "min-height": 150,
                     //margin: "0px auto"
@@ -551,15 +551,15 @@ const WChartStyle = (ChartInstance) => {
                     //"border-right": " solid 1px #d4d4d4",
                     "border-top": " solid 1px #d4d4d4"
                 }), new WCssClass(".groupBars ", {
-                    //width: "100%",
-                    width: 300,
+                    width: "100%",
+                    //width: 300,
                     //"height": " 180px",
                     "display": " flex",
                     "flex-direction": "column-reverse",
                     //"flex-grow": " 1",
                     "border-left": " solid 1px #d4d4d4",
                     "align-items": "center",
-                    //position: "relative"
+                    position: "relative"
                 }), new WCssClass(".ContainerBars ", {
                     "display": " flex",
                     "width": " 100%",
@@ -598,12 +598,14 @@ const WChartStyle = (ChartInstance) => {
                     "width": " 100%",
                     "height": " 100%",
                     "left": " 0px",
-                    "top": 10,
+                    "top": 0,
                     "height": " 180px",
                     "right": " 0px",
-                }), new WCssClass(".BackGrounLineXNumber ", {
-                    //"left": " -40px",
-
+                }), new WCssClass(".groupBars .BackGrounLineXNumber ", {
+                    "left": " -40px",
+                }),
+                new WCssClass(".groupBars .IconsGroup ", {
+                    "left": " -25px",
                 }), new WCssClass(".CharLineX ", {
                     "position": " relative",
                     "border-top": " rgb(190, 190, 190) solid 1px",
@@ -650,10 +652,9 @@ const WChartStyle = (ChartInstance) => {
                     "flex-direction": " column-reverse",
                     "width": " 100%",
                     "height": " 100%",
-                    "left": " 0px",
-                    "border-bottom": " 0px",
-                    "right": " 0px",
-                    "left": " -28px",
+                    "left": 15,
+                    "border-bottom": 0,
+                    "right": 0,
                 }), new WCssClass(`.IconG`, {
                     height: 20,
                     width: 20,

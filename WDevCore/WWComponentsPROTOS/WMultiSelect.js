@@ -13,6 +13,7 @@ class MultiSelect extends HTMLElement {
         this.selectedItems = [];
         this.NameSelected = "";
         this.FieldName = "";
+        this.SubOptionsFieldName = "";
         WRender.SetStyle(this, {
             display: "block",
             position: "relative",
@@ -68,6 +69,7 @@ class MultiSelect extends HTMLElement {
                     if (index == -1 && control.checked == true) {
                         this.NameSelected = element.name;
                         this.FieldName = element.FieldName;
+                        this.SubOptionsFieldName = element.SubOptionsFieldName;
                         if (WArrayF.FindInArray(element, this.selectedItems) == false) {
                             this.selectedItems.push(element);
                         } else {
@@ -78,6 +80,7 @@ class MultiSelect extends HTMLElement {
                         if (this.selectedItems.length == 0) {
                             this.NameSelected = "";
                             this.FieldName = "";
+                            this.SubOptionsFieldName = "";
                         }
                     }
                     this.DrawLabel();
@@ -117,6 +120,7 @@ class MultiSelect extends HTMLElement {
                         if (this.selectedItems.length == 0) {
                             this.NameSelected = "";
                             this.FieldName = "";
+                            this.SubOptionsFieldName = "";
                         }
                         this.DrawLabel();
                         this.shadowRoot.querySelector("#OType" + element.id_).checked = false;
