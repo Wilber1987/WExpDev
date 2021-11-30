@@ -193,7 +193,7 @@ class CMComponent extends HTMLElement {
                         height: 30,
                         "background-color": "#4894aa",
                         "font-family": "monospace"
-                    }), new WCssClass(`.TimeOptions, .EvaluationOptions`, {
+                    }), new WCssClass(`.TimeOptions`, {
                         display: "flex",
                     }), new WCssClass(`.CMBTn img`, {
                         width: 20,
