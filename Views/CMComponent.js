@@ -170,9 +170,7 @@ class CMComponent extends HTMLElement {
             groupParams.push(this.SpecifictMultiselect.NameSelected)
         }
         return groupParams;
-    }
-  
-    
+    }    
     FStyle() {
         const WTableStyle = {
             type: "w-style",
