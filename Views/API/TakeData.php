@@ -61,6 +61,16 @@ function Report( $Params)
             $DIMGroupCondicion = " AND DIM.$Params->DIMSubSelect IN ($valuesCondition) ";
         }        
     }
+    $KpiParamInclude = "";
+    if (count($Params->KpiParamInclude) > 0) { 
+        $values = "";
+        $valuesCondition = "";
+        foreach ($Params->KpiParamInclude as $key) {
+            $values = $values."'$key->id_',";
+        }
+        $values = substr($values, 0, -1);        
+        $KpiParamInclude = " AND ls.$Params->KpiParam IN ($values) ";       
+    }
     $KpiParamExclude = "";
     if (count($Params->KpiParamExclude) > 0) { 
         $values = "";
@@ -81,7 +91,8 @@ function Report( $Params)
         $DIMJoin
         WHERE ls.fecha BETWEEN '$Params->fecha1' and '$Params->fecha2'
         $DIMCondicion
-        $DIMGroupCondicion 
+        $DIMGroupCondicion
+        $KpiParamInclude 
         $KpiParamExclude
         GROUP BY ls.$Params->KpiParam, ls.$Params->Time $Basic $DIMGroup
         ORDER BY ls.fecha DESC

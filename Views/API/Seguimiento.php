@@ -564,26 +564,34 @@ function handle($fecha, $actual)
             $Log = GetQuery($base_Con, "SELECT id_absentismo FROM tbl_absentismo
                 WHERE  id_usuario = $key->id_usuario
                 and (month(fecha_inicio) = MONTH('$actual')
-                AND YEAR(fecha_inicio) = YEAR('$actual'))");
+                AND YEAR(fecha_inicio) = YEAR('$actual'))");                
             if (count($Log) != 0) {
                 $LogObject = $Log[0];
                 mysqli_query($CM_Con, "INSERT INTO tbl_absentismo(
                     id_seguimiento,
-                    id_absentismo,
                     fecha_inicio,
                     fecha_final,
                     id_usuario,
-                    comentario
+                    comentario,
+                    absentismo
                 ) values(
                     $id_seguimiento,
-                    $LogObject->id_absentismo,
                     '$LogObject->fecha_inicio',
                     '$LogObject->fecha_final',
                     $key->id_usuario,
-                    '$key->comentario'
-                )"
+                    '$key->comentario',
+                    'SI')"
                 );
             }
+            mysqli_query($CM_Con, "INSERT INTO tbl_absentismo(
+                id_seguimiento,
+                id_usuario,
+                absentismo
+            ) values(
+                $id_seguimiento,
+                $key->id_usuario,
+                'NO')"
+            );
 
             //psicologos------------------------------------------------------------------------->
             $Log = GetQuery($base_Con, "SELECT * FROM `gpsi_solicitud_psicologos`

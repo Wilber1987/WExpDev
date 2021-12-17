@@ -16,6 +16,7 @@ class CMConfig {
     KpiTable = "tblseguimientousuario";
     KpiParam = "estado_final";
     KpiParamExclude = ["N/D"];
+    KpiParamInclude = Estados ?? [];
 }
 class CMComponent extends HTMLElement {
     constructor(Config = (new CMConfig())) {
@@ -126,9 +127,10 @@ class CMComponent extends HTMLElement {
     connectedCallback() { this.DraCMComponent(); }
     TakeData = async () => {
         const response = await WAjaxTools.PostRequest(this.Config.Url, {
-            KpiTable: this.Config.KpiTable,
-            KpiParam: this.Config.KpiParam,
-            KpiParamExclude:  this.Config.KpiParamExclude,
+            KpiTable: this.Config.KpiTable,//NOMBRE DE LA TABLA PRINCIPAL
+            KpiParam: this.Config.KpiParam,//NOMBRE DEL PARAMETRO PRINCIPAL A EVALUAR
+            KpiParamInclude: this.Config.KpiParamInclude,//LISTA DE VALORES INCLUIDOS
+            KpiParamExclude: this.Config.KpiParamExclude,//LISTA DE VALORES EXCLUIDOS
             fecha1: "2019-01-01",
             fecha2: (new Date()).toISO(),
             Basic: this.BasicDrop.value,
@@ -320,11 +322,41 @@ const Absentismos = [
     { id_: "2", Descripcion: "Asistencia" }
 ];
 const TiposAbsentismos = [
-    { id_: "Enfermedad común", Descripcion: "Enfermedad común" },
-    { id_: "Accidente laboral", Descripcion: "Accidente laboral" },
-    { id_: "Maternidad/paternidad", Descripcion: "Maternidad/paternidad" },
-    { id_: "Asuntos propios", Descripcion: "Asuntos propios" },
-    { id_: "Otros", Descripcion: "Otros" }
+    {
+        name: "tbl_absentismo",
+        FieldName: "absentismo",
+        SubOptions: Absentismos,
+        SubOptionsFieldName: "absentismo",
+        id_: "Enfermedad común", Descripcion: "Enfermedad común"
+    },
+    {
+        name: "tbl_absentismo",
+        FieldName: "absentismo",
+        SubOptions: Absentismos,
+        SubOptionsFieldName: "absentismo",
+        id_: "Accidente laboral", Descripcion: "Accidente laboral"
+    },
+    {
+        name: "tbl_absentismo",
+        FieldName: "absentismo",
+        SubOptions: Absentismos,
+        SubOptionsFieldName: "absentismo",
+        id_: "Maternidad/paternidad", Descripcion: "Maternidad/paternidad"
+    },
+    {
+        name: "tbl_absentismo",
+        FieldName: "absentismo",
+        SubOptions: Absentismos,
+        SubOptionsFieldName: "absentismo",
+        id_: "Asuntos propios", Descripcion: "Asuntos propios"
+    },
+    {
+        name: "tbl_absentismo",
+        FieldName: "absentismo",
+        SubOptions: Absentismos,
+        SubOptionsFieldName: "absentismo",
+        id_: "Otros", Descripcion: "Otros"
+    }
 ];
 const TiposEstados = [
     //Deportes------------->
