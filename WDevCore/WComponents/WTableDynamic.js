@@ -266,7 +266,7 @@ class WTableDynamicComp extends HTMLElement {
             type: 'div', props: { id: '', class: 'TableOptionsBTN' }, children: [
                 {//display
                     type: 'input', props: {
-                        style: 'transform: rotate(90deg)', type: 'button', class: 'BtnTableSR', value: '>', onclick: async (ev) => {
+                        style: 'transform: rotate(90deg)', type: 'button', class: 'BtnDinamictT', value: '>', onclick: async (ev) => {
                             if (TOpcion.className == "TableOptions") {
                                 ev.target.style["transform"] = "inherit";
                                 TOpcion.className = "TableOptionsInact";
@@ -280,7 +280,7 @@ class WTableDynamicComp extends HTMLElement {
                     }
                 }, {//filters
                     type: 'button', props: {
-                        class: 'BtnTableSR', innerText: '', onclick: async () => {
+                        class: 'BtnDinamictT', innerText: '', onclick: async () => {
                             this.shadowRoot.append(WRender.createElement({
                                 type: "w-modal-form",
                                 props: {
@@ -295,7 +295,7 @@ class WTableDynamicComp extends HTMLElement {
                     }, children: [{ type: 'img', props: { src: this.Icons.filter, srcset: this.Icons.filter } }]
                 }, {//Data
                     type: 'button', props: {
-                        class: 'BtnTableSR', innerText: '', onclick: async () => {
+                        class: 'BtnDinamictT', innerText: '', onclick: async () => {
                             this.shadowRoot.append(WRender.createElement({
                                 type: "w-modal-form",
                                 props: {
@@ -312,7 +312,7 @@ class WTableDynamicComp extends HTMLElement {
                     }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.dataset } }]
                 }, {//Print
                     type: 'button', props: {
-                        class: 'BtnTableSR', innerText: '', onclick: async () => {
+                        class: 'BtnDinamictT', innerText: '', onclick: async () => {
                             const MainTable = this.MainTable.innerHTML + this.TableStyle.innerHTML;
                             const MainChart = this.ChartContainer.querySelector("w-colum-chart");
                             const PrintNode = MainTable + MainChart.shadowRoot.innerHTML;
@@ -326,7 +326,7 @@ class WTableDynamicComp extends HTMLElement {
                     }, children: [{ type: 'img', props: { src: this.Icons.config, srcset: this.Icons.printI } }]
                 }, {//Config
                     type: 'button', props: {
-                        class: 'BtnTableSR', innerText: '', onclick: async () => {
+                        class: 'BtnDinamictT', innerText: '', onclick: async () => {
                             this.shadowRoot.append(WRender.createElement({
                                 type: "w-modal-form",
                                 props: {
@@ -666,7 +666,7 @@ class WTableDynamicComp extends HTMLElement {
                     }), new WCssClass(`.TableOptionsInact .TableOptionsAtribs`, {
                         display: "none"
                     }), //BOTONES
-                    new WCssClass(`.Btn,.BtnTable, .BtnTableA, .BtnTableS, .BtnTableSR`, {
+                    new WCssClass(`.Btn,.BtnTable, .BtnTableA, .BtnTableS, .BtnDinamictT`, {
                         "font-weight": "bold",
                         "border": "none",
                         "padding": "5px",
@@ -678,12 +678,12 @@ class WTableDynamicComp extends HTMLElement {
                         "background-color": "#4894aa",
                         "color": "#fff",
                         "border-radius": "0.2cm"
-                    }), new WCssClass(`.BtnTableSR`, {
+                    }), new WCssClass(`.BtnDinamictT`, {
                         width: 30,
                         height: 30,
                         "background-color": "#4894aa",
                         "font-family": "monospace"
-                    }), new WCssClass(`.BtnTableSR img`, {
+                    }), new WCssClass(`.BtnDinamictT img`, {
                         width: 20,
                         height: 20,
                         filter: "invert(100%)"
