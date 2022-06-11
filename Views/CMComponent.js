@@ -9,7 +9,7 @@ import { StyleScrolls, StylesControlsV1 } from "../WDevCore/StyleModules/WStyleC
 import { dataTestFact } from '../DATA/data.js';
 
 //proto
-import { MultiSelect } from "../WDevCore/WWComponentsPROTOS/WMultiSelect.js";
+import { MultiSelect } from "../WDevCore/WComponents/WMultiSelect.js";
 
 class CMConfig {
     Url = "./Views/API/TakeData.php?function=Report"

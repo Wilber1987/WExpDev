@@ -1,4 +1,4 @@
-
+import { WSecurity } from "./WSecurity.js";
 function type(value) {
     var r;
     if (typeof value === 'object') {
@@ -49,6 +49,7 @@ class WAjaxTools {
         }
     }
     static PostRequest = async (Url, Data = {}, PostConfig = {}) => {
+
         //console.log(Data)
         try {
             let ContentType = "application/json; charset=utf-8";
@@ -74,9 +75,10 @@ class WAjaxTools {
             const ProcessRequest = await this.ProcessRequest(response, Url);
             return ProcessRequest;
         } catch (error) {
-            if (error == "TypeError: Failed to fetch") {
-                return this.LocalData(Url);
-            }
+            console.log(error);
+            //if (error == "TypeError: Failed to fetch" ) {
+            return this.LocalData(Url);
+            //}
         }
     }
     static GetRequest = async (Url) => {
@@ -106,19 +108,21 @@ class WAjaxTools {
                 return [];
             }
         } else {
-            response = await response.json(response);
-            console.log(response);
             try {
+                response = await response.json(response);
                 localStorage.setItem(Url, JSON.stringify(response));
+                return response;
             } catch (error) {
                 console.log(error);
             }
-            return response;
         }
     }
     static LocalData = (Url) => {
         let responseLocal = localStorage.getItem(Url);
-        return JSON.parse(responseLocal);
+        if (responseLocal != null) {
+            return JSON.parse(responseLocal);
+        }
+        return {};
     }
 }
 class WRender {
@@ -275,13 +279,14 @@ class WRender {
 
 }
 class ComponentsManager {
-    constructor(Config = {}) {
+    constructor(Config = { SPAManage: false, MainContainer: undefined, ContainerName: undefined }) {
         this.DomComponents = [];
         this.type = "div";
         this.props = {
             class: "MyForm"
         };
         this.SelectedComponent = "";
+        this.ContainerName = Config.ContainerName;
         this.MainContainer = Config.MainContainer;
         this.Config = Config;
         if (this.Config.SPAManage == true) {
@@ -306,15 +311,16 @@ class ComponentsManager {
         }
 
     }
-    NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName) => {
+    NavigateFunction = async (IdComponent, ComponentsInstance, ContainerName = "ContainerName") => {
+        this.ContainerName = ContainerName ?? this.ContainerName;
         if (this.MainContainer == undefined) {
-            this.MainContainer = ContainerName;
+            this.MainContainer = document.querySelector("#" + this.ContainerName);
         }
-        const ContainerNavigate = document.querySelector("#" + ContainerName);
+        const ContainerNavigate = this.MainContainer;
         let Nodes = ContainerNavigate.querySelectorAll(".DivContainer");
         Nodes.forEach((node) => {
             if (node.id != IdComponent) {
-                let nodeF = this.DomComponents.find(n => n.id == node.id);
+                let nodeF = this.DomComponents.find(n => n == node);
                 if (nodeF != undefined && nodeF != null) {
                     nodeF = node;
                 } else {
@@ -341,7 +347,6 @@ class ComponentsManager {
                 window.location = "#" + IdComponent;
                 const newNode = this.DomComponents.find(node => node.id == IdComponent);
                 let navigateComponets = JSON.parse(sessionStorage.getItem("navigateComponets"));
-                console.log(navigateComponets);
                 if (navigateComponets == null) {
                     navigateComponets = [];
                 }
@@ -351,7 +356,10 @@ class ComponentsManager {
         }
     }
     AddComponent = async (IdComponent, ComponentsInstance, ContainerName, order = "last") => {
-        const ContainerNavigate = document.querySelector("#" + ContainerName);
+        if (this.MainContainer == undefined) {
+            this.MainContainer = ContainerName;
+        }
+        const ContainerNavigate = document.querySelector("#" + this.MainContainer);
         if (ContainerNavigate.querySelector("#" + IdComponent)) {
             window.location = "#" + IdComponent;
             return;
@@ -534,6 +542,15 @@ class WArrayF {
         }
         return Maxvalue;
     }
+    static MinValue(Data, MaxParam) {
+        var MinValue = Data[0][MaxParam];
+        for (let index = 0; index < Data.length; index++) {
+            if (parseInt(Data[index][MaxParam]) < MinValue) {
+                MinValue = Data[index][MaxParam];
+            }
+        }
+        return MinValue;
+    }
     //reparar
     static SumValue(DataArry, EvalValue) {
         var Maxvalue = 0;
@@ -604,11 +621,18 @@ class WArrayF {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
     //verifica que un objeto este dentro de un array
-    static checkDisplay(DisplayData, prop) {
-        let flag = true
-        if (DisplayData != undefined &&
-            DisplayData.__proto__ == Array.prototype) {
-            const findProp = DisplayData.find(x => x == prop);
+    static checkDisplay(DisplayData, prop, Model = {}) {
+        let flag = true;        
+        if (Model[prop] == undefined  && Model[prop] == null) {
+            flag = false;
+        }
+        if (Model[prop] != undefined && Model[prop] != null
+            && Model[prop].__proto__ == Object.prototype
+            && (Model[prop].primary || Model[prop].hidden)) {
+            flag = false;
+        }
+        if (DisplayData != undefined && DisplayData.__proto__ == Array.prototype) {
+            const findProp = DisplayData.find(x => x.toUpperCase() == prop.toUpperCase());
             if (!findProp) {
                 flag = false;
             }
@@ -629,20 +653,20 @@ const GenerateColor = () => {
 //Date
 function pad(number) {
     if (number < 10) {
-      return '0' + number;
+        return '0' + number;
     }
     return number;
 }
-Date.prototype.toISO = function() {
+Date.prototype.toISO = function () {
     return this.getUTCFullYear() +
-      '-' + pad(this.getUTCMonth() + 1) +
-      '-' + pad(this.getUTCDate()) /* +
+        '-' + pad(this.getUTCMonth() + 1) +
+        '-' + pad(this.getUTCDate()) /* +
       'T' + pad(this.getUTCHours()) +
       ':' + pad(this.getUTCMinutes()) +
       ':' + pad(this.getUTCSeconds()) +
       '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
       'Z' */;
-  };
+};
 export { WAjaxTools, WRender, ComponentsManager, WArrayF, type, GenerateColor }
 class WNode {
     constructor(props = {}) {

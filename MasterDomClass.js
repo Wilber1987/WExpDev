@@ -1,7 +1,7 @@
 import { ComponentsManager, WAjaxTools, WRender } from "./WDevCore/WModules/WComponentsTools.js";
 import { WCssClass } from "./WDevCore/WModules/WStyledRender.js";
 
-//import DocumentView from "./Modules/DocumentView.js";
+import DocumentView from "./Modules/DocumentView.js";
 //REPORTS 
 import { dataTestFact } from './DATA/data.js'
 //COMPONENTS
@@ -27,7 +27,7 @@ class MasterDomClass extends ComponentsManager {
         this.props = { className: "App" }
         this.children = [
             new headerClass(),
-            //new AsideClass(),
+            new AsideClass(),
             new MainClass(),
             new FooterClass(),
             this.MasterStyle
@@ -50,7 +50,7 @@ class MasterDomClass extends ComponentsManager {
                 }), new WCssClass(".AppMain", {
                     overflow: "auto",
                     display: "block",
-                    "grid-column": "1/3",
+                    "grid-column": "2/3",
                 }), new WCssClass(".AppFooter", {
                     "grid-column": "1/3",
                     "background-color": "#eee",
@@ -61,7 +61,7 @@ class MasterDomClass extends ComponentsManager {
                     "font-family": "Arial, Helvetica, sans-serif"
                 }),
             ], MediaQuery: [{
-                condicion: "(max-width: 1400px)",
+                condicion: "(max-width: 900px)",
                 ClassList: [
                     new WCssClass(`.App`, {
                         display: "grid",
@@ -132,28 +132,28 @@ class AsideClass {
             Elements: [
                 {
                     name: "Inicio", url: "#",
-                    action: (ev) => { this.Navigate("Inicio", "1_WExpDev_intro.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("Inicio", "1_WExpDev_intro.pdf", "Inicio") }
                 }, {
                     name: "Estructrura del Proyecto", url: "#",
-                    action: (ev) => { this.Navigate("Estructura", "2_WExpDev_estructura.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("Estructura", "2_WExpDev_estructura.pdf", "Title") }
                 }, {
                     name: "WebComponents", url: "#",
-                    action: (ev) => { this.Navigate("WebComponents", "3_WExpDev_webcomponents.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("WebComponents", "3_WExpDev_webcomponents.pdf", "Title") }
                 }, {
                     name: "Renderizado Estructurado", url: "#",
-                    action: (ev) => { this.Navigate("Renderizado", "4_WExpDev_renderizadoestructurado.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("Renderizado", "4_WExpDev_renderizadoestructurado.pdf", "Title") }
                 }, {
                     name: "ES6 Modules", url: "#",
-                    action: (ev) => { this.Navigate("ES6", "5_WExpDev_es6modules.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("ES6", "5_WExpDev_es6modules.pdf", "Title") }
                 }, {
                     name: "CSS in JS", url: "#",
-                    action: (ev) => { this.Navigate("css_in_js", "6_WExpDev_css_js.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("css_in_js", "6_WExpDev_css_js.pdf", "Title") }
                 }, {
                     name: "Peticiones con FETCH", url: "#",
-                    action: (ev) => { this.Navigate("fetch", "7_WExpDev_peticionesAjax.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("fetch", "7_WExpDev_peticionesAjax.pdf", "Title") }
                 }, {
                     name: "Interfaces dinámicas OPA", url: "#",
-                    action: (ev) => { this.Navigate("opa", "8_WExpDev_opApp.pdf", ev.target.innerText) }
+                    action: (ev) => { this.Navigate("opa", "8_WExpDev_opApp.pdf", "Title") }
                 },
             ]
         }
@@ -248,9 +248,9 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
-            new CMComponent(),
+            //new CMComponent(),
             //COLUMN CHART LINEAL
-            new ColumChart({
+           /*  new ColumChart({
                 Dataset: dataTestFact, 
                 Colors: ["#ff6699", "#ffbb99", "#adebad"],
                 TypeChart: "Line",
@@ -258,7 +258,7 @@ class MainClass {
                 AttNameEval: "empresa",
                 EvalValue: "total",
                 groupParams: ["mes"]
-            })
+            }) */
             //TEST
             //new WTestView()
             // new WTestView({
