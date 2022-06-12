@@ -1,35 +1,35 @@
 import { WCssClass } from "../WDevCore/WModules/WStyledRender.js";
-import "../WDevCore/WDeprecateComponents/WTableComponents.js";
-import "../WDevCore/WComponents/WAppNavigator.js";
 import { dataTestFact } from '../DATA/data.js'
 import { ComponentsManager, WAjaxTools, WRender } from "../WDevCore/WModules/WComponentsTools.js";
+import { WTableDynamicComp } from "../WDevCore/WComponents/WTableDynamic.js";
 
 const Data = dataTestFact;
 class DinamicTableDoc extends ComponentsManager {
     constructor(props) {
         super();
-        this.type = "div";
+        this.estado = "div";
         this.props = props;
         this.props.class = "DocCont";
         this.props.style = "padding: 10px";
+        console.log("XDFgsdf");
         const NavigateElements = [{
             name: "Group Tables",
             action: () => {
                 this.NavigateFunction("GroupTables", new GroupTables(), "ModulesDetail");
             }
-        },{
+        }, {
             name: "Group Tables Chart",
             action: () => {
                 this.NavigateFunction("GroupTablesChart", new GroupTablesChart(), "ModulesDetail");
             }
-        },{
+        }, {
             name: "Dinamic Table",
             action: () => {
                 this.NavigateFunction("DinamicTable", new DinamicTable(), "ModulesDetail");
             }
         }];
         const Nav = {
-            type: "w-app-navigator",            
+            type: "w-app-navigator",
             props: {
                 id: "TableNav",
                 title: "Tabla Básica",
@@ -63,61 +63,41 @@ class DinamicTableDoc extends ComponentsManager {
 }
 class GroupTables {
     constructor() {
-        this.type = "div";
+        this.estado = "div";
         this.children = [];
         this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Group Table" },
         })
         this.children.push({
-            type: "div",
+            estado: "div",
             props: {
                 style: "padding: 10px",
-                innerHTML:`
+                innerHTML: `
                 `
             }
         }
-        );        
+        );
         var ConfigG1 = {
             Dataset: Data,
             /*DATOS DE LA TABLA*/
-            Colors: ["#ff6699", "#ffbb99", "#adebad"],
+            //Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            //AttNameG2: "categ2",
-            //AttNameG3: "categ",            
-            EvalValue: "Value",
+            AttNameEval: "empresa",
+            EvalValue: "total",
+            groupParams: ["año"],
+            DisplayOptions: true,
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             //Dinamic: true,
             /*DEFINE LA TABLA DINAMICA*/
             //AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
         };
-       
+
+        this.children.push(new WTableDynamicComp(ConfigG1));
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: ConfigG1
-            }
-        })
-        this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Double Group Table" },
         })
         var ConfigG2 = {
@@ -126,40 +106,21 @@ class GroupTables {
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            AttNameG2: "Time",
+            
+            AttNameEval: "empresa",
             //AttNameG3: "categ",            
-            EvalValue: "Value",
+            EvalValue: "total",
+            groupParams: ["año"],
+            DisplayOptions: true,
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             //Dinamic: true,
             /*DEFINE LA TABLA DINAMICA*/
             //AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
         };
-
+        this.children.push(new WTableDynamicComp(ConfigG2));
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: ConfigG2
-            }
-        })
-        this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "3 Group Table" },
         })
         var ConfigG3 = {
@@ -168,97 +129,57 @@ class GroupTables {
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            AttNameG2: "Time",
-            AttNameG3: "Stock",            
-            EvalValue: "Value",
+            
+            EvalValue: "total",
+            groupParams: ["año"],
+            DisplayOptions: true,
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             //Dinamic: true,
             /*DEFINE LA TABLA DINAMICA*/
             //AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
         };
-
-        this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: ConfigG3
-            }
-        })
+        this.children.push(new WTableDynamicComp(ConfigG3));
     }
 }
 class GroupTablesChart {
     constructor() {
-        this.type = "div";
+        this.estado = "div";
         this.children = [];
         this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Group Table" },
         })
         this.children.push({
-            type: "div",
+            estado: "div",
             props: {
                 style: "padding: 10px",
-                innerHTML:`
+                innerHTML: `
                 `
             }
         }
-        );        
+        );
         var ConfigG1 = {
             Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            //AttNameG2: "categ2",
-            //AttNameG3: "categ",            
-            EvalValue: "Value",
+            
+            AttNameEval: "empresa",
+            EvalValue: "total",
+            groupParams: ["año"],
+            DisplayOptions: true,
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             //Dinamic: true,
             /*DEFINE LA TABLA DINAMICA*/
             AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
         };
-       
+
+        this.children.push(new WTableDynamicComp(ConfigG1));
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: ConfigG1
-            }
-        })
-        this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Double Group Table" },
         })
         var ConfigG2 = {
@@ -267,40 +188,23 @@ class GroupTablesChart {
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
+            
+            AttNameEval: "empresa",
             AttNameG2: "Time",
             //AttNameG3: "categ",            
-            EvalValue: "Value",
+            EvalValue: "total",
+            groupParams: ["año"],
+            DisplayOptions: true,
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             //Dinamic: true,
             /*DEFINE LA TABLA DINAMICA*/
             AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
         };
 
+        this.children.push(new WTableDynamicComp(ConfigG2));
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: ConfigG2
-            }
-        })
-        this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "3 Group Table" },
         })
         var ConfigG3 = {
@@ -309,62 +213,42 @@ class GroupTablesChart {
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
             /*COLORES DEFINIDOS PARA EL GRAFICO(SI NO SE DEFINE SE SELECCIONAN DE FORMA DINAMICA)*/
             /*PARAMETROS DE EVALUACION SOLO SI NO ES DINAMICA Y SE QUIEREN DATOS AGRUPADOS)*/
-            AttNameEval: "Type",
-            AttNameG1: "Category",
-            AttNameG2: "Time",
-            AttNameG3: "Stock",            
-            EvalValue: "Value",
+            
+            EvalValue: "total",
+            groupParams: ["año"],
+            DisplayOptions: true,
             /*MAXIMO DE AGRUPACIONES ESTATICAS 3 CON UN VALOR EVALUADO*/
             //Dinamic: true,
             /*DEFINE LA TABLA DINAMICA*/
             AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-                /* UserActions: [{name: "Reservar", Function: (Param)=>{
-                     alert("reserva");
-                     console.log(Param)
-                 }}]*/
-            },
         };
 
-        this.children.push({
-            type: "w-table",
-            props: {
-                id: "table",
-                TableConfig: ConfigG3
-            }
-        })
+        this.children.push(new WTableDynamicComp(ConfigG3));
     }
 }
 class DinamicTable {
     constructor() {
-        this.type = "div";
+        this.estado = "div";
         this.children = [];
         this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Dinamic Table" },
         })
         this.children.push({
-            type: "div",
+            estado: "div",
             props: {
                 style: "padding: 10px",
-                innerHTML:`
+                innerHTML: `
                 `
             }
         }
         );
         this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "3 Group Table" },
         })
-        var ConfigG3 = {
+        var ConfigG1 = {
             Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
@@ -374,43 +258,27 @@ class DinamicTable {
             /*DEFINE LA TABLA DINAMICA*/
             //AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-            },
         };
 
+        this.children.push(new WTableDynamicComp(ConfigG1));
         this.children.push({
-            type: "w-table",
-            props: {
-                id: "table1",
-                TableConfig: ConfigG3
-            }
-        })
-
-        this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Dinamic Table" },
         })
         this.children.push({
-            type: "div",
+            estado: "div",
             props: {
                 style: "padding: 10px",
-                innerHTML:`
+                innerHTML: `
                 `
             }
         }
         );
         this.children.push({
-            type: 'h3',
+            estado: 'h3',
             props: { innerText: "Dinamic Table Chart" },
         })
-        var ConfigG3 = {
+        var ConfigG2 = {
             Dataset: Data,
             /*DATOS DE LA TABLA*/
             Colors: ["#ff6699", "#ffbb99", "#adebad"],
@@ -420,25 +288,10 @@ class DinamicTable {
             /*DEFINE LA TABLA DINAMICA*/
             AddChart: true,
             /*DEFINE UN GRAFICO DE BARRAS ESTAQUEADO si hay grupos  o es dinamica*/
-            //paginate: false,
-            Options: {
-                Search: true, //UrlSearch
-                Show: true,
-                Edit: true, //UrlUpdate: "",
-                Select: true,
-                Add: true, //UrlAdd
-                Delete: true,// UrlDelete
-            },
         };
 
-        this.children.push({
-            type: "w-table",
-            props: {
-                id: "table2",
-                TableConfig: ConfigG3
-            }
-        })
+        this.children.push(new WTableDynamicComp(ConfigG2));
     }
 }
 
-export {DinamicTableDoc}
+export { DinamicTableDoc }

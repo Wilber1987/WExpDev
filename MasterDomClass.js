@@ -12,8 +12,8 @@ import { WCardCarousel } from "./WDevCore/WComponents/WCardCarousel.JS";
 import { ColumChart } from "./WDevCore/WComponents/WChartJSComponents.js";
 //DOCUMENTACION
 import { WTestView } from "./WDevCore/WComponents/TestView.js";
-//import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
-//import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
+import { BasicTableDoc } from "./Modules/BasicTableDoc.js";
+import { DinamicTableDoc } from "./Modules/DinamicTableDoc.js";
 //import { SlideDoc } from "./Modules/SlideDoc.js";
 //import { ChartDocs } from "./Modules/ChartDocs.js";
 //COMPONENTES ESPECIFICOS
@@ -248,7 +248,7 @@ class MainClass {
         this.type = "main";
         this.props = { className: "AppMain", id: "AppMain" }
         this.children = [
-            //new CMComponent(),
+            //new CMComponent()
             //COLUMN CHART LINEAL
            /*  new ColumChart({
                 Dataset: dataTestFact, 
